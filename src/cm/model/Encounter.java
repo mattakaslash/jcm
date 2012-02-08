@@ -578,11 +578,7 @@ public class Encounter {
 		}
 		
 		while(getRoster().containsKey(combatant.getCombatHandle())) {
-			Combatant fighter = getRoster().get(combatant.getCombatHandle());
-			fighter.setFighterNumber(fighter.getFighterNumber() + 1);
-			if (fighter.getFighterNumber() < 2) {
-				fighter.setFighterNumber(fighter.getFighterNumber() + 1);
-			}
+			combatant.setFighterNumber(combatant.getFighterNumber() + 1);
 		}
 		
 		getRoster().put(combatant.getCombatHandle(), combatant);
