@@ -118,8 +118,12 @@ public class RechargeWin extends JDialog {
 		return jPanelBottom;
 	}
 
+	/**
+	 * Returns the list of recharged powers, by name
+	 * @return the list
+	 */
 	public List<String> getRecharged() {
-		return null;
+		return _recharged;
 	}
 	
 	private Hashtable<String, Power> _powers = new Hashtable<String, Power>();
