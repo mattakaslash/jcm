@@ -2264,7 +2264,7 @@ public class MainFrame extends JFrame {
 			getStatlib().loadFromFile(getStatlibFilename(), true);
 		}
 		
-		setFight(new Encounter(getStatlib(), getTrackerDice(), Settings.useModRoles()));
+		setFight(new Encounter(getStatlib(), getTrackerDice(), Settings.useModRoles(), this));
 		
 		//statDataClear();
 		

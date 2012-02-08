@@ -49,10 +49,10 @@ public class Settings {
 	}
 
 	private static void loadDefaults() {
-		SETTINGS.setProperty("popupForOngoingDamage", Boolean.TRUE.toString());
+		SETTINGS.setProperty("doOngoingPopup", Boolean.TRUE.toString());
+		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
+		SETTINGS.setProperty("doSavingThrows", Boolean.TRUE.toString());
 		SETTINGS.setProperty("useModRoles", Boolean.FALSE.toString());
-		SETTINGS.setProperty("usePowerRecharge", Boolean.TRUE.toString());
-		SETTINGS.setProperty("useSavingThrows", Boolean.TRUE.toString());
 	}
 
 	public static Boolean useModRoles() {

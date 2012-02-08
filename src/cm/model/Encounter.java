@@ -15,6 +15,7 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
@@ -47,6 +48,7 @@ public class Encounter {
 	private Integer _nextEffectID = 1;
 	private Boolean _rollEffectSaves = true;
 	private Boolean _rollPowerRecharge = true;
+	private JFrame _parent = null;
 
 	/**
 	 * Creates a new encounter using the given {@link StatLibrary} and {@link DiceBag}.
@@ -54,7 +56,7 @@ public class Encounter {
 	 * @param diceBag the {@link DiceBag} to use for dice rolls
 	 * @param useRoleMod if true, rolls will be modified according to fighter role
 	 */
-	public Encounter(StatLibrary statLibrary, DiceBag diceBag, Boolean useRoleMod) {
+	public Encounter(StatLibrary statLibrary, DiceBag diceBag, Boolean useRoleMod, JFrame parent) {
 		clearAll();
 		setEncounterDice(diceBag);
 		setStatLib(statLibrary);
@@ -62,6 +64,15 @@ public class Encounter {
 		setOngoingPopup(Settings.doPopupForOngoingDamage());
 		setRollPowerRecharge(Settings.doPowerRecharge());
 		setRollEffectSaves(Settings.doSavingThrows());
+		setParent(parent);
+	}
+
+	/**
+	 * Sets the parent frame for the encounter.
+	 * @param parent the parent frame
+	 */
+	private void setParent(JFrame parent) {
+		_parent = parent;
 	}
 
 	/**
@@ -919,7 +930,7 @@ public class Encounter {
 		}
 		
 		if (list.size() > 0) {
-			SavingThrows saveWin = new SavingThrows(list, fighter.getStats().getSaveBonus(), getEncounterDice());
+			SavingThrows saveWin = new SavingThrows(list, fighter.getStats().getSaveBonus(), getEncounterDice(), getParent());
 			saveWin.setVisible(true);
 			
 			if (saveWin.getSuccessfulSaves().size() > 0) {
@@ -1127,7 +1138,7 @@ public class Encounter {
 		}
 		
 		if (list.size() > 0) {
-			RechargeWin win = new RechargeWin(fighter.getCombatHandle(), list, getEncounterDice());
+			RechargeWin win = new RechargeWin(fighter.getCombatHandle(), list, getEncounterDice(), getParent());
 			win.setVisible(true);
 			
 			if (win.getRecharged().size() > 0) {
@@ -1138,6 +1149,14 @@ public class Encounter {
 			
 			win.dispose();
 		}
+	}
+
+	/**
+	 * Returns the parent frame registered with this encounter.
+	 * @return the parent frame
+	 */
+	private JFrame getParent() {
+		return _parent;
 	}
 
 	/**

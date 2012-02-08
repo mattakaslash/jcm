@@ -347,4 +347,12 @@ public class Effect extends EffectBase {
 	public void setHidden(Boolean hidden) {
 		_hidden = hidden;
 	}
+	
+	/**
+	 * Returns {@link #getName()}.
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return getName();
+	}
 }

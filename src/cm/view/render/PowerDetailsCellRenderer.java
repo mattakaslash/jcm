@@ -38,6 +38,8 @@ public class PowerDetailsCellRenderer extends JTextArea implements ListCellRende
 				display += "   (constant)";
 			}
 		}
+		
+		setText(display);
 
 		return this;
 	}

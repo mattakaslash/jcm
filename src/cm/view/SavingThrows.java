@@ -1,6 +1,10 @@
 package cm.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -10,124 +14,75 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
-import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JFormattedTextField;
 import javax.swing.JDialog;
+import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JToolBar;
-import javax.swing.border.EtchedBorder;
+import javax.swing.ListSelectionModel;
 
+import org.dyno.visual.swing.layouts.Constraints;
+import org.dyno.visual.swing.layouts.GroupLayout;
+import org.dyno.visual.swing.layouts.Leading;
+
+import cm.model.CheckableItem;
 import cm.model.Effect;
-import cm.model.ReadOnlyTableModel;
 import cm.util.DiceBag;
-import cm.view.render.EffectCellRenderer;
-import cm.view.render.JCheckBoxCellRenderer;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class SavingThrows extends JDialog {
 
 	private static final long serialVersionUID = 1L;
-	private JTable jTableRolls;
-	private JScrollPane jScrollPaneRolls;
-	private JToolBar jToolBarActions;
-	private JButton jButtonRerollAll;
+	private JPanel jPanelBottom;
 	private JLabel jLabelSaveBonus;
-	private JFormattedTextField jFormattedTextFieldSaveBonus;
-	private JButton jButtonSaveResults;
+	private JFormattedTextField jFormattedTextFieldBonus;
+	private JList jListEffects;
+	private JScrollPane jScrollPaneList;
+	private JButton jButtonRerollAll;
+	private JButton jButtonSave;
 	
 	public SavingThrows() {
 		initComponents();
 	}
 
-	public SavingThrows(List<Effect> list, Integer saveBonus,
-			DiceBag encounterDice) {
-		initComponents();
-		
-	    setDice(encounterDice);
-	    getJFormattedTextFieldSaveBonus().setText(saveBonus.toString());
-
-	    if (list == null) {
-	    	setEffects(new Hashtable<Integer, Effect>());
-	    } else {
-	    	for (Effect eff : list) {
-	    		eff.setActive();
-	    		getEffects().put(eff.getEffectID(), eff);
-	    	}
-	    }
-	}
-
 	private void initComponents() {
-		setTitle("Saving Throw Results");
+		setTitle("Saving Throws");
+		setFont(new Font("Dialog", Font.PLAIN, 12));
+		setBackground(Color.white);
+		setForeground(Color.black);
 		setModal(true);
-		add(getJScrollPaneRolls(), BorderLayout.CENTER);
-		add(getJToolBarActions(), BorderLayout.SOUTH);
+		add(getJPanelBottom(), BorderLayout.SOUTH);
+		add(getJScrollPaneList(), BorderLayout.CENTER);
 		addWindowListener(new WindowAdapter() {
-	
-			public void windowClosed(WindowEvent event) {
-				windowWindowClosed(event);
-			}
 	
 			public void windowOpened(WindowEvent event) {
 				windowWindowOpened(event);
 			}
 		});
-		setSize(380, 160);
+		setSize(309, 253);
 	}
 
-	private JButton getJButtonSaveResults() {
-		if (jButtonSaveResults == null) {
-			jButtonSaveResults = new JButton();
-			jButtonSaveResults.setText("Save Results");
-			jButtonSaveResults.setBorder(BorderFactory.createCompoundBorder(null, null));
-			jButtonSaveResults.setDefaultCapable(false);
-			jButtonSaveResults.addActionListener(new ActionListener() {
+	private JButton getJButtonSave() {
+		if (jButtonSave == null) {
+			jButtonSave = new JButton();
+			jButtonSave.setText("Save");
+			jButtonSave.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
-					jButtonSaveResultsActionActionPerformed(event);
+					jButtonSaveActionActionPerformed(event);
 				}
 			});
 		}
-		return jButtonSaveResults;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldSaveBonus() {
-		if (jFormattedTextFieldSaveBonus == null) {
-			jFormattedTextFieldSaveBonus = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldSaveBonus.setText("0");
-		}
-		return jFormattedTextFieldSaveBonus;
-	}
-
-	private JLabel getJLabelSaveBonus() {
-		if (jLabelSaveBonus == null) {
-			jLabelSaveBonus = new JLabel();
-			jLabelSaveBonus.setText("Save Bonus: ");
-		}
-		return jLabelSaveBonus;
-	}
-
-	private JToolBar getJToolBarActions() {
-		if (jToolBarActions == null) {
-			jToolBarActions = new JToolBar();
-			jToolBarActions.setFloatable(false);
-			jToolBarActions.add(getJButtonRerollAll());
-			jToolBarActions.add(getJLabelSaveBonus());
-			jToolBarActions.add(getJFormattedTextFieldSaveBonus());
-			jToolBarActions.add(getJButtonSaveResults());
-		}
-		return jToolBarActions;
+		return jButtonSave;
 	}
 
 	private JButton getJButtonRerollAll() {
 		if (jButtonRerollAll == null) {
 			jButtonRerollAll = new JButton();
 			jButtonRerollAll.setText("Reroll All");
-			jButtonRerollAll.setBorder(BorderFactory.createEtchedBorder(EtchedBorder.LOWERED, null, null));
-			jButtonRerollAll.setDefaultCapable(false);
 			jButtonRerollAll.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -138,30 +93,89 @@ public class SavingThrows extends JDialog {
 		return jButtonRerollAll;
 	}
 
-	private JScrollPane getJScrollPaneRolls() {
-		if (jScrollPaneRolls == null) {
-			jScrollPaneRolls = new JScrollPane();
-			jScrollPaneRolls.setViewportView(getJTableRolls());
+	private JScrollPane getJScrollPaneList() {
+		if (jScrollPaneList == null) {
+			jScrollPaneList = new JScrollPane();
+			jScrollPaneList.setViewportView(getJListEffects());
 		}
-		return jScrollPaneRolls;
+		return jScrollPaneList;
 	}
 
-	private JTable getJTableRolls() {
-		if (jTableRolls == null) {
-			jTableRolls = new JTable();
-			String[] columns = { "Effect", "Save Result", "Saved" };
-			jTableRolls.setModel(new ReadOnlyTableModel(null, columns));
-			jTableRolls.getColumn(columns[0]).setCellRenderer(new EffectCellRenderer());
-			jTableRolls.getColumn(columns[2]).setCellRenderer(new JCheckBoxCellRenderer());
+	private JList getJListEffects() {
+		if (jListEffects == null) {
+			jListEffects = new JList();
+			DefaultListModel listModel = new DefaultListModel();
+			jListEffects.setModel(listModel);
+			jListEffects.setCellRenderer(new CheckListRenderer());
+			jListEffects.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		}
-		return jTableRolls;
+		return jListEffects;
 	}
-	
+
+	private JFormattedTextField getJFormattedTextFieldBonus() {
+		if (jFormattedTextFieldBonus == null) {
+			jFormattedTextFieldBonus = new JFormattedTextField(NumberFormat.getInstance());
+			jFormattedTextFieldBonus.setText("0");
+		}
+		return jFormattedTextFieldBonus;
+	}
+
+	private JLabel getJLabelSaveBonus() {
+		if (jLabelSaveBonus == null) {
+			jLabelSaveBonus = new JLabel();
+			jLabelSaveBonus.setText("Save Bonus: ");
+		}
+		return jLabelSaveBonus;
+	}
+
+	private JPanel getJPanelBottom() {
+		if (jPanelBottom == null) {
+			jPanelBottom = new JPanel();
+			jPanelBottom.setPreferredSize(new Dimension(40, 40));
+			jPanelBottom.setLayout(new GroupLayout());
+			jPanelBottom.add(getJLabelSaveBonus(), new Constraints(new Leading(12, 12, 12), new Leading(12, 12, 12)));
+			jPanelBottom.add(getJFormattedTextFieldBonus(), new Constraints(new Leading(97, 42, 10, 10), new Leading(10, 12, 12)));
+			jPanelBottom.add(getJButtonRerollAll(), new Constraints(new Leading(145, 12, 12), new Leading(7, 12, 12)));
+			jPanelBottom.add(getJButtonSave(), new Constraints(new Leading(235, 12, 12), new Leading(7, 12, 12)));
+		}
+		return jPanelBottom;
+	}
+
 	private Hashtable<Integer, Effect> _effects = new Hashtable<Integer, Effect>();
 	private List<Integer> _successfulSaves = new ArrayList<Integer>();
-	private DiceBag _dice = new DiceBag();
+	private DiceBag _dice;
 
 	/**
+	 * Creates a new Saving Throws window for the given effects.
+	 * @param effectList a list of effects to roll saves for
+	 * @param bonus the save bonus
+	 * @param diceBag the dice bag to use for rolls
+	 * @param parent the parent frame
+	 */
+	public SavingThrows(List<Effect> effectList, Integer bonus, DiceBag diceBag, Frame parent) {
+		super(parent);
+		initComponents();
+		
+		setDice(diceBag);
+		getJFormattedTextFieldBonus().setText(bonus.toString());
+		
+		for (Effect eff : effectList) {
+			eff.setActive();
+			addEffect(eff.getEffectID(), eff);
+		}
+	}
+
+	/**
+	 * Adds an effect to the list of effects.
+	 * @param effectID the effect ID
+	 * @param eff the effect
+	 */
+	private void addEffect(Integer effectID, Effect eff) {
+		getEffects().put(effectID, eff);		
+	}
+
+	/**
+	 * Returns the list of effects.
 	 * @return the effects
 	 */
 	private Hashtable<Integer, Effect> getEffects() {
@@ -169,35 +183,8 @@ public class SavingThrows extends JDialog {
 	}
 
 	/**
-	 * @param effects the effects to set
-	 */
-	private void setEffects(Hashtable<Integer, Effect> effects) {
-		_effects = effects;
-	}
-
-	/**
-	 * @return the successfulSaves
-	 */
-	public List<Integer> getSuccessfulSaves() {
-		return _successfulSaves;
-	}
-
-	/**
-	 * @param successfulSaves the successfulSaves to set
-	 */
-	private void setSuccessfulSaves(List<Integer> successfulSaves) {
-		_successfulSaves = successfulSaves;
-	}
-
-	/**
-	 * @return the dice
-	 */
-	private DiceBag getDice() {
-		return _dice;
-	}
-
-	/**
-	 * @param dice the _dice to set
+	 * Sets the dice to use for rolls.
+	 * @param dice the dice
 	 */
 	private void setDice(DiceBag dice) {
 		_dice = dice;
@@ -212,17 +199,19 @@ public class SavingThrows extends JDialog {
 	}
 
 	/**
-	 * Event: Window closed.
-	 * @param event
+	 * Adds a successful save to the list.
+	 * @param effectID the effect ID of the saved effect
 	 */
-	private void windowWindowClosed(WindowEvent event) {
-		/* TODO:
-    For Each listitem As Windows.Forms.ListViewItem In lbChecklist.Items
-        If listitem.Checked Then
-            SuccessfulSaves.Add(listitem.Tag)
-        End If
-    Next
-		 */
+	private void addSuccessfulSave(Integer effectID) {
+		getSuccessfulSaves().add(effectID);
+	}
+
+	/**
+	 * Returns the list of successful saves.
+	 * @return the list
+	 */
+	public List<Integer> getSuccessfulSaves() {
+		return _successfulSaves;
 	}
 
 	/**
@@ -234,62 +223,59 @@ public class SavingThrows extends JDialog {
 	}
 
 	/**
-	 * Event: Save Results pressed.
+	 * Event: Save pressed.
 	 * @param event
 	 */
-	private void jButtonSaveResultsActionActionPerformed(ActionEvent event) {
+	private void jButtonSaveActionActionPerformed(ActionEvent event) {
+		DefaultListModel model = (DefaultListModel) getJListEffects().getModel();
+		
+		for (int i = 0; i < model.getSize(); i++) {
+			CheckableItem item = (CheckableItem) model.getElementAt(i);
+			
+			if (item.isSelected()) {
+				addSuccessfulSave(((Effect) item.getObject()).getEffectID());
+			}
+		}
+
 		this.setVisible(false);
 	}
 	
 	/**
-	 * Loads the effects list to the UI table.
+	 * Loads the list of effects to the UI.
 	 */
 	private void loadEffectsToList() {
-		ReadOnlyTableModel model = (ReadOnlyTableModel) getJTableRolls().getModel();
-		while (model.getRowCount() > 0) {
-			model.removeRow(0);
-		}
+		DefaultListModel model = ((DefaultListModel) getJListEffects().getModel());
+		model.clear();
 		
 		for (Effect eff : getEffects().values()) {
-			model.addRow(new Object[] { eff, 1, new JCheckBox("", false) });
+			model.addElement(new CheckableItem(eff));
 		}
 		
 		rerollAllSaves();
 	}
+
+	/**
+	 * Returns the dice bag for rolls
+	 * @return the dice bag
+	 */
+	private DiceBag getDice() {
+		return _dice;
+	}
 	
 	/**
-	 * Re-rolls all saving throws.
+	 * Re-rolls all saving throws in the list.
 	 */
 	private void rerollAllSaves() {
-		ReadOnlyTableModel model = (ReadOnlyTableModel) getJTableRolls().getModel();
+		DefaultListModel model = ((DefaultListModel) getJListEffects().getModel());
 		
-		for (int row = 0; row < model.getRowCount(); row++) {
-			Integer roll = getDice().roll(20) + Integer.valueOf(getJFormattedTextFieldSaveBonus().getText());
-			JCheckBox cb = (JCheckBox) model.getValueAt(row, 2);
-			if (roll >= 10) {
-				cb.setSelected(true);
-			} else {
-				cb.setSelected(false);
-			}
-			model.setValueAt(roll, row, 1);
-			model.setValueAt(cb, row, 2);
+		for (int i = 0; i < model.getSize(); i++) {
+			CheckableItem item = (CheckableItem) model.getElementAt(i);
+			Integer roll = getDice().roll(20) + Integer.valueOf(getJFormattedTextFieldBonus().getText());
+			item.setSelected(roll >= 10);
+			item.setText("(roll=" + roll + ")");
+			System.err.println(item.toString());
 		}
+		
+		getJListEffects().repaint();
 	}
 }
-/*
-Private Sub lbChecklist_ItemChecked(ByVal sender As Object, ByVal e As System.Windows.Forms.ItemCheckedEventArgs) Handles lbChecklist.ItemChecked
-    Dim listitem As Windows.Forms.ListViewItem = e.Item
-
-    If listitem.SubItems.Count > 1 Then
-        If listitem.Checked Then
-            listitem.SubItems(1).Text = "Successful"
-            listitem.BackColor = Color.DarkGreen
-        ElseIf Not listitem.Checked Then
-            listitem.SubItems(1).Text = "Failed"
-            listitem.BackColor = Color.DarkRed
-        End If
-    End If
-End Sub
-
-End Class
-*/
