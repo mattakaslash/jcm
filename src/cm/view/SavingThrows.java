@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
@@ -31,6 +33,7 @@ import org.dyno.visual.swing.layouts.Leading;
 import cm.model.CheckableItem;
 import cm.model.Effect;
 import cm.util.DiceBag;
+import cm.view.render.CheckListRenderer;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class SavingThrows extends JDialog {
@@ -52,8 +55,8 @@ public class SavingThrows extends JDialog {
 		setTitle("Saving Throws");
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		setBackground(Color.white);
-		setForeground(Color.black);
 		setModal(true);
+		setForeground(Color.black);
 		add(getJPanelBottom(), BorderLayout.SOUTH);
 		add(getJScrollPaneList(), BorderLayout.CENTER);
 		addWindowListener(new WindowAdapter() {
@@ -104,10 +107,16 @@ public class SavingThrows extends JDialog {
 	private JList getJListEffects() {
 		if (jListEffects == null) {
 			jListEffects = new JList();
+			jListEffects.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			DefaultListModel listModel = new DefaultListModel();
 			jListEffects.setModel(listModel);
 			jListEffects.setCellRenderer(new CheckListRenderer());
-			jListEffects.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			jListEffects.addMouseListener(new MouseAdapter() {
+	
+				public void mouseClicked(MouseEvent event) {
+					jListEffectsMouseMouseClicked(event);
+				}
+			});
 		}
 		return jListEffects;
 	}
@@ -273,9 +282,20 @@ public class SavingThrows extends JDialog {
 			Integer roll = getDice().roll(20) + Integer.valueOf(getJFormattedTextFieldBonus().getText());
 			item.setSelected(roll >= 10);
 			item.setText("(roll=" + roll + ")");
-			System.err.println(item.toString());
 		}
 		
 		getJListEffects().repaint();
+	}
+
+	/**
+	 * Event: Effect list, mouse clicked.
+	 * @param event
+	 */
+	private void jListEffectsMouseMouseClicked(MouseEvent event) {
+		JList list = getJListEffects();
+		CheckableItem item = (CheckableItem) list.getModel().getElementAt(list.locationToIndex(event.getPoint()));
+		item.setSelected(!item.isSelected());
+		item.setText(null);
+		list.repaint();
 	}
 }

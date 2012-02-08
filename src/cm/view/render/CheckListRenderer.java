@@ -1,4 +1,4 @@
-package cm.view;
+package cm.view.render;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -22,6 +22,7 @@ public class CheckListRenderer extends JCheckBox implements ListCellRenderer {
 		
 		setForeground(Color.WHITE);
 		setOpaque(true);
+		setSelected(item.isSelected());
 		setText(item.toString());
 		
 		if (item.isSelected()) {
