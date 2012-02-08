@@ -48,8 +48,8 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
@@ -63,11 +63,12 @@ import cm.model.ReadOnlyTableModel;
 import cm.model.Settings;
 import cm.model.StatLibrary;
 import cm.model.Stats;
+import cm.util.ColumnsAutoSizer;
 import cm.util.DiceBag;
 import cm.util.StatLogger;
-import cm.view.render.CenteredTableCellRenderer;
 import cm.view.render.EffectDetailsCellRenderer;
 import cm.view.render.PowerCellRenderer;
+import cm.view.render.RosterRenderer;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class MainFrame extends JFrame {
@@ -167,6 +168,8 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuOptionsShowMinimalInitDisplay;
 	private JMenuItem menuOptionsShowFullInitDisplay;
 	private JMenuItem jMenuItemToggleVisibility;
+	private RosterRenderer _rosterRenderer = new RosterRenderer();
+	
 	public MainFrame() {
 		initComponents();
 	}
@@ -1026,18 +1029,25 @@ public class MainFrame extends JFrame {
 			jTableRoster = new JTable();
 			jTableRoster.setComponentPopupMenu(getJPopupMenuRoster());
 			jTableRoster.setModel(new ReadOnlyTableModel(null, new String[] { "V", "R", "Name", "Status", "AC", "F", "R", "W" }));
-			jTableRoster.getTableHeader().getColumnModel().getColumn(0).setPreferredWidth(2);
-			jTableRoster.getTableHeader().getColumnModel().getColumn(0).setCellRenderer(new CenteredTableCellRenderer());
-			jTableRoster.getTableHeader().getColumnModel().getColumn(1).setPreferredWidth(2);
-			jTableRoster.getTableHeader().getColumnModel().getColumn(1).setCellRenderer(new CenteredTableCellRenderer());
-			jTableRoster.getTableHeader().getColumnModel().getColumn(4).setPreferredWidth(2);
-			jTableRoster.getTableHeader().getColumnModel().getColumn(4).setCellRenderer(new CenteredTableCellRenderer());
-			jTableRoster.getTableHeader().getColumnModel().getColumn(5).setPreferredWidth(2);
-			jTableRoster.getTableHeader().getColumnModel().getColumn(5).setCellRenderer(new CenteredTableCellRenderer());
-			jTableRoster.getTableHeader().getColumnModel().getColumn(6).setPreferredWidth(2);
-			jTableRoster.getTableHeader().getColumnModel().getColumn(6).setCellRenderer(new CenteredTableCellRenderer());
-			jTableRoster.getTableHeader().getColumnModel().getColumn(7).setPreferredWidth(2);
-			jTableRoster.getTableHeader().getColumnModel().getColumn(7).setCellRenderer(new CenteredTableCellRenderer());
+			jTableRoster.setDefaultRenderer(Object.class, getRosterRenderer());
+			jTableRoster.getTableHeader().getColumnModel().getColumn(0).setMinWidth(15);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(0).setMaxWidth(15);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(0).setResizable(false);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(1).setMinWidth(15);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(1).setMaxWidth(15);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(1).setResizable(false);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(4).setMinWidth(30);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(4).setMaxWidth(30);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(4).setResizable(false);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(5).setMinWidth(30);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(5).setMaxWidth(30);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(5).setResizable(false);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(6).setMinWidth(30);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(6).setMaxWidth(30);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(6).setResizable(false);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(7).setMinWidth(30);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(7).setMaxWidth(30);
+			jTableRoster.getTableHeader().getColumnModel().getColumn(7).setResizable(false);
 			jTableRoster.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			jTableRoster.addMouseListener(new MouseAdapter() {
 	
@@ -1133,7 +1143,7 @@ public class MainFrame extends JFrame {
 		if (menuEncounterInitiative == null) {
 			menuEncounterInitiative = new JMenuItem();
 			menuEncounterInitiative.setText("Roll Initiative");
-			menuEncounterInitiative.setAccelerator(KeyStroke.getKeyStroke("pressed F6"));
+			menuEncounterInitiative.setAccelerator(KeyStroke.getKeyStroke("control pressed F6"));
 			menuEncounterInitiative.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -1478,6 +1488,15 @@ public class MainFrame extends JFrame {
 			});
 		}
 		return menuPartyShortRestMilestone;
+	}
+
+	/**
+	 * Returns the roster cell renderer.
+	 * @return the renderer
+	 */
+	private TableCellRenderer getRosterRenderer() {
+		_rosterRenderer.setFight(getFight());
+		return _rosterRenderer;
 	}
 
 	/**
@@ -1978,6 +1997,7 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jTableRosterMouseMouseClicked(MouseEvent event) {
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
 		if (getJTableRoster().getSelectedRow() >= 0) {
 			Combatant fighterSelected = getFight().getSelectedFighter();
 			String tableSelected = (String) getJTableRoster().getValueAt(
@@ -2536,6 +2556,7 @@ public class MainFrame extends JFrame {
 	 * Reloads the roster from class information.
 	 */
 	private void reloadListFromClass() {
+		getJTableRoster().setDefaultRenderer(Object.class, getRosterRenderer());
 		DefaultTableModel model = (DefaultTableModel) getJTableRoster().getModel();
 		while (getFight().size() < getJTableRoster().getRowCount()) {
 			model.removeRow(getJTableRoster().getRowCount() - 1);
@@ -2570,15 +2591,6 @@ public class MainFrame extends JFrame {
 						fighter.getWill() });
 			}
 			
-			for (int col = 0; col < getJTableRoster().getColumnCount(); col++) {
-				DefaultTableCellRenderer renderer = (DefaultTableCellRenderer) getJTableRoster()
-						.getCellRenderer(index, col);
-				
-				renderer.setForeground(fighter.getDisplayForeColor());
-				renderer.setBackground(fighter.getDisplayBackColor());
-			}
-			
-			
 			if (fighter.getInitStatus().contentEquals("Rolled")) {
 				// set group to 0
 				if (fighter.getRound() == 0) {
@@ -2605,6 +2617,7 @@ public class MainFrame extends JFrame {
 			
 			index++;
 		}
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
 		model.fireTableDataChanged();
 		
 		updateInitDisplay();
