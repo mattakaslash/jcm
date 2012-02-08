@@ -619,6 +619,14 @@ public class Power {
 		}
 		return true;
 	}
+	
+	/**
+	 * Returns {@link #getName()}.
+	 * @see java.lang.Object#toString()
+	 */
+	public String toString() {
+		return getName();
+	}
 }
 /*
     Public ReadOnly Property Power_RTF_Out() As String

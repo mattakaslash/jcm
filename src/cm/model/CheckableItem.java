@@ -62,7 +62,7 @@ public class CheckableItem {
 	 * Returns the supplementary text for this item.
 	 * @return the text
 	 */
-	private String getText() {
+	public String getText() {
 		return _text;
 	}
 

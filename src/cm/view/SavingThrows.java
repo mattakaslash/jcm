@@ -110,7 +110,7 @@ public class SavingThrows extends JDialog {
 			jListEffects.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			DefaultListModel listModel = new DefaultListModel();
 			jListEffects.setModel(listModel);
-			jListEffects.setCellRenderer(new CheckListRenderer());
+			jListEffects.setCellRenderer(new CheckListRenderer(CheckListRenderer.EFFECT_TYPE));
 			jListEffects.addMouseListener(new MouseAdapter() {
 	
 				public void mouseClicked(MouseEvent event) {
