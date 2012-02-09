@@ -1664,12 +1664,13 @@ public class Stats {
 				} else if (reader.isCharacters()) {
 					if (elementName.contentEquals("name")) {
 						setName(reader.getText().trim());
-					} else if (elementName.contentEquals("level")) {
-						setLevel(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("experience")) {
-						setXP(Integer.valueOf(reader.getText()));
+					} else if (elementName.contentEquals("Level")) {
+						setLevel(Integer.valueOf(reader.getText().trim()));
+					} else if (elementName.contentEquals("Experience")) {
+						setXP(Integer.valueOf(reader.getText().trim()));
 					}
 				} else if (reader.isEndElement()) {
+					elementName = "";
 					if (reader.getName().toString().contentEquals("Details")) {
 						return;
 					}
@@ -2022,10 +2023,10 @@ public class Stats {
 						reader.next();
 						if (reader.isCharacters()) {
 							if (Integer.valueOf(reader.getText().trim()) >= 0) {
-								weaponStats.replace("UUU", "+"
+								weaponStats = weaponStats.replace("UUU", "+"
 										+ reader.getText().trim());
 							} else {
-								weaponStats.replace("UUU", reader.getText()
+								weaponStats = weaponStats.replace("UUU", reader.getText()
 										.trim());
 							}
 						}
@@ -2033,20 +2034,20 @@ public class Stats {
 							&& newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
-							weaponStats.replace("WWW", reader.getText().trim()
+							weaponStats = weaponStats.replace("WWW", reader.getText().trim()
 									.substring(0, 3));
 						}
 					} else if (elementName.contentEquals("Defense")
 							&& newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
-							weaponStats.replace("YYY", reader.getText().trim());
+							weaponStats = weaponStats.replace("YYY", reader.getText().trim());
 						}
 					} else if (elementName.contentEquals("Damage")
 							&& newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
-							weaponStats.replace("ZZZ", reader.getText().trim());
+							weaponStats = weaponStats.replace("ZZZ", reader.getText().trim());
 						}
 					}
 				} else if (reader.isEndElement()) {
@@ -2058,7 +2059,7 @@ public class Stats {
 							if (!newPow.getName().isEmpty()
 									&& !newPow.getName().endsWith(
 											"Basic Attack")) {
-								weaponStats.replace("ZZZ", "No").replace(
+								weaponStats = weaponStats.replace("ZZZ", "No").replace(
 										"(Unk) vs. Unknown, No damage", "");
 								newPow.setDesc(weaponStats);
 								getPowerList().add(newPow);

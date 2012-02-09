@@ -12,8 +12,8 @@ import javax.xml.stream.XMLStreamWriter;
  *
  */
 public class Power {
-	private String _name, _typeCode, _action, _keywords, _descCoded, _url;
-	private Integer _aura;
+	private String _name = "", _typeCode = "", _action = "", _keywords = "", _descCoded = "", _url = "";
+	private Integer _aura = 0;
 	
 	/**
 	 * A blank power.

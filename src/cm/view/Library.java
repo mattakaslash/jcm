@@ -160,7 +160,9 @@ public class Library extends JDialog {
 			jToolBarTopRight = new JToolBar();
 			jToolBarTopRight.setFloatable(false);
 			jToolBarTopRight.add(getJLabelBattleList());
+			jToolBarTopRight.addSeparator();
 			jToolBarTopRight.add(getJButtonAdd());
+			jToolBarTopRight.addSeparator();
 			jToolBarTopRight.add(getJButtonRemove());
 		}
 		return jToolBarTopRight;
@@ -391,10 +393,15 @@ public class Library extends JDialog {
 			jToolBarTopLeft = new JToolBar();
 			jToolBarTopLeft.setFloatable(false);
 			jToolBarTopLeft.add(getJButtonNew());
+			jToolBarTopLeft.addSeparator();
 			jToolBarTopLeft.add(getJButtonCopy());
+			jToolBarTopLeft.addSeparator();
 			jToolBarTopLeft.add(getJButtonEdit());
+			jToolBarTopLeft.addSeparator();
 			jToolBarTopLeft.add(getJButtonDelete());
+			jToolBarTopLeft.addSeparator();
 			jToolBarTopLeft.add(getJButtonCBLoad());
+			jToolBarTopLeft.addSeparator();
 			jToolBarTopLeft.add(getJButtonPaste());
 		}
 		return jToolBarTopLeft;
