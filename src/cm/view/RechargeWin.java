@@ -119,7 +119,7 @@ public class RechargeWin extends JDialog {
 	}
 
 	/**
-	 * Returns the list of recharged powers, by name
+	 * Returns the list of recharged powers, by name.
 	 * @return the list
 	 */
 	public List<String> getRecharged() {

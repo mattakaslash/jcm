@@ -445,65 +445,6 @@ public class Library extends JDialog {
 	}
 
 	/**
-	 * Returns the list of stats to add to the library.
-	 * @return the list
-	 */
-	public List<Stats> getStatsToAdd() {
-		return _statsToAdd;
-	}
-	
-	private StatLibrary _statLib = new StatLibrary();
-	private List<Stats> _statsToAdd = new ArrayList<Stats>();
-	
-	/**
-	 * Sets the library view's StatLibrary.
-	 * @param statLib the StatLibrary
-	 */
-	private void setStatLib(StatLibrary statLib) {
-		_statLib = statLib;
-	}
-
-	/**
-	 * Event: Window closing.
-	 * @param event
-	 */
-	private void windowWindowClosing(WindowEvent event) {
-		DefaultListModel model = (DefaultListModel) getJListBattleList().getModel();
-		for (Object handle : model.toArray()) {
-			if (getStatLib().contains((String) handle)) {
-				getStatsToAdd().add(getStatLib().get((String) handle));
-			}
-		}
-	}
-
-	/**
-	 * Returns the stat library.
-	 * @return the stat library
-	 */
-	private StatLibrary getStatLib() {
-		return _statLib;
-	}
-	
-	/**
-	 * Resets the list of fighters from whom the user can choose.
-	 */
-	private void resetListFromClass() {
-		String filter = getJTextFieldName().getText().toLowerCase();
-		DefaultListModel model = (DefaultListModel) getJListEntries().getModel();
-		model.clear();
-		
-		for (Stats stat : getStatLib().values()) {
-			if (filter.isEmpty() || stat.getHandle().toLowerCase().contains(filter)) {
-				model.addElement(stat.getHandle());
-			}
-		}
-		getJEditorPaneStatblock().setText("");
-		getJButtonEdit().setEnabled(false);
-		getJButtonDelete().setEnabled(false);
-		getJButtonAdd().setEnabled(false);
-	}
-
-	/**
 	 * Event: New clicked.
 	 * @param event
 	 */
@@ -595,7 +536,7 @@ public class Library extends JDialog {
 			
 			int n = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete the " +
 					"following entries from the library?\n\n" +
-					list.toString(), "Confirm Statblock Delete", JOptionPane.QUESTION_MESSAGE);
+					list.toString(), "Confirm Statblock Delete", JOptionPane.YES_NO_OPTION);
 			
 			if (n == JOptionPane.YES_OPTION) {
 				for (String handle : list) {
@@ -782,7 +723,66 @@ public class Library extends JDialog {
 		}
 		updateAddXPTotals();
 	}
+
+	/**
+	 * Event: Window closing.
+	 * @param event
+	 */
+	private void windowWindowClosing(WindowEvent event) {
+		DefaultListModel model = (DefaultListModel) getJListBattleList().getModel();
+		for (Object handle : model.toArray()) {
+			if (getStatLib().contains((String) handle)) {
+				getStatsToAdd().add(getStatLib().get((String) handle));
+			}
+		}
+	}
+
+	private StatLibrary _statLib = new StatLibrary();
+	private List<Stats> _statsToAdd = new ArrayList<Stats>();
 	
+	/**
+	 * Returns the stat library.
+	 * @return the stat library
+	 */
+	private StatLibrary getStatLib() {
+		return _statLib;
+	}
+
+	/**
+	 * Sets the library view's StatLibrary.
+	 * @param statLib the StatLibrary
+	 */
+	private void setStatLib(StatLibrary statLib) {
+		_statLib = statLib;
+	}
+
+	/**
+	 * Returns the list of stats to add to the library.
+	 * @return the list
+	 */
+	public List<Stats> getStatsToAdd() {
+		return _statsToAdd;
+	}
+
+	/**
+	 * Resets the list of fighters from whom the user can choose.
+	 */
+	private void resetListFromClass() {
+		String filter = getJTextFieldName().getText().toLowerCase();
+		DefaultListModel model = (DefaultListModel) getJListEntries().getModel();
+		model.clear();
+		
+		for (Stats stat : getStatLib().values()) {
+			if (filter.isEmpty() || stat.getHandle().toLowerCase().contains(filter)) {
+				model.addElement(stat.getHandle());
+			}
+		}
+		getJEditorPaneStatblock().setText("");
+		getJButtonEdit().setEnabled(false);
+		getJButtonDelete().setEnabled(false);
+		getJButtonAdd().setEnabled(false);
+	}
+
 	/**
 	 * Update XP total for the encounter.
 	 */

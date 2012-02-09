@@ -168,10 +168,22 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuOptionsShowMinimalInitDisplay;
 	private JMenuItem menuOptionsShowFullInitDisplay;
 	private JMenuItem jMenuItemToggleVisibility;
-	private RosterRenderer _rosterRenderer = new RosterRenderer();
 	
 	public MainFrame() {
 		initComponents();
+	}
+
+	private void initComponents() {
+		setTitle("DnD 4e Combat Manager");
+		add(getJSplitPaneMain(), BorderLayout.CENTER);
+		addWindowListener(new WindowAdapter() {
+	
+			public void windowOpened(WindowEvent event) {
+				windowWindowOpened(event);
+			}
+		});
+		setJMenuBar(getMenuBarMain());
+		setSize(800, 600);
 	}
 
 	private JButton getJButtonAdd() {
@@ -2118,6 +2130,7 @@ public class MainFrame extends JFrame {
 	private void menuLibraryOpenActionActionPerformed(ActionEvent event) {
 		Library statlibWin = new Library(getStatlib());
 		statlibWin.setVisible(true);
+		getStatlib().saveToFile(getStatlibFilename());
 		
 		if (statlibWin.getStatsToAdd().size() > 0) {
 			for (Stats fighter : statlibWin.getStatsToAdd()) {
@@ -2294,20 +2307,13 @@ public class MainFrame extends JFrame {
 	    updateEnabledControls();
 	}
 
-	/**
-	 * Event: window closed.
-	 * @param event
-	 */
-	private void windowWindowClosed(WindowEvent event) {
-		getStatlib().saveToFile(getStatlibFilename());
-	}
-
 	private Encounter _fight;
 	private StatLibrary _statlib;
 	private String _statlibFilename = "statlibrary.dnd4";
 	private DiceBag _trackerDice;
 	private InitDisplay _initDisplay;
 	private Boolean _fullInit = false;
+	private RosterRenderer _rosterRenderer = new RosterRenderer();
 	/**
 	 * Returns the tracker's encounter.
 	 * @return the encounter
@@ -2451,23 +2457,6 @@ public class MainFrame extends JFrame {
 	private void exitEncounter() {
 		Settings.save();
 		this.dispose();
-	}
-
-	private void initComponents() {
-		setTitle("DnD 4e Combat Manager");
-		add(getJSplitPaneMain(), BorderLayout.CENTER);
-		addWindowListener(new WindowAdapter() {
-	
-			public void windowClosed(WindowEvent event) {
-				windowWindowClosed(event);
-			}
-	
-			public void windowOpened(WindowEvent event) {
-				windowWindowOpened(event);
-			}
-		});
-		setJMenuBar(getMenuBarMain());
-		setSize(800, 600);
 	}
 
 	/**
