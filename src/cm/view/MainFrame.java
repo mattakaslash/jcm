@@ -45,11 +45,14 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
@@ -76,7 +79,7 @@ public class MainFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JMenuItem menuFileNew;
 	private JMenuItem menuFileImport;
-	private JMenuItem menuFileLoad;
+	private JMenuItem menuFileOpen;
 	private JMenuItem menuFileSave;
 	private JMenuItem menuFileExit;
 	private JMenu menuFile;
@@ -205,7 +208,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonAddTemp() {
 		if (jButtonAddTemp == null) {
 			jButtonAddTemp = new JButton();
-			jButtonAddTemp.setText("Add Temp");
+			jButtonAddTemp.setText("<html>Add Temp</html>");
 			jButtonAddTemp.setMargin(new Insets(0, 0, 0, 0));
 			jButtonAddTemp.setEnabled(false);
 			jButtonAddTemp.addActionListener(new ActionListener() {
@@ -221,7 +224,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonBackUp() {
 		if (jButtonBackUp == null) {
 			jButtonBackUp = new JButton();
-			jButtonBackUp.setText("Back Up");
+			jButtonBackUp.setText("<html>Back Up</html>");
 			jButtonBackUp.setMargin(new Insets(0, 0, 0, 0));
 			jButtonBackUp.setEnabled(false);
 			jButtonBackUp.addActionListener(new ActionListener() {
@@ -253,7 +256,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonDamage() {
 		if (jButtonDamage == null) {
 			jButtonDamage = new JButton();
-			jButtonDamage.setText("Dmg");
+			jButtonDamage.setText("<html>Dmg</html>");
 			jButtonDamage.setMargin(new Insets(0, 0, 0, 0));
 			jButtonDamage.setEnabled(false);
 			jButtonDamage.addActionListener(new ActionListener() {
@@ -269,7 +272,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonDelay() {
 		if (jButtonDelay == null) {
 			jButtonDelay = new JButton();
-			jButtonDelay.setText("Delay");
+			jButtonDelay.setText("<html>Delay</html>");
 			jButtonDelay.setMargin(new Insets(0, 0, 0, 0));
 			jButtonDelay.setEnabled(false);
 			jButtonDelay.addActionListener(new ActionListener() {
@@ -285,7 +288,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonFailDeath() {
 		if (jButtonFailDeath == null) {
 			jButtonFailDeath = new JButton();
-			jButtonFailDeath.setText("Fail Death");
+			jButtonFailDeath.setText("<html>Fail Death</html>");
 			jButtonFailDeath.setMargin(new Insets(0, 0, 0, 0));
 			jButtonFailDeath.setEnabled(false);
 			jButtonFailDeath.addActionListener(new ActionListener() {
@@ -301,7 +304,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonFive() {
 		if (jButtonFive == null) {
 			jButtonFive = new JButton();
-			jButtonFive.setText("5");
+			jButtonFive.setText("<html>5</html>");
 			jButtonFive.setMargin(new Insets(0, 0, 0, 0));
 			jButtonFive.setEnabled(false);
 			jButtonFive.addActionListener(new ActionListener() {
@@ -317,7 +320,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonHalve() {
 		if (jButtonHalve == null) {
 			jButtonHalve = new JButton();
-			jButtonHalve.setText("Halve");
+			jButtonHalve.setText("<html>Halve</html>");
 			jButtonHalve.setMargin(new Insets(0, 0, 0, 0));
 			jButtonHalve.setEnabled(false);
 			jButtonHalve.addActionListener(new ActionListener() {
@@ -333,7 +336,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonHeal() {
 		if (jButtonHeal == null) {
 			jButtonHeal = new JButton();
-			jButtonHeal.setText("Heal");
+			jButtonHeal.setText("<html>Heal</html>");
 			jButtonHeal.setMargin(new Insets(0, 0, 0, 0));
 			jButtonHeal.setEnabled(false);
 			jButtonHeal.addActionListener(new ActionListener() {
@@ -349,7 +352,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonMax() {
 		if (jButtonMax == null) {
 			jButtonMax = new JButton();
-			jButtonMax.setText("Max");
+			jButtonMax.setText("<html>Max</html>");
 			jButtonMax.setEnabled(false);
 			jButtonMax.addActionListener(new ActionListener() {
 	
@@ -364,7 +367,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonMinusOne() {
 		if (jButtonMinusOne == null) {
 			jButtonMinusOne = new JButton();
-			jButtonMinusOne.setText("-1");
+			jButtonMinusOne.setText("<html>-1</html>");
 			jButtonMinusOne.setMargin(new Insets(0, 0, 0, 0));
 			jButtonMinusOne.setEnabled(false);
 			jButtonMinusOne.addActionListener(new ActionListener() {
@@ -396,7 +399,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonNextTurn() {
 		if (jButtonNextTurn == null) {
 			jButtonNextTurn = new JButton();
-			jButtonNextTurn.setText("Next Turn");
+			jButtonNextTurn.setText("<html>Next Turn</html>");
 			jButtonNextTurn.setMargin(new Insets(0, 0, 0, 0));
 			jButtonNextTurn.setEnabled(false);
 			jButtonNextTurn.addActionListener(new ActionListener() {
@@ -412,7 +415,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonPlusOne() {
 		if (jButtonPlusOne == null) {
 			jButtonPlusOne = new JButton();
-			jButtonPlusOne.setText("+1");
+			jButtonPlusOne.setText("<html>+1</html>");
 			jButtonPlusOne.setMargin(new Insets(0, 0, 0, 0));
 			jButtonPlusOne.setEnabled(false);
 			jButtonPlusOne.addActionListener(new ActionListener() {
@@ -428,7 +431,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonPlusFive() {
 		if (jButtonPlusFive == null) {
 			jButtonPlusFive = new JButton();
-			jButtonPlusFive.setText("+5");
+			jButtonPlusFive.setText("<html>+5</html>");
 			jButtonPlusFive.setMargin(new Insets(0, 0, 0, 0));
 			jButtonPlusFive.setEnabled(false);
 			jButtonPlusFive.addActionListener(new ActionListener() {
@@ -444,7 +447,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonReady() {
 		if (jButtonReady == null) {
 			jButtonReady = new JButton();
-			jButtonReady.setText("Ready");
+			jButtonReady.setText("<html>Ready</html>");
 			jButtonReady.setMargin(new Insets(0, 0, 0, 0));
 			jButtonReady.setEnabled(false);
 			jButtonReady.addActionListener(new ActionListener() {
@@ -508,7 +511,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonReserve() {
 		if (jButtonReserve == null) {
 			jButtonReserve = new JButton();
-			jButtonReserve.setText("Reserve");
+			jButtonReserve.setText("<html>Reserve</html>");
 			jButtonReserve.setMargin(new Insets(0, 0, 0, 0));
 			jButtonReserve.setEnabled(false);
 			jButtonReserve.addActionListener(new ActionListener() {
@@ -540,7 +543,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonSurge() {
 		if (jButtonSurge == null) {
 			jButtonSurge = new JButton();
-			jButtonSurge.setText("Surge");
+			jButtonSurge.setText("<html>Surge</html>");
 			jButtonSurge.setMargin(new Insets(0, 0, 0, 0));
 			jButtonSurge.setEnabled(false);
 			jButtonSurge.addActionListener(new ActionListener() {
@@ -556,7 +559,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonUnfailDeath() {
 		if (jButtonUnfailDeath == null) {
 			jButtonUnfailDeath = new JButton();
-			jButtonUnfailDeath.setText("Unfail Death");
+			jButtonUnfailDeath.setText("<html>Unfail Death</html>");
 			jButtonUnfailDeath.setMargin(new Insets(0, 0, 0, 0));
 			jButtonUnfailDeath.setEnabled(false);
 			jButtonUnfailDeath.addActionListener(new ActionListener() {
@@ -573,6 +576,7 @@ public class MainFrame extends JFrame {
 		if (jEditorPaneCompendium == null) {
 			jEditorPaneCompendium = new JEditorPane();
 			jEditorPaneCompendium.setContentType("text/html");
+			jEditorPaneCompendium.setEditable(false);
 		}
 		return jEditorPaneCompendium;
 	}
@@ -581,6 +585,7 @@ public class MainFrame extends JFrame {
 		if (jEditorPaneStatblock == null) {
 			jEditorPaneStatblock = new JEditorPane();
 			jEditorPaneStatblock.setContentType("text/html");
+			jEditorPaneStatblock.setEditable(false);
 		}
 		return jEditorPaneStatblock;
 	}
@@ -940,16 +945,10 @@ public class MainFrame extends JFrame {
 			jSpinnerDamageHealAmount = new JSpinner();
 			jSpinnerDamageHealAmount.setFont(new Font("Dialog", Font.BOLD, 14));
 			jSpinnerDamageHealAmount.setEnabled(false);
-			jSpinnerDamageHealAmount.addInputMethodListener(new InputMethodListener() {
+			jSpinnerDamageHealAmount.addChangeListener(new ChangeListener() {
 	
-				public void inputMethodTextChanged(InputMethodEvent event) {
-					jSpinnerDamageHealAmountInputMethodInputMethodTextChanged(event);
-				}
-	
-				@Override
-				public void caretPositionChanged(InputMethodEvent arg0) {
-					// TODO Auto-generated method stub
-					
+				public void stateChanged(ChangeEvent event) {
+					jSpinnerDamageHealAmountChangeStateChanged(event);
 				}
 			});
 		}
@@ -1105,6 +1104,7 @@ public class MainFrame extends JFrame {
 			jTextFieldSurges.setFont(new Font("Dialog", Font.BOLD, 14));
 			jTextFieldSurges.setHorizontalAlignment(SwingConstants.CENTER);
 			jTextFieldSurges.setText("0/0");
+			jTextFieldSurges.setEditable(false);
 			jTextFieldSurges.setEnabled(false);
 		}
 		return jTextFieldSurges;
@@ -1140,7 +1140,6 @@ public class MainFrame extends JFrame {
 		if (menuEncounterEnd == null) {
 			menuEncounterEnd = new JMenuItem();
 			menuEncounterEnd.setText("End Encounter");
-			menuEncounterEnd.setAccelerator(KeyStroke.getKeyStroke("shift pressed F6"));
 			menuEncounterEnd.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -1155,7 +1154,7 @@ public class MainFrame extends JFrame {
 		if (menuEncounterInitiative == null) {
 			menuEncounterInitiative = new JMenuItem();
 			menuEncounterInitiative.setText("Roll Initiative");
-			menuEncounterInitiative.setAccelerator(KeyStroke.getKeyStroke("control pressed F6"));
+			menuEncounterInitiative.setAccelerator(KeyStroke.getKeyStroke("control pressed I"));
 			menuEncounterInitiative.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -1190,7 +1189,7 @@ public class MainFrame extends JFrame {
 			menuFile.add(getJSeparator2());
 			menuFile.add(getMenuFileImport());
 			menuFile.add(getJSeparator1());
-			menuFile.add(getMenuFileLoad());
+			menuFile.add(getMenuFileOpen());
 			menuFile.add(getMenuFileSave());
 			menuFile.add(getJSeparator0());
 			menuFile.add(getMenuFileExit());
@@ -1217,7 +1216,6 @@ public class MainFrame extends JFrame {
 		if (menuFileImport == null) {
 			menuFileImport = new JMenuItem();
 			menuFileImport.setText("Import");
-			menuFileImport.setAccelerator(KeyStroke.getKeyStroke("pressed F5"));
 			menuFileImport.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -1228,19 +1226,19 @@ public class MainFrame extends JFrame {
 		return menuFileImport;
 	}
 
-	private JMenuItem getMenuFileLoad() {
-		if (menuFileLoad == null) {
-			menuFileLoad = new JMenuItem();
-			menuFileLoad.setText("Load Encounter");
-			menuFileLoad.setAccelerator(KeyStroke.getKeyStroke("control pressed L"));
-			menuFileLoad.addActionListener(new ActionListener() {
+	private JMenuItem getMenuFileOpen() {
+		if (menuFileOpen == null) {
+			menuFileOpen = new JMenuItem();
+			menuFileOpen.setText("Open Encounter");
+			menuFileOpen.setAccelerator(KeyStroke.getKeyStroke("control pressed O"));
+			menuFileOpen.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
-					menuFileLoadActionActionPerformed(event);
+					menuFileOpenActionActionPerformed(event);
 				}
 			});
 		}
-		return menuFileLoad;
+		return menuFileOpen;
 	}
 
 	private JMenuItem getMenuFileNew() {
@@ -1310,7 +1308,7 @@ public class MainFrame extends JFrame {
 		if (menuLibraryOpen == null) {
 			menuLibraryOpen = new JMenuItem();
 			menuLibraryOpen.setText("Open");
-			menuLibraryOpen.setAccelerator(KeyStroke.getKeyStroke("pressed F8"));
+			menuLibraryOpen.setAccelerator(KeyStroke.getKeyStroke("control pressed L"));
 			menuLibraryOpen.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -1952,19 +1950,22 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Event: Damage/Heal amount changed.
+	 * Event: Damage/heal state changed.
 	 * @param event
 	 */
-	private void jSpinnerDamageHealAmountInputMethodInputMethodTextChanged(InputMethodEvent event) {
+	private void jSpinnerDamageHealAmountChangeStateChanged(ChangeEvent event) {
 		if ((Integer)getJSpinnerDamageHealAmount().getValue() > 0) {
 			getJButtonDamage().setEnabled(true);
 			getJButtonHeal().setEnabled(true);
 			getJButtonAddTemp().setEnabled(true);
+			getJButtonHalve().setEnabled(true);
 		} else {
 			getJButtonDamage().setEnabled(false);
 			getJButtonHeal().setEnabled(false);
 			getJButtonAddTemp().setEnabled(false);
+			getJButtonHalve().setEnabled(false);
 		}
+		statDataEnable(getListSelectedFighter());
 	}
 
 	/**
@@ -2009,7 +2010,7 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jTableRosterMouseMouseClicked(MouseEvent event) {
-		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 10);
 		if (getJTableRoster().getSelectedRow() >= 0) {
 			Combatant fighterSelected = getFight().getSelectedFighter();
 			String tableSelected = (String) getJTableRoster().getValueAt(
@@ -2108,10 +2109,10 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Event: Menu, File, Load Encounter.
+	 * Event: Menu, File, Open Encounter.
 	 * @param event
 	 */
-	private void menuFileLoadActionActionPerformed(ActionEvent event) {
+	private void menuFileOpenActionActionPerformed(ActionEvent event) {
 		loadEncounter(true);
 	}
 
@@ -2465,7 +2466,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void loadEncounter(Boolean clearFirst) {
 		JFileChooser fc = new JFileChooser();
-		fc.setDialogTitle("Load Encounter File");
+		fc.setDialogTitle("Load Encounter File(s)");
 		fc.setMultiSelectionEnabled(true);
 		fc.setFileFilter(new FileFilter() {
 			
@@ -2606,7 +2607,7 @@ public class MainFrame extends JFrame {
 			
 			index++;
 		}
-		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 10);
 		model.fireTableDataChanged();
 		
 		updateInitDisplay();
@@ -2620,8 +2621,6 @@ public class MainFrame extends JFrame {
 	private void saveEncounter() {
 		JFileChooser fc = new JFileChooser();
 		fc.setDialogTitle("Save Encounter File");
-		// default extension = xml
-		// overwrite prompt = true
 		fc.setFileFilter(new FileFilter() {
 			
 			@Override
@@ -2631,7 +2630,6 @@ public class MainFrame extends JFrame {
 			
 			@Override
 			public boolean accept(File f) {
-				// TODO Auto-generated method stub
 				return f.getName().endsWith(".xml");
 			}
 		});
@@ -2757,6 +2755,9 @@ public class MainFrame extends JFrame {
 				getJButtonAdd().setEnabled(true);
 				getJButtonRemove().setEnabled(true);
 				if (fighter.isPC()) {
+					getJButtonPlusOne().setEnabled(true);
+					getJButtonMinusOne().setEnabled(true);
+					getJButtonRegainAll().setEnabled(true);
 					if (!fighter.isActive()) {
 						if (fighter.isAlive()) {
 							getJButtonFailDeath().setEnabled(true);

@@ -60,14 +60,14 @@ import org.dyno.visual.swing.layouts.Leading;
 import org.dyno.visual.swing.layouts.Trailing;
 import org.xml.sax.InputSource;
 
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
-import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
-
 import cm.model.EffectBase;
 import cm.model.Power;
 import cm.model.Stats;
 import cm.model.EffectBase.Duration;
 import cm.util.AutoCompletion;
+
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
+import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class Statblock extends JDialog {
@@ -1026,11 +1026,8 @@ public class Statblock extends JDialog {
 			jPanelTraits.add(getJFormattedTextFieldPowerPts(), new Constraints(new Leading(287, 23, 10, 10), new Leading(133, 12, 12)));
 			jPanelTraits.add(getJLabelSaveBonus(), new Constraints(new Leading(322, 65, 12, 12), new Leading(133, 12, 12)));
 			jPanelTraits.add(getJFormattedTextFieldSaveBonus(), new Constraints(new Leading(399, 23, 12, 12), new Leading(133, 12, 12)));
-			jPanelTraits.add(getJTextFieldAlignment(), new Constraints(new Trailing(12, 346, 12, 12), new Leading(155, 12, 12)));
 			jPanelTraits.add(getJTextFieldSkills(), new Constraints(new Leading(76, 346, 12, 12), new Leading(178, 10, 10)));
 			jPanelTraits.add(getJTextFieldFeats(), new Constraints(new Leading(76, 346, 12, 12), new Leading(201, 10, 10)));
-			jPanelTraits.add(getJTextFieldLanguages(), new Constraints(new Leading(77, 346, 12, 12), new Leading(225, 10, 10)));
-			jPanelTraits.add(getJTextFieldEquipment(), new Constraints(new Leading(77, 346, 12, 12), new Leading(248, 10, 10)));
 			jPanelTraits.add(getJLabelAlignment(), new Constraints(new Leading(4, 65, 34, 376), new Leading(155, 12, 12)));
 			jPanelTraits.add(getJLabelSkills(), new Constraints(new Leading(4, 65, 12, 12), new Leading(177, 12, 12)));
 			jPanelTraits.add(getJLabelFeats(), new Constraints(new Leading(4, 65, 12, 12), new Leading(201, 12, 12)));
@@ -1038,6 +1035,9 @@ public class Statblock extends JDialog {
 			jPanelTraits.add(getJLabelEquipment(), new Constraints(new Leading(4, 65, 12, 12), new Leading(248, 12, 12)));
 			jPanelTraits.add(getJLabelSource(), new Constraints(new Leading(4, 65, 27, 86), new Leading(272, 12, 12)));
 			jPanelTraits.add(getJTextFieldSource(), new Constraints(new Leading(76, 346, 12, 12), new Leading(270, 12, 12)));
+			jPanelTraits.add(getJTextFieldAlignment(), new Constraints(new Bilateral(76, 10, 4), new Leading(155, 12, 12)));
+			jPanelTraits.add(getJTextFieldLanguages(), new Constraints(new Leading(76, 347, 12, 12), new Leading(225, 10, 10)));
+			jPanelTraits.add(getJTextFieldEquipment(), new Constraints(new Leading(76, 347, 12, 12), new Leading(248, 10, 10)));
 		}
 		return jPanelTraits;
 	}
@@ -1373,7 +1373,7 @@ public class Statblock extends JDialog {
 	private JComboBox getJComboBoxRole2() {
 		if (jComboBoxRole2 == null) {
 			jComboBoxRole2 = new JComboBox();
-			jComboBoxRole2.setModel(new DefaultComboBoxModel(new Object[] { "", "Artillery", "Blaster", "Brute", "Controller", "Hero", "Lurker", "Minion", "Obstacle", "Puzzle", "Skirmisher", "Soldier", "Warder" }));
+			jComboBoxRole2.setModel(new DefaultComboBoxModel(new Object[] { "", "Artillery", "Blaster", "Brute", "Controller", "Lurker", "Minion", "Obstacle", "Puzzle", "Skirmisher", "Soldier", "Warder" }));
 			jComboBoxRole2.setDoubleBuffered(false);
 			jComboBoxRole2.setBorder(null);
 		}
@@ -1383,9 +1383,9 @@ public class Statblock extends JDialog {
 	private JComboBox getJComboBoxRole() {
 		if (jComboBoxRole == null) {
 			jComboBoxRole = new JComboBox();
-			jComboBoxRole.setModel(new DefaultComboBoxModel(new Object[] { "", "Elite", "Solo", "Companion" }));
-			jComboBoxRole.setDoubleBuffered(false);
+			jComboBoxRole.setModel(new DefaultComboBoxModel(new Object[] { "", "Elite", "Solo", "Hero", "Companion" }));
 			jComboBoxRole.setBorder(null);
+			jComboBoxRole.setDoubleBuffered(false);
 			jComboBoxRole.addItemListener(new ItemListener() {
 	
 				public void itemStateChanged(ItemEvent event) {
@@ -1400,6 +1400,7 @@ public class Statblock extends JDialog {
 		if (jLabelRole == null) {
 			jLabelRole = new JLabel();
 			jLabelRole.setFont(new Font("Dialog", Font.PLAIN, 12));
+			jLabelRole.setHorizontalAlignment(SwingConstants.TRAILING);
 			jLabelRole.setText("Role");
 		}
 		return jLabelRole;
@@ -1437,15 +1438,15 @@ public class Statblock extends JDialog {
 			jPanelDescription.setBorder(BorderFactory.createTitledBorder(null, "Description", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font(
 					"Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
 			jPanelDescription.setLayout(new GroupLayout());
-			jPanelDescription.add(getJLabelTypeKeywords(), new Constraints(new Leading(12, 12, 12), new Leading(22, 12, 12)));
-			jPanelDescription.add(getJLabelLevel(), new Constraints(new Leading(12, 86, 12, 12), new Leading(0, 12, 12)));
-			jPanelDescription.add(getJSpinnerLevel(), new Constraints(new Leading(102, 40, 10, 10), new Leading(0, 12, 12)));
-			jPanelDescription.add(getJComboBoxRole(), new Constraints(new Leading(180, 56, 10, 10), new Leading(0, 20, 12, 12)));
-			jPanelDescription.add(getJLabelRole(), new Constraints(new Leading(151, 10, 10), new Leading(0, 12, 12)));
-			jPanelDescription.add(getJComboBoxRole2(), new Constraints(new Leading(242, 12, 12), new Leading(0, 20, 12, 12)));
-			jPanelDescription.add(getJCheckBoxPC(), new Constraints(new Leading(338, 64, 10, 10), new Leading(22, 20, 8, 8)));
-			jPanelDescription.add(getJCheckBoxLeader(), new Constraints(new Leading(338, 8, 8), new Leading(0, 17, 8, 8)));
-			jPanelDescription.add(getJTextFieldTypeKeywords(), new Constraints(new Leading(102, 235, 12, 12), new Leading(22, 12, 12)));
+			jPanelDescription.add(getJLabelLevel(), new Constraints(new Leading(12, 32, 79, 82), new Leading(0, 12, 12)));
+			jPanelDescription.add(getJSpinnerLevel(), new Constraints(new Leading(56, 40, 274, 274), new Leading(-2, 12, 12)));
+			jPanelDescription.add(getJLabelTypeKeywords(), new Constraints(new Leading(108, 79, 82), new Leading(0, 12, 12)));
+			jPanelDescription.add(getJCheckBoxLeader(), new Constraints(new Trailing(8, 68, 10, 10), new Leading(1, 17, 8, 8)));
+			jPanelDescription.add(getJCheckBoxPC(), new Constraints(new Trailing(8, 68, 245, 299), new Leading(22, 20, 8, 8)));
+			jPanelDescription.add(getJTextFieldTypeKeywords(), new Constraints(new Bilateral(211, 78, 4), new Leading(-2, 12, 12)));
+			jPanelDescription.add(getJComboBoxRole2(), new Constraints(new Leading(142, 208, 56, 84), new Leading(21, 20, 12, 12)));
+			jPanelDescription.add(getJComboBoxRole(), new Constraints(new Leading(56, 80, 56, 84), new Leading(21, 20, 12, 12)));
+			jPanelDescription.add(getJLabelRole(), new Constraints(new Leading(12, 32, 62, 90), new Leading(24, 12, 12)));
 		}
 		return jPanelDescription;
 	}
@@ -1674,6 +1675,7 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonCancelActionActionPerformed(ActionEvent event) {
 		setStat(null);
+		setVisible(false);
 	}
 
 	/**
