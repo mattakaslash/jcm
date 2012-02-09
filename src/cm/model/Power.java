@@ -367,9 +367,10 @@ public class Power {
 			return "Area";
 		} else if (getTypeCode().contentEquals("C")) {
 			return "Close";
-		} else {
-			// TODO: review original source
+		} else if (getTypeCode().isEmpty()) {
 			return "(no icon)";
+		} else {
+			return "???";
 		}
 	}
 	
@@ -554,7 +555,7 @@ public class Power {
 		writer.writeEndElement();
 		
 		writer.writeStartElement("type");
-		writer.writeCharacters(getTypeCode());
+		writer.writeCharacters(getType());
 		writer.writeEndElement();
 		
 		writer.writeStartElement("action");
@@ -597,7 +598,7 @@ public class Power {
 					if (elementName.contentEquals("name")) {
 						setName(reader.getText());
 					} else if (elementName.contentEquals("type")) {
-						setTypeCode(reader.getText());
+						setType(reader.getText());
 					} else if (elementName.contentEquals("action")) {
 						setAction(reader.getText());
 					} else if (elementName.contentEquals("keywords")) {
