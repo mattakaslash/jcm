@@ -2118,7 +2118,7 @@ public class Stats {
 							&& attList.get("type").contentEquals("Power")) {
 						for (Power pow : getPowerList()) {
 							if (pow.getName().contains(attList.get("name"))
-									&& !attList.get("url").isEmpty()) {
+									&& attList.containsKey("url") && !attList.get("url").isEmpty()) {
 								pow.setURL(attList
 										.get("url")
 										.replace("&amp;", "&")
