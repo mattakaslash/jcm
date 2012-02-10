@@ -9,6 +9,7 @@ import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.Hashtable;
 
+import javax.swing.JOptionPane;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
@@ -193,11 +194,9 @@ public class StatLibrary {
 		
 		if (libraryBackup.exists()) {
 			// may be a problem if this happens
-			/* TODO:
-			 * MsgBox("Previous Compendium backup found." & ControlChars.NewLine & _
-               "It is possible a previous session failed." & ControlChars.NewLine & _
-               "Backup has been copied to prevent data-loss.", MsgBoxStyle.Exclamation, "Backup Found")
-			 */
+			JOptionPane.showMessageDialog(null, "Previous library backup found. It is possible a previous " +
+					"session failed. Backup has been copied to prevent data loss.", "Backup Found",
+					JOptionPane.ERROR_MESSAGE);
 			try {
 				FileChannel src = new FileInputStream(libraryBackup).getChannel();
 				FileChannel dst = new FileOutputStream(new File(filename + ".saved.bak")).getChannel();

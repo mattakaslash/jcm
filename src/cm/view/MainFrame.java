@@ -7,8 +7,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputMethodEvent;
-import java.awt.event.InputMethodListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -43,7 +41,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
+import javax.swing.JSpinner.NumberEditor;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -952,6 +952,8 @@ public class MainFrame extends JFrame {
 		if (jSpinnerDamageHealAmount == null) {
 			jSpinnerDamageHealAmount = new JSpinner();
 			jSpinnerDamageHealAmount.setFont(new Font("Dialog", Font.BOLD, 14));
+			jSpinnerDamageHealAmount.setModel(new SpinnerNumberModel(0, 0, 10000, 1));
+			jSpinnerDamageHealAmount.setEditor(new JSpinner.NumberEditor(jSpinnerDamageHealAmount));
 			jSpinnerDamageHealAmount.setEnabled(false);
 			jSpinnerDamageHealAmount.addChangeListener(new ChangeListener() {
 	
@@ -967,23 +969,19 @@ public class MainFrame extends JFrame {
 		if (jSpinnerInitRoll == null) {
 			jSpinnerInitRoll = new JSpinner();
 			jSpinnerInitRoll.setFont(new Font("Dialog", Font.PLAIN, 14));
+			jSpinnerInitRoll.setModel(new SpinnerNumberModel(0, 0, 10000, 1));
+			jSpinnerInitRoll.setEditor(new JSpinner.NumberEditor(jSpinnerInitRoll));
 			jSpinnerInitRoll.setEnabled(false);
+			jSpinnerInitRoll.addChangeListener(new ChangeListener() {
+				
+				public void stateChanged(ChangeEvent e) {
+					jSpinnerInitRollChangeStateChanged(e);
+				}
+			});
 			jSpinnerInitRoll.addKeyListener(new KeyAdapter() {
 	
 				public void keyPressed(KeyEvent event) {
 					jSpinnerInitRollKeyKeyPressed(event);
-				}
-			});
-			jSpinnerInitRoll.addInputMethodListener(new InputMethodListener() {
-	
-				public void inputMethodTextChanged(InputMethodEvent event) {
-					jSpinnerInitRollInputMethodInputMethodTextChanged(event);
-				}
-	
-				@Override
-				public void caretPositionChanged(InputMethodEvent arg0) {
-					// TODO Auto-generated method stub
-					
 				}
 			});
 		}
@@ -1998,7 +1996,7 @@ public class MainFrame extends JFrame {
 	 * Event: Init roll, value changed.
 	 * @param event
 	 */
-	private void jSpinnerInitRollInputMethodInputMethodTextChanged(InputMethodEvent event) {
+	private void jSpinnerInitRollChangeStateChanged(ChangeEvent event) {
 		Combatant fighter = getListSelectedFighter();
 		
 		if (fighter != null) {
@@ -2018,7 +2016,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void jSpinnerInitRollKeyKeyPressed(KeyEvent event) {
 		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
-			jSpinnerInitRollInputMethodInputMethodTextChanged(null);
+			jSpinnerInitRollChangeStateChanged(null);
 			event.consume();
 		}
 	}
@@ -2874,6 +2872,7 @@ public class MainFrame extends JFrame {
 				getMenuPartyExtendedRest().setEnabled(true);
 			} else {
 				if (getFight().getRolledList().size() > 0) {
+					getMenuEncounterEnd().setEnabled(true);
 					getMenuOptionsShowMinimalInitDisplay().setEnabled(true);
 					getMenuOptionsShowFullInitDisplay().setEnabled(true);
 					getJButtonNextTurn().setEnabled(true);
