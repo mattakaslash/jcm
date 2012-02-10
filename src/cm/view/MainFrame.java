@@ -1005,7 +1005,7 @@ public class MainFrame extends JFrame {
 		if (jSplitPaneMain == null) {
 			jSplitPaneMain = new JSplitPane();
 			jSplitPaneMain.setDividerLocation(250);
-			jSplitPaneMain.setResizeWeight(0.5);
+			jSplitPaneMain.setResizeWeight(0.25);
 			jSplitPaneMain.setLeftComponent(getJScrollPaneRoster());
 			jSplitPaneMain.setRightComponent(getJSplitPaneSub());
 		}
@@ -1016,6 +1016,7 @@ public class MainFrame extends JFrame {
 		if (jSplitPaneRight == null) {
 			jSplitPaneRight = new JSplitPane();
 			jSplitPaneRight.setDividerLocation(350);
+			jSplitPaneRight.setResizeWeight(1.0);
 			jSplitPaneRight.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			jSplitPaneRight.setTopComponent(getJScrollPaneStatblock());
 			jSplitPaneRight.setBottomComponent(getJScrollPaneCompendium());
@@ -1849,7 +1850,9 @@ public class MainFrame extends JFrame {
 			if (dice.startsWith("+")) {
 				JOptionPane.showMessageDialog(this, DiceBag.roll("1d20" + dice, 9));
 			} else {
-				JOptionPane.showMessageDialog(this, DiceBag.roll(dice));
+				String result = DiceBag.roll(dice);
+				getJSpinnerDamageHealAmount().setValue(Integer.valueOf(result.substring(result.indexOf("=") + 1).trim()));
+				JOptionPane.showMessageDialog(this, result);
 			}
 		}
 	}

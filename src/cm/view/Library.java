@@ -239,6 +239,7 @@ public class Library extends JDialog {
 		if (jEditorPaneStatblock == null) {
 			jEditorPaneStatblock = new JEditorPane();
 			jEditorPaneStatblock.setContentType("text/html");
+			jEditorPaneStatblock.setEditable(false);
 			jEditorPaneStatblock.addHyperlinkListener(new HyperlinkListener() {
 				
 				public void hyperlinkUpdate(HyperlinkEvent e) {

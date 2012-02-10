@@ -87,8 +87,9 @@ public abstract class DiceBag {
 	 * @return the results in expr = result format, e.g., 3d6+5 = 17
 	 */
 	public static String roll(String diceExpr) {
-		Pattern p = Pattern.compile("(([0-9]+)d([0-9]+)? *[+] *([0-9]+)");
+		Pattern p = Pattern.compile("(([0-9]+)d([0-9]+))? *[+] *([0-9]+)");
 		Matcher m = p.matcher(diceExpr);
+		m.find();
 		String num = m.group(2);
 		String type = m.group(3);
 		String bonus = m.group(4);
@@ -105,6 +106,6 @@ public abstract class DiceBag {
 		Integer dieType = Integer.valueOf(type.trim());
 		Integer mod = Integer.valueOf(bonus.trim());
 		
-		return diceExpr + " = " + roll(dieNum, dieType) + mod;
+		return diceExpr + " = " + (roll(dieNum, dieType) + mod);
 	}
 }

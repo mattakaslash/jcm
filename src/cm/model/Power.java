@@ -215,7 +215,7 @@ public class Power {
 	 */
 	public String getDescHTML() {
 		String out = getDescCoded();
-		return out.replaceAll("###", "<br>").replaceAll("(([0-9]+)d([0-9]+)? *?[+] *?([0-9]+)", "<a href=\"#$0\">$0</a>");
+		return out.replaceAll("###", "<br>").replaceAll("(([0-9]+)d([0-9]+))? *?[+] *?([0-9]+)", "<a href=\"#$0\">$0</a>");
 	}
 
 	/**
