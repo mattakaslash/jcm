@@ -158,14 +158,12 @@ public class SavingThrows extends JDialog {
 	 * Creates a new Saving Throws window for the given effects.
 	 * @param effectList a list of effects to roll saves for
 	 * @param bonus the save bonus
-	 * @param diceBag the dice bag to use for rolls
 	 * @param parent the parent frame
 	 */
-	public SavingThrows(List<Effect> effectList, Integer bonus, DiceBag diceBag, Frame parent) {
+	public SavingThrows(List<Effect> effectList, Integer bonus, Frame parent) {
 		super(parent);
 		initComponents();
 		
-		setDice(diceBag);
 		getJFormattedTextFieldBonus().setText(bonus.toString());
 		
 		for (Effect eff : effectList) {

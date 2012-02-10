@@ -38,7 +38,6 @@ import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
  */
 public class Encounter {
 	private StatLibrary _statLib = new StatLibrary();
-	private DiceBag _encounterDice = new DiceBag();
 	private SortedMap<String, Combatant> _roster = new TreeMap<String, Combatant>();
 	private Boolean _useRollMod = false;
 	private Boolean _ongoingPopup = true;
@@ -58,7 +57,6 @@ public class Encounter {
 	 */
 	public Encounter(StatLibrary statLibrary, DiceBag diceBag, Boolean useRoleMod, JFrame parent) {
 		clearAll();
-		setEncounterDice(diceBag);
 		setStatLib(statLibrary);
 		setUseRollMod(useRoleMod);
 		setOngoingPopup(Settings.doPopupForOngoingDamage());
@@ -183,22 +181,6 @@ public class Encounter {
 		}
 		
 		return returnList;
-	}
-
-	/**
-	 * Returns the dice being used for rolls in this encounter.
-	 * @return the {@link DiceBag}
-	 */
-	private DiceBag getEncounterDice() {
-		return _encounterDice;
-	}
-
-	/**
-	 * Sets the {@link DiceBag} to be used for this encounter's dice rolls.
-	 * @param encounterDice the {@link DiceBag}
-	 */
-	private void setEncounterDice(DiceBag encounterDice) {
-		_encounterDice = encounterDice;
 	}
 
 	/**
@@ -926,7 +908,7 @@ public class Encounter {
 		}
 		
 		if (list.size() > 0) {
-			SavingThrows saveWin = new SavingThrows(list, fighter.getStats().getSaveBonus(), getEncounterDice(), getParent());
+			SavingThrows saveWin = new SavingThrows(list, fighter.getStats().getSaveBonus(), getParent());
 			saveWin.setVisible(true);
 			
 			if (saveWin.getSuccessfulSaves().size() > 0) {
@@ -1134,7 +1116,7 @@ public class Encounter {
 		}
 		
 		if (list.size() > 0) {
-			RechargeWin win = new RechargeWin(fighter.getCombatHandle(), list, getEncounterDice(), getParent());
+			RechargeWin win = new RechargeWin(fighter.getCombatHandle(), list, getParent());
 			win.setVisible(true);
 			
 			if (win.getRecharged().size() > 0) {
@@ -1208,7 +1190,7 @@ public class Encounter {
 			} else {
 				if (!fighter.getInitStatus().contentEquals("Rolled")) {
 					fighter.resetInit();
-					fighter.rollInitiative(getEncounterDice());
+					fighter.rollInitiative();
 					fighter.setRound(getCurrentRound());
 					fighterInitUpdate(fighter, true);
 				}
@@ -1226,7 +1208,7 @@ public class Encounter {
 		for (Combatant fighter : getRoster().values()) {
 			if (!fighter.getInitStatus().contentEquals("Rolled")) {
 				fighter.resetInit();
-				fighter.rollInitiative(getEncounterDice());
+				fighter.rollInitiative();
 				fighter.setRound(getCurrentRound());
 				fighterInitUpdate(fighter, true);
 				fighter.setInitStatus("Rolled");
@@ -1243,7 +1225,7 @@ public class Encounter {
 		if (fighter != null) {
 			if (!fighter.getInitStatus().contentEquals("Rolled")) {
 				fighter.resetInit();
-				fighter.rollInitiative(getEncounterDice());
+				fighter.rollInitiative();
 				fighter.setRound(getCurrentRound());
 				fighterInitUpdate(fighter, true);
 				fighter.setInitStatus("Rolled");

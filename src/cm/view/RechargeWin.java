@@ -134,15 +134,13 @@ public class RechargeWin extends JDialog {
 	 * Creates a new power recharge window for the provided combatant.
 	 * @param combatHandle fighter's combat handle
 	 * @param powerList list of used powers
-	 * @param diceBag the dice to use for rolling
 	 * @param parent the parent frame
 	 */
-	public RechargeWin(String combatHandle, List<Power> powerList, DiceBag diceBag, Frame parent) {
+	public RechargeWin(String combatHandle, List<Power> powerList, Frame parent) {
 		super(parent);
 		initComponents();
 		
 		setTitle("Power Recharge for " + combatHandle);
-		setDice(diceBag);
 		
 		for (Power pow : powerList) {
 			getPowers().put(pow.getName(), pow);

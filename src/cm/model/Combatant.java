@@ -948,8 +948,8 @@ public class Combatant implements Comparable<Combatant> {
 	 * @param die
 	 *            the die to use for rolls
 	 */
-	private void newInitMod(DiceBag die) {
-		setRandom3(die.roll(500) + 200);
+	private void newInitMod() {
+		setRandom3(DiceBag.roll(500) + 200);
 		setRandom3(getRandom3() + ((90 - getStats().getInit()) * 1000));
 	}
 
@@ -967,12 +967,10 @@ public class Combatant implements Comparable<Combatant> {
 	 * {@link Stats#getInit()} and calls
 	 * {@link #rollInitiative(Integer, DiceBag)}.
 	 * 
-	 * @param die
-	 *            the die to use for rolls
 	 * @return the rolled initiative
 	 */
-	public Integer rollInitiative(DiceBag die) {
-		return rollInitiative(die.roll(20) + getStats().getInit(), die);
+	public Integer rollInitiative() {
+		return rollInitiative(DiceBag.roll(20) + getStats().getInit());
 	}
 
 	/**
@@ -982,14 +980,11 @@ public class Combatant implements Comparable<Combatant> {
 	 * @param rollValue
 	 *            the Combatant's initiative result, probably from
 	 *            {@link #rollInitiative(DiceBag)}
-	 * @param die
-	 *            the die used to generate a new random3 value via
-	 *            {@link #newInitMod(DiceBag)}
 	 * @return the rolled initiative
 	 */
-	private Integer rollInitiative(Integer rollValue, DiceBag die) {
+	private Integer rollInitiative(Integer rollValue) {
 		setInitRoll(rollValue);
-		newInitMod(die);
+		newInitMod();
 		setRoundStatus("Rolling");
 		return getInitRoll();
 	}

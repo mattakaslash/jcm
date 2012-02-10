@@ -208,6 +208,15 @@ public class Power {
 	private void setDescCoded(String descCoded) {
 		_descCoded = descCoded;
 	}
+	
+	/**
+	 * Returns an HTML version of the power description with dice expressions hyperlinked.
+	 * @return an HTML-description
+	 */
+	public String getDescHTML() {
+		String out = getDescCoded();
+		return out.replaceAll("###", "<br>").replaceAll("(([0-9]+)d([0-9]+)? *?[+] *?([0-9]+)", "<a href=\"#$0\">$0</a>");
+	}
 
 	/**
 	 * Indicates if the power is a daily usage frequency.
@@ -294,7 +303,7 @@ public class Power {
 			out += " Aura " + getAura().toString() + "; ";
 			out += "</div>";
 			out += "<div class='gglt'><div class='ggindent'>";
-			out += getDescCoded().replace("###", "<br>");
+			out += getDescHTML();
 			out += "</div></div>";
 		} else {
 			out += "<div class='ggmed'>";
@@ -311,7 +320,7 @@ public class Power {
 			out += "</div>";
 			if (!getDescCoded().isEmpty()) {
 				out += "<div class='gglt'><div class='ggindent'>";
-				out += getDescCoded().replace("###", "<br>");
+				out += getDescHTML();
 				out += "</div></div>";
 			}
 		}
@@ -455,7 +464,7 @@ public class Power {
 		setTypeCode(pow.getTypeCode());
 		setAction(pow.getAction());
 		setKeywords(pow.getKeywords());
-		setDescCoded(getDescCoded());
+		setDescCoded(pow.getDescCoded());
 		setURL(pow.getURL());
 		setAura(pow.getAura());
 	}

@@ -34,12 +34,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
 import cm.model.StatLibrary;
 import cm.model.Stats;
+import cm.util.DiceBag;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class Library extends JDialog {
@@ -236,6 +239,12 @@ public class Library extends JDialog {
 		if (jEditorPaneStatblock == null) {
 			jEditorPaneStatblock = new JEditorPane();
 			jEditorPaneStatblock.setContentType("text/html");
+			jEditorPaneStatblock.addHyperlinkListener(new HyperlinkListener() {
+				
+				public void hyperlinkUpdate(HyperlinkEvent e) {
+					jEditorPaneStatblockHyperlinkHyperlinkUpdate(e);
+				}
+			});
 		}
 		return jEditorPaneStatblock;
 	}
@@ -729,6 +738,21 @@ public class Library extends JDialog {
 			model.removeElementAt(getJListBattleList().getSelectedIndex());
 		}
 		updateAddXPTotals();
+	}
+
+	/**
+	 * Event: Statblock display, hyperlink updated.
+	 * @param event
+	 */
+	private void jEditorPaneStatblockHyperlinkHyperlinkUpdate(HyperlinkEvent event) {
+		if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			String dice = event.getDescription().substring(1).trim();
+			if (dice.startsWith("+")) {
+				JOptionPane.showMessageDialog(this, DiceBag.roll("1d20" + dice, 9));
+			} else {
+				JOptionPane.showMessageDialog(this, DiceBag.roll(dice));
+			}
+		}
 	}
 
 	/**

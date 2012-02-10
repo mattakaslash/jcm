@@ -47,6 +47,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.HyperlinkEvent;
+import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
@@ -586,6 +588,12 @@ public class MainFrame extends JFrame {
 			jEditorPaneStatblock = new JEditorPane();
 			jEditorPaneStatblock.setContentType("text/html");
 			jEditorPaneStatblock.setEditable(false);
+			jEditorPaneStatblock.addHyperlinkListener(new HyperlinkListener() {
+
+				public void hyperlinkUpdate(HyperlinkEvent event) {
+					jEditorPaneStatblockHyperlinkHyperlinkUpdate(event);
+				}
+			});
 		}
 		return jEditorPaneStatblock;
 	}
@@ -1832,6 +1840,21 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Event: Statblock display, hyperlink updated.
+	 * @param event
+	 */
+	private void jEditorPaneStatblockHyperlinkHyperlinkUpdate(HyperlinkEvent event) {
+		if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+			String dice = event.getDescription().substring(1).trim();
+			if (dice.startsWith("+")) {
+				JOptionPane.showMessageDialog(this, DiceBag.roll("1d20" + dice, 9));
+			} else {
+				JOptionPane.showMessageDialog(this, DiceBag.roll(dice));
+			}
+		}
+	}
+
+	/**
 	 * Event: Effects, selection changed.
 	 * @param event
 	 */
@@ -2292,7 +2315,6 @@ public class MainFrame extends JFrame {
 	 */
 	private void windowWindowOpened(WindowEvent event) {
 		setStatlib(new StatLibrary());
-		setTrackerDice(new DiceBag());
 		File stats = new File(getStatlibFilename());
 		if (stats.exists()) {
 			getStatlib().loadFromFile(getStatlibFilename(), true);
@@ -2694,8 +2716,8 @@ public class MainFrame extends JFrame {
 		if (fighter != null) {
 			getJTextFieldName().setEnabled(true);
 			getJSpinnerInitRoll().setEnabled(true);
-			getJListPowerList().setEnabled(false);
-			getJListEffects().setEnabled(false);
+			getJListPowerList().setEnabled(true);
+			getJListEffects().setEnabled(true);
 			getJButtonBackUp().setEnabled(false);
 			getJButtonDelay().setEnabled(false);
 			getJButtonMoveToTop().setEnabled(false);
@@ -2780,14 +2802,9 @@ public class MainFrame extends JFrame {
 					getJButtonHeal().setEnabled(false);
 					getJButtonAddTemp().setEnabled(false);
 				}
-				
-				getJListPowerList().setEnabled(true);
-				powerInfoUpdate();
-				
-				getJListEffects().setEnabled(true);
-				effectButtonUpdate();
 			}
-			
+			powerInfoUpdate();
+			effectButtonUpdate();
 			getJPopupMenuRoster().setEnabled(true);
 			getJMenuItemDelay().setEnabled(getJButtonDelay().isEnabled());
 			getJMenuItemMoveToTop().setEnabled(getJButtonMoveToTop().isEnabled());
