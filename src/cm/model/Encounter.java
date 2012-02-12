@@ -205,7 +205,7 @@ public class Encounter {
 	 * Returns the global notes for the encounter.
 	 * @return the global notes
 	 */
-	private String getGlobalNotes() {
+	public String getGlobalNotes() {
 		return _globalNotesCoded.replace("###", "\n");
 	}
 	
@@ -213,7 +213,7 @@ public class Encounter {
 	 * Sets the global notes for the encounter.
 	 * @param value the global notes
 	 */
-	private void setGlobalNotes(String value) {
+	public void setGlobalNotes(String value) {
 		_globalNotesCoded = value.replace("\n", "###");
 	}
 	
@@ -225,6 +225,10 @@ public class Encounter {
 		return _globalNotesCoded;
 	}
 
+	/**
+	 * Sets the coded form of the global notes.
+	 * @param string global notes
+	 */
 	private void setGlobalNotesCoded(String string) {
 		_globalNotesCoded = string.replace("\n", "###");	
 	}

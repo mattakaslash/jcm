@@ -38,15 +38,17 @@ import javax.swing.JSpinner;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.JSpinner.NumberEditor;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
@@ -173,6 +175,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuOptionsShowMinimalInitDisplay;
 	private JMenuItem menuOptionsShowFullInitDisplay;
 	private JMenuItem jMenuItemToggleVisibility;
+	private JSplitPane jSplitPaneLeft;
 	
 	public MainFrame() {
 		initComponents();
@@ -189,6 +192,73 @@ public class MainFrame extends JFrame {
 		});
 		setJMenuBar(getMenuBarMain());
 		setSize(800, 600);
+	}
+
+	private JPanel getJPanelMusic() {
+		if (jPanelMusic == null) {
+			jPanelMusic = new JPanel();
+			jPanelMusic.setLayout(new GroupLayout());
+		}
+		return jPanelMusic;
+	}
+
+	private JScrollPane getJScrollPaneOffTurnPowers() {
+		if (jScrollPaneOffTurnPowers == null) {
+			jScrollPaneOffTurnPowers = new JScrollPane();
+			jScrollPaneOffTurnPowers.setVisible(false);
+			jScrollPaneOffTurnPowers.setViewportView(getJListOffTurnPowers());
+		}
+		return jScrollPaneOffTurnPowers;
+	}
+
+	private JList getJListOffTurnPowers() {
+		if (jListOffTurnPowers == null) {
+			jListOffTurnPowers = new JList();
+			DefaultListModel listModel = new DefaultListModel();
+			jListOffTurnPowers.setModel(listModel);
+		}
+		return jListOffTurnPowers;
+	}
+
+	private JScrollPane getJScrollPaneNotes() {
+		if (jScrollPaneNotes == null) {
+			jScrollPaneNotes = new JScrollPane();
+			jScrollPaneNotes.setViewportView(getJTextAreaNotes());
+		}
+		return jScrollPaneNotes;
+	}
+
+	private JTextArea getJTextAreaNotes() {
+		if (jTextAreaNotes == null) {
+			jTextAreaNotes = new JTextArea();
+			jTextAreaNotes.setLineWrap(true);
+			jTextAreaNotes.setWrapStyleWord(true);
+			jTextAreaNotes.getDocument().addDocumentListener(new DocumentListener() {
+				
+				public void removeUpdate(DocumentEvent arg0) {
+					saveGlobalNotes();
+				}
+				
+				public void insertUpdate(DocumentEvent arg0) {
+					saveGlobalNotes();
+				}
+				
+				public void changedUpdate(DocumentEvent arg0) {
+					saveGlobalNotes();					
+				}
+			});
+		}
+		return jTextAreaNotes;
+	}
+
+	private JTabbedPane getJTabbedPaneUtils() {
+		if (jTabbedPaneUtils == null) {
+			jTabbedPaneUtils = new JTabbedPane();
+			jTabbedPaneUtils.addTab("Notes", getJScrollPaneNotes());
+			jTabbedPaneUtils.addTab("Off-Turn Powers", getJScrollPaneOffTurnPowers());
+			jTabbedPaneUtils.addTab("Music", getJPanelMusic());
+		}
+		return jTabbedPaneUtils;
 	}
 
 	private JButton getJButtonAdd() {
@@ -998,13 +1068,25 @@ public class MainFrame extends JFrame {
 		}
 		return jSplitPaneCenter;
 	}
+	
+	private JSplitPane getJSplitPaneLeft() {
+		if (jSplitPaneLeft == null) {
+			jSplitPaneLeft = new JSplitPane();
+			jSplitPaneLeft.setDividerLocation(350);
+			jSplitPaneLeft.setDividerSize(0);
+			jSplitPaneLeft.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			jSplitPaneLeft.setTopComponent(getJScrollPaneRoster());
+			jSplitPaneLeft.setBottomComponent(getJTabbedPaneUtils());
+		}
+		return jSplitPaneLeft;
+	}
 
 	private JSplitPane getJSplitPaneMain() {
 		if (jSplitPaneMain == null) {
 			jSplitPaneMain = new JSplitPane();
 			jSplitPaneMain.setDividerLocation(250);
 			jSplitPaneMain.setResizeWeight(0.25);
-			jSplitPaneMain.setLeftComponent(getJScrollPaneRoster());
+			jSplitPaneMain.setLeftComponent(getJSplitPaneLeft());
 			jSplitPaneMain.setRightComponent(getJSplitPaneSub());
 		}
 		return jSplitPaneMain;
@@ -2338,6 +2420,12 @@ public class MainFrame extends JFrame {
 	private InitDisplay _initDisplay;
 	private Boolean _fullInit = false;
 	private RosterRenderer _rosterRenderer = new RosterRenderer();
+	private JTabbedPane jTabbedPaneUtils;
+	private JTextArea jTextAreaNotes;
+	private JScrollPane jScrollPaneNotes;
+	private JList jListOffTurnPowers;
+	private JScrollPane jScrollPaneOffTurnPowers;
+	private JPanel jPanelMusic;
 	/**
 	 * Returns the tracker's encounter.
 	 * @return the encounter
@@ -2897,6 +2985,7 @@ public class MainFrame extends JFrame {
 	 * Updates display from class information.
 	 */
 	private void updateFromClass() {
+		getJTextAreaNotes().setText(getFight().getGlobalNotes());
 		reloadListFromClass();
 		
 		if (getFight().hasSelectedFighter()) {
@@ -3064,5 +3153,11 @@ public class MainFrame extends JFrame {
 		text = "<h1>Round " + currentRound + ". Defenses: " + min + "-" + max + "</h1><br>" + text + "</table></body></html>";
 		
 		getInitDisplay().setHTML(text);
+	}
+	
+	private void saveGlobalNotes() {
+		if (getFight() != null) {
+			getFight().setGlobalNotes(getJTextAreaNotes().getText());
+		}
 	}
 }
