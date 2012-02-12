@@ -65,6 +65,7 @@ import cm.model.Combatant;
 import cm.model.Effect;
 import cm.model.EffectBase;
 import cm.model.Encounter;
+import cm.model.FighterPower;
 import cm.model.Power;
 import cm.model.ReadOnlyTableModel;
 import cm.model.Settings;
@@ -74,6 +75,7 @@ import cm.util.ColumnsAutoSizer;
 import cm.util.DiceBag;
 import cm.util.StatLogger;
 import cm.view.render.EffectDetailsCellRenderer;
+import cm.view.render.OffTurnPowerRenderer;
 import cm.view.render.PowerCellRenderer;
 import cm.view.render.RosterRenderer;
 
@@ -216,6 +218,7 @@ public class MainFrame extends JFrame {
 			jListOffTurnPowers = new JList();
 			DefaultListModel listModel = new DefaultListModel();
 			jListOffTurnPowers.setModel(listModel);
+			jListOffTurnPowers.setCellRenderer(new OffTurnPowerRenderer());
 		}
 		return jListOffTurnPowers;
 	}
@@ -2168,6 +2171,7 @@ public class MainFrame extends JFrame {
 	
 		if (n == JOptionPane.YES_OPTION) {
 			getFight().resetEncounter(false);
+			getJTabbedPaneUtils().setSelectedIndex(0);
 			updateFromClass();
 		}
 	}
@@ -2178,6 +2182,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void menuEncounterInitiativeActionActionPerformed(ActionEvent event) {
 		getFight().startFight(getMenuOptionsGroup().isSelected());
+		getJTabbedPaneUtils().setSelectedIndex(1);
 		updateFromClass();
 	}
 
@@ -2721,6 +2726,7 @@ public class MainFrame extends JFrame {
 		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 10);
 		model.fireTableDataChanged();
 		
+		updateOffTurnPowers();
 		updateInitDisplay();
 		updateEnabledControls();
 		updateEncounterXPTotals();
@@ -3001,6 +3007,26 @@ public class MainFrame extends JFrame {
 			statDataClear();
 		}
 	}
+	
+	/**
+	 * Updates the list of off-turn powers.
+	 */
+	private void updateOffTurnPowers() {
+		DefaultListModel model = (DefaultListModel) getJListOffTurnPowers().getModel();
+		model.clear();
+		for (String handle : getFight().getRolledList().values()) {
+			Combatant fighter = getFight().getFighterByHandle(handle);
+			for (Power pow : fighter.getPowerList()) {
+				if (!fighter.isPowerUsed(pow.getName()) && !fighter.isPC()
+						&& (pow.getAction().contains("immediate")
+						|| pow.getAction().contains("opportunity")
+						|| pow.getAction().contains("free")
+						|| pow.getAction().contains("no"))) {
+					model.addElement(new FighterPower(fighter, pow));
+				}
+			}
+		}
+	}
 
 	/**
 	 * Regenerates the initiative display from current information.
@@ -3155,6 +3181,9 @@ public class MainFrame extends JFrame {
 		getInitDisplay().setHTML(text);
 	}
 	
+	/**
+	 * Saves the text in the global notes text area to the class. 
+	 */
 	private void saveGlobalNotes() {
 		if (getFight() != null) {
 			getFight().setGlobalNotes(getJTextAreaNotes().getText());
