@@ -61,9 +61,9 @@ import org.dyno.visual.swing.layouts.Trailing;
 import org.xml.sax.InputSource;
 
 import cm.model.EffectBase;
-import cm.model.EffectBase.Duration;
 import cm.model.Power;
 import cm.model.Stats;
+import cm.model.EffectBase.Duration;
 import cm.util.AutoCompletion;
 
 import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
@@ -214,7 +214,7 @@ public class Statblock extends JDialog {
 		add(getJButtonCBLoad(), new Constraints(new Leading(553, 12, 12), new Trailing(12, 50, 50)));
 		add(getJButtonCancel(), new Constraints(new Trailing(12, 703, 703), new Trailing(12, 50, 50)));
 		add(getJButtonOK(), new Constraints(new Trailing(91, 646, 646), new Trailing(12, 50, 50)));
-		setSize(800, 600);
+		pack();
 	}
 
 	private JScrollPane getJScrollPanePowerDescription() {
@@ -519,7 +519,7 @@ public class Statblock extends JDialog {
 			jPanelPowers.setLayout(new GroupLayout());
 			jPanelPowers.add(getJScrollPanePowers(), new Constraints(new Bilateral(11, 76, 22), new Leading(0, 184, 10, 10)));
 			jPanelPowers.add(getJButtonPowerNew(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(0, 12, 12)));
-			jPanelPowers.add(getJButtonPowerDelete(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(31, 12, 12)));
+			jPanelPowers.add(getJButtonPowerDelete(), new Constraints(new Trailing(0, 104, 341), new Leading(31, 12, 12)));
 			jPanelPowers.add(getJButtonPowerUp(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(125, 12, 12)));
 			jPanelPowers.add(getJButtonPowerDown(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(157, 12, 12)));
 			jPanelPowers.add(getJLabelPowerName(), new Constraints(new Leading(12, 63, 22, 253), new Leading(191, 12, 12)));
@@ -527,13 +527,13 @@ public class Statblock extends JDialog {
 			jPanelPowers.add(getJLabelPowerKeywords(), new Constraints(new Leading(12, 63, 22, 253), new Leading(235, 12, 12)));
 			jPanelPowers.add(getJLabelPowerURL(), new Constraints(new Leading(12, 63, 22, 253), new Leading(258, 12, 12)));
 			jPanelPowers.add(getJLabelPowerIcon(), new Constraints(new Leading(12, 63, 22, 253), new Leading(282, 12, 12)));
-			jPanelPowers.add(getJTextFieldPowerName(), new Constraints(new Trailing(0, 235, 12, 12), new Leading(189, 12, 12)));
-			jPanelPowers.add(getJTextFieldPowerAction(), new Constraints(new Trailing(0, 235, 12, 12), new Leading(211, 12, 12)));
-			jPanelPowers.add(getJTextFieldPowerKeywords(), new Constraints(new Trailing(0, 235, 12, 12), new Leading(233, 12, 12)));
-			jPanelPowers.add(getJTextFieldPowerURL(), new Constraints(new Trailing(0, 235, 12, 12), new Leading(256, 12, 12)));
-			jPanelPowers.add(getJComboBoxPowerIcon(), new Constraints(new Leading(87, 110, 12, 12), new Leading(278, 12, 12)));
+			jPanelPowers.add(getJComboBoxPowerIcon(), new Constraints(new Leading(87, 12, 12), new Leading(278, 12, 12)));
 			jPanelPowers.add(getJCheckBoxPowerAura(), new Constraints(new Leading(200, 12, 12), new Leading(280, 12, 12)));
 			jPanelPowers.add(getJScrollPanePowerDescription(), new Constraints(new Bilateral(0, 0, 31), new Bilateral(301, 0, 47)));
+			jPanelPowers.add(getJTextFieldPowerName(), new Constraints(new Bilateral(87, 0, 235), new Leading(189, 12, 12)));
+			jPanelPowers.add(getJTextFieldPowerAction(), new Constraints(new Bilateral(87, 0, 235), new Leading(211, 12, 12)));
+			jPanelPowers.add(getJTextFieldPowerKeywords(), new Constraints(new Bilateral(87, 0, 235), new Leading(233, 12, 12)));
+			jPanelPowers.add(getJTextFieldPowerURL(), new Constraints(new Bilateral(87, 0, 235), new Leading(256, 12, 12)));
 		}
 		return jPanelPowers;
 	}
