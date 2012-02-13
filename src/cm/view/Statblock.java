@@ -65,6 +65,8 @@ import cm.model.Power;
 import cm.model.Stats;
 import cm.model.EffectBase.Duration;
 import cm.util.AutoCompletion;
+import cm.view.render.EffectBaseCellRenderer;
+import cm.view.render.PowerDetailsCellRenderer;
 
 import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
 import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
@@ -445,6 +447,7 @@ public class Statblock extends JDialog {
 			jListPowers = new JList();
 			DefaultListModel listModel = new DefaultListModel();
 			jListPowers.setModel(listModel);
+			jListPowers.setCellRenderer(new PowerDetailsCellRenderer());
 			jListPowers.addListSelectionListener(new ListSelectionListener() {
 	
 				public void valueChanged(ListSelectionEvent event) {
@@ -566,6 +569,7 @@ public class Statblock extends JDialog {
 			jListEffects = new JList();
 			DefaultListModel listModel = new DefaultListModel();
 			jListEffects.setModel(listModel);
+			jListEffects.setCellRenderer(new EffectBaseCellRenderer());
 			jListEffects.addListSelectionListener(new ListSelectionListener() {
 	
 				public void valueChanged(ListSelectionEvent event) {
@@ -2080,7 +2084,7 @@ public class Statblock extends JDialog {
 	 * @param eff
 	 */
 	private void presetEffectAdd(EffectBase eff) {
-		if (eff.isValid() && !getPresetEffects().contains(eff.getEffectBaseID())) {
+		if (eff.isValid() && !getPresetEffects().contains(eff)) {
 			getPresetEffects().add(eff);
 		}
 	}

@@ -11,7 +11,7 @@ import javax.xml.stream.XMLStreamWriter;
  * @author matthew.rinehart
  * 
  */
-public class EffectBase {
+public class EffectBase implements Comparable<EffectBase> {
 	private String _name;
 	private Boolean _beneficial;
 	private Duration _durationCode;
@@ -298,5 +298,10 @@ public class EffectBase {
 			}
 		}
 		return false;
+	}
+
+	@Override
+	public int compareTo(EffectBase o) {
+		return getName().compareTo(o.getName());
 	}
 }

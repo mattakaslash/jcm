@@ -488,6 +488,7 @@ public class Library extends JDialog {
 		}
 		
 		statblockWin.dispose();
+		getJListEntries().setSelectedIndex(-1);
 	}
 
 	/**
@@ -537,6 +538,7 @@ public class Library extends JDialog {
 					updateAddXPTotals();
 				}
 			statblockWin.dispose();
+			getJListEntries().setSelectedIndex(-1);
 			}
 		}
 	}

@@ -954,8 +954,8 @@ public class Stats {
 			value += "<b>Source</b> " + getSource() + "<br>";
 		}
 		if (!getNotes().isEmpty()) {
-			value += "<b>Notes:";
-			value += "  " + getNotesHTML();
+			value += "<b>Notes:</b><br>";
+			value += getNotesHTML();
 		}
 		value += "</div></body></html>";
 		return value;
