@@ -2,6 +2,7 @@ package cm.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Container;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
@@ -2871,8 +2872,8 @@ public class MainFrame extends JFrame {
 	 */
 	private void statDataClear() {
 		getJEditorPaneStatblock().setText("");
-		getJListPowerList().removeAll();
-		getJListEffects().removeAll();
+		((DefaultListModel) getJListPowerList().getModel()).clear();
+		((DefaultListModel) getJListEffects().getModel()).clear();
 		getJTextFieldName().setText("");
 		getJTextFieldNumber().setText("");
 		getJSpinnerInitRoll().setValue(0);
