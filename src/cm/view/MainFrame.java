@@ -174,8 +174,8 @@ public class MainFrame extends JFrame {
 	private JMenuItem jMenuItemLogOA;
 	private JMenuItem jMenuItemMarkUntilEONT;
 	private JMenuItem jMenuItemMarkUntilEOE;
-	private JMenuItem menuOptionsShowMinimalInitDisplay;
-	private JMenuItem menuOptionsShowFullInitDisplay;
+	private JCheckBoxMenuItem menuOptionsShowMinimalInitDisplay;
+	private JCheckBoxMenuItem menuOptionsShowFullInitDisplay;
 	private JMenuItem jMenuItemToggleVisibility;
 	private JSplitPane jSplitPaneLeft;
 	
@@ -197,7 +197,7 @@ public class MainFrame extends JFrame {
 			}
 		});
 		setJMenuBar(getMenuBarMain());
-		setSize(800, 600);
+		pack();
 	}
 
 	private JPanel getJPanelMusic() {
@@ -1504,9 +1504,9 @@ public class MainFrame extends JFrame {
 		return menuOptionsRollsSaves;
 	}
 
-	private JMenuItem getMenuOptionsShowFullInitDisplay() {
+	private JCheckBoxMenuItem getMenuOptionsShowFullInitDisplay() {
 		if (menuOptionsShowFullInitDisplay == null) {
-			menuOptionsShowFullInitDisplay = new JMenuItem();
+			menuOptionsShowFullInitDisplay = new JCheckBoxMenuItem();
 			menuOptionsShowFullInitDisplay.setText("Show Full Init Display");
 			menuOptionsShowFullInitDisplay.setAccelerator(KeyStroke.getKeyStroke("pressed F3"));
 			menuOptionsShowFullInitDisplay.addActionListener(new ActionListener() {
@@ -1519,9 +1519,9 @@ public class MainFrame extends JFrame {
 		return menuOptionsShowFullInitDisplay;
 	}
 
-	private JMenuItem getMenuOptionsShowMinimalInitDisplay() {
+	private JCheckBoxMenuItem getMenuOptionsShowMinimalInitDisplay() {
 		if (menuOptionsShowMinimalInitDisplay == null) {
-			menuOptionsShowMinimalInitDisplay = new JMenuItem();
+			menuOptionsShowMinimalInitDisplay = new JCheckBoxMenuItem();
 			menuOptionsShowMinimalInitDisplay.setText("Show Minimal Init Display");
 			menuOptionsShowMinimalInitDisplay.setAccelerator(KeyStroke.getKeyStroke("pressed F2"));
 			menuOptionsShowMinimalInitDisplay.addActionListener(new ActionListener() {
@@ -2321,7 +2321,10 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void menuOptionsShowFullInitDisplayActionActionPerformed(ActionEvent event) {
-		if (getMenuOptionsShowFullInitDisplay().isSelected()) {
+		JMenuItem item = getMenuOptionsShowFullInitDisplay();
+		if (item.isSelected()) {
+			item.setSelected(true);
+			getInitDisplay().dispose();
 			getMenuOptionsShowMinimalInitDisplay().setSelected(false);
 			setFullInit(true);
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -2335,6 +2338,7 @@ public class MainFrame extends JFrame {
 			getInitDisplay().setVisible(true);
 			updateInitDisplay();
 		} else {
+			item.setSelected(false);
 			getInitDisplay().setVisible(false);
 		}
 	}
@@ -2344,7 +2348,10 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void menuOptionsShowMinimalInitDisplayActionActionPerformed(ActionEvent event) {
-		if (getMenuOptionsShowMinimalInitDisplay().isSelected()) {
+		JMenuItem item = getMenuOptionsShowMinimalInitDisplay();
+		item.repaint();
+		if (item.isSelected()) {
+			getInitDisplay().dispose();
 			getMenuOptionsShowFullInitDisplay().setSelected(false);
 			setFullInit(false);
 			GraphicsEnvironment gc = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -2978,6 +2985,7 @@ public class MainFrame extends JFrame {
 			getJSpinnerInitRoll().setValue(fighter.getInitRoll());
 			
 			getJEditorPaneStatblock().setText(fighter.getStatsHTML());
+			getJEditorPaneStatblock().setCaretPosition(0);
 			getJTextFieldSurges().setText(fighter.getSurgeView());
 			
 			powerLoad();
@@ -3088,7 +3096,15 @@ public class MainFrame extends JFrame {
 	 */
 	private void updateInitDisplay() {
 		if (getInitDisplay() == null) {
-			setInitDisplay(new InitDisplay());
+			InitDisplay id = new InitDisplay();
+			id.addWindowListener(new WindowAdapter() {
+				
+				public void windowClosed(WindowEvent e) {
+					getMenuOptionsShowMinimalInitDisplay().setSelected(false);
+					getMenuOptionsShowFullInitDisplay().setSelected(false);
+				}
+			});
+			setInitDisplay(id);
 		}
 		
 		Integer index = 0;
@@ -3100,9 +3116,9 @@ public class MainFrame extends JFrame {
 		
 		text = "<html><head><style type='text/css'>\n"
 				+ "body { margin: 0ex; }\n"
-				+ "table { width: 100%; border: 1px solid black }\n"
-				+ "th { font-size: x-large; border-bottom: 1px solid black }\n"
-				+ "td { font-size: x-large; border-bottom: 1px solid gray }\n"
+				+ "table { width: 100%; border-width: 1px; border-style: solid; border-color: black }\n"
+				+ "th { font-size: x-large; border-width: 1px; border-style: solid; border-color: black }\n"
+				+ "td { font-size: x-large; border-width: 1px; border-style: solid; border-color: gray }\n"
 				+ "</style></head><body><table><tr><th style='width: 12ex'>Combatant</th>"
 				+ "<th style='width: 105px'>HP</th><th style='width: 3ex'>A</th>\n"
 				+ "<th style='width: 3ex'>F</th><th style='width: 3ex'>R</th>\n"
@@ -3176,16 +3192,10 @@ public class MainFrame extends JFrame {
 				if (fighter.isPC() && fighter.getCurrHP() <= 0) {
 					text += "<td>Dying: " + fighter.getDeathStatus() + "</td>";
 				} else if ((fighter.isPC() || isFullInit()) && fighter.getMaxHP() > 0) {
-					Integer healthPercent = (fighter.getCurrHP() / fighter.getMaxHP()) * 100;
-					text += "<td><span style='display: inline-block; height: 1em; width: "
-							+ healthPercent
-							+ "px; border: 1px solid black; background-color: "
-							+ hpBarColor
-							+ "'></span>"
-							+ "<span style='display: inline-block; height: 1em; width: "
-							+ (100 - healthPercent)
-							+ "px; border: 1px solid black; background-color: #ffffff"
-							+ "'></span></td>";
+					int healthPercent = (int) (((double)fighter.getCurrHP() / (double)fighter.getMaxHP()) * 100);
+					text += "<td><div style='height: 1em; border-width: 1px; border-style: solid; border-color: white; " +
+							"width: 100px'><div style='border-width: 0px; width: " + healthPercent + "px; background-color: " + hpBarColor	+ 
+							"'></div></div></td>";
 				} else if (fighter.isBloody()) {
 					text += "<td><span style='color: red'>bloody</span></td>";
 				} else {
@@ -3209,7 +3219,7 @@ public class MainFrame extends JFrame {
 	                    text += "<span style='color: #aa0000'>";
 					}
 					
-					String dur = eff.getDurationCode().toString();
+					String dur = eff.getDurationCode().getDesc();
 					dur = dur.replace("Start of Source's Next Turn",
 									"SOT " + eff.getSourceHandle())
 							.replace("Start of Target's Next Turn",
@@ -3223,7 +3233,7 @@ public class MainFrame extends JFrame {
 							.replace("Save Ends",
 									"SE");
 					
-					text += dur.replaceFirst("(.*) ", "");
+					text += eff.getName().replaceFirst("[(].*?[)] ", "");
 					text += " (" + dur + ")</span><br>";
 				}
 				text += "</td></tr>\n";
