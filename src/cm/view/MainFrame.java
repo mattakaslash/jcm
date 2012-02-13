@@ -223,6 +223,12 @@ public class MainFrame extends JFrame {
 			DefaultListModel listModel = new DefaultListModel();
 			jListOffTurnPowers.setModel(listModel);
 			jListOffTurnPowers.setCellRenderer(new OffTurnPowerRenderer());
+			jListOffTurnPowers.addListSelectionListener(new ListSelectionListener() {
+				
+				public void valueChanged(ListSelectionEvent e) {
+					jListOffTurnPowersListSelectionValueChanged(e);
+				}
+			});
 		}
 		return jListOffTurnPowers;
 	}
@@ -1971,9 +1977,21 @@ public class MainFrame extends JFrame {
 			getJButtonChange().doClick();
 		}
 	}
+	
+	/**
+	 * Event: Off-turn powers list selection changed. 
+	 * @param event
+	 */
+	private void jListOffTurnPowersListSelectionValueChanged(ListSelectionEvent event) {
+		if (getJListOffTurnPowers().getSelectedIndex() >= 0) {
+			FighterPower fp = (FighterPower) getJListOffTurnPowers().getSelectedValue();
+			getFight().setSelectedFighter(fp.getFighter());
+			updateFromClass();
+		}
+	}
 
 	/**
-	 * Power List selection changed.
+	 * Event: Power List selection changed.
 	 * @param event
 	 */
 	private void jListPowerListListSelectionValueChanged(ListSelectionEvent event) {
@@ -3083,8 +3101,9 @@ public class MainFrame extends JFrame {
 						&& (pow.getAction().contains("immediate")
 								|| pow.getAction().contains("opportunity;")
 								|| pow.getAction().contains("triggered;")
-								|| pow.getAction().contains("free;") || pow
-								.getAction().contains("no;"))) {
+								|| pow.getAction().contains("free;")
+								|| pow.getAction().contains("no;")
+								|| pow.isAura())) {
 					model.addElement(new FighterPower(fighter, pow));
 				}
 			}
@@ -3193,7 +3212,7 @@ public class MainFrame extends JFrame {
 					text += "<td>Dying: " + fighter.getDeathStatus() + "</td>";
 				} else if ((fighter.isPC() || isFullInit()) && fighter.getMaxHP() > 0) {
 					int healthPercent = (int) (((double)fighter.getCurrHP() / (double)fighter.getMaxHP()) * 100);
-					text += "<td><div style='height: 1em; border-width: 1px; border-style: solid; border-color: white; " +
+					text += "<td style='width: 105px'><div style='height: 1em; border-width: 1px; border-style: solid; border-color: white; " +
 							"width: 100px'><div style='border-width: 0px; width: " + healthPercent + "px; background-color: " + hpBarColor	+ 
 							"'></div></div></td>";
 				} else if (fighter.isBloody()) {
@@ -3203,10 +3222,10 @@ public class MainFrame extends JFrame {
 				}
 				
 				if (isFullInit() || fighter.isPC()) {
-					text += "<td>" + fighter.getAC() + "</td>" 
-							+ "<td>" + fighter.getFort() + "</td>" 
-							+ "<td>" + fighter.getRef() + "</td>" 
-							+ "<td>" + fighter.getWill() + "</td>";
+					text += "<td style='text-align: center'>" + fighter.getAC() + "</td>" 
+							+ "<td style='text-align: center'>" + fighter.getFort() + "</td>" 
+							+ "<td style='text-align: center'>" + fighter.getRef() + "</td>" 
+							+ "<td style='text-align: center'>" + fighter.getWill() + "</td>";
 				} else {
 					text += "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 				}
