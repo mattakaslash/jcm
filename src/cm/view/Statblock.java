@@ -1956,6 +1956,7 @@ public class Statblock extends JDialog {
 			}
 			pow.setName(getJTextFieldPowerName().getText());
 			setPowerChanged(true);
+			getJListPowers().repaint();
 		}
 	}
 
@@ -1968,6 +1969,7 @@ public class Statblock extends JDialog {
 			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
 			pow.setType((String) getJComboBoxPowerIcon().getSelectedItem());
 			setPowerChanged(true);
+			getJListPowers().repaint();
 		}
 	}
 
@@ -1980,6 +1982,7 @@ public class Statblock extends JDialog {
 			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
 			pow.setKeywords(getJTextFieldPowerKeywords().getText());
 			setPowerChanged(true);
+			getJListPowers().repaint();
 		}
 	}
 
@@ -1992,6 +1995,7 @@ public class Statblock extends JDialog {
 			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
 			pow.setAction(getJTextFieldPowerAction().getText());
 			setPowerChanged(true);
+			getJListPowers().repaint();
 		}
 	}
 
@@ -2004,6 +2008,7 @@ public class Statblock extends JDialog {
 			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
 			pow.setDesc(getJTextAreaPowerDescription().getText());
 			setPowerChanged(true);
+			getJListPowers().repaint();
 		}
 	}
 
