@@ -1490,6 +1490,7 @@ public class Encounter {
 			}
 		}
 		try {
+			tmpFile.createNewFile();
 			OutputStream output = new FileOutputStream(tmpFile);
 			XMLStreamWriter writer = XMLStreamWriterFactory.create(output);
 			exportXML(writer);

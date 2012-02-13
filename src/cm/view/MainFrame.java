@@ -2060,7 +2060,7 @@ public class MainFrame extends JFrame {
 		Combatant fighter = getListSelectedFighter();
 		if (fighter != null) {
 			fighter.setShown(!fighter.isShown());
-			updateFromClass();
+			reloadListFromClass();
 		}
 	}
 
@@ -2748,7 +2748,7 @@ public class MainFrame extends JFrame {
 			
 			index++;
 		}
-		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 10);
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 15);
 		model.fireTableDataChanged();
 		
 		updateOffTurnPowers();
@@ -2782,7 +2782,7 @@ public class MainFrame extends JFrame {
 			if (name.indexOf(".") < 0) {
 				name += ".xml";
 			}
-			getFight().saveToFile(f.getParent() + File.pathSeparator + name);
+			getFight().saveToFile(f.getParent() + File.separator + name);
 		}
 	}
 
