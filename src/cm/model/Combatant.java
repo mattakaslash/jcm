@@ -1012,18 +1012,18 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * TODO: I have no idea what this does.
-	 * @param lib
-	 * @param updateFromLibrary
+	 * Refreshes stats from/to library.
+	 * @param lib the stat library
+	 * @param updateFromLibrary if true, the stats are refreshed from the library; otherwise, the current stats are written to the library
 	 */
 	public void updateLibrary(StatLibrary lib, Boolean updateFromLibrary) {
 		if (lib.contains(getStats().getHandle())) {
 			if (updateFromLibrary) {
-				// TODO: setStats(lib(_stats.getHandle()));
+				setStats(lib.get(getStats().getHandle()));
 			}
 		} else {
 			if (getStats().isValid()) {
-				// TODO: lib(_stats.getHandle()) = getStats();
+				lib.add(getStats(), true);
 			}
 		}
 	}
