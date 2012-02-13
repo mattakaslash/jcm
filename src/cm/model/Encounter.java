@@ -1416,12 +1416,9 @@ public class Encounter {
 					} else if (elementName.contentEquals("ongoingfight")) {
 						if (Boolean.valueOf(reader.getText())) {
 							if (getRoster().size() > 0) {
-								/*
-                                MsgBox("An ongoing encounter cannot be imported with preexisting combatants." & ControlChars.NewLine & _
-                                    "Please clear the list before attempting this operation.", _
-                                    MsgBoxStyle.OkOnly + MsgBoxStyle.Exclamation, "Import Error")
-                                Return False
-								 */
+								JOptionPane.showMessageDialog(null, "An ongoing encounter cannot be imported " +
+										"with pre-existing combatants. Please clear the list before attempting " +
+										"this operation.", "Import Error", JOptionPane.ERROR_MESSAGE);
 								resetInit = false;
 							}
 						}

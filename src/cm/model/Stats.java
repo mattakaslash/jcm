@@ -1438,7 +1438,7 @@ public class Stats {
 		writer.writeEndElement();
 
 		writer.writeStartElement("notes");
-		writer.writeCharacters(getNotes());
+		writer.writeCharacters(getNotesBase());
 		writer.writeEndElement();
 
 		writer.writeStartElement("s_str");

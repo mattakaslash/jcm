@@ -264,23 +264,23 @@ public class Effect extends EffectBase {
 
 		super.exportXML(writer);
 
-		writer.writeStartElement("target");
+		writer.writeStartElement("sTarget");
 		writer.writeCharacters(getTargetHandle());
 		writer.writeEndElement();
 
-		writer.writeStartElement("source");
+		writer.writeStartElement("sSource");
 		writer.writeCharacters(getSourceHandle());
 		writer.writeEndElement();
 
-		writer.writeStartElement("roundTill");
+		writer.writeStartElement("nRoundTill");
 		writer.writeCharacters(getRoundTill().toString());
 		writer.writeEndElement();
 
-		writer.writeStartElement("effectID");
+		writer.writeStartElement("nEffectID");
 		writer.writeCharacters(getEffectID().toString());
 		writer.writeEndElement();
 
-		writer.writeStartElement("endInitSeq");
+		writer.writeStartElement("nEndInitSeq");
 		writer.writeCharacters(getEndInitSeq().toString());
 		writer.writeEndElement();
 
@@ -311,15 +311,15 @@ public class Effect extends EffectBase {
 				} else if (reader.isCharacters()) {
 					if (elementName.contentEquals("effectbase")) {
 						super.importXML(reader);
-					} else if (elementName.contentEquals("target")) {
+					} else if (elementName.contentEquals("sTarget")) {
 						setTargetHandle(reader.getText());
-					} else if (elementName.contentEquals("source")) {
+					} else if (elementName.contentEquals("sSource")) {
 						setSourceHandle(reader.getText());
-					} else if (elementName.contentEquals("roundTill")) {
+					} else if (elementName.contentEquals("nRoundTill")) {
 						setRoundTill(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("effectID")) {
+					} else if (elementName.contentEquals("nEffectID")) {
 						setEffectID(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("endInitSeq")) {
+					} else if (elementName.contentEquals("nEndInitSeq")) {
 						setEndInitSeq(Integer.valueOf(reader.getText()));
 					}
 				} else if (reader.isEndElement()

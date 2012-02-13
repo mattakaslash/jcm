@@ -567,11 +567,11 @@ public class Power {
 		writer.writeCharacters(getType());
 		writer.writeEndElement();
 		
-		writer.writeStartElement("action");
+		writer.writeStartElement("act");
 		writer.writeCharacters(getAction());
 		writer.writeEndElement();
 		
-		writer.writeStartElement("keywords");
+		writer.writeStartElement("key");
 		writer.writeCharacters(getKeywords());
 		writer.writeEndElement();
 		
@@ -608,9 +608,9 @@ public class Power {
 						setName(reader.getText());
 					} else if (elementName.contentEquals("type")) {
 						setType(reader.getText());
-					} else if (elementName.contentEquals("action")) {
+					} else if (elementName.contentEquals("act")) {
 						setAction(reader.getText());
-					} else if (elementName.contentEquals("keywords")) {
+					} else if (elementName.contentEquals("key")) {
 						setKeywords(reader.getText());
 					} else if (elementName.contentEquals("desc")) {
 						setDescCoded(reader.getText());

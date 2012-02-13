@@ -213,11 +213,11 @@ public class EffectBase {
 		writer.writeCharacters(getName());
 		writer.writeEndElement();
 
-		writer.writeStartElement("beneficial");
+		writer.writeStartElement("beni");
 		writer.writeCharacters(isBeneficial().toString());
 		writer.writeEndElement();
 
-		writer.writeStartElement("durationCode");
+		writer.writeStartElement("durcode");
 		writer.writeCharacters(getDurationCode().toString());
 		writer.writeEndElement();
 
@@ -247,9 +247,9 @@ public class EffectBase {
 				} else if (reader.isCharacters()) {
 					if (elementName.contentEquals("name")) {
 						setName(reader.getText());
-					} else if (elementName.contentEquals("beneficial")) {
+					} else if (elementName.contentEquals("beni")) {
 						setBeneficial(Boolean.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("durationCode")) {
+					} else if (elementName.contentEquals("durcode")) {
 						setDurationCode(Duration.valueOf(reader.getText()));
 					}
 				} else if (reader.isEndElement()) {

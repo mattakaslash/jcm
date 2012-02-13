@@ -136,7 +136,7 @@ public class Combatant implements Comparable<Combatant> {
 	 * @return stored combat notes
 	 */
 	private String getCombatNotes() {
-		return _combatNotesCoded.replace("###", "\n");
+		return getCombatNotesCoded().replace("###", "\n");
 	}
 
 	/**
@@ -144,7 +144,7 @@ public class Combatant implements Comparable<Combatant> {
 	 * @param combatNotes the combat notes
 	 */
 	private void setCombatNotes(String combatNotes) {
-		_combatNotesCoded = combatNotes.replace("\n", "###");
+		setCombatNotesCoded(combatNotes.replace("\n", "###"));
 	}
 
 	/**
@@ -1052,60 +1052,60 @@ public class Combatant implements Comparable<Combatant> {
 		writer.writeEndElement();
 
 		writer.writeStartElement("notes");
-		writer.writeCharacters(_combatNotesCoded);
+		writer.writeCharacters(getCombatNotesCoded());
 		writer.writeEndElement();
 
 		_stats.exportXML(writer);
 
 		if (ongoing) {
-			writer.writeStartElement("round");
+			writer.writeStartElement("nRound");
 			writer.writeCharacters(getRound().toString());
 			writer.writeEndElement();
 
-			writer.writeStartElement("initroll");
+			writer.writeStartElement("nInitRoll");
 			writer.writeCharacters(getInitRoll().toString());
 			writer.writeEndElement();
 
-			writer.writeStartElement("random3");
+			writer.writeStartElement("nRandom3");
 			writer.writeCharacters(getRandom3().toString());
 			writer.writeEndElement();
 
-			writer.writeStartElement("fighternumber");
+			writer.writeStartElement("nFighterNumber");
 			writer.writeCharacters(getFighterNumber().toString());
 			writer.writeEndElement();
 
-			writer.writeStartElement("roundstatus");
+			writer.writeStartElement("sRoundStatus");
 			writer.writeCharacters(getRoundStatus());
 			writer.writeEndElement();
 
-			writer.writeStartElement("ready");
+			writer.writeStartElement("bReady");
 			writer.writeCharacters(isReady().toString());
 			writer.writeEndElement();
 
-			writer.writeStartElement("shown");
+			writer.writeStartElement("bShown");
 			writer.writeCharacters(isShown().toString());
 			writer.writeEndElement();
 		}
 
 		if (isPC() || ongoing) {
-			writer.writeStartElement("currHP");
+			writer.writeStartElement("nCurrHP");
 			writer.writeCharacters(getCurrHP().toString());
 			writer.writeEndElement();
 
-			writer.writeStartElement("deathsavefailed");
+			writer.writeStartElement("nDeathSaveFailed");
 			writer.writeCharacters(getDeathSaveFailed().toString());
 			writer.writeEndElement();
 
-			writer.writeStartElement("tempHP");
+			writer.writeStartElement("nTempHP");
 			writer.writeCharacters(getTempHP().toString());
 			writer.writeEndElement();
 
-			writer.writeStartElement("surgesremaining");
+			writer.writeStartElement("nSurgesRemaining");
 			writer.writeCharacters(getSurgesLeft().toString());
 			writer.writeEndElement();
 
 			for (String pow : getPowersUsed()) {
-				writer.writeStartElement("powerused");
+				writer.writeStartElement("PowerUsed");
 				writer.writeCharacters(pow);
 				writer.writeEndElement();
 			}
@@ -1143,29 +1143,29 @@ public class Combatant implements Comparable<Combatant> {
 						setCustomName(reader.getText());
 					} else if (elementName.contentEquals("rolemod")) {
 						setMod(reader.getText());
-					} else if (elementName.contentEquals("round")) {
+					} else if (elementName.contentEquals("nRound")) {
 						setRound(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("initroll")) {
+					} else if (elementName.contentEquals("nInitRoll")) {
 						setInitRoll(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("random3")) {
+					} else if (elementName.contentEquals("nRandom3")) {
 						setRandom3(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("fighternumber")) {
+					} else if (elementName.contentEquals("nFighterNumber")) {
 						setFighterNumber(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("roundstatus")) {
+					} else if (elementName.contentEquals("sRoundStatus")) {
 						setRoundStatus(reader.getText());
-					} else if (elementName.contentEquals("ready")) {
+					} else if (elementName.contentEquals("bReady")) {
 						setReady(Boolean.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("shown")) {
+					} else if (elementName.contentEquals("bShown")) {
 						setShown(Boolean.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("currHP")) {
+					} else if (elementName.contentEquals("nCurrHP")) {
 						setCurrHP(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("deathsavefailed")) {
+					} else if (elementName.contentEquals("nDeathSaveFailed")) {
 						setDeathSaveFailed(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("tempHP")) {
+					} else if (elementName.contentEquals("nTempHP")) {
 						setTempHP(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("surgesremaining")) {
+					} else if (elementName.contentEquals("nSurgesRemaining")) {
 						setSurgesLeft(Integer.valueOf(reader.getText()));
-					} else if (elementName.contentEquals("powerused")) {
+					} else if (elementName.contentEquals("PowerUsed")) {
 						getPowersUsed().add(reader.getText());
 					}
 				} else if (reader.isEndElement()) {
@@ -1267,6 +1267,20 @@ public class Combatant implements Comparable<Combatant> {
 	 */
 	public Collection<EffectBase> getPresetEffects() {
 		return getStats().getPresetEffects().values();
+	}
+
+	/**
+	 * @param combatNotesCoded the combatNotesCoded to set
+	 */
+	private void setCombatNotesCoded(String combatNotesCoded) {
+		_combatNotesCoded = combatNotesCoded;
+	}
+
+	/**
+	 * @return the combatNotesCoded
+	 */
+	private String getCombatNotesCoded() {
+		return _combatNotesCoded;
 	}
 
 	/**
