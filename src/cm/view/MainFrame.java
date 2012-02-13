@@ -1069,6 +1069,7 @@ public class MainFrame extends JFrame {
 		if (jSplitPaneCenter == null) {
 			jSplitPaneCenter = new JSplitPane();
 			jSplitPaneCenter.setDividerLocation(306);
+			jSplitPaneCenter.setDividerSize(0);
 			jSplitPaneCenter.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			jSplitPaneCenter.setTopComponent(getJPanelTopCenter());
 			jSplitPaneCenter.setBottomComponent(getJPanelBottomCenter());
@@ -2116,6 +2117,11 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jTableRosterKeyKeyReleased(KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.VK_HOME) {
+			getFight().setSelectedFighter(getFight().getCurrentFighter());
+		} else if (event.getKeyCode() == KeyEvent.VK_END) {
+			getFight().setSelectedFighterHandle(getFight().getPriorFighterHandle());
+		}
 		jTableRosterMouseMouseClicked(null);
 	}
 
@@ -2124,7 +2130,7 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jTableRosterMouseMouseClicked(MouseEvent event) {
-		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 10);
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 15);
 		if (getJTableRoster().getSelectedRow() >= 0) {
 			Combatant fighterSelected = getFight().getSelectedFighter();
 			String tableSelected = (String) getJTableRoster().getValueAt(
@@ -2136,6 +2142,9 @@ public class MainFrame extends JFrame {
 				getFight().setSelectedFighterHandle(tableSelected);
 				statDataLoad();
 			}
+		} else {
+			getFight().clearSelectedFighter();
+			statDataClear();
 		}
 	}
 
@@ -2641,12 +2650,14 @@ public class MainFrame extends JFrame {
 			if (getListSelectedFighter() != null) {
 				for (Power pow : getListSelectedFighter().getPowerList()) {
 					if (selected.getName().contentEquals(pow.getName())) {
-						try {
-							getJEditorPaneCompendium().setPage(pow.getURL());
-						} catch (IOException e) {
-							getJEditorPaneCompendium().setText(
-									"<html><body><h1>Failed to load URL</h1><pre>"
-											+ e + "</pre></body></html>");
+						if (pow.getURL().startsWith("http")) {
+							try {
+								getJEditorPaneCompendium().setPage(pow.getURL());
+							} catch (IOException e) {
+								getJEditorPaneCompendium().setText(
+										"<html><body><h1>Failed to load URL</h1><pre>"
+										+ e + "</pre></body></html>");
+							}
 						}
 					}
 				}
@@ -2818,6 +2829,7 @@ public class MainFrame extends JFrame {
 		getJTextFieldSurges().setEnabled(false);
 		getJButtonPlusOne().setEnabled(false);
 		getJButtonMinusOne().setEnabled(false);
+		getJButtonRegainAll().setEnabled(false);
 		getJButtonHeal().setEnabled(false);
 		getJButtonUnfailDeath().setEnabled(false);
 		getJButtonAddTemp().setEnabled(false);
