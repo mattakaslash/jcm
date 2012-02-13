@@ -463,7 +463,7 @@ public class Stats {
 	 * 
 	 * @return the notes
 	 */
-	private String getNotes() {
+	public String getNotes() {
 		return getNotesBase().replace("###", "\n");
 	}
 
@@ -473,7 +473,7 @@ public class Stats {
 	 * @param value
 	 *            the notes
 	 */
-	private void setNotes(String notes) {
+	public void setNotes(String notes) {
 		setNotesBase(notes.replace("\n", "###"));
 	}
 
