@@ -53,6 +53,8 @@ import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
@@ -948,7 +950,6 @@ public class MainFrame extends JFrame {
 	private JPopupMenu getJPopupMenuRoster() {
 		if (jPopupMenuRoster == null) {
 			jPopupMenuRoster = new JPopupMenu();
-			// TODO: Don't pop up if nothing is selected.
 			jPopupMenuRoster.add(getJMenuItemMoveToTop());
 			jPopupMenuRoster.add(getJMenuItemDelay());
 			jPopupMenuRoster.add(getJMenuItemReady());
@@ -959,6 +960,23 @@ public class MainFrame extends JFrame {
 			jPopupMenuRoster.add(getJMenuItemMarkUntilEOE());
 			jPopupMenuRoster.addSeparator();
 			jPopupMenuRoster.add(getJMenuItemToggleVisibility());
+			jPopupMenuRoster.addPopupMenuListener(new PopupMenuListener() {
+				
+				@Override
+				public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+					jPopupMenuRosterWillBecomeVisible(e);
+				}
+				
+				@Override
+				public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+					// do nothing
+				}
+				
+				@Override
+				public void popupMenuCanceled(PopupMenuEvent e) {
+					// do nothing
+				}
+			});
 		}
 		return jPopupMenuRoster;
 	}
@@ -2086,6 +2104,16 @@ public class MainFrame extends JFrame {
 		if (fighter != null) {
 			fighter.setShown(!fighter.isShown());
 			reloadListFromClass();
+		}
+	}
+	
+	/**
+	 * Event: Roster popup will become visible.
+	 * @param event
+	 */
+	private void jPopupMenuRosterWillBecomeVisible(PopupMenuEvent event) {
+		if (getJTableRoster().getSelectedRow() == -1) {
+			getJPopupMenuRoster().setVisible(false);
 		}
 	}
 
