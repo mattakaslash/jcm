@@ -143,7 +143,7 @@ public class Power {
 	 * Returns the size of the power's aura.
 	 * @return the aura size
 	 */
-	private Integer getAura() {
+	Integer getAura() {
 		return _aura;
 	}
 
@@ -310,7 +310,7 @@ public class Power {
 			if (!getTypeCode().isEmpty()) {
 				out += "<font face='DnD4Attack'>" + getTypeCode() + "</font> ";
 			}
-			out += "<b>" + _name.replace("*", "&bull;") + "</b>";
+			out += "<b>" + getName().replace("*", "&bull;") + "</b>";
 			if (!getAction().isEmpty()) {
 				out += " (" + getActionDiceHTML() + ")";
 			}
