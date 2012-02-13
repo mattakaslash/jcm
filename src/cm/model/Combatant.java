@@ -1241,7 +1241,7 @@ public class Combatant implements Comparable<Combatant> {
 	 * Returns {@link Stats#getStatsHTML()} 
 	 * @return {@link Stats#getStatsHTML()}
 	 */
-	public String getStatblockHTML() {
+	public String getStatsHTML() {
 		return getStats().getStatsHTML();
 	}
 
