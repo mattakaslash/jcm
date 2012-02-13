@@ -18,7 +18,7 @@ public class DurationCellRenderer extends JLabel implements ListCellRenderer {
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
-		setText(((Duration)value).toString());
+		setText(((Duration)value).getDesc());
 		return this;
 	}
 

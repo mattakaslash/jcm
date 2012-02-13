@@ -838,10 +838,10 @@ public class Encounter {
 	 * @param beneficial true if the effect is beneficial to the target
 	 */
 	public void effectAdd(String name, String source, String target, Duration dur, Boolean beneficial) {
-		Effect newEffect = new Effect(name, _nextEffectID, source, target, effectTillRound(source, target, dur), dur, beneficial);
+		Effect newEffect = new Effect(name, getNextEffectID(), source, target, effectTillRound(source, target, dur), dur, beneficial);
 		
 		if (newEffect.isValid()) {
-			if (!getActiveEffects().containsKey(_nextEffectID)) {
+			if (!getActiveEffects().containsKey(getNextEffectID())) {
 				// remove prior marks if effect is a mark
 				if (newEffect.isMark()) {
 					effectRemoveMarksByTarget(target);
@@ -854,13 +854,16 @@ public class Encounter {
 	}
 
 	/**
-	 * TODO: review original code; what this is doing doesn't make much sense
+	 * Updates effect duration when an effect has changed.
 	 * @param eff the effect
 	 */
 	public void effectChange(Effect eff) {
 		if (eff.isValid()) {
 			if (getActiveEffects().containsKey(eff.getEffectID())) {
+				eff.setRoundTill(effectTillRound(eff.getSourceHandle(), eff.getTargetHandle(), eff.getDurationCode()));
+				// not sure the next two lines are actually necessary, but I don't feel like taking them out right now
 				eff.setEndInitSeq(getActiveEffects().get(eff.getEffectID()).getEndInitSeq());
+				getActiveEffects().put(eff.getEffectID(), eff);
 			}
 		}
 	}

@@ -2654,7 +2654,7 @@ public class MainFrame extends JFrame {
 			DefaultListModel model = (DefaultListModel) getJListEffects().getModel();
 			model.clear();
 			
-			for (cm.model.Effect eff : getFight().getEffectsByTarget(fighter.getCombatHandle())) {
+			for (Effect eff : getFight().getEffectsByTarget(fighter.getCombatHandle())) {
 				model.addElement(eff);
 			}
 			effectButtonUpdate();

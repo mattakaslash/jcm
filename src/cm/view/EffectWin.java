@@ -88,6 +88,8 @@ public class EffectWin extends JDialog {
 		
 		setFight(fight);
 		setModEffect(eff);
+		setOrigID(eff.getEffectID());
+		setOrigRound(eff.getRoundTill());
 		loadCombos();
 		setDefaults();
 		//loadHistory();
@@ -105,7 +107,7 @@ public class EffectWin extends JDialog {
 		add(getJButtonCancel(), new Constraints(new Trailing(12, 12, 12), new Leading(154, 12, 12)));
 		add(getJButtonOK(), new Constraints(new Trailing(91, 12, 12), new Leading(154, 12, 12)));
 		add(getJScrollPanePresets(), new Constraints(new Leading(12, 379, 12, 12), new Bilateral(185, 12, 22)));
-		setSize(400, 525);
+		pack();
 	}
 
 	private JButton getJButtonCancel() {
@@ -424,6 +426,14 @@ public class EffectWin extends JDialog {
 	private Integer getOrigID() {
 		return _origID;
 	}
+	
+	/**
+	 * Sets the original effect ID.
+	 * @param id the effect ID
+	 */
+	private void setOrigID(Integer id) {
+		_origID = id;
+	}
 
 	/**
 	 * Returns the original round of combat.
@@ -431,6 +441,14 @@ public class EffectWin extends JDialog {
 	 */
 	private Integer getOrigRound() {
 		return _origRound;
+	}
+	
+	/**
+	 * Sets the original round of combat.
+	 * @param origRound the round
+	 */
+	private void setOrigRound(Integer origRound) {
+		_origRound = origRound;
 	}
 
 	/**
