@@ -1387,6 +1387,13 @@ public class MainFrame extends JFrame {
 			menuHelpAbout = new JMenuItem();
 			menuHelpAbout.setText("About");
 			menuHelpAbout.setAccelerator(KeyStroke.getKeyStroke("pressed F1"));
+			menuHelpAbout.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					menuHelpAboutActionActionPerformed(e);
+				}
+			});
 		}
 		return menuHelpAbout;
 	}
@@ -2247,6 +2254,17 @@ public class MainFrame extends JFrame {
 	 */
 	private void menuFileSaveActionActionPerformed(ActionEvent event) {
 		saveEncounter();
+	}
+	
+	/**
+	 * Event: Menu, Help, About.
+	 * @param event
+	 */
+	private void menuHelpAboutActionActionPerformed(ActionEvent event) {
+		About about = new About();
+		about.setLocationRelativeTo(this);
+		about.setVisible(true);
+		about.dispose();
 	}
 
 	/**
