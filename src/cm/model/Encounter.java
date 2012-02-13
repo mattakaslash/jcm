@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.SortedMap;
@@ -1180,11 +1181,11 @@ public class Encounter {
 	 * Rolls initiative for each group of fighters, then starts the first fighter's turn.
 	 */
 	private void rollAllInitGrouped() {
-		Hashtable<String, String> initList = new Hashtable<String, String>();
+		HashMap<String, String> initList = new HashMap<String, String>();
 		Combatant firstRoller;
 	
 		for (Combatant fighter : getRoster().values()) {
-			if (initList.contains(fighter.getHandle())) {
+			if (initList.containsKey(fighter.getHandle())) {
 				if (!fighter.getInitStatus().contentEquals("Rolled")) {
 					firstRoller = getRoster().get(initList.get(fighter.getHandle()));
 					fighter.resetInit();
