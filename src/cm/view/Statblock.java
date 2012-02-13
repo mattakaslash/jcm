@@ -1475,8 +1475,10 @@ public class Statblock extends JDialog {
 	/**
 	 * Creates a new form for editing the given statblock.
 	 * @param stat the statblock
+	 * @param c 
 	 */
-	public Statblock(Stats stat) {
+	public Statblock(Stats stat, JDialog c) {
+		super(c);
 		initComponents();
 		
 		setStat(stat);

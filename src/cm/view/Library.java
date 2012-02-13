@@ -3,6 +3,7 @@ package cm.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.DataFlavor;
@@ -79,8 +80,10 @@ public class Library extends JDialog {
 		initComponents();
 	}
 
-	public Library(StatLibrary statlib) {
+	public Library(StatLibrary statlib, Frame c) {
+		super(c);
 		initComponents();
+		setLocationRelativeTo(c);
 		setStatLib(statlib);
 		resetListFromClass();
 	}
@@ -466,7 +469,7 @@ public class Library extends JDialog {
 	 */
 	private void jButtonNewActionActionPerformed(ActionEvent event) {
 		Stats stat = new Stats();
-		Statblock statblockWin = new Statblock(stat);
+		Statblock statblockWin = new Statblock(stat, this);
 		statblockWin.setVisible(true);
 		
 		if (statblockWin.getStat() != null) {
@@ -497,7 +500,7 @@ public class Library extends JDialog {
 			
 			if (getStatLib().contains(handle)) {
 				Stats stat = getStatLib().get(handle);
-				Statblock statblockWin = new Statblock(stat);
+				Statblock statblockWin = new Statblock(stat, this);
 				statblockWin.setVisible(true);
 				
 				if (statblockWin.getStat() != null) {

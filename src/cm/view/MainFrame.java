@@ -1628,7 +1628,7 @@ public class MainFrame extends JFrame {
 		Combatant fighter = getListSelectedFighter();
 		
 		if (fighter != null) {
-			EffectWin effectWin = new EffectWin(getFight());
+			EffectWin effectWin = new EffectWin(getFight(), this);
 			effectWin.setVisible(true);
 			
 			if (effectWin.getEffect() != null) {
@@ -1674,7 +1674,7 @@ public class MainFrame extends JFrame {
 			if (getJListEffects().getSelectedIndices().length > 0) {
 				for (int i : getJListEffects().getSelectedIndices()) {
 					Effect eff = (Effect) getJListEffects().getModel().getElementAt(i);
-					EffectWin effectWin = new EffectWin(getFight(), getFight().getActiveEffect(eff.getEffectID()));
+					EffectWin effectWin = new EffectWin(getFight(), getFight().getActiveEffect(eff.getEffectID()), this);
 					effectWin.setVisible(true);
 					
 					if (effectWin.getEffect() != null) {
@@ -2290,7 +2290,7 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void menuLibraryOpenActionActionPerformed(ActionEvent event) {
-		Library statlibWin = new Library(getStatlib());
+		Library statlibWin = new Library(getStatlib(), this);
 		statlibWin.setVisible(true);
 		getStatlib().saveToFile(getStatlibFilename());
 		

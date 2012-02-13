@@ -2,6 +2,7 @@ package cm.view;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -64,23 +65,25 @@ public class EffectWin extends JDialog {
 	/**
 	 * Creates a new effect window for the given encounter.
 	 * @param fight the encounter
+	 * @param c the parent component
 	 */
-	public EffectWin(Encounter fight) {
+	public EffectWin(Encounter fight, Frame c) {
+		super(c);
 		initComponents();
 		
 		setFight(fight);
 		setModEffect(new Effect());
 		loadCombos();
 		setDefaults();
-		//loadHistory();
 	}
-
 	/**
 	 * Creates a new effect window for the given encounter, with an effect to modify.
 	 * @param fight the encounter
 	 * @param eff the effect to modify
+	 * @param c the parent component
 	 */
-	public EffectWin(Encounter fight, Effect eff) {
+	public EffectWin(Encounter fight, Effect eff, Frame c) {
+		super(c);
 		initComponents();
 		
 		setFight(fight);
