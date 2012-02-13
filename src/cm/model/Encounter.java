@@ -636,7 +636,7 @@ public class Encounter {
 		if (getRoster().containsKey(combatHandle)) {
 			Combatant fighter = getRoster().get(combatHandle);
 			
-			fighterInitUpdate(combatHandle, fighter.getRound(), fighter.getInitRoll(), fighter.getRandom3(), true);
+			fighterInitUpdate(combatHandle, fighter.getRound(), init, fighter.getRandom3(), true);
 			
 			if (fighter.getCombatHandle().contentEquals(getCurrentFighterHandle())) {
 				fighterStartTurn(getCurrentFighterHandle());
