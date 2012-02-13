@@ -1081,6 +1081,7 @@ public class MainFrame extends JFrame {
 			jSplitPaneLeft = new JSplitPane();
 			jSplitPaneLeft.setDividerLocation(350);
 			jSplitPaneLeft.setDividerSize(0);
+			jSplitPaneLeft.setResizeWeight(1.0);
 			jSplitPaneLeft.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			jSplitPaneLeft.setTopComponent(getJScrollPaneRoster());
 			jSplitPaneLeft.setBottomComponent(getJTabbedPaneUtils());
@@ -3039,11 +3040,13 @@ public class MainFrame extends JFrame {
 		for (String handle : getFight().getRolledList().values()) {
 			Combatant fighter = getFight().getFighterByHandle(handle);
 			for (Power pow : fighter.getPowerList()) {
-				if (!fighter.isPowerUsed(pow.getName()) && !fighter.isPC()
+				if (!fighter.isPowerUsed(pow.getName())
+						&& !fighter.isPC()
 						&& (pow.getAction().contains("immediate")
-						|| pow.getAction().contains("opportunity")
-						|| pow.getAction().contains("free")
-						|| pow.getAction().contains("no"))) {
+								|| pow.getAction().contains("opportunity;")
+								|| pow.getAction().contains("triggered;")
+								|| pow.getAction().contains("free;") || pow
+								.getAction().contains("no;"))) {
 					model.addElement(new FighterPower(fighter, pow));
 				}
 			}
