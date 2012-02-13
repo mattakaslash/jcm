@@ -1263,6 +1263,7 @@ public class MainFrame extends JFrame {
 		if (menuEncounterEnd == null) {
 			menuEncounterEnd = new JMenuItem();
 			menuEncounterEnd.setText("End Encounter");
+			menuEncounterEnd.setAccelerator(KeyStroke.getKeyStroke("control shift pressed I"));
 			menuEncounterEnd.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -1339,6 +1340,7 @@ public class MainFrame extends JFrame {
 		if (menuFileImport == null) {
 			menuFileImport = new JMenuItem();
 			menuFileImport.setText("Import");
+			menuFileImport.setAccelerator(KeyStroke.getKeyStroke("control shift pressed O"));
 			menuFileImport.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -1533,7 +1535,7 @@ public class MainFrame extends JFrame {
 		if (menuOptionsShowFullInitDisplay == null) {
 			menuOptionsShowFullInitDisplay = new JCheckBoxMenuItem();
 			menuOptionsShowFullInitDisplay.setText("Show Full Init Display");
-			menuOptionsShowFullInitDisplay.setAccelerator(KeyStroke.getKeyStroke("pressed F3"));
+			menuOptionsShowFullInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed F"));
 			menuOptionsShowFullInitDisplay.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
@@ -1548,7 +1550,7 @@ public class MainFrame extends JFrame {
 		if (menuOptionsShowMinimalInitDisplay == null) {
 			menuOptionsShowMinimalInitDisplay = new JCheckBoxMenuItem();
 			menuOptionsShowMinimalInitDisplay.setText("Show Minimal Init Display");
-			menuOptionsShowMinimalInitDisplay.setAccelerator(KeyStroke.getKeyStroke("pressed F2"));
+			menuOptionsShowMinimalInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed M"));
 			menuOptionsShowMinimalInitDisplay.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
