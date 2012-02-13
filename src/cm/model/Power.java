@@ -391,7 +391,7 @@ public class Power {
 		String type = value.trim().toLowerCase();
 		
 		if (type.startsWith("aura")) {
-			setAura(Integer.valueOf(type.replace("aura", "")));
+			setAura(Integer.valueOf(type.replace("aura", "").trim()));
 			setTypeCode("");
 		} else if (type.contentEquals("basic melee")) {
 			setTypeCode("m");
