@@ -7,7 +7,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.util.Collection;
-import java.util.Hashtable;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import javax.swing.JOptionPane;
 import javax.xml.stream.XMLStreamException;
@@ -20,7 +21,7 @@ import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
 import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
 
 public class StatLibrary {
-	private Hashtable<String, Stats> _library = new Hashtable<String, Stats>();
+	private SortedMap<String, Stats> _library = new TreeMap<String, Stats>();
 	
 	/**
 	 * Add a statblock to the library.
@@ -70,7 +71,7 @@ public class StatLibrary {
 	 * Returns the statblock library hashtable.
 	 * @return the library
 	 */
-	private Hashtable<String, Stats> getLibrary() {
+	private SortedMap<String, Stats> getLibrary() {
 		return _library;
 	}
 

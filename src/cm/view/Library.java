@@ -114,7 +114,6 @@ public class Library extends JDialog {
 			jListBattleList = new JList();
 			DefaultListModel listModel = new DefaultListModel();
 			jListBattleList.setModel(listModel);
-			jListBattleList.setEnabled(false);
 			jListBattleList.addMouseListener(new MouseAdapter() {
 	
 				public void mouseClicked(MouseEvent event) {
