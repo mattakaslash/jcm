@@ -24,7 +24,7 @@ public class EffectBaseCellRenderer extends JTextArea implements ListCellRendere
 			int index, boolean isSelected, boolean cellHasFocus) {
 		EffectBase eff = (EffectBase) value;
 		setText(eff.getName() + "\n" 
-				+ "    Duration: " + eff.getDurationCode());
+				+ "    Duration: " + eff.getDurationCode().getDesc());
 		setForeground(Color.WHITE);
 		if (eff.isBeneficial()) {
 			setBackground(Color.GREEN);

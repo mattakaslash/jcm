@@ -53,7 +53,7 @@ public class EffectBase {
 		 * 
 		 * @see java.lang.Enum#toString()
 		 */
-		public String toString() {
+		public String getDesc() {
 			return this._desc;
 		}
 
