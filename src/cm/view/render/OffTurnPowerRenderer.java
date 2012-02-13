@@ -23,6 +23,7 @@ public class OffTurnPowerRenderer extends JLabel implements ListCellRenderer {
 		Combatant fighter = ((FighterPower) value).getFighter();
 		Power power = ((FighterPower) value).getPower();
 		
+		setOpaque(true);
 		setText(fighter.getName() + ": " + power.getName() + power.getActionLine());
 
 		return this;
