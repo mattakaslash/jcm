@@ -30,7 +30,7 @@ public class EffectBase {
 		SourceStart("Start of Source's Next Turn", "SOT Source"),
 		SourceEnd("End of Source's Next Turn", "EOT Source"),
 		TurnEnd("End of the Current Turn", "EOT"),
-		Encounter("End of Encounter", "EOE"),
+		Encounter("End of the Encounter", "EOE"),
 		Sustained("Sustained", null), 
 		Special("Special", null);
 
