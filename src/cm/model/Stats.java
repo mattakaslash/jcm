@@ -899,8 +899,9 @@ public class Stats {
 					|| pow.getAction().toLowerCase().contains("minor")
 					|| pow.getAction().toLowerCase().contains("free")
 					|| pow.getAction().toLowerCase().contains("triggered")
-					|| pow.getAction().isEmpty() || pow.getAction()
-					.toLowerCase().contains("item"))) {
+					|| pow.getAction().isEmpty()
+					|| pow.getAura() > 0
+					|| pow.getAction().toLowerCase().contains("item"))) {
 				if (!flag) {
 					value += "<div class='ggtype'><div class='mbsubleft'><b>Other Powers</b></div></div>";
 					flag = true;
