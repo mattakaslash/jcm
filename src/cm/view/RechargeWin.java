@@ -35,7 +35,7 @@ public class RechargeWin extends JDialog {
 	private JButton jButtonRerollAll;
 	private JButton jButtonSave;
 	private JList jListPowers;
-	private JScrollPane jScrollPane0;
+	private JScrollPane jScrollPanePowers;
 	public RechargeWin() {
 		initComponents();
 	}
@@ -45,8 +45,9 @@ public class RechargeWin extends JDialog {
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		setBackground(Color.white);
 		setForeground(Color.black);
+		setModal(true);
 		add(getJPanelBottom(), BorderLayout.SOUTH);
-		add(getJScrollPane0(), BorderLayout.CENTER);
+		add(getJScrollPanePowers(), BorderLayout.CENTER);
 		addWindowListener(new WindowAdapter() {
 	
 			public void windowOpened(WindowEvent event) {
@@ -56,12 +57,12 @@ public class RechargeWin extends JDialog {
 		setSize(320, 240);
 	}
 
-	private JScrollPane getJScrollPane0() {
-		if (jScrollPane0 == null) {
-			jScrollPane0 = new JScrollPane();
-			jScrollPane0.setViewportView(getJListPowers());
+	private JScrollPane getJScrollPanePowers() {
+		if (jScrollPanePowers == null) {
+			jScrollPanePowers = new JScrollPane();
+			jScrollPanePowers.setViewportView(getJListPowers());
 		}
-		return jScrollPane0;
+		return jScrollPanePowers;
 	}
 
 	private JList getJListPowers() {
@@ -128,7 +129,6 @@ public class RechargeWin extends JDialog {
 	
 	private Hashtable<String, Power> _powers = new Hashtable<String, Power>();
 	private List<String> _recharged = new ArrayList<String>();
-	private DiceBag _dice;
 
 	/**
 	 * Creates a new power recharge window for the provided combatant.
@@ -156,14 +156,6 @@ public class RechargeWin extends JDialog {
 	}
 
 	/**
-	 * Sets the dice bag to be used for rolls.
-	 * @param dice the dice bag
-	 */
-	private void setDice(DiceBag dice) {
-		_dice = dice;
-	}
-
-	/**
 	 * Event: Window opened.
 	 * @param event
 	 */
@@ -185,6 +177,8 @@ public class RechargeWin extends JDialog {
 				getRecharged().add(pow.getName());
 			}
 		}
+		
+		this.setVisible(false);
 	}
 
 	/**
@@ -210,14 +204,6 @@ public class RechargeWin extends JDialog {
 		
 		rerollAllRecharge();
 	}
-
-	/**
-	 * Returns the dice bag to be used for rolls.
-	 * @return the dice bag
-	 */
-	private DiceBag getDice() {
-		return _dice;
-	}
 	
 	/**
 	 * Rerolls all recharge powers in the list.
@@ -228,9 +214,9 @@ public class RechargeWin extends JDialog {
 		for (int i = 0; i < model.getSize(); i++) {
 			CheckableItem item = (CheckableItem) model.get(i);
 			Power pow = (Power) item.getObject();
-			Integer roll = getDice().roll(6);
+			Integer roll = DiceBag.roll(6);
 			item.setSelected(roll >= pow.getRechargeVal());
-			item.setText(item.getText() + " (roll=" + roll + ")");
+			item.setText("(recharge=" + pow.getRechargeVal() + ") (roll=" + roll + ")");
 		}
 		
 		getJListPowers().repaint();
@@ -245,7 +231,7 @@ public class RechargeWin extends JDialog {
 		CheckableItem item = (CheckableItem) list.getModel().getElementAt(list.locationToIndex(event.getPoint()));
 		Power pow = (Power) item.getObject();
 		item.setSelected(!item.isSelected());
-		item.setText("(recharge=" + pow.getRechargeVal());
+		item.setText("(recharge=" + pow.getRechargeVal() + ")");
 		list.repaint();
 	}
 }
