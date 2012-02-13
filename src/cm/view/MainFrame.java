@@ -187,6 +187,10 @@ public class MainFrame extends JFrame {
 		setTitle("DnD 4e Combat Manager");
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
 		addWindowListener(new WindowAdapter() {
+			
+			public void windowClosing(WindowEvent event) {
+				windowWindowClosing(event);
+			}
 	
 			public void windowOpened(WindowEvent event) {
 				windowWindowOpened(event);
@@ -2396,6 +2400,14 @@ public class MainFrame extends JFrame {
 			updateFromClass();
 		}
 	}
+	
+	/**
+	 * Event: window closing.
+	 * @param event 
+	 */
+	private void windowWindowClosing(WindowEvent event) {
+		exitEncounter();
+	}
 
 	/**
 	 * Event: window open.
@@ -2573,6 +2585,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void exitEncounter() {
 		Settings.save();
+		getStatlib().saveToFile(getStatlibFilename());
 		this.dispose();
 	}
 
@@ -2758,6 +2771,15 @@ public class MainFrame extends JFrame {
 				name += ".xml";
 			}
 			getFight().saveToFile(f.getParent() + File.pathSeparator + name);
+		}
+	}
+
+	/**
+	 * Saves the text in the global notes text area to the class. 
+	 */
+	private void saveGlobalNotes() {
+		if (getFight() != null) {
+			getFight().setGlobalNotes(getJTextAreaNotes().getText());
 		}
 	}
 
@@ -3179,14 +3201,5 @@ public class MainFrame extends JFrame {
 		text = "<h1>Round " + currentRound + ". Defenses: " + min + "-" + max + "</h1><br>" + text + "</table></body></html>";
 		
 		getInitDisplay().setHTML(text);
-	}
-	
-	/**
-	 * Saves the text in the global notes text area to the class. 
-	 */
-	private void saveGlobalNotes() {
-		if (getFight() != null) {
-			getFight().setGlobalNotes(getJTextAreaNotes().getText());
-		}
 	}
 }
