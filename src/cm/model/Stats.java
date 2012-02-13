@@ -919,23 +919,16 @@ public class Stats {
 			value += "<tr><td colspan='3' class='indmed'><b>Feats</b> "
 					+ getFeats() + "</td></tr>";
 		}
-
-		/*
-		 * TODO: If (nStr > 0) Then
-		 * builder.Append(("<tr><td class='indmed'><b>Str</b> " &
-		 * RTF_Manip.RTF_DnDStatBonus(nStr) & "</td>"))
-		 * builder.Append(("<td class='indmed'><b>Dex</b> " &
-		 * RTF_Manip.RTF_DnDStatBonus(nDex) & "</td>"))
-		 * builder.Append(("<td class='indmed'><b>Wis</b> " &
-		 * RTF_Manip.RTF_DnDStatBonus(nWis) & "</td></tr>"))
-		 * builder.Append(("<tr><td class='indmed'><b>Con</b> " &
-		 * RTF_Manip.RTF_DnDStatBonus(nCon) & "</td>"))
-		 * builder.Append(("<td class='indmed'><b>Int</b> " &
-		 * RTF_Manip.RTF_DnDStatBonus(nInt) & "</td>"))
-		 * builder.Append(("<td class='indmed'><b>Cha</b> " &
-		 * RTF_Manip.RTF_DnDStatBonus(nCha) & "</td></tr>")) End If
-		 */
-
+		
+		if (getStr() > 0) {
+			value += "<tr><td class='indmed'><b>Str</b> " + RTFManip.statBonus(getStr()) + "</td>";
+			value += "<td class='indmed'><b>Dex</b> " + RTFManip.statBonus(getDex()) + "</td>";
+			value += "<td class='indmed'><b>Wis</b> " + RTFManip.statBonus(getWis()) + "</td></tr>";
+			value += "<tr><td class='indmed'><b>Con</b> " + RTFManip.statBonus(getCon()) + "</td>";
+			value += "<td class='indmed'><b>Int</b> " + RTFManip.statBonus(getInt()) + "</td>";
+			value += "<td class='indmed'><b>Cha</b> " + RTFManip.statBonus(getCha()) + "</td></tr>";
+		}
+		
 		value += "</table></div>";
 		value += "<div class='gglt'>";
 		if (!getAlignment().isEmpty()) {
