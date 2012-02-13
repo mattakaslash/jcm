@@ -2959,7 +2959,7 @@ public class MainFrame extends JFrame {
 			}
 			getJSpinnerInitRoll().setValue(fighter.getInitRoll());
 			
-			getJEditorPaneStatblock().setText(fighter.getStatblockHTML());
+			getJEditorPaneStatblock().setText(fighter.getStatsHTML());
 			getJTextFieldSurges().setText(fighter.getSurgeView());
 			
 			powerLoad();
