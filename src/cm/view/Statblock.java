@@ -1757,11 +1757,13 @@ public class Statblock extends JDialog {
 		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
 		model.clear();
 		
-		for (Power pow : getStatPowers()) {
-			model.addElement(pow);
+		if (model.isEmpty()) {
+			for (Power pow : getStatPowers()) {
+				model.addElement(pow);
+			}
+
+			setPowerChanged(false);
 		}
-		
-		setPowerChanged(false);
 	}
 
 	/**
@@ -2097,10 +2099,13 @@ public class Statblock extends JDialog {
 	private void resetEffectListFromArray() {
 		DefaultListModel model = (DefaultListModel) getJListEffects().getModel();
 		model.clear();
-		getJButtonDelete().setEnabled(false);
 		
-		for (EffectBase eff : getPresetEffects().toArray(new EffectBase[0])) {
-			model.addElement(eff);
+		if (model.isEmpty()) {
+			getJButtonDelete().setEnabled(false);
+
+			for (EffectBase eff : getPresetEffects().toArray(new EffectBase[0])) {
+				model.addElement(eff);
+			}
 		}
 	}
 
