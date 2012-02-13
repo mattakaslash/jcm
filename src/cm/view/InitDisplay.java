@@ -37,11 +37,13 @@ public class InitDisplay extends JFrame {
 		if (jEditorPaneInitDisplay == null) {
 			jEditorPaneInitDisplay = new JEditorPane();
 			jEditorPaneInitDisplay.setContentType("text/html");
+			jEditorPaneInitDisplay.setEditable(false);
 		}
 		return jEditorPaneInitDisplay;
 	}
 
 	public void setHTML(String text) {
 		getJEditorPaneInitDisplay().setText(text);
+		getJEditorPaneInitDisplay().setCaretPosition(0);
 	}
 }

@@ -672,6 +672,7 @@ public class Library extends JDialog {
 			getJButtonDelete().setEnabled(false);
 			getJButtonAdd().setEnabled(false);
 		}
+		getJEditorPaneStatblock().setCaretPosition(0);
 		
 		if (event.getClickCount() == 2) {
 			getJButtonEdit().doClick();
