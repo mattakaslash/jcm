@@ -828,7 +828,8 @@ public class Encounter {
 		}
 	}
 
-	/*public void effectRemoveEndDelay(Combatant fighter) {
+	/* TODO: implement, or remove
+	public void effectRemoveEndDelay(Combatant fighter) {
 		ArrayList<Effect> list = new ArrayList<Effect>();
 	
 		for (Effect eff : getEffectsBySource(fighter.getCombatHandle())) {
@@ -856,7 +857,8 @@ public class Encounter {
 		for (Effect eff : list) {
 			eff.setInactive(getCurrentInitSequence() + 1);
 		}
-	}*/
+	}
+	*/
 	
 	/**
 	 * Handle effects that a save can end for the given fighter.
@@ -1033,36 +1035,6 @@ public class Encounter {
 			fighterInitMatch(fighter.getCombatHandle(), getCurrentFighterHandle(), false);
 		}
 	}
-
-	/*public void effectRemoveEndDelay(Combatant fighter) {
-		ArrayList<Effect> list = new ArrayList<Effect>();
-	
-		for (Effect eff : getEffectsBySource(fighter.getCombatHandle())) {
-			if (eff.getDurationCode() == Duration.SourceEnd || eff.getDurationCode() == Duration.TurnEnd) {
-				Boolean goodForFighter = eff.isBeneficial();
-				if (fighter.isPC() != _roster.get(eff.getTargetHandle()).isPC()) {
-					goodForFighter = !eff.isBeneficial();
-				}
-				if (goodForFighter) {
-					list.add(eff);
-				}
-			} else if (eff.getDurationCode() == Duration.Sustained) {
-				list.add(eff);
-			}
-		}
-		
-		for (Effect eff : getEffectsByTarget(fighter.getCombatHandle())) {
-			if (eff.getDurationCode() == Duration.TargetEnd || eff.getDurationCode() == Duration.TurnEnd) {
-				if (eff.getRoundTill() <= fighter.getRound() && eff.isBeneficial()) {
-					list.add(eff);
-				}
-			}
-		}
-		
-		for (Effect eff : list) {
-			eff.setInactive(getCurrentInitSequence() + 1);
-		}
-	}*/
 	
 	/**
 	 * Handle recharge powers for the given fighter.
@@ -1268,36 +1240,6 @@ public class Encounter {
 			fighter.updateLibrary(getStatLib(), configEntries);
 		}
 	}
-	
-	/*public void effectRemoveEndDelay(Combatant fighter) {
-		ArrayList<Effect> list = new ArrayList<Effect>();
-
-		for (Effect eff : getEffectsBySource(fighter.getCombatHandle())) {
-			if (eff.getDurationCode() == Duration.SourceEnd || eff.getDurationCode() == Duration.TurnEnd) {
-				Boolean goodForFighter = eff.isBeneficial();
-				if (fighter.isPC() != _roster.get(eff.getTargetHandle()).isPC()) {
-					goodForFighter = !eff.isBeneficial();
-				}
-				if (goodForFighter) {
-					list.add(eff);
-				}
-			} else if (eff.getDurationCode() == Duration.Sustained) {
-				list.add(eff);
-			}
-		}
-		
-		for (Effect eff : getEffectsByTarget(fighter.getCombatHandle())) {
-			if (eff.getDurationCode() == Duration.TargetEnd || eff.getDurationCode() == Duration.TurnEnd) {
-				if (eff.getRoundTill() <= fighter.getRound() && eff.isBeneficial()) {
-					list.add(eff);
-				}
-			}
-		}
-		
-		for (Effect eff : list) {
-			eff.setInactive(getCurrentInitSequence() + 1);
-		}
-	}*/
 	
 	/**
 	 * Writes the encounter data out to an XML stream.
@@ -1505,7 +1447,7 @@ public class Encounter {
 		return null;
 	}
 }
-/*
+/* TODO: implement, or remove
 Public ReadOnly Property nEncounterLevel() As Integer
     Get
         Return DnD4e_EncounterLevel(nPartySize, nEncounterXP)

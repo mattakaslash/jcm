@@ -3052,7 +3052,7 @@ public class MainFrame extends JFrame {
 	}
 
 	private void updateEncounterXPTotals() {
-	/*
+	/* TODO: implement, or remove
 	        dfPartySize.Text = CStr(fight.nPartySize)
 	        dfXPTotal.Text = fight.nEncounterXP.ToString("#,0")
 	        If fight.nPartySize = 0 Then
