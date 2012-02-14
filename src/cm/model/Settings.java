@@ -53,6 +53,7 @@ public class Settings {
 		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doSavingThrows", Boolean.TRUE.toString());
 		SETTINGS.setProperty("useModRoles", Boolean.FALSE.toString());
+		SETTINGS.setProperty("workingDirectory", System.getProperty("user.dir"));
 	}
 
 	public static Boolean useModRoles() {
@@ -74,6 +75,11 @@ public class Settings {
 		init();
 		return Boolean.valueOf(SETTINGS.getProperty("doSavingThrows"));
 	}
+	
+	public static File getWorkingDirectory() {
+		init();
+		return new File(SETTINGS.getProperty("workingDirectory"));
+	}
 
 	public static void setPopupForOngoingDamage(Boolean value) {
 		SETTINGS.setProperty("doOngoingPopup", value.toString());
@@ -85,5 +91,9 @@ public class Settings {
 
 	public static void setUseSavingThrows(Boolean value) {
 		SETTINGS.setProperty("doSavingThrows", value.toString());
+	}
+	
+	public static void setWorkingDirectory(File directory) {
+		SETTINGS.setProperty("workingDirectory", directory.getAbsolutePath());
 	}
 }

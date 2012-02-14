@@ -2655,6 +2655,7 @@ public class MainFrame extends JFrame {
 		JFileChooser fc = new JFileChooser();
 		fc.setDialogTitle("Load Encounter File(s)");
 		fc.setMultiSelectionEnabled(true);
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
 		fc.setFileFilter(new FileFilter() {
 			
 			@Override
@@ -2669,6 +2670,7 @@ public class MainFrame extends JFrame {
 		});
 		
 		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
 			if (clearFirst) {
 				getFight().clearAll();
 			}
@@ -2811,6 +2813,7 @@ public class MainFrame extends JFrame {
 	private void saveEncounter() {
 		JFileChooser fc = new JFileChooser();
 		fc.setDialogTitle("Save Encounter File");
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
 		fc.setFileFilter(new FileFilter() {
 			
 			@Override
@@ -2825,6 +2828,7 @@ public class MainFrame extends JFrame {
 		});
 		
 		if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
 			File f = fc.getSelectedFile();
 			String name = f.getName();
 			if (name.indexOf(".") < 0) {

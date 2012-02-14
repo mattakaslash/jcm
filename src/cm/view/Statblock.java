@@ -62,6 +62,7 @@ import org.xml.sax.InputSource;
 
 import cm.model.EffectBase;
 import cm.model.Power;
+import cm.model.Settings;
 import cm.model.Stats;
 import cm.model.EffectBase.Duration;
 import cm.util.AutoCompletion;
@@ -1734,6 +1735,7 @@ public class Statblock extends JDialog {
 		
 		JFileChooser fc = new JFileChooser();
 		fc.setDialogTitle("Load Character File");
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
 		fc.setFileFilter(new FileFilter() {
 			
 			@Override
@@ -1748,6 +1750,7 @@ public class Statblock extends JDialog {
 		});
 		
 		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
 			if (getStat().loadFromCBFile(fc.getSelectedFile().getAbsolutePath())) {
 				if (getStat().isValid()) {
 					moveClassToFields(getStat());
@@ -2166,6 +2169,7 @@ public class Statblock extends JDialog {
 	private void jButtonExportActionActionPerformed(ActionEvent event) {
 		JFileChooser fc = new JFileChooser();
 		fc.setDialogTitle("Export to XML File");
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
 		fc.setFileFilter(new FileFilter() {
 			
 			@Override
@@ -2180,6 +2184,7 @@ public class Statblock extends JDialog {
 		});
 		
 		if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
 			try {
 				File out = fc.getSelectedFile();
 				if (out.exists()) {
@@ -2212,6 +2217,7 @@ public class Statblock extends JDialog {
 		
 		JFileChooser fc = new JFileChooser();
 		fc.setDialogTitle("Load XML File");
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
 		fc.setFileFilter(new FileFilter() {
 			
 			@Override
@@ -2226,6 +2232,7 @@ public class Statblock extends JDialog {
 		});
 		
 		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
 			InputSource input;
 			try {
 				input = new InputSource(new FileInputStream(fc.getSelectedFile()));

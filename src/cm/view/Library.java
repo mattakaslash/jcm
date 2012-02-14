@@ -41,6 +41,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 
+import cm.model.Settings;
 import cm.model.StatLibrary;
 import cm.model.Stats;
 import cm.util.DiceBag;
@@ -618,6 +619,7 @@ public class Library extends JDialog {
 		JFileChooser fc = new JFileChooser();
 		fc.setDialogTitle("Load Character File");
 		fc.setMultiSelectionEnabled(true);
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
 		fc.setFileFilter(new FileFilter() {
 			
 			@Override
@@ -632,6 +634,7 @@ public class Library extends JDialog {
 		});
 		
 		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
 			for (File f : fc.getSelectedFiles()) {
 				stat = new Stats();
 				if (stat.loadFromCBFile(f.getAbsolutePath())) {
