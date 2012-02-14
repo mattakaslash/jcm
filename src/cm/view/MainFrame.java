@@ -45,7 +45,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
-import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -159,8 +158,6 @@ public class MainFrame extends JFrame {
 	private JButton jButtonMinusOne;
 	private JButton jButtonPlusOne;
 	private JButton jButtonRegainAll;
-	private JLabel jLabelHealth;
-	private JLabel jLabelSurges;
 	private JTextField jTextFieldNumber;
 	private JEditorPane jEditorPaneStatblock;
 	private JScrollPane jScrollPaneStatblock;
@@ -732,16 +729,6 @@ public class MainFrame extends JFrame {
 		return jEditorPaneStatblock;
 	}
 
-	private JLabel getJLabelHealth() {
-		if (jLabelHealth == null) {
-			jLabelHealth = new JLabel();
-			jLabelHealth.setHorizontalAlignment(SwingConstants.CENTER);
-			jLabelHealth.setText("Health");
-			jLabelHealth.setBorder(new LineBorder(Color.black, 1, false));
-		}
-		return jLabelHealth;
-	}
-
 	private JLabel getJLabelInitRoll() {
 		if (jLabelInitRoll == null) {
 			jLabelInitRoll = new JLabel();
@@ -757,16 +744,6 @@ public class MainFrame extends JFrame {
 			jLabelName.setText("Name");
 		}
 		return jLabelName;
-	}
-
-	private JLabel getJLabelSurges() {
-		if (jLabelSurges == null) {
-			jLabelSurges = new JLabel();
-			jLabelSurges.setHorizontalAlignment(SwingConstants.CENTER);
-			jLabelSurges.setText("Surges");
-			jLabelSurges.setBorder(new LineBorder(Color.black, 1, false));
-		}
-		return jLabelSurges;
 	}
 
 	private JList getJListEffects() {
