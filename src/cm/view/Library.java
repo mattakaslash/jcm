@@ -527,13 +527,9 @@ public class Library extends JDialog {
 						
 						if (!handle.contentEquals(newHandle)) {
 							DefaultListModel model = (DefaultListModel) getJListBattleList().getModel();
-							Integer index = 0;
-							while (index >= 0) {
-								getJListBattleList().setSelectedIndex(index);
-								model.setElementAt(newHandle, index);
+							while (model.indexOf(handle) >= 0) {
+								model.setElementAt(newHandle, model.indexOf(handle));
 							}
-							
-							index = model.indexOf(handle);
 						}
 					}
 					updateAddXPTotals();
