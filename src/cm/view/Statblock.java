@@ -1851,17 +1851,13 @@ public class Statblock extends JDialog {
 		getJTextFieldPowerAction().setEnabled(true);
 		getJTextAreaPowerDescription().setEnabled(true);
 		getJCheckBoxPowerAura().setEnabled(true);
-		/*
-    If cbPowAura.Checked Then
-        dfPowAuraSize.Enabled = True
-        dfPowAuraSize.Visible = True
-        dfPowType.Enabled = False
-    Else
-        dfPowAuraSize.Enabled = False
-        dfPowAuraSize.Visible = False
-        dfPowType.Enabled = True
-    End If
-		 */
+		if (getJCheckBoxPowerAura().isSelected()) {
+			getJFormattedTextFieldAuraSize().setEnabled(true);
+			getJComboBoxPowerIcon().setEnabled(false);
+		} else {
+			getJFormattedTextFieldAuraSize().setEnabled(false);
+			getJComboBoxPowerIcon().setEnabled(true);
+		}
 	}
 	
 	/**
@@ -1873,9 +1869,8 @@ public class Statblock extends JDialog {
 		getJTextFieldPowerAction().setEnabled(false);
 		getJTextAreaPowerDescription().setEnabled(false);
 		getJCheckBoxPowerAura().setEnabled(false);
-		//dfPowAuraSize.Enabled = False
-		//dfPowAuraSize.Visible = False
-		//dfPowType.Enabled = False
+		getJFormattedTextFieldAuraSize().setEnabled(false);
+		getJComboBoxPowerIcon().setEnabled(false);
 	}
 	
 	/**
@@ -1886,11 +1881,10 @@ public class Statblock extends JDialog {
 		getJComboBoxPowerIcon().setSelectedItem(null);
 		getJTextFieldPowerKeywords().setText("");
 		getJTextFieldPowerAction().setText("");
-		//dfPowAuraSize.Text = "0"
+		getJFormattedTextFieldAuraSize().setText("0");
 		getJCheckBoxPowerAura().setSelected(false);
 		getJComboBoxPowerIcon().setEnabled(false);
-		//dfPowAuraSize.Visible = False
-		//dfPowAuraSize.Enabled = False
+		getJFormattedTextFieldAuraSize().setEnabled(false);
 		getJTextAreaPowerDescription().setText("");
 	}
 	
