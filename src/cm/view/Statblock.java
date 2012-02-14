@@ -83,8 +83,8 @@ public class Statblock extends JDialog {
 	private JLabel jLabelTypeKeywords;
 	private JSpinner jSpinnerLevel;
 	private JLabel jLabelRole;
-	private JComboBox jComboBoxRole;
 	private JComboBox jComboBoxRole2;
+	private JComboBox jComboBoxRole;
 	private JCheckBox jCheckBoxLeader;
 	private JCheckBox jCheckBoxPC;
 	private JTextField jTextFieldTypeKeywords;
@@ -1375,30 +1375,30 @@ public class Statblock extends JDialog {
 		return jCheckBoxLeader;
 	}
 
-	private JComboBox getJComboBoxRole2() {
-		if (jComboBoxRole2 == null) {
-			jComboBoxRole2 = new JComboBox();
-			jComboBoxRole2.setModel(new DefaultComboBoxModel(new Object[] { "", "Artillery", "Blaster", "Brute", "Controller", "Lurker", "Minion", "Obstacle", "Puzzle", "Skirmisher", "Soldier", "Warder" }));
-			jComboBoxRole2.setDoubleBuffered(false);
-			jComboBoxRole2.setBorder(null);
-		}
-		return jComboBoxRole2;
-	}
-
 	private JComboBox getJComboBoxRole() {
 		if (jComboBoxRole == null) {
 			jComboBoxRole = new JComboBox();
-			jComboBoxRole.setModel(new DefaultComboBoxModel(new Object[] { "", "Elite", "Solo", "Hero", "Companion" }));
-			jComboBoxRole.setBorder(null);
+			jComboBoxRole.setModel(new DefaultComboBoxModel(new Object[] { "", "Artillery", "Blaster", "Brute", "Controller", "Lurker", "Minion", "Obstacle", "Puzzle", "Skirmisher", "Soldier", "Warder", "Hero", "Companion" }));
 			jComboBoxRole.setDoubleBuffered(false);
-			jComboBoxRole.addItemListener(new ItemListener() {
+			jComboBoxRole.setBorder(null);
+		}
+		return jComboBoxRole;
+	}
+
+	private JComboBox getJComboBoxRole2() {
+		if (jComboBoxRole2 == null) {
+			jComboBoxRole2 = new JComboBox();
+			jComboBoxRole2.setModel(new DefaultComboBoxModel(new Object[] { "", "Elite", "Solo" }));
+			jComboBoxRole2.setBorder(null);
+			jComboBoxRole2.setDoubleBuffered(false);
+			jComboBoxRole2.addItemListener(new ItemListener() {
 	
 				public void itemStateChanged(ItemEvent event) {
 					jComboBoxRoleItemItemStateChanged(event);
 				}
 			});
 		}
-		return jComboBoxRole;
+		return jComboBoxRole2;
 	}
 
 	private JLabel getJLabelRole() {
@@ -1448,8 +1448,8 @@ public class Statblock extends JDialog {
 			jPanelDescription.add(getJLabelRole(), new Constraints(new Leading(12, 32, 62, 62), new Leading(24, 12, 12)));
 			jPanelDescription.add(getJSpinnerLevel(), new Constraints(new Leading(56, 40, 274, 274), new Leading(0, 12, 12)));
 			jPanelDescription.add(getJTextFieldTypeKeywords(), new Constraints(new Leading(211, 140, 78, 78), new Leading(0, 12, 12)));
-			jPanelDescription.add(getJComboBoxRole(), new Constraints(new Leading(56, 80, 56, 56), new Leading(21, 20, 12, 12)));
-			jPanelDescription.add(getJComboBoxRole2(), new Constraints(new Leading(142, 208, 56, 56), new Leading(21, 20, 12, 12)));
+			jPanelDescription.add(getJComboBoxRole2(), new Constraints(new Leading(56, 80, 56, 56), new Leading(21, 20, 12, 12)));
+			jPanelDescription.add(getJComboBoxRole(), new Constraints(new Leading(142, 208, 56, 56), new Leading(21, 20, 12, 12)));
 			jPanelDescription.add(getJCheckBoxLeader(), new Constraints(new Trailing(8, 68, 10, 10), new Leading(0, 17, 8, 8)));
 			jPanelDescription.add(getJCheckBoxPC(), new Constraints(new Trailing(8, 68, 245, 299), new Leading(21, 20, 8, 8)));
 		}
@@ -1649,17 +1649,17 @@ public class Statblock extends JDialog {
 	 */
 	private void jCheckBoxPCChangeStateChanged(ChangeEvent event) {
 		if(getJCheckBoxPC().isSelected()) {
-			getJComboBoxRole().setSelectedItem("Hero");
-			getJComboBoxRole2().setSelectedItem("");
+			getJComboBoxRole2().setSelectedItem("Hero");
+			getJComboBoxRole().setSelectedItem("");
 			getJCheckBoxLeader().setSelected(false);
 			
-			getJComboBoxRole2().setEnabled(false);
+			getJComboBoxRole().setEnabled(false);
 			getJCheckBoxLeader().setEnabled(false);
 		} else {
-			getJComboBoxRole2().setEnabled(true);
+			getJComboBoxRole().setEnabled(true);
 			getJCheckBoxLeader().setEnabled(true);
-			if (((String)getJComboBoxRole().getSelectedItem()).contentEquals("Hero")) {
-				getJComboBoxRole().setSelectedItem("");
+			if (((String)getJComboBoxRole2().getSelectedItem()).contentEquals("Hero")) {
+				getJComboBoxRole2().setSelectedItem("");
 			}
 		}
 	}
@@ -1669,10 +1669,10 @@ public class Statblock extends JDialog {
 	 * @param event
 	 */
 	private void jComboBoxRoleItemItemStateChanged(ItemEvent event) {
-		if (((String)getJComboBoxRole().getSelectedItem()).contentEquals("Hero")
+		if (((String)getJComboBoxRole2().getSelectedItem()).contentEquals("Hero")
 				&& !getJCheckBoxPC().isSelected()) {
 			getJCheckBoxPC().doClick();
-		} else if (!((String)getJComboBoxRole().getSelectedItem()).contentEquals("Hero")
+		} else if (!((String)getJComboBoxRole2().getSelectedItem()).contentEquals("Hero")
 				&& getJCheckBoxPC().isSelected()) {
 			getJCheckBoxPC().doClick();
 		}
