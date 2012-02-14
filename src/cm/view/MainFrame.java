@@ -18,6 +18,7 @@ import java.beans.VetoableChangeListener;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
@@ -45,6 +46,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
@@ -59,6 +61,7 @@ import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 
+import org.dyno.visual.swing.layouts.Bilateral;
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
@@ -127,7 +130,6 @@ public class MainFrame extends JFrame {
 	private JButton jButtonAdd;
 	private JButton jButtonRemove;
 	private JButton jButtonChange;
-	private JLabel jLabelEffects;
 	private JPanel jPanelEffects;
 	private JList jListEffects;
 	private JScrollPane jScrollPaneEffects;
@@ -152,7 +154,7 @@ public class MainFrame extends JFrame {
 	private JButton jButtonAddTemp;
 	private JButton jButtonMax;
 	private JButton jButtonFailDeath;
-	private JButton jButtonUnfailDeath;
+	private JButton jButtonUndoDeath;
 	private JTextField jTextFieldSurges;
 	private JButton jButtonMinusOne;
 	private JButton jButtonPlusOne;
@@ -187,19 +189,66 @@ public class MainFrame extends JFrame {
 
 	private void initComponents() {
 		setTitle("DnD 4e Combat Manager");
+		setFont(new Font("Dialog", Font.PLAIN, 12));
+		setForeground(Color.black);
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
 		addWindowListener(new WindowAdapter() {
-			
-			public void windowClosing(WindowEvent event) {
-				windowWindowClosing(event);
-			}
 	
 			public void windowOpened(WindowEvent event) {
 				windowWindowOpened(event);
 			}
+	
+			public void windowClosing(WindowEvent event) {
+				windowWindowClosing(event);
+			}
 		});
 		setJMenuBar(getMenuBarMain());
 		pack();
+	}
+
+	private JPanel getJPanelEffectButtons() {
+		if (jPanelEffectButtons == null) {
+			jPanelEffectButtons = new JPanel();
+			jPanelEffectButtons.add(getJButtonAdd());
+			jPanelEffectButtons.add(getJButtonChange());
+			jPanelEffectButtons.add(getJButtonRemove());
+		}
+		return jPanelEffectButtons;
+	}
+
+	private JPanel getJPanelSurges() {
+		if (jPanelSurges == null) {
+			jPanelSurges = new JPanel();
+			jPanelSurges.setBorder(BorderFactory.createTitledBorder(null, "Surges", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
+					Font.BOLD, 10), new Color(51, 51, 51)));
+			jPanelSurges.setLayout(new GroupLayout());
+			jPanelSurges.add(getJTextFieldSurges(), new Constraints(new Leading(0, 63, 12, 12), new Leading(-5, 24, 12, 12)));
+			jPanelSurges.add(getJButtonPlusOne(), new Constraints(new Leading(0, 26, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelSurges.add(getJButtonMinusOne(), new Constraints(new Leading(37, 26, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelSurges.add(getJButtonRegainAll(), new Constraints(new Leading(0, 63, 12, 12), new Leading(43, 45, 12, 12)));
+		}
+		return jPanelSurges;
+	}
+
+	private JPanel getJPanelHealth() {
+		if (jPanelHealth == null) {
+			jPanelHealth = new JPanel();
+			jPanelHealth.setBorder(BorderFactory.createTitledBorder(null, "Health", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
+					Font.BOLD, 10), new Color(51, 51, 51)));
+			jPanelHealth.setLayout(new GroupLayout());
+			jPanelHealth.add(getJSpinnerDamageHealAmount(), new Constraints(new Leading(0, 62, 12, 12), new Leading(-5, 10, 10)));
+			jPanelHealth.add(getJButtonFive(), new Constraints(new Leading(0, 26, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelHealth.add(getJButtonPlusFive(), new Constraints(new Leading(36, 26, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelHealth.add(getJButtonSurge(), new Constraints(new Leading(0, 62, 12, 12), new Leading(43, 22, 12, 12)));
+			jPanelHealth.add(getJButtonHalve(), new Constraints(new Leading(0, 62, 12, 12), new Leading(66, 22, 12, 12)));
+			jPanelHealth.add(getJButtonDamage(), new Constraints(new Leading(66, 57, 12, 12), new Leading(-5, 47, 12, 12)));
+			jPanelHealth.add(getJButtonHeal(), new Constraints(new Leading(66, 57, 12, 12), new Leading(43, 45, 12, 12)));
+			jPanelHealth.add(getJButtonAddTemp(), new Constraints(new Leading(127, 74, 12, 12), new Leading(-5, 24, 12, 12)));
+			jPanelHealth.add(getJButtonMax(), new Constraints(new Leading(127, 74, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelHealth.add(getJButtonFailDeath(), new Constraints(new Leading(127, 74, 12, 12), new Leading(43, 22, 12, 12)));
+			jPanelHealth.add(getJButtonUndoDeath(), new Constraints(new Leading(127, 74, 12, 12), new Leading(66, 22, 12, 12)));
+		}
+		return jPanelHealth;
 	}
 
 	private JPanel getJPanelMusic() {
@@ -343,7 +392,7 @@ public class MainFrame extends JFrame {
 	private JButton getJButtonDamage() {
 		if (jButtonDamage == null) {
 			jButtonDamage = new JButton();
-			jButtonDamage.setText("<html>Dmg</html>");
+			jButtonDamage.setText("<html>Damage</html>");
 			jButtonDamage.setMargin(new Insets(0, 0, 0, 0));
 			jButtonDamage.setEnabled(false);
 			jButtonDamage.addActionListener(new ActionListener() {
@@ -643,20 +692,20 @@ public class MainFrame extends JFrame {
 		return jButtonSurge;
 	}
 
-	private JButton getJButtonUnfailDeath() {
-		if (jButtonUnfailDeath == null) {
-			jButtonUnfailDeath = new JButton();
-			jButtonUnfailDeath.setText("<html>Unfail Death</html>");
-			jButtonUnfailDeath.setMargin(new Insets(0, 0, 0, 0));
-			jButtonUnfailDeath.setEnabled(false);
-			jButtonUnfailDeath.addActionListener(new ActionListener() {
+	private JButton getJButtonUndoDeath() {
+		if (jButtonUndoDeath == null) {
+			jButtonUndoDeath = new JButton();
+			jButtonUndoDeath.setText("<html>Undo Death</html>");
+			jButtonUndoDeath.setMargin(new Insets(0, 0, 0, 0));
+			jButtonUndoDeath.setEnabled(false);
+			jButtonUndoDeath.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
-					jButtonUnfailDeathActionActionPerformed(event);
+					jButtonUndoDeathActionActionPerformed(event);
 				}
 			});
 		}
-		return jButtonUnfailDeath;
+		return jButtonUndoDeath;
 	}
 
 	private JEditorPane getJEditorPaneCompendium() {
@@ -681,14 +730,6 @@ public class MainFrame extends JFrame {
 			});
 		}
 		return jEditorPaneStatblock;
-	}
-
-	private JLabel getJLabelEffects() {
-		if (jLabelEffects == null) {
-			jLabelEffects = new JLabel();
-			jLabelEffects.setText("Effects:");
-		}
-		return jLabelEffects;
 	}
 
 	private JLabel getJLabelHealth() {
@@ -872,6 +913,8 @@ public class MainFrame extends JFrame {
 	private JPanel getJPanelBottomCenter() {
 		if (jPanelBottomCenter == null) {
 			jPanelBottomCenter = new JPanel();
+			jPanelBottomCenter.setBorder(BorderFactory.createTitledBorder(null, "Powers", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font(
+					"Dialog", Font.BOLD, 10), new Color(51, 51, 51)));
 			jPanelBottomCenter.setLayout(new BorderLayout());
 			jPanelBottomCenter.add(getJScrollPanePowerList(), BorderLayout.CENTER);
 		}
@@ -882,23 +925,8 @@ public class MainFrame extends JFrame {
 		if (jPanelDamageHealing == null) {
 			jPanelDamageHealing = new JPanel();
 			jPanelDamageHealing.setLayout(new GroupLayout());
-			jPanelDamageHealing.add(getJSpinnerDamageHealAmount(), new Constraints(new Leading(9, 59, 10, 10), new Leading(19, 10, 10)));
-			jPanelDamageHealing.add(getJButtonFive(), new Constraints(new Leading(9, 26, 10, 10), new Leading(44, 12, 12)));
-			jPanelDamageHealing.add(getJButtonPlusFive(), new Constraints(new Leading(41, 26, 12, 12), new Leading(44, 12, 12)));
-			jPanelDamageHealing.add(getJButtonSurge(), new Constraints(new Leading(9, 58, 12, 12), new Leading(64, 10, 10)));
-			jPanelDamageHealing.add(getJButtonHalve(), new Constraints(new Leading(9, 58, 12, 12), new Leading(85, 10, 10)));
-			jPanelDamageHealing.add(getJTextFieldSurges(), new Constraints(new Leading(217, 61, 12, 12), new Leading(19, 12, 12)));
-			jPanelDamageHealing.add(getJButtonPlusOne(), new Constraints(new Leading(250, 28, 12, 12), new Leading(44, 12, 12)));
-			jPanelDamageHealing.add(getJButtonMinusOne(), new Constraints(new Leading(217, 27, 12, 12), new Leading(44, 12, 12)));
-			jPanelDamageHealing.add(getJButtonRegainAll(), new Constraints(new Leading(217, 60, 12, 12), new Leading(64, 44, 12, 12)));
-			jPanelDamageHealing.add(getJLabelSurges(), new Constraints(new Leading(217, 60, 12, 12), new Leading(3, 12, 12)));
-			jPanelDamageHealing.add(getJLabelHealth(), new Constraints(new Leading(9, 202, 12, 12), new Leading(3, 10, 10)));
-			jPanelDamageHealing.add(getJButtonDamage(), new Constraints(new Leading(74, 41, 12, 12), new Leading(19, 44, 12, 12)));
-			jPanelDamageHealing.add(getJButtonHeal(), new Constraints(new Leading(74, 40, 12, 12), new Leading(64, 44, 12, 12)));
-			jPanelDamageHealing.add(getJButtonAddTemp(), new Constraints(new Leading(121, 90, 12, 12), new Leading(19, 19, 12, 12)));
-			jPanelDamageHealing.add(getJButtonMax(), new Constraints(new Leading(121, 90, 12, 12), new Leading(40, 21, 10, 10)));
-			jPanelDamageHealing.add(getJButtonFailDeath(), new Constraints(new Leading(121, 90, 12, 12), new Leading(64, 12, 12)));
-			jPanelDamageHealing.add(getJButtonUnfailDeath(), new Constraints(new Leading(121, 90, 12, 12), new Leading(89, 12, 12)));
+			jPanelDamageHealing.add(getJPanelHealth(), new Constraints(new Leading(0, 211, 12, 12), new Leading(0, 112, 12, 12)));
+			jPanelDamageHealing.add(getJPanelSurges(), new Constraints(new Leading(210, 73, 10, 10), new Leading(0, 112, 12, 12)));
 		}
 		return jPanelDamageHealing;
 	}
@@ -906,8 +934,11 @@ public class MainFrame extends JFrame {
 	private JPanel getJPanelEffects() {
 		if (jPanelEffects == null) {
 			jPanelEffects = new JPanel();
+			jPanelEffects.setBorder(BorderFactory.createTitledBorder(null, "Effects", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
+					Font.BOLD, 10), new Color(51, 51, 51)));
 			jPanelEffects.setLayout(new BorderLayout());
 			jPanelEffects.add(getJScrollPaneEffects(), BorderLayout.CENTER);
+			jPanelEffects.add(getJPanelEffectButtons(), BorderLayout.SOUTH);
 		}
 		return jPanelEffects;
 	}
@@ -917,13 +948,13 @@ public class MainFrame extends JFrame {
 			jPanelInitiative = new JPanel();
 			jPanelInitiative.setLayout(new GroupLayout());
 			jPanelInitiative.add(getJLabelInitRoll(), new Constraints(new Leading(227, 50, 12, 12), new Leading(12, 12, 12)));
-			jPanelInitiative.add(getJSpinnerInitRoll(), new Constraints(new Leading(230, 47, 12, 12), new Leading(32, 41, 10, 10)));
-			jPanelInitiative.add(getJButtonRemoveFighter(), new Constraints(new Leading(3, 72, 12, 12), new Leading(5, 10, 10)));
+			jPanelInitiative.add(getJSpinnerInitRoll(), new Constraints(new Leading(230, 47, 12, 12), new Leading(32, 41, 12, 12)));
+			jPanelInitiative.add(getJButtonRemoveFighter(), new Constraints(new Leading(3, 72, 12, 12), new Leading(5, 38, 12, 12)));
+			jPanelInitiative.add(getJButtonRollInitiative(), new Constraints(new Leading(76, 72, 12, 12), new Leading(5, 38, 12, 12)));
+			jPanelInitiative.add(getJButtonMoveToTop(), new Constraints(new Leading(150, 72, 12, 12), new Leading(5, 38, 12, 12)));
+			jPanelInitiative.add(getJButtonReserve(), new Constraints(new Leading(3, 72, 12, 12), new Leading(44, 38, 12, 12)));
 			jPanelInitiative.add(getJButtonDelay(), new Constraints(new Leading(76, 72, 12, 12), new Leading(44, 38, 12, 12)));
-			jPanelInitiative.add(getJButtonRollInitiative(), new Constraints(new Leading(76, 72, 12, 12), new Leading(5, 12, 12)));
-			jPanelInitiative.add(getJButtonReserve(), new Constraints(new Leading(3, 72, 12, 12), new Leading(44, 38, 10, 10)));
-			jPanelInitiative.add(getJButtonReady(), new Constraints(new Leading(149, 72, 12, 12), new Leading(44, 38, 12, 12)));
-			jPanelInitiative.add(getJButtonMoveToTop(), new Constraints(new Leading(150, 70, 12, 12), new Leading(5, 12, 12)));
+			jPanelInitiative.add(getJButtonReady(), new Constraints(new Leading(150, 72, 12, 12), new Leading(44, 38, 12, 12)));
 		}
 		return jPanelInitiative;
 	}
@@ -933,16 +964,12 @@ public class MainFrame extends JFrame {
 			jPanelTopCenter = new JPanel();
 			jPanelTopCenter.setLayout(new GroupLayout());
 			jPanelTopCenter.add(getJLabelName(), new Constraints(new Leading(4, 10, 10), new Leading(6, 12, 12)));
-			jPanelTopCenter.add(getJLabelEffects(), new Constraints(new Leading(4, 12, 12), new Leading(276, 12, 12)));
-			jPanelTopCenter.add(getJPanelEffects(), new Constraints(new Leading(4, 288, 12, 12), new Leading(200, 70, 12, 12)));
 			jPanelTopCenter.add(getJTabbedPaneControls(), new Constraints(new Leading(4, 288, 12, 12), new Leading(26, 139, 12, 12)));
 			jPanelTopCenter.add(getJButtonNextTurn(), new Constraints(new Leading(4, 211, 12, 12), new Leading(171, 12, 12)));
-			jPanelTopCenter.add(getJButtonAdd(), new Constraints(new Leading(60, 57, 12, 12), new Leading(272, 12, 12)));
-			jPanelTopCenter.add(getJButtonChange(), new Constraints(new Leading(123, 80, 12, 12), new Leading(272, 12, 12)));
-			jPanelTopCenter.add(getJButtonRemove(), new Constraints(new Leading(209, 12, 12), new Leading(272, 12, 12)));
 			jPanelTopCenter.add(getJTextFieldNumber(), new Constraints(new Leading(254, 38, 12, 12), new Leading(3, 12, 12)));
 			jPanelTopCenter.add(getJTextFieldName(), new Constraints(new Leading(43, 205, 10, 10), new Leading(3, 12, 12)));
 			jPanelTopCenter.add(getJButtonBackUp(), new Constraints(new Leading(221, 71, 12, 12), new Leading(171, 12, 12)));
+			jPanelTopCenter.add(getJPanelEffects(), new Constraints(new Leading(4, 288, 12, 12), new Bilateral(193, 12, 78)));
 		}
 		return jPanelTopCenter;
 	}
@@ -1092,15 +1119,15 @@ public class MainFrame extends JFrame {
 	private JSplitPane getJSplitPaneCenter() {
 		if (jSplitPaneCenter == null) {
 			jSplitPaneCenter = new JSplitPane();
-			jSplitPaneCenter.setDividerLocation(306);
-			jSplitPaneCenter.setDividerSize(0);
+			jSplitPaneCenter.setDividerLocation(325);
+			jSplitPaneCenter.setResizeWeight(0.25);
 			jSplitPaneCenter.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			jSplitPaneCenter.setTopComponent(getJPanelTopCenter());
 			jSplitPaneCenter.setBottomComponent(getJPanelBottomCenter());
 		}
 		return jSplitPaneCenter;
 	}
-	
+
 	private JSplitPane getJSplitPaneLeft() {
 		if (jSplitPaneLeft == null) {
 			jSplitPaneLeft = new JSplitPane();
@@ -1953,7 +1980,7 @@ public class MainFrame extends JFrame {
 	 * Event: Unfail Death clicked.
 	 * @param event
 	 */
-	private void jButtonUnfailDeathActionActionPerformed(ActionEvent event) {
+	private void jButtonUndoDeathActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
 		
 		if (fighter != null) {
@@ -2525,6 +2552,9 @@ public class MainFrame extends JFrame {
 	private JList jListOffTurnPowers;
 	private JScrollPane jScrollPaneOffTurnPowers;
 	private JPanel jPanelMusic;
+	private JPanel jPanelHealth;
+	private JPanel jPanelSurges;
+	private JPanel jPanelEffectButtons;
 	/**
 	 * Returns the tracker's encounter.
 	 * @return the encounter
@@ -2883,7 +2913,7 @@ public class MainFrame extends JFrame {
 		getJButtonMinusOne().setEnabled(false);
 		getJButtonRegainAll().setEnabled(false);
 		getJButtonHeal().setEnabled(false);
-		getJButtonUnfailDeath().setEnabled(false);
+		getJButtonUndoDeath().setEnabled(false);
 		getJButtonAddTemp().setEnabled(false);
 		getJButtonRemoveFighter().setEnabled(false);
 		getJListPowerList().setEnabled(false);
@@ -2907,7 +2937,7 @@ public class MainFrame extends JFrame {
 			getJButtonReserve().setEnabled(false);
 			getJButtonRollInitiative().setEnabled(false);
 			getJButtonFailDeath().setEnabled(false);
-			getJButtonUnfailDeath().setEnabled(false);
+			getJButtonUndoDeath().setEnabled(false);
 			getJSpinnerDamageHealAmount().setEnabled(false);
 			getJButtonDamage().setEnabled(false);
 			getJButtonHeal().setEnabled(false);
@@ -2967,7 +2997,7 @@ public class MainFrame extends JFrame {
 							getJButtonFailDeath().setEnabled(true);
 						}
 						if (fighter.isDyingOrDead()) {
-							getJButtonUnfailDeath().setEnabled(true);
+							getJButtonUndoDeath().setEnabled(true);
 						}
 					}
 				}
