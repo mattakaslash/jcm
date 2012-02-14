@@ -538,7 +538,7 @@ public class Statblock extends JDialog {
 			jPanelPowers.setLayout(new GroupLayout());
 			jPanelPowers.add(getJScrollPanePowers(), new Constraints(new Bilateral(11, 76, 22), new Leading(0, 184, 10, 10)));
 			jPanelPowers.add(getJButtonPowerNew(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(0, 12, 12)));
-			jPanelPowers.add(getJButtonPowerDelete(), new Constraints(new Trailing(0, 104, 341), new Leading(31, 12, 12)));
+			jPanelPowers.add(getJButtonPowerDelete(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(31, 12, 12)));
 			jPanelPowers.add(getJButtonPowerUp(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(125, 12, 12)));
 			jPanelPowers.add(getJButtonPowerDown(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(157, 12, 12)));
 			jPanelPowers.add(getJLabelPowerName(), new Constraints(new Leading(12, 63, 22, 253), new Leading(191, 12, 12)));
@@ -1502,6 +1502,7 @@ public class Statblock extends JDialog {
 	public Statblock(Stats stat, JDialog c) {
 		super(c);
 		initComponents();
+		setLocationRelativeTo(c);
 		
 		setStat(stat);
 		moveClassToFields(stat);

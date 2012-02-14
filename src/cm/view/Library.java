@@ -102,7 +102,7 @@ public class Library extends JDialog {
 				windowWindowClosing(event);
 			}
 		});
-		pack();
+		setSize(800, 600);
 	}
 
 	private JScrollPane getJScrollPaneBattleList() {
