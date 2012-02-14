@@ -2,7 +2,6 @@ package cm.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Container;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
@@ -2504,7 +2503,7 @@ public class MainFrame extends JFrame {
 			getStatlib().loadFromFile(getStatlibFilename(), true);
 		}
 		
-		setFight(new Encounter(getStatlib(), getTrackerDice(), Settings.useModRoles(), this));
+		setFight(new Encounter(getStatlib(), Settings.useModRoles(), this));
 		
 		//statDataClear();
 		
@@ -2517,7 +2516,6 @@ public class MainFrame extends JFrame {
 	private Encounter _fight;
 	private StatLibrary _statlib;
 	private String _statlibFilename = "statlibrary.dnd4";
-	private DiceBag _trackerDice;
 	private InitDisplay _initDisplay;
 	private Boolean _fullInit = false;
 	private RosterRenderer _rosterRenderer = new RosterRenderer();
@@ -2584,14 +2582,6 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Indicates if the roster has a selected row.
-	 * @return true if there is a selected row in the roster table
-	 */
-	private Boolean isListSelected() {
-		return (getJTableRoster().getSelectedRowCount() > 0);
-	}
-
-	/**
 	 * Returns the stat library
 	 * @return the stat library
 	 */
@@ -2613,22 +2603,6 @@ public class MainFrame extends JFrame {
 	 */
 	private String getStatlibFilename() {
 		return _statlibFilename;
-	}
-
-	/**
-	 * Returns the tracker's dice bag
-	 * @return the dice bag
-	 */
-	private DiceBag getTrackerDice() {
-		return _trackerDice;
-	}
-
-	/**
-	 * Sets the dice bag used by the tracker.
-	 * @param trackerDice the dice bag
-	 */
-	private void setTrackerDice(DiceBag trackerDice) {
-		_trackerDice = trackerDice;
 	}
 
 	/**

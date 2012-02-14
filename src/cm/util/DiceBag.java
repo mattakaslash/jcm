@@ -43,30 +43,6 @@ public abstract class DiceBag {
 		return total;
 	}
 	
-	private static Integer roll(Integer dieNum, Integer dieType, String desc) {
-		Integer total = 0;
-		Integer result;
-		
-		desc = dieNum + "d" + dieType + " (";
-		
-		if (dieNum < 1) {
-			return 0;
-		}
-		
-		for (int i = 0; i < dieNum; i++) {
-			result = roll(dieType);
-			total += result;
-			desc += result;
-			if (i != dieNum - 1) {
-				desc += ",";
-			}
-		}
-		
-		desc += ")";
-		
-		return total;
-	}
-
 	/**
 	 * Roll the given dice expression the requested number of times.
 	 * @param diceExpr the dice expression, e.g., 3d6+5

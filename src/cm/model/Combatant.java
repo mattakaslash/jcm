@@ -25,8 +25,6 @@ public class Combatant implements Comparable<Combatant> {
 	private Stats _stats = new Stats();
 	private String _customName = "";
 	private String _mod = "";
-	private String _combatNotesCoded = "";
-
 	// Encounter-specific data
 	private Integer _currHP = 0, _deathSaveFailed = 0, _tempHP = 0,
 			_surgesRemaining = 0, _round = 0, _initRoll = 0, _random3 = 0,
@@ -130,21 +128,6 @@ public class Combatant implements Comparable<Combatant> {
 		} else {
 			return getName();
 		}
-	}
-
-	/**
-	 * @return stored combat notes
-	 */
-	private String getCombatNotes() {
-		return getCombatNotesCoded().replace("###", "\n");
-	}
-
-	/**
-	 * Stores the provided value as combat notes for this Combatant.
-	 * @param combatNotes the combat notes
-	 */
-	private void setCombatNotes(String combatNotes) {
-		setCombatNotesCoded(combatNotes.replace("\n", "###"));
 	}
 
 	/**
@@ -531,24 +514,6 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the role mod, based on if Combatant {@link #isMinion()} or
-	 * {@link #isPC()}.
-	 * 
-	 * @return One of "Normal", "Minion", "PC", or ""
-	 */
-	private String getRoleMod() {
-		if (getMod().isEmpty()) {
-			return "";
-		} else if (isMinion()) {
-			return "Minion";
-		} else if (isPC()) {
-			return "PC";
-		} else {
-			return "Normal";
-		}
-	}
-
-	/**
 	 * Changes role for the Combatant, adjusting max HP if necessary.
 	 * 
 	 * @param value
@@ -756,27 +721,6 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the experience point worth of this Combatant.
-	 * 
-	 * @return {@link Stats#getXP()} modified by role
-	 */
-	private Integer getXP() {
-		if (isMinion() || isPC()) {
-			return getStats().getXP();
-		} else {
-			if (getMod().contentEquals("Demi")) {
-				return getStats().getXP() * 2 / 3;
-			} else if (_mod.contentEquals("Semi")) {
-				return getStats().getXP() / 3;
-			} else if (_mod.contentEquals("Minion")) {
-				return getStats().getXP() / 4;
-			} else {
-				return getStats().getXP();
-			}
-		}
-	}
-
-	/**
 	 * Sets the temp HP to the amount specified, if greater than current.
 	 * 
 	 * @param amt
@@ -799,7 +743,6 @@ public class Combatant implements Comparable<Combatant> {
 		setCustomName("");
 		setMod("");
 		setFighterNumber(0);
-		setCombatNotes("");
 		setRoundStatus("");
 		setCurrHP(0);
 		setDeathSaveFailed(0);
@@ -1051,10 +994,6 @@ public class Combatant implements Comparable<Combatant> {
 		writer.writeCharacters(getMod());
 		writer.writeEndElement();
 
-		writer.writeStartElement("notes");
-		writer.writeCharacters(getCombatNotesCoded());
-		writer.writeEndElement();
-
 		_stats.exportXML(writer);
 
 		if (ongoing) {
@@ -1267,20 +1206,6 @@ public class Combatant implements Comparable<Combatant> {
 	 */
 	public Collection<EffectBase> getPresetEffects() {
 		return getStats().getPresetEffects().values();
-	}
-
-	/**
-	 * @param combatNotesCoded the combatNotesCoded to set
-	 */
-	private void setCombatNotesCoded(String combatNotesCoded) {
-		_combatNotesCoded = combatNotesCoded;
-	}
-
-	/**
-	 * @return the combatNotesCoded
-	 */
-	private String getCombatNotesCoded() {
-		return _combatNotesCoded;
 	}
 
 	/**

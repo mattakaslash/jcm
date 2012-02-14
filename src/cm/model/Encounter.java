@@ -53,10 +53,9 @@ public class Encounter {
 	/**
 	 * Creates a new encounter using the given {@link StatLibrary} and {@link DiceBag}.
 	 * @param statLibrary the {@link StatLibrary}
-	 * @param diceBag the {@link DiceBag} to use for dice rolls
 	 * @param useRoleMod if true, rolls will be modified according to fighter role
 	 */
-	public Encounter(StatLibrary statLibrary, DiceBag diceBag, Boolean useRoleMod, JFrame parent) {
+	public Encounter(StatLibrary statLibrary, Boolean useRoleMod, JFrame parent) {
 		clearAll();
 		setStatLib(statLibrary);
 		setUseRollMod(useRoleMod);
@@ -257,17 +256,6 @@ public class Encounter {
 	}
 
 	/**
-	 * Sets the initiative status of the fighter with the supplied handle to the provided status.
-	 * @param combatHandle the combat handle
-	 * @param status the init status
-	 * @see #setInitStatus(Combatant, String)
-	 */
-	private void setInitStatus(String combatHandle, String status) {
-		Combatant fighter = getRoster().get(combatHandle);
-		setInitStatus(fighter, status);
-	}
-
-	/**
 		 * Sets the initiative status of the supposed fighter to the provided status.
 		 * @param fighter the {@link Combatant}
 		 * @param status the init status
@@ -352,14 +340,6 @@ public class Encounter {
 		} else {
 			return "";
 		}
-	}
-
-	/**
-	 * Returns the {@link Combatant} whose turn has just ended.
-	 * @return the {@link Combatant}
-	 */
-	private Combatant getPriorFighter() {
-		return getRoster().get(getPriorFighterHandle());
 	}
 
 	/**
@@ -540,18 +520,6 @@ public class Encounter {
 	}
 	
 	/**
-	 * Adds a new {@link Combatant} with the supplied stats and role modifier to the encounter.
-	 * Calls {@link #add(Combatant, Boolean, Boolean)} with a final parameter of 'true'.
-	 * @param stats the {@link Stats}
-	 * @param rolemod the role modifier for the {@link Combatant}
-	 * @param libUpdate if true, calls {@link Combatant#updateLibrary(StatLibrary, Boolean)}
-	 */
-	private void add(Stats stats, String rolemod, Boolean libUpdate) {
-		Combatant newFighter = new Combatant(stats, rolemod);
-		add(newFighter, libUpdate, true);
-	}
-	
-	/**
 	 * Adds a new {@link Combatant} to the encounter.
 	 * @param combatant the {@link Combatant}
 	 * @param libUpdate if true, calls {@link Combatant#updateLibrary(StatLibrary, Boolean)}
@@ -588,14 +556,6 @@ public class Encounter {
 			rollAllInitUngrouped();
 		}
 		setSelectedFighter(getCurrentFighter());
-	}
-
-	/**
-	 * Selects the current fighter and starts its turn.
-	 */
-	private void beginTurn() {
-		selectCurrentFighter();
-		fighterStartTurn(getSelectedFighterHandle());
 	}
 
 	/**
@@ -1167,17 +1127,6 @@ public class Encounter {
 		}
 		clearSelectedFighter();
 		getActiveEffects().clear();
-	}
-	
-	/**
-	 * Resets the health of all PCs in the encounter roster.
-	 */
-	private void resetPCHealth() {
-		for (Combatant fighter : getRoster().values()) {
-			if (fighter.isPC()) {
-				fighter.resetHealth();
-			}
-		}
 	}
 	
 	/**

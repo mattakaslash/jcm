@@ -328,14 +328,6 @@ public class Power {
 	}
 
 	/**
-	 * Indicates if the power is a psionic power point placeholder.
-	 * @return true if the power's action contains "power point"
-	 */
-	private Boolean isPowerPoint() {
-		return (getAction().toLowerCase().contains("power point"));
-	}
-
-	/**
 	 * Returns the required d6 result to recharge this power.
 	 * @return the recharge value
 	 */

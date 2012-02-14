@@ -108,15 +108,6 @@ public class StatLibrary {
 	}
 	
 	/**
-	 * Returns the statblock with the given numeric index.
-	 * @param index the index
-	 * @returnthe statblock
-	 */
-	private Stats get(Integer index) {
-		return getLibrary().values().toArray(new Stats[0])[index];
-	}
-	
-	/**
 	 * Deletes all entries from the stat library.
 	 */
 	private void clear() {

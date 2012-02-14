@@ -152,8 +152,6 @@ public class SavingThrows extends JDialog {
 
 	private Hashtable<Integer, Effect> _effects = new Hashtable<Integer, Effect>();
 	private List<Integer> _successfulSaves = new ArrayList<Integer>();
-	private DiceBag _dice;
-
 	/**
 	 * Creates a new Saving Throws window for the given effects.
 	 * @param effectList a list of effects to roll saves for
@@ -187,14 +185,6 @@ public class SavingThrows extends JDialog {
 	 */
 	private Hashtable<Integer, Effect> getEffects() {
 		return _effects;
-	}
-
-	/**
-	 * Sets the dice to use for rolls.
-	 * @param dice the dice
-	 */
-	private void setDice(DiceBag dice) {
-		_dice = dice;
 	}
 
 	/**
@@ -262,14 +252,6 @@ public class SavingThrows extends JDialog {
 	}
 
 	/**
-	 * Returns the dice bag for rolls
-	 * @return the dice bag
-	 */
-	private DiceBag getDice() {
-		return _dice;
-	}
-	
-	/**
 	 * Re-rolls all saving throws in the list.
 	 */
 	private void rerollAllSaves() {
@@ -277,7 +259,7 @@ public class SavingThrows extends JDialog {
 		
 		for (int i = 0; i < model.getSize(); i++) {
 			CheckableItem item = (CheckableItem) model.getElementAt(i);
-			Integer roll = getDice().roll(20) + Integer.valueOf(getJFormattedTextFieldBonus().getText());
+			Integer roll = DiceBag.roll(20) + Integer.valueOf(getJFormattedTextFieldBonus().getText());
 			item.setSelected(roll >= 10);
 			item.setText("(roll=" + roll + ")");
 		}
