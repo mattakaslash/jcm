@@ -23,6 +23,8 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 
 import org.dyno.visual.swing.layouts.Bilateral;
 import org.dyno.visual.swing.layouts.Constraints;
@@ -37,7 +39,6 @@ import cm.model.EffectBase.Duration;
 import cm.model.Encounter;
 import cm.util.AutoCompletion;
 import cm.view.render.DurationCellRenderer;
-import cm.view.render.EffectBaseCellRenderer;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class EffectWin extends JDialog {
@@ -107,7 +108,7 @@ public class EffectWin extends JDialog {
 		add(getJButtonCancel(), new Constraints(new Trailing(12, 12, 12), new Leading(154, 12, 12)));
 		add(getJButtonOK(), new Constraints(new Trailing(91, 12, 12), new Leading(154, 12, 12)));
 		add(getJScrollPanePresets(), new Constraints(new Leading(12, 379, 12, 12), new Bilateral(185, 12, 22)));
-		pack();
+		setSize(403, 351);
 	}
 
 	private JButton getJButtonCancel() {
@@ -266,11 +267,16 @@ public class EffectWin extends JDialog {
 			jListPresets = new JList();
 			DefaultListModel listModel = new DefaultListModel();
 			jListPresets.setModel(listModel);
-			jListPresets.setCellRenderer(new EffectBaseCellRenderer());
 			jListPresets.addMouseListener(new MouseAdapter() {
 	
 				public void mouseClicked(MouseEvent event) {
 					jListPresetsMouseMouseClicked(event);
+				}
+			});
+			jListPresets.addListSelectionListener(new ListSelectionListener() {
+	
+				public void valueChanged(ListSelectionEvent event) {
+					jListPresetsListSelectionValueChanged(event);
 				}
 			});
 		}
@@ -358,16 +364,6 @@ public class EffectWin extends JDialog {
 	 * @param event
 	 */
 	private void jListPresetsMouseMouseClicked(MouseEvent event) {
-		if (event.getClickCount() >= 1) {
-			if (getJListPresets().getSelectedIndex() >= 0) {
-				EffectBase eff = (EffectBase) getJListPresets().getSelectedValue();
-				if (eff != null) {
-					getJComboBoxName().setSelectedItem(eff.getName());
-					getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
-					getJCheckBoxBeneficial().setSelected(eff.isBeneficial());
-				}
-			}
-		}
 		if (event.getClickCount() == 2) {
 			getJButtonOK().doClick();
 		}
@@ -562,6 +558,21 @@ public class EffectWin extends JDialog {
 	private void presetEffectAdd(EffectBase eff) {
 		if (eff.isValid() && !getPresetEffects().contains(eff.getEffectBaseID())) {
 			getPresetEffects().put(eff.getEffectBaseID(), eff);
+		}
+	}
+
+	/**
+	 * Event: Prior/preset effects list selection changed. 
+	 * @param event
+	 */
+	private void jListPresetsListSelectionValueChanged(ListSelectionEvent event) {
+		if (getJListPresets().getSelectedIndex() >= 0) {
+			EffectBase eff = (EffectBase) getJListPresets().getSelectedValue();
+			if (eff != null) {
+				getJComboBoxName().setSelectedItem(eff.getName());
+				getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
+				getJCheckBoxBeneficial().setSelected(eff.isBeneficial());
+			}
 		}
 	}
 }

@@ -1186,16 +1186,10 @@ public class MainFrame extends JFrame {
 			jTableRoster.getTableHeader().getColumnModel().getColumn(7).setMaxWidth(30);
 			jTableRoster.getTableHeader().getColumnModel().getColumn(7).setResizable(false);
 			jTableRoster.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			jTableRoster.addMouseListener(new MouseAdapter() {
-	
-				public void mouseClicked(MouseEvent event) {
-					jTableRosterMouseMouseClicked(event);
-				}
-			});
-			jTableRoster.addKeyListener(new KeyAdapter() {
-	
-				public void keyReleased(KeyEvent event) {
-					jTableRosterKeyKeyReleased(event);
+			jTableRoster.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+				
+				public void valueChanged(ListSelectionEvent event) {
+					jTableRosterSelectionValueChanged(event);
 				}
 			});
 		}
@@ -2172,23 +2166,10 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Event: Roster, key released.
+	 * Event: Roster, selection changed.
 	 * @param event
 	 */
-	private void jTableRosterKeyKeyReleased(KeyEvent event) {
-		if (event.getKeyCode() == KeyEvent.VK_HOME) {
-			getFight().setSelectedFighter(getFight().getCurrentFighter());
-		} else if (event.getKeyCode() == KeyEvent.VK_END) {
-			getFight().setSelectedFighterHandle(getFight().getPriorFighterHandle());
-		}
-		jTableRosterMouseMouseClicked(null);
-	}
-
-	/**
-	 * Event: Roster, mouse clicked.
-	 * @param event
-	 */
-	private void jTableRosterMouseMouseClicked(MouseEvent event) {
+	private void jTableRosterSelectionValueChanged(ListSelectionEvent event) {
 		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 15);
 		if (getJTableRoster().getSelectedRow() >= 0) {
 			Combatant fighterSelected = getFight().getSelectedFighter();

@@ -298,6 +298,12 @@ public class Library extends JDialog {
 					jListEntriesMouseMouseClicked(event);
 				}
 			});
+			jListEntries.addListSelectionListener(new ListSelectionListener() {
+	
+				public void valueChanged(ListSelectionEvent event) {
+					jListEntriesListSelectionValueChanged(event);
+				}
+			});
 		}
 		return jListEntries;
 	}
@@ -662,22 +668,6 @@ public class Library extends JDialog {
 	 * @param event
 	 */
 	private void jListEntriesMouseMouseClicked(MouseEvent event) {
-		if (getJListEntries().getSelectedIndex() >= 0) {
-			getJEditorPaneStatblock().setText(
-					getStatLib().get(
-							(String) getJListEntries().getSelectedValue())
-							.getStatsHTML());
-			getJButtonEdit().setEnabled(true);
-			getJButtonDelete().setEnabled(true);
-			getJButtonAdd().setEnabled(true);
-		} else {
-			getJEditorPaneStatblock().setText("");
-			getJButtonEdit().setEnabled(false);
-			getJButtonDelete().setEnabled(false);
-			getJButtonAdd().setEnabled(false);
-		}
-		getJEditorPaneStatblock().setCaretPosition(0);
-		
 		if (event.getClickCount() == 2) {
 			getJButtonEdit().doClick();
 		}
@@ -835,5 +825,27 @@ public class Library extends JDialog {
 		}
 		
 		getJTextFieldXPTotal().setText(recalcXP.toString());
+	}
+
+	/**
+	 * Event: List entries selection changed.
+	 * @param event
+	 */
+	private void jListEntriesListSelectionValueChanged(ListSelectionEvent event) {
+		if (getJListEntries().getSelectedIndex() >= 0) {
+			getJEditorPaneStatblock().setText(
+					getStatLib().get(
+							(String) getJListEntries().getSelectedValue())
+							.getStatsHTML());
+			getJButtonEdit().setEnabled(true);
+			getJButtonDelete().setEnabled(true);
+			getJButtonAdd().setEnabled(true);
+		} else {
+			getJEditorPaneStatblock().setText("");
+			getJButtonEdit().setEnabled(false);
+			getJButtonDelete().setEnabled(false);
+			getJButtonAdd().setEnabled(false);
+		}
+		getJEditorPaneStatblock().setCaretPosition(0);
 	}
 }
