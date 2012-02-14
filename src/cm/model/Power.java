@@ -143,7 +143,7 @@ public class Power {
 	 * Returns the size of the power's aura.
 	 * @return the aura size
 	 */
-	Integer getAura() {
+	public Integer getAura() {
 		return _aura;
 	}
 
@@ -151,7 +151,7 @@ public class Power {
 	 * Sets the size of the power's aura.
 	 * @param aura the aura size
 	 */
-	private void setAura(Integer aura) {
+	public void setAura(Integer aura) {
 		_aura = aura;
 	}
 

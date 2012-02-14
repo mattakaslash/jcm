@@ -61,10 +61,10 @@ import org.dyno.visual.swing.layouts.Trailing;
 import org.xml.sax.InputSource;
 
 import cm.model.EffectBase;
+import cm.model.EffectBase.Duration;
 import cm.model.Power;
 import cm.model.Settings;
 import cm.model.Stats;
-import cm.model.EffectBase.Duration;
 import cm.util.AutoCompletion;
 import cm.view.render.EffectBaseCellRenderer;
 import cm.view.render.PowerDetailsCellRenderer;
@@ -218,6 +218,21 @@ public class Statblock extends JDialog {
 		add(getJButtonCancel(), new Constraints(new Trailing(12, 703, 703), new Trailing(12, 50, 50)));
 		add(getJButtonOK(), new Constraints(new Trailing(91, 646, 646), new Trailing(12, 50, 50)));
 		pack();
+	}
+
+	private JFormattedTextField getJFormattedTextFieldAuraSize() {
+		if (jFormattedTextFieldAuraSize == null) {
+			jFormattedTextFieldAuraSize = new JFormattedTextField();
+			jFormattedTextFieldAuraSize.setText("0");
+			jFormattedTextFieldAuraSize.setEnabled(false);
+			jFormattedTextFieldAuraSize.addFocusListener(new FocusAdapter() {
+	
+				public void focusLost(FocusEvent event) {
+					jFormattedTextFieldAuraSizeFocusFocusLost(event);
+				}
+			});
+		}
+		return jFormattedTextFieldAuraSize;
 	}
 
 	private JScrollPane getJScrollPanePowerDescription() {
@@ -532,12 +547,13 @@ public class Statblock extends JDialog {
 			jPanelPowers.add(getJLabelPowerURL(), new Constraints(new Leading(12, 63, 22, 253), new Leading(258, 12, 12)));
 			jPanelPowers.add(getJLabelPowerIcon(), new Constraints(new Leading(12, 63, 22, 253), new Leading(282, 12, 12)));
 			jPanelPowers.add(getJComboBoxPowerIcon(), new Constraints(new Leading(87, 12, 12), new Leading(278, 12, 12)));
-			jPanelPowers.add(getJCheckBoxPowerAura(), new Constraints(new Leading(200, 12, 12), new Leading(280, 12, 12)));
+			jPanelPowers.add(getJCheckBoxPowerAura(), new Constraints(new Leading(200, 12, 12), new Leading(278, 12, 12)));
 			jPanelPowers.add(getJScrollPanePowerDescription(), new Constraints(new Bilateral(0, 0, 31), new Bilateral(301, 0, 47)));
 			jPanelPowers.add(getJTextFieldPowerName(), new Constraints(new Bilateral(87, 0, 235), new Leading(189, 12, 12)));
 			jPanelPowers.add(getJTextFieldPowerAction(), new Constraints(new Bilateral(87, 0, 235), new Leading(211, 12, 12)));
 			jPanelPowers.add(getJTextFieldPowerKeywords(), new Constraints(new Bilateral(87, 0, 235), new Leading(233, 12, 12)));
 			jPanelPowers.add(getJTextFieldPowerURL(), new Constraints(new Bilateral(87, 0, 235), new Leading(256, 12, 12)));
+			jPanelPowers.add(getJFormattedTextFieldAuraSize(), new Constraints(new Leading(260, 23, 10, 10), new Leading(280, 53, 48)));
 		}
 		return jPanelPowers;
 	}
@@ -1476,6 +1492,7 @@ public class Statblock extends JDialog {
 	private List<Power> _statPowers = new ArrayList<Power>();
 	private SortedSet<EffectBase> _presetEffects = new TreeSet<EffectBase>();
 	private Boolean _powerChanged = false;
+	private JFormattedTextField jFormattedTextFieldAuraSize;
 	
 	/**
 	 * Creates a new form for editing the given statblock.
@@ -1891,19 +1908,14 @@ public class Statblock extends JDialog {
 			getJComboBoxPowerIcon().setSelectedIndex(0);
 			getJComboBoxPowerIcon().setEnabled(false);
 			getJCheckBoxPowerAura().setSelected(true);
-			/*
-            dfPowAuraSize.Visible = True
-            dfPowAuraSize.Enabled = True
-            dfPowAuraSize.Value = pow.nAura
-			 */
+			getJFormattedTextFieldAuraSize().setEnabled(true);
+			getJFormattedTextFieldAuraSize().setText(pow.getAura().toString());
 		} else {
 			getJComboBoxPowerIcon().setSelectedItem(pow.getType());
 			getJComboBoxPowerIcon().setEnabled(true);
-			/*
-            dfPowAuraSize.Visible = False
-            dfPowAuraSize.Enabled = False
-            dfPowAuraSize.Value = 0
-			 */
+			getJCheckBoxPowerAura().setSelected(false);
+			getJFormattedTextFieldAuraSize().setEnabled(false);
+			getJFormattedTextFieldAuraSize().setText("0");
 		}
 		setPowerChanged(false);
 	}
@@ -1915,24 +1927,20 @@ public class Statblock extends JDialog {
 	private void jCheckBoxPowerAuraActionActionPerformed(ActionEvent event) {
 		if (getJCheckBoxPowerAura().isSelected()) {
 			getJComboBoxPowerIcon().setEnabled(false);
-			/*
-        dfPowAuraSize.Visible = True
-        dfPowAuraSize.Enabled = True
-        If Val(dfPowAuraSize.Text) < 1 Then
-            dfPowAuraSize.Text = "1"
-            dfPowAuraSize.Select()
-        End If
-			 */
+			getJFormattedTextFieldAuraSize().setEnabled(true);
+			if (Integer.valueOf(getJFormattedTextFieldAuraSize().getText()) < 1) {
+				getJFormattedTextFieldAuraSize().setText("1");
+				getJFormattedTextFieldAuraSize().requestFocusInWindow();
+			}
 		} else {
 			getJComboBoxPowerIcon().setEnabled(true);
-			/*
-        dfPowAuraSize.Visible = False
-        dfPowAuraSize.Enabled = False
-        If Val(dfPowAuraSize.Text) > 0 Then
-            dfPowAuraSize.Text = "0"
-            dfPowAuraSize.Select()
-        End If
-			 */
+			getJFormattedTextFieldAuraSize().setEnabled(false);
+			getJFormattedTextFieldAuraSize().setText("0");
+			if (isPowerDataValid()) {
+				Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+				pow.setAura(0);
+				getJListPowers().repaint();
+			}
 		}
 		setPowerChanged(true);
 	}
@@ -2252,14 +2260,17 @@ public class Statblock extends JDialog {
 			}
 		}		
 	}
+
+	/**
+	 * Event: Aura size focus lost.
+	 * @param event
+	 */
+	private void jFormattedTextFieldAuraSizeFocusFocusLost(FocusEvent event) {
+		if (isPowerDataValid()) {
+			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+			pow.setAura(Integer.valueOf(getJFormattedTextFieldAuraSize().getText()));
+			setPowerChanged(true);
+			getJListPowers().repaint();
+		}
+	}
 }
-/*
-Private Sub dfPowAuraSize_Validating(ByVal sender As Object, ByVal e As System.ComponentModel.CancelEventArgs) Handles dfPowAuraSize.Validating
-    If PowerDataValid Then
-        Dim pow As Power = statpowers.Item(lbPowerList.SelectedIndices(0))
-        pow.nAura = dfPowAuraSize.Value
-        bPowerChanged = True
-    End If
-End Sub
-End Class
-*/
