@@ -108,7 +108,7 @@ public class EffectWin extends JDialog {
 		add(getJButtonCancel(), new Constraints(new Trailing(12, 12, 12), new Leading(154, 12, 12)));
 		add(getJButtonOK(), new Constraints(new Trailing(91, 12, 12), new Leading(154, 12, 12)));
 		add(getJScrollPanePresets(), new Constraints(new Leading(12, 379, 12, 12), new Bilateral(185, 12, 22)));
-		setSize(403, 351);
+		pack();
 	}
 
 	private JButton getJButtonCancel() {

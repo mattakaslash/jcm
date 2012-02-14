@@ -54,7 +54,7 @@ public class RechargeWin extends JDialog {
 				windowWindowOpened(event);
 			}
 		});
-		setSize(320, 240);
+		pack();
 	}
 
 	private JScrollPane getJScrollPanePowers() {

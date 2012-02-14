@@ -65,7 +65,7 @@ public class SavingThrows extends JDialog {
 				windowWindowOpened(event);
 			}
 		});
-		setSize(309, 253);
+		pack();
 	}
 
 	private JButton getJButtonSave() {
