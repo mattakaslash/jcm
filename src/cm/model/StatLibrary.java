@@ -248,21 +248,19 @@ public class StatLibrary {
 	 * @return true on success
 	 */
 	public Boolean saveToFile(String filename) {
-		String tempFilename = filename + ".tmp";
-		File tempFile = new File(tempFilename);
-		if (tempFile.exists()) {
-			tempFile.delete();
-		}
-		
+		FileChannel src = null;
+		FileChannel dst = null;
+		File tempFile = null;
 		try {
+			tempFile = File.createTempFile(filename, ".tmp");
+
 			XMLStreamWriter writer = XMLStreamWriterFactory.create(new FileOutputStream(tempFile));
 			exportXML(writer);
-			
-			FileChannel src = new FileInputStream(tempFile).getChannel();
-			FileChannel dst = new FileOutputStream(new File(filename)).getChannel();
-			
+
+			src = new FileInputStream(tempFile).getChannel();
+			dst = new FileOutputStream(new File(filename)).getChannel();
+
 			dst.transferFrom(src, 0, src.size());
-			tempFile.delete();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return false;
@@ -272,13 +270,27 @@ public class StatLibrary {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				if (src != null) {
+					src.close();
+				}
+				if (dst != null) {
+					dst.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			if (tempFile != null) {
+				tempFile.delete();
+			}
 		}
-		
+
 		File backupFile = new File(filename + ".bak");
 		if (backupFile.exists()) {
 			backupFile.delete();
 		}
-		
+
 		return true;
 	}
 }
