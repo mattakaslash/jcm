@@ -272,7 +272,6 @@ public class MainFrame extends JFrame {
 			jListOffTurnPowers = new JList();
 			DefaultListModel listModel = new DefaultListModel();
 			jListOffTurnPowers.setModel(listModel);
-			jListOffTurnPowers.setCellRenderer(new OffTurnPowerRenderer());
 			jListOffTurnPowers.addListSelectionListener(new ListSelectionListener() {
 				
 				public void valueChanged(ListSelectionEvent e) {
@@ -3075,6 +3074,7 @@ public class MainFrame extends JFrame {
 	 * Updates the list of off-turn powers.
 	 */
 	private void updateOffTurnPowers() {
+		getJListOffTurnPowers().setCellRenderer(new OffTurnPowerRenderer(getFight()));
 		DefaultListModel model = (DefaultListModel) getJListOffTurnPowers().getModel();
 		model.clear();
 		for (String handle : getFight().getRolledList().values()) {

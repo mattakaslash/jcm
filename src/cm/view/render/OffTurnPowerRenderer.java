@@ -1,5 +1,6 @@
 package cm.view.render;
 
+import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JLabel;
@@ -7,10 +8,25 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import cm.model.Combatant;
+import cm.model.Encounter;
 import cm.model.FighterPower;
 import cm.model.Power;
 
 public class OffTurnPowerRenderer extends JLabel implements ListCellRenderer {
+	
+	private Encounter _fight;
+
+	public OffTurnPowerRenderer(Encounter fight) {
+		setFight(fight);
+	}
+	
+	private Encounter getFight() {
+		return _fight;
+	}
+
+	private void setFight(Encounter fight) {
+		_fight = fight;
+	}
 
 	/**
 	 * default
@@ -25,6 +41,14 @@ public class OffTurnPowerRenderer extends JLabel implements ListCellRenderer {
 		
 		setOpaque(true);
 		setText(fighter.getName() + ": " + power.getName() + power.getActionLine());
+		
+		if (getFight() != null && fighter == getFight().getSelectedFighter()) {
+			setBackground(Color.DARK_GRAY);
+			setForeground(Color.WHITE);
+		} else {
+			setBackground(Color.WHITE);
+			setForeground(Color.BLACK);
+		}
 
 		return this;
 	}
