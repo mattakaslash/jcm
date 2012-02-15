@@ -2357,6 +2357,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void menuOptionsShowFullInitDisplayStateChanged(ItemEvent event) {
 		if (event.getStateChange() == ItemEvent.SELECTED) {
+			getMenuOptionsShowMinimalInitDisplay().setSelected(false);
 			getInitDisplay().dispose();
 			setFullInit(true);
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -2380,6 +2381,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void menuOptionsShowMinimalInitDisplayStateChanged(ItemEvent event) {
 		if (event.getStateChange() == ItemEvent.SELECTED) {
+			getMenuOptionsShowFullInitDisplay().setSelected(false);
 			getInitDisplay().dispose();
 			setFullInit(false);
 			GraphicsEnvironment gc = GraphicsEnvironment.getLocalGraphicsEnvironment();
