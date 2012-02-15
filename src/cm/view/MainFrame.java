@@ -2714,6 +2714,7 @@ public class MainFrame extends JFrame {
 									}
 								}
 								getJEditorPaneCompendium().setText(content);
+								getJEditorPaneCompendium().setCaretPosition(0);
 							} catch (MalformedURLException e) {
 								getJEditorPaneCompendium().setText(
 										"<html><body><h1>Failed to load URL</h1><pre>"
