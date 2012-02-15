@@ -1681,6 +1681,7 @@ public class MainFrame extends JFrame {
 	private void jButtonBackUpActionActionPerformed(ActionEvent event) {
 		getFight().fighterUndoTurn(getFight().getPriorFighterHandle());
 		updateFromClass();
+		getJTableRoster().getSelectionModel().setSelectionInterval(0, 0);
 	}
 
 	/**
@@ -1832,6 +1833,7 @@ public class MainFrame extends JFrame {
 	private void jButtonNextTurnActionActionPerformed(ActionEvent event) {
 		getFight().finishCurrentTurn();
 		updateFromClass();
+		getJTableRoster().getSelectionModel().setSelectionInterval(0, 0);
 	}
 
 	/**
