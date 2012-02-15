@@ -2788,7 +2788,6 @@ public class MainFrame extends JFrame {
 			index++;
 		}
 		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 15);
-		model.fireTableDataChanged();
 		
 		updateOffTurnPowers();
 		updateInitDisplay();
