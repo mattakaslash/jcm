@@ -39,6 +39,7 @@ import cm.model.EffectBase.Duration;
 import cm.model.Encounter;
 import cm.util.AutoCompletion;
 import cm.view.render.DurationCellRenderer;
+import cm.view.render.EffectBaseCellRenderer;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class EffectWin extends JDialog {
@@ -267,6 +268,7 @@ public class EffectWin extends JDialog {
 			jListPresets = new JList();
 			DefaultListModel listModel = new DefaultListModel();
 			jListPresets.setModel(listModel);
+			jListPresets.setCellRenderer(new EffectBaseCellRenderer());
 			jListPresets.addMouseListener(new MouseAdapter() {
 	
 				public void mouseClicked(MouseEvent event) {
