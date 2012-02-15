@@ -17,9 +17,12 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -61,6 +64,8 @@ import javax.swing.event.PopupMenuListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
+import javax.swing.text.html.HTMLEditorKit;
+import javax.swing.text.html.StyleSheet;
 
 import org.dyno.visual.swing.layouts.Bilateral;
 import org.dyno.visual.swing.layouts.Constraints;
@@ -711,6 +716,13 @@ public class MainFrame extends JFrame {
 			jEditorPaneCompendium = new JEditorPane();
 			jEditorPaneCompendium.setContentType("text/html");
 			jEditorPaneCompendium.setEditable(false);
+			StyleSheet ss = ((HTMLEditorKit) jEditorPaneCompendium.getEditorKit()).getStyleSheet();
+			ss.addRule("h1.atwillpower { font-size: 12pt; line-height: 2; padding-left: 15px; margin: 0pt; color: rgb(255, 255, 255); background-color: rgb(97, 152, 105) }");
+			ss.addRule("h1.dailypower { font-size: 12pt; line-height: 2; padding-left: 15px; margin: 0pt; color: rgb(255, 255, 255); background-color: rgb(77, 77, 79) }");
+			ss.addRule("h1.encounterpower { font-size: 12pt; line-height: 2; padding-left: 15px; margin: 0pt; color: rgb(255, 255, 255); background-color: rgb(150, 19, 52) }");
+			ss.addRule(".flavor { padding: 2px 15px; margin: 0pt; background-color: rgb(214, 214, 194); font-size: 12pt }");
+			ss.addRule(".level { padding-right: 15px; margin-top: 0pt; text-align: right; float: right }");
+			ss.addRule(".powerstat { padding-left: 15px; margin: 0pt; background-color: rgb(255, 255, 255); font-size: 12pt }");
 		}
 		return jEditorPaneCompendium;
 	}
@@ -2690,7 +2702,22 @@ public class MainFrame extends JFrame {
 					if (selected.getName().contentEquals(pow.getName())) {
 						if (pow.getURL().startsWith("http")) {
 							try {
-								getJEditorPaneCompendium().setPage(pow.getURL());
+								URL url = new URL(pow.getURL());
+								BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
+								String inputLine;
+								String content = "";
+								
+								while ((inputLine = reader.readLine()) != null) {
+									if (!inputLine.matches(".*<link.*")) {
+										content += inputLine.replaceAll("<img[^>]*>", "")
+												.replaceAll("<span class=\"level\">([^<]*)</span>", "$0: ");
+									}
+								}
+								getJEditorPaneCompendium().setText(content);
+							} catch (MalformedURLException e) {
+								getJEditorPaneCompendium().setText(
+										"<html><body><h1>Failed to load URL</h1><pre>"
+										+ e + "</pre></body></html>");
 							} catch (IOException e) {
 								getJEditorPaneCompendium().setText(
 										"<html><body><h1>Failed to load URL</h1><pre>"
