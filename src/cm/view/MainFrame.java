@@ -1723,14 +1723,13 @@ public class MainFrame extends JFrame {
 			updateFromClass();
 			getJSpinnerDamageHealAmount().requestFocusInWindow();
 			
-			StatLogger.logDamage(getFight().getCurrentRound(),
-					getFight().getCurrentFighter().getCombatHandle(),
-					fighter.getCombatHandle(),
-					(Integer) getJSpinnerDamageHealAmount().getValue());
-			if (!fighter.isPC() && fighter.isDyingOrDead()) {
-				StatLogger.logDeath(getFight().getCurrentRound(),
-						getFight().getCurrentFighter().getCombatHandle(),
-						fighter.getCombatHandle());
+			if (!getFight().getCurrentFighterHandle().isEmpty()) {
+				StatLogger.logDamage(getFight().getCurrentRound(), getFight().getCurrentFighter().getCombatHandle(),
+						fighter.getCombatHandle(), (Integer) getJSpinnerDamageHealAmount().getValue());
+				if (!fighter.isPC() && fighter.isDyingOrDead()) {
+					StatLogger.logDeath(getFight().getCurrentRound(), getFight().getCurrentFighter().getCombatHandle(),
+							fighter.getCombatHandle());
+				}
 			}
 		}
 	}
@@ -1786,9 +1785,10 @@ public class MainFrame extends JFrame {
 			updateFromClass();
 			getJSpinnerDamageHealAmount().requestFocusInWindow();
 			
-			StatLogger.logDamage(getFight().getCurrentRound(),
-					getFight().getCurrentFighter().getCombatHandle(),
-					fighter.getCombatHandle(), -(Integer)getJSpinnerDamageHealAmount().getValue());
+			if (!getFight().getCurrentFighterHandle().isEmpty()) {
+				StatLogger.logDamage(getFight().getCurrentRound(), getFight().getCurrentFighter().getCombatHandle(),
+						fighter.getCombatHandle(), -(Integer) getJSpinnerDamageHealAmount().getValue());
+			}
 		}
 	}
 
