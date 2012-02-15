@@ -10,6 +10,7 @@ import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
 import cm.util.DiceBag;
+import cm.utils.Colors;
 
 /**
  * Defines a Combatant in a D&D 4e encounter.
@@ -1164,15 +1165,15 @@ public class Combatant implements Comparable<Combatant> {
 	 */
 	public Color getDisplayBackColor() {
 		if (!isAlive()) {
-			return Color.BLACK;
+			return Colors.DAILY;
 		}
 		if (!isActive()) {
 			return Color.GRAY;
 		}
 		if (isPC()) {
-			return Color.GREEN;
+			return Colors.ATWILL;
 		} else {
-			return Color.RED;
+			return Colors.ENCOUNTER;
 		}
 	}
 

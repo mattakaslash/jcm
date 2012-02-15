@@ -9,6 +9,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import cm.model.Effect;
+import cm.utils.Colors;
 
 public class EffectCellRenderer extends JLabel implements TableCellRenderer {
 
@@ -28,13 +29,13 @@ public class EffectCellRenderer extends JLabel implements TableCellRenderer {
 		setText(eff.getDesc());
 		
 		if (saved) {
-			setBackground(Color.GREEN);
+			setBackground(Colors.ATWILL);
 		} else {
-			setBackground(Color.RED);
+			setBackground(Colors.ENCOUNTER);
 		}
 		
 		if (isSelected) {
-			setBackground(Color.DARK_GRAY);
+			setBackground(Color.BLACK);
 		}
 		return this;
 	}

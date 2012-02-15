@@ -8,6 +8,7 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
 import cm.model.Effect;
+import cm.utils.Colors;
 
 public class EffectDetailsCellRenderer extends JTextArea implements ListCellRenderer {
 	/**
@@ -28,13 +29,13 @@ public class EffectDetailsCellRenderer extends JTextArea implements ListCellRend
 				+ "    Duration: " + eff.getDesc());
 		setForeground(Color.WHITE);
 		if (eff.isBeneficial()) {
-			setBackground(Color.GREEN);
+			setBackground(Colors.ATWILL);
 		} else {
-			setBackground(Color.RED);
+			setBackground(Colors.ENCOUNTER);
 		}
 		
 		if (isSelected) {
-			setBackground(Color.DARK_GRAY);
+			setBackground(Color.BLACK);
 		}
 		
 		return this;

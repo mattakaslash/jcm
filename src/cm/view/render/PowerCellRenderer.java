@@ -9,6 +9,7 @@ import javax.swing.ListCellRenderer;
 
 import cm.model.Combatant;
 import cm.model.Power;
+import cm.utils.Colors;
 
 public class PowerCellRenderer extends JLabel implements ListCellRenderer {
 	/**
@@ -49,7 +50,7 @@ public class PowerCellRenderer extends JLabel implements ListCellRenderer {
 		setText(pow.getName() + pow.getActionLine());
 		
 		if (getFighter().isPowerUsed(pow.getName())) {
-			setForeground(Color.DARK_GRAY);
+			setForeground(Colors.DAILY);
 			setBackground(Color.WHITE);
 			setText("x  " + getText());
 		} else {
@@ -58,7 +59,7 @@ public class PowerCellRenderer extends JLabel implements ListCellRenderer {
 		}
 		
 		if (isSelected) {
-			setBackground(Color.DARK_GRAY);
+			setBackground(Color.BLACK);
 		}
 		
 		return this;

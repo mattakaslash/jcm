@@ -6,6 +6,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import cm.utils.Colors;
+
 /**
  * Defines a D&D 4e creature power.
  * @author matthew.rinehart
@@ -167,11 +169,11 @@ public class Power {
 		if (getAction().toLowerCase().contains("recharge")) {
 			return Color.ORANGE;
 		} else if (getAction().toLowerCase().contains("encounter")) {
-			return Color.RED;
+			return Colors.ENCOUNTER;
 		} else if (getAction().toLowerCase().contains("daily")) {
-			return Color.BLACK;
+			return Colors.DAILY;
 		} else if (getAction().toLowerCase().contains("at-will")) {
-			return Color.GREEN;
+			return Colors.ATWILL;
 		} else {
 			return Color.GRAY;
 		}

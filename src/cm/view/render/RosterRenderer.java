@@ -10,6 +10,7 @@ import javax.swing.table.TableCellRenderer;
 
 import cm.model.Combatant;
 import cm.model.Encounter;
+import cm.utils.Colors;
 
 public class RosterRenderer extends JLabel implements TableCellRenderer {
 	/**
