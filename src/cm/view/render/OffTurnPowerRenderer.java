@@ -3,7 +3,7 @@ package cm.view.render;
 import java.awt.Color;
 import java.awt.Component;
 
-import javax.swing.JLabel;
+import javax.swing.JTextArea;
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 
@@ -12,7 +12,7 @@ import cm.model.Encounter;
 import cm.model.FighterPower;
 import cm.model.Power;
 
-public class OffTurnPowerRenderer extends JLabel implements ListCellRenderer {
+public class OffTurnPowerRenderer extends JTextArea implements ListCellRenderer {
 	
 	private Encounter _fight;
 
@@ -40,7 +40,9 @@ public class OffTurnPowerRenderer extends JLabel implements ListCellRenderer {
 		Power power = ((FighterPower) value).getPower();
 		
 		setOpaque(true);
-		setText(fighter.getName() + ": " + power.getName() + power.getActionLine());
+		String text = fighter.getName() + ": " + power.getName() + power.getActionLine() + "\n" +
+				"   " + power.getDesc().replaceAll("\n", "\n   ");
+		setText(text);
 		
 		if (getFight() != null && fighter == getFight().getSelectedFighter()) {
 			setBackground(Color.DARK_GRAY);
