@@ -1,14 +1,13 @@
 package cm.view;
 
 import java.awt.BorderLayout;
-import java.awt.Frame;
 
+import javax.swing.JDialog;
 import javax.swing.JEditorPane;
-import javax.swing.JFrame;
 import javax.swing.JScrollPane;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
-public class InitDisplay extends JFrame {
+public class InitDisplay extends JDialog {
 
 	private static final long serialVersionUID = 1L;
 	private JEditorPane jEditorPaneInitDisplay;
@@ -18,8 +17,6 @@ public class InitDisplay extends JFrame {
 	}
 
 	private void initComponents() {
-		setUndecorated(true);
-		setExtendedState(Frame.MAXIMIZED_BOTH);
 		setAlwaysOnTop(true);
 		add(getJScrollPaneInitDisplay(), BorderLayout.CENTER);
 		setSize(800, 600);

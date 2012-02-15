@@ -7,6 +7,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -1533,10 +1535,10 @@ public class MainFrame extends JFrame {
 			menuOptionsShowFullInitDisplay = new JCheckBoxMenuItem();
 			menuOptionsShowFullInitDisplay.setText("Show Full Init Display");
 			menuOptionsShowFullInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed F"));
-			menuOptionsShowFullInitDisplay.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					menuOptionsShowFullInitDisplayActionActionPerformed(event);
+			menuOptionsShowFullInitDisplay.addItemListener(new ItemListener() {
+				
+				public void itemStateChanged(ItemEvent e) {
+					menuOptionsShowFullInitDisplayStateChanged(e);
 				}
 			});
 		}
@@ -1548,10 +1550,10 @@ public class MainFrame extends JFrame {
 			menuOptionsShowMinimalInitDisplay = new JCheckBoxMenuItem();
 			menuOptionsShowMinimalInitDisplay.setText("Show Minimal Init Display");
 			menuOptionsShowMinimalInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed M"));
-			menuOptionsShowMinimalInitDisplay.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					menuOptionsShowMinimalInitDisplayActionActionPerformed(event);
+			menuOptionsShowMinimalInitDisplay.addItemListener(new ItemListener() {
+
+				public void itemStateChanged(ItemEvent e) {
+					menuOptionsShowMinimalInitDisplayStateChanged(e);
 				}
 			});
 		}
@@ -2350,15 +2352,12 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Event: Menu, Options, Show Full Init Display clicked.
+	 * Event: Menu, Options, Show Full Init Display (un)checked.
 	 * @param event
 	 */
-	private void menuOptionsShowFullInitDisplayActionActionPerformed(ActionEvent event) {
-		JMenuItem item = getMenuOptionsShowFullInitDisplay();
-		if (item.isSelected()) {
-			item.setSelected(true);
+	private void menuOptionsShowFullInitDisplayStateChanged(ItemEvent event) {
+		if (event.getStateChange() == ItemEvent.SELECTED) {
 			getInitDisplay().dispose();
-			getMenuOptionsShowMinimalInitDisplay().setSelected(false);
 			setFullInit(true);
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			if (ge.getScreenDevices().length > 1) {
@@ -2371,7 +2370,6 @@ public class MainFrame extends JFrame {
 			getInitDisplay().setVisible(true);
 			updateInitDisplay();
 		} else {
-			item.setSelected(false);
 			getInitDisplay().setVisible(false);
 		}
 	}
@@ -2380,12 +2378,9 @@ public class MainFrame extends JFrame {
 	 * Event: Menu, Options, Show Minimal Init Display clicked.
 	 * @param event
 	 */
-	private void menuOptionsShowMinimalInitDisplayActionActionPerformed(ActionEvent event) {
-		JMenuItem item = getMenuOptionsShowMinimalInitDisplay();
-		item.repaint();
-		if (item.isSelected()) {
+	private void menuOptionsShowMinimalInitDisplayStateChanged(ItemEvent event) {
+		if (event.getStateChange() == ItemEvent.SELECTED) {
 			getInitDisplay().dispose();
-			getMenuOptionsShowFullInitDisplay().setSelected(false);
 			setFullInit(false);
 			GraphicsEnvironment gc = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			if (gc.getScreenDevices().length > 1) {
@@ -2534,15 +2529,17 @@ public class MainFrame extends JFrame {
 	 * @return the {@link InitDisplay}
 	 */
 	private InitDisplay getInitDisplay() {
-		return _initDisplay;
-	}
+		if (_initDisplay == null) {
+			_initDisplay = new InitDisplay();
+			_initDisplay.addWindowListener(new WindowAdapter() {
 
-	/**
-	 * Sets the init display frame.
-	 * @param initDisplay the init display
-	 */
-	private void setInitDisplay(InitDisplay initDisplay) {
-		_initDisplay = initDisplay;
+				public void windowClosing(WindowEvent e) {
+					getMenuOptionsShowMinimalInitDisplay().setSelected(false);
+					getMenuOptionsShowFullInitDisplay().setSelected(false);
+				}
+			});
+		}
+		return _initDisplay;
 	}
 
 	/**
@@ -3098,18 +3095,6 @@ public class MainFrame extends JFrame {
 	 * Regenerates the initiative display from current information.
 	 */
 	private void updateInitDisplay() {
-		if (getInitDisplay() == null) {
-			InitDisplay id = new InitDisplay();
-			id.addWindowListener(new WindowAdapter() {
-				
-				public void windowClosed(WindowEvent e) {
-					getMenuOptionsShowMinimalInitDisplay().setSelected(false);
-					getMenuOptionsShowFullInitDisplay().setSelected(false);
-				}
-			});
-			setInitDisplay(id);
-		}
-		
 		Integer index = 0;
 		Integer max = 0;
 		Integer min = 999;
