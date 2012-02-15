@@ -827,38 +827,6 @@ public class Encounter {
 			}
 		}
 	}
-
-	/* TODO: implement, or remove
-	public void effectRemoveEndDelay(Combatant fighter) {
-		ArrayList<Effect> list = new ArrayList<Effect>();
-	
-		for (Effect eff : getEffectsBySource(fighter.getCombatHandle())) {
-			if (eff.getDurationCode() == Duration.SourceEnd || eff.getDurationCode() == Duration.TurnEnd) {
-				Boolean goodForFighter = eff.isBeneficial();
-				if (fighter.isPC() != _roster.get(eff.getTargetHandle()).isPC()) {
-					goodForFighter = !eff.isBeneficial();
-				}
-				if (goodForFighter) {
-					list.add(eff);
-				}
-			} else if (eff.getDurationCode() == Duration.Sustained) {
-				list.add(eff);
-			}
-		}
-		
-		for (Effect eff : getEffectsByTarget(fighter.getCombatHandle())) {
-			if (eff.getDurationCode() == Duration.TargetEnd || eff.getDurationCode() == Duration.TurnEnd) {
-				if (eff.getRoundTill() <= fighter.getRound() && eff.isBeneficial()) {
-					list.add(eff);
-				}
-			}
-		}
-		
-		for (Effect eff : list) {
-			eff.setInactive(getCurrentInitSequence() + 1);
-		}
-	}
-	*/
 	
 	/**
 	 * Handle effects that a save can end for the given fighter.
@@ -1447,33 +1415,3 @@ public class Encounter {
 		return null;
 	}
 }
-/* TODO: implement, or remove
-Public ReadOnly Property nEncounterLevel() As Integer
-    Get
-        Return DnD4e_EncounterLevel(nPartySize, nEncounterXP)
-    End Get
-End Property
-Public ReadOnly Property nEncounterXP() As Integer
-    Get
-        Dim xptotal As Integer = 0
-        For Each fighter As Combatant In Roster.Values
-            If Not fighter.bPC Then
-                xptotal += fighter.nXP
-            End If
-        Next
-        Return xptotal
-    End Get
-End Property
-Public ReadOnly Property nPartySize() As Integer
-    Get
-        Dim nPCCount As Integer = 0
-        For Each fighter As Combatant In Roster.Values
-            If fighter.bPC Then
-                nPCCount += 1
-            End If
-        Next
-        Return nPCCount
-    End Get
-End Property
-End Class
-*/

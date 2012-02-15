@@ -2792,7 +2792,6 @@ public class MainFrame extends JFrame {
 		updateOffTurnPowers();
 		updateInitDisplay();
 		updateEnabledControls();
-		updateEncounterXPTotals();
 	}
 
 	/**
@@ -3050,18 +3049,6 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
-
-	private void updateEncounterXPTotals() {
-	/* TODO: implement, or remove
-	        dfPartySize.Text = CStr(fight.nPartySize)
-	        dfXPTotal.Text = fight.nEncounterXP.ToString("#,0")
-	        If fight.nPartySize = 0 Then
-	            dfEncounterLevel.Text = CStr(DnD4e_EncounterLevel(5, fight.nEncounterXP))
-	        Else
-	            dfEncounterLevel.Text = CStr(fight.nEncounterLevel)
-	        End If
-	 */
-		}
 
 	/**
 	 * Updates display from class information.
