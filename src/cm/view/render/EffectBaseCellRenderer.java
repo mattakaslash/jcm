@@ -8,7 +8,7 @@ import javax.swing.JTextArea;
 import javax.swing.ListCellRenderer;
 
 import cm.model.EffectBase;
-import cm.utils.Colors;
+import cm.util.Colors;
 
 public class EffectBaseCellRenderer extends JTextArea implements ListCellRenderer {
 	/**

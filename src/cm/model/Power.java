@@ -6,7 +6,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import cm.utils.Colors;
+import cm.util.Colors;
 
 /**
  * Defines a D&D 4e creature power.

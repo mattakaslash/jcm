@@ -9,8 +9,8 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+import cm.util.Colors;
 import cm.util.DiceBag;
-import cm.utils.Colors;
 
 /**
  * Defines a Combatant in a D&D 4e encounter.

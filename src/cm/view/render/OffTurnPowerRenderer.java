@@ -11,7 +11,7 @@ import cm.model.Combatant;
 import cm.model.Encounter;
 import cm.model.FighterPower;
 import cm.model.Power;
-import cm.utils.Colors;
+import cm.util.Colors;
 
 public class OffTurnPowerRenderer extends JTextArea implements ListCellRenderer {
 	

@@ -9,7 +9,7 @@ import javax.swing.JTable;
 import javax.swing.table.TableCellRenderer;
 
 import cm.model.Effect;
-import cm.utils.Colors;
+import cm.util.Colors;
 
 public class EffectCellRenderer extends JLabel implements TableCellRenderer {
 

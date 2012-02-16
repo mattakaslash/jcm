@@ -1,4 +1,4 @@
-package cm.utils;
+package cm.util;
 
 import java.awt.Color;
 

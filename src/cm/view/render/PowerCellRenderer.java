@@ -9,7 +9,7 @@ import javax.swing.ListCellRenderer;
 
 import cm.model.Combatant;
 import cm.model.Power;
-import cm.utils.Colors;
+import cm.util.Colors;
 
 public class PowerCellRenderer extends JLabel implements ListCellRenderer {
 	/**
