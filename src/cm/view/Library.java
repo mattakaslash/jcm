@@ -4,10 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.InputMethodEvent;
@@ -17,7 +13,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,7 +55,7 @@ public class Library extends JDialog {
 	private JButton jButtonEdit;
 	private JButton jButtonDelete;
 	private JButton jButtonCBLoad;
-	private JButton jButtonPaste;
+	private JButton jButtonATLoad;
 	private JList jListEntries;
 	private JScrollPane jScrollPaneEntries;
 	private JLabel jLabelName;
@@ -308,21 +303,21 @@ public class Library extends JDialog {
 		return jListEntries;
 	}
 
-	private JButton getJButtonPaste() {
-		if (jButtonPaste == null) {
-			jButtonPaste = new JButton();
-			jButtonPaste.setFont(new Font("Dialog", Font.BOLD, 10));
-			jButtonPaste.setText("Paste");
-			jButtonPaste.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
-			jButtonPaste.setDefaultCapable(false);
-			jButtonPaste.addActionListener(new ActionListener() {
+	private JButton getJButtonATLoad() {
+		if (jButtonATLoad == null) {
+			jButtonATLoad = new JButton();
+			jButtonATLoad.setFont(new Font("Dialog", Font.BOLD, 10));
+			jButtonATLoad.setText("AT Load");
+			jButtonATLoad.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+			jButtonATLoad.setDefaultCapable(false);
+			jButtonATLoad.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
-					jButtonPasteActionActionPerformed(event);
+					jButtonATLoadActionActionPerformed(event);
 				}
 			});
 		}
-		return jButtonPaste;
+		return jButtonATLoad;
 	}
 
 	private JButton getJButtonCBLoad() {
@@ -421,7 +416,7 @@ public class Library extends JDialog {
 			jToolBarTopLeft.addSeparator();
 			jToolBarTopLeft.add(getJButtonCBLoad());
 			jToolBarTopLeft.addSeparator();
-			jToolBarTopLeft.add(getJButtonPaste());
+			jToolBarTopLeft.add(getJButtonATLoad());
 		}
 		return jToolBarTopLeft;
 	}
@@ -575,40 +570,47 @@ public class Library extends JDialog {
 	}
 
 	/**
-	 * Event: Paste clicked.
+	 * Event: AT Load clicked.
 	 * @param event
 	 */
-	private void jButtonPasteActionActionPerformed(ActionEvent event) {
-		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-		if (cb.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-			Stats stat = new Stats();
-			try {
-				stat.setStatsRTF((String)cb.getData(DataFlavor.stringFlavor));
-				if (stat.isValid()) {
-					if (getStatLib().contains(stat.getHandle())) {
-						int n = JOptionPane.showConfirmDialog(this,
-								stat.getHandle()
-										+ " already exists in the library.\n"
-										+ "Overwite?",
-								"Pre-existing Statblock Found",
-								JOptionPane.QUESTION_MESSAGE);
-						if (n == JOptionPane.NO_OPTION) {
-							return;
-						}
-					}
-					
-					getStatLib().add(stat, true);
-					
-					getJTextFieldName().setText("");
-					resetListFromClass();
-					getJListEntries().setSelectedValue(stat.getHandle(), true);
-					getJListEntries().dispatchEvent(new MouseEvent(this, 0, 0, 0, 0, 0, 1, false));
-				}
-			} catch (UnsupportedFlavorException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+	private void jButtonATLoadActionActionPerformed(ActionEvent event) {
+		Stats stat;
+		JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle("Load from Adventure Tools");
+		fc.setMultiSelectionEnabled(true);
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
+		fc.setFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "Adventure Tools monster files (*.monster)";
 			}
+			
+			@Override
+			public boolean accept(File f) {
+				return (f.isDirectory() || f.getName().endsWith(".monster"));
+			}
+		});
+		
+		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
+			for (File f : fc.getSelectedFiles()) {
+				stat = new Stats();
+				if (stat.loadFromMonsterFile(f.getAbsolutePath())) {
+					if (stat.isValid()) {
+						if (getStatLib().contains(stat.getHandle())) {
+							int n = JOptionPane.showConfirmDialog(this, stat.getHandle() + " already exists in the library.\n" +
+									"Overwrite?", "Pre-existing Statblock Found", JOptionPane.YES_NO_OPTION);
+							if (n == JOptionPane.CANCEL_OPTION) {
+								continue;
+							}
+						}
+						getStatLib().add(stat, true);
+					}
+				}
+			}
+			getJTextFieldName().setText("");
+			resetListFromClass();
 		}
 	}
 

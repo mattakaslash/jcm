@@ -3,16 +3,29 @@ package cm.model;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 
 import cm.util.RTFManip;
 
@@ -960,7 +973,7 @@ public class Stats {
 	 * @param value
 	 *            the RTF text
 	 */
-	public void setStatsRTF(String value) {
+	private void setStatsRTF(String value) {
 		statsDetailImport(RTFManip.importToDetails(value));
 	}
 
@@ -2150,13 +2163,158 @@ public class Stats {
 				importCharFromCBXML(reader);
 				return true;
 			} catch (FileNotFoundException e) {
-				// this shouldn't happen, should it? We checked for existence
-				// above
+				// this shouldn't happen, should it? We checked for existence above
 				e.printStackTrace();
 				return false;
 			} catch (XMLStreamException e) {
 				e.printStackTrace();
 				return false;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * Loads a statblock from an Adventure Tools monster file.
+	 * @param filename the location of the .monster file
+	 * @return true on success
+	 */
+	public boolean loadFromMonsterFile(String filename) {
+		File monster = new File(filename);
+		Node node = null;
+		NodeList nodelist = null;
+		
+		if (monster.exists()) {
+			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+			domFactory.setNamespaceAware(true);
+			try {
+				DocumentBuilder builder = domFactory.newDocumentBuilder();
+				Document doc = builder.parse(monster);
+				XPath xpath = XPathFactory.newInstance().newXPath();
+				
+				// name
+				node = (Node) xpath.evaluate("/Monster/Name/text()", doc, XPathConstants.NODE);
+				setName(node.getNodeValue());
+				
+				// role
+				node = (Node) xpath.evaluate("/Monster/Role/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
+				setRole(node.getNodeValue());
+				
+				// role 2 (group role)
+				node = (Node) xpath.evaluate("/Monster/GroupRole/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
+				setRole2(node.getNodeValue());
+				
+				// leader
+				node = (Node) xpath.evaluate("/Monster/IsLeader/text()", doc, XPathConstants.NODE);
+				setLeader(Boolean.valueOf(node.getNodeValue()));
+				
+				// type
+				node = (Node) xpath.evaluate("/Monster/Origin/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
+				String typeKeywords = node.getNodeValue();
+				node = (Node) xpath.evaluate("/Monster/Type/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
+				typeKeywords += " " + node.getNodeValue();
+				nodelist = (NodeList) xpath.evaluate("/Monster/Keywords/ObjectReference/ReferencedObject/Name/text()", doc,
+						XPathConstants.NODESET);
+				if (nodelist.getLength() > 0) {
+					typeKeywords += " (";
+				}
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					typeKeywords += nodelist.item(i).getNodeValue() + ", ";
+				}				
+				setType(typeKeywords.replaceAll(", $", ")"));
+				
+				// senses
+				nodelist = (NodeList) xpath.evaluate("/Monster/Senses/SenseReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				String senses = "";
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					senses += nodelist.item(i).getNodeValue() + ", ";
+				}
+				setSenses(senses.replaceAll(", $", ""));
+
+				// TODO: resistance
+				nodelist = (NodeList) xpath.evaluate("/Monster/Resistances/CreatureSusceptibility", doc, XPathConstants.NODESET);
+				String resist = "";
+				setResistance(resist.replaceAll(", $", ""));
+				
+				// TODO: immunity
+				setImmunity("");
+				
+				// TODO: vulnerability
+				setVulnerability("");
+				
+				// TODO: speeds
+				node = (Node) xpath.evaluate("/Monster/LandSpeed/Speed", doc, XPathConstants.NODE);
+				String speeds = node.getAttributes().getNamedItem("FinalValue").getTextContent();
+				nodelist = (NodeList) xpath.evaluate("/Monster/Speeds/CreatureSpeed", doc, XPathConstants.NODESET);
+				//setSpeed(speeds.replaceAll(", $", ""));
+
+				// regeneration
+				node = (Node) xpath.evaluate("/Monster/Regeneration", doc, XPathConstants.NODE);
+				String regen = node.getAttributes().getNamedItem("FinalValue").getNodeValue();
+				if (regen != null && Integer.valueOf(regen) > 0) {
+					setRegen(regen);
+				}
+
+				// alignment
+				node = (Node) xpath.evaluate("/Monster/Alignment/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
+				setAlignment(node.getNodeValue());
+				
+				// TODO: skills
+				setSkills("");
+				
+				// languages
+				nodelist = (NodeList) xpath.evaluate("/Monster/Languages/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				String langs = "";
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					langs += nodelist.item(i).getNodeValue() + ", ";
+				}
+				setLanguages(langs.replaceAll(", $", ""));
+				
+				// TODO: equipment
+				setEquipment("");
+				
+				// source
+				setSource("Adventure Tools Monster Builder");
+
+				// TODO: notes
+				setNotes("");
+				
+				// level
+				node = (Node) xpath.evaluate("/Monster/Level/text()", doc, XPathConstants.NODE);
+				setLevel(Integer.valueOf(node.getNodeValue()));
+				
+				setXP(0);
+				setInit(0);
+				setMaxHP(0);
+				setAC(0);
+				setFort(0);
+				setRef(0);
+				setWill(0);
+				setSaveBonus(0);
+				setActionPoints(0);
+				setPowerPoints(0);
+				setSurges(0);
+				setStr(0);
+				setCon(0);
+				setDex(0);
+				setInt(0);
+				setWis(0);
+				setCha(0);
+				getPowerList().clear();
+				getPresetEffects().clear();
+				return true;
+			} catch (ParserConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SAXException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (XPathExpressionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
 		}
 		return false;

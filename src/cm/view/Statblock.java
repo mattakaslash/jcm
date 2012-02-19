@@ -2,10 +2,6 @@ package cm.view;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.Toolkit;
-import java.awt.datatransfer.Clipboard;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
@@ -523,7 +519,7 @@ public class Statblock extends JDialog {
 			jButtonRTFPaste.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
-					jButtonRTFPasteActionActionPerformed(event);
+					jButtonATLoadActionActionPerformed(event);
 				}
 			});
 		}
@@ -1723,23 +1719,36 @@ public class Statblock extends JDialog {
 	}
 
 	/**
-	 * Event: RTF Paste pressed.
+	 * Event: AT Load pressed.
 	 * @param event
 	 */
-	private void jButtonRTFPasteActionActionPerformed(ActionEvent event) {
-		Clipboard cb = Toolkit.getDefaultToolkit().getSystemClipboard();
-		if (cb.isDataFlavorAvailable(DataFlavor.stringFlavor)) {
-			setStat(new Stats());
-			try {
-				getStat().setStatsRTF((String) cb.getData(DataFlavor.stringFlavor));
-			} catch (UnsupportedFlavorException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
+	private void jButtonATLoadActionActionPerformed(ActionEvent event) {
+		JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle("Load from Adventure Tools");
+		fc.setMultiSelectionEnabled(false);
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
+		fc.setFileFilter(new FileFilter() {
+			
+			@Override
+			public String getDescription() {
+				return "Adventure Tools monster files (*.monster)";
 			}
 			
-			if (getStat().isValid()) {
-				moveClassToFields(getStat());
+			@Override
+			public boolean accept(File f) {
+				return (f.isDirectory() || f.getName().endsWith(".monster"));
+			}
+		});
+		
+		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
+			for (File f : fc.getSelectedFiles()) {
+				setStat(new Stats());
+				if (getStat().loadFromMonsterFile(f.getAbsolutePath())) {
+					if (getStat().isValid()) {
+						moveClassToFields(getStat());
+					}
+				}
 			}
 		}
 	}
