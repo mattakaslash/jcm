@@ -82,11 +82,11 @@ public class Power {
 	private String getActionDiceHTML() {
 		String out = "";
 		out += getAction();
-	    out.replace("recharge 6", "recharge <font face='DnD4Attack'>6</font>");
-	    out.replace("recharge 5", "recharge <font face='DnD4Attack'>5 6</font>");
-	    out.replace("recharge 4", "recharge <font face='DnD4Attack'>4 5 6</font>");
-	    out.replace("recharge 3", "recharge <font face='DnD4Attack'>3 4 5 6</font>");
-	    out.replace("recharge 2", "recharge <font face='DnD4Attack'>2 3 4 5 6</font>");
+	    out = out.replace("recharge 6", "recharge <font face='DnD4Attack'>6</font>");
+	    out = out.replace("recharge 5", "recharge <font face='DnD4Attack'>5 6</font>");
+	    out = out.replace("recharge 4", "recharge <font face='DnD4Attack'>4 5 6</font>");
+	    out = out.replace("recharge 3", "recharge <font face='DnD4Attack'>3 4 5 6</font>");
+	    out = out.replace("recharge 2", "recharge <font face='DnD4Attack'>2 3 4 5 6</font>");
 	    return out;
 	}
 
@@ -302,7 +302,7 @@ public class Power {
 			if (!getKeywords().isEmpty()) {
 				out += " (" + getKeywords() + ")";
 			}
-			out += " Aura " + getAura().toString() + "; ";
+			out += " Aura " + getAura().toString();
 			out += "</div>";
 			out += "<div class='gglt'><div class='ggindent'>";
 			out += getDescHTML();
@@ -316,7 +316,7 @@ public class Power {
 			if (!getAction().isEmpty()) {
 				out += " (" + getActionDiceHTML() + ")";
 			}
-			if (!_keywords.isEmpty()) {
+			if (!getKeywords().isEmpty()) {
 				out += " &bull;  " + getKeywords();
 			}
 			out += "</div>";

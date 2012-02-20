@@ -2248,11 +2248,39 @@ public class Stats {
 				}
 				setResistance(resists.replaceAll(", $", ""));
 				
-				// TODO: immunity
-				setImmunity("");
+				// immunity
+				nodelist = (NodeList) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				String immuns = "";
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					String immun = nodelist.item(i).getNodeValue();
+					Node amount = (Node) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility[ReferencedObject/Name=\"" + immun + "\"]/Amount/@FinalValue", doc, XPathConstants.NODE);
+					Node details = (Node) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility[ReferencedObject/Name=\"" + immun + "\"]/Details/text()", doc, XPathConstants.NODE);
+					if (amount != null) {
+						immun += " " + amount.getNodeValue();
+					}
+					if (details != null) {
+						immun += " " + details.getNodeValue();
+					}
+					immuns += immun + ", ";
+				}
+				setImmunity(immuns.replaceAll(", $", ""));
 				
-				// TODO: vulnerability
-				setVulnerability("");
+				// vulnerability
+				nodelist = (NodeList) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				String vulns = "";
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					String vuln = nodelist.item(i).getNodeValue();
+					Node amount = (Node) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility[ReferencedObject/Name=\"" + vuln + "\"]/Amount/@FinalValue", doc, XPathConstants.NODE);
+					Node details = (Node) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility[ReferencedObject/Name=\"" + vuln + "\"]/Details/text()", doc, XPathConstants.NODE);
+					if (amount != null) {
+						vuln += " " + amount.getNodeValue();
+					}
+					if (details != null) {
+						vuln += " " + details.getNodeValue();
+					}
+					vulns += vuln + ", ";
+				}
+				setVulnerability(vulns.replaceAll(", $", ""));
 				
 				// speeds
 				node = (Node) xpath.evaluate("/Monster/LandSpeed/Speed/@FinalValue", doc, XPathConstants.NODE);
@@ -2268,7 +2296,7 @@ public class Stats {
 				}
 				setSpeed(speeds);
 
-				// regeneration
+				// TODO: regeneration
 				node = (Node) xpath.evaluate("/Monster/Regeneration", doc, XPathConstants.NODE);
 				String regen = node.getAttributes().getNamedItem("FinalValue").getNodeValue();
 				if (regen != null && Integer.valueOf(regen) > 0) {
@@ -2297,14 +2325,22 @@ public class Stats {
 				}
 				setLanguages(langs.replaceAll(", $", ""));
 				
-				// TODO: equipment
-				setEquipment("");
+				// equipment
+				nodelist = (NodeList) xpath.evaluate("/Monster/Items/ItemAndQuantity/Item/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				String equips = "";
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					String equip = nodelist.item(i).getNodeValue();
+					Node quantity = (Node) xpath.evaluate("/Monster/Items/ItemAndQuantity[Item/ReferencedObject/Name=\"" + equip + "\"]/Quantity/text()", doc, XPathConstants.NODE);
+					equips += equip + " x" + quantity.getNodeValue() + ", ";
+				}
+				setEquipment(equips.replaceAll(", $", ""));
 				
 				// source
 				setSource("Adventure Tools Monster Builder");
 
-				// TODO: notes
-				setNotes("");
+				// notes
+				node = (Node) xpath.evaluate("/Monster/Tactics/text()", doc, XPathConstants.NODE);
+				setNotes(node.getNodeValue());
 				
 				// level
 				node = (Node) xpath.evaluate("/Monster/Level/text()", doc, XPathConstants.NODE);
@@ -2436,8 +2472,13 @@ public class Stats {
 						}
 						pow.setKeywords(keywords.replaceAll(", $", ""));
 					}
-					// TODO: power description
+					
+					// power description
 					String desc = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Description/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						desc += node.getNodeValue() + "\n";
+					}
 					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Trigger/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += "Trigger: " + node.getNodeValue() + "\n";
@@ -2453,6 +2494,51 @@ public class Stats {
 						desc += "Hit: " + node.getNodeValue() + " ";
 					}
 					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/Description/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						desc += node.getNodeValue() + "\n";
+					}
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Miss/Description/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						desc += "Miss: " + node.getNodeValue() + "\n";
+					}
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/Description/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						desc += "Effect: " + node.getNodeValue() + "\n";
+					}
+					pow.setDesc(desc);
+					
+					// add to list
+					getPowerList().add(pow);
+				}
+				
+				// traits
+				nodelist = (NodeList) xpath.evaluate("/Monster/Powers/MonsterTrait/Name/text()", doc, XPathConstants.NODESET);
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					Power pow = new Power();
+					
+					// trait name
+					String name = nodelist.item(i).getNodeValue();
+					pow.setName(name);
+					
+					// trait range (aura)
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Range/@FinalValue", doc, XPathConstants.NODE);
+					if (node != null) {
+						pow.setAura(Integer.valueOf(node.getNodeValue()));
+					}
+					
+					// trait keywords
+					String keywords = "";
+					NodeList nl = (NodeList) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+					if (nl != null) {
+						for (int j = 0; j < nl.getLength(); j++) {
+							keywords += nl.item(j).getNodeValue().toLowerCase() + ", ";
+						}
+						pow.setKeywords(keywords.replaceAll(", $", ""));
+					}
+					
+					// trait description
+					String desc = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Details/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += node.getNodeValue() + "\n";
 					}
