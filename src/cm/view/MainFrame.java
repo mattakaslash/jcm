@@ -7,6 +7,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
@@ -23,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -196,6 +199,12 @@ public class MainFrame extends JFrame {
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		setForeground(Color.black);
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
+		addComponentListener(new ComponentAdapter() {
+	
+			public void componentResized(ComponentEvent event) {
+				componentComponentResized(event);
+			}
+		});
 		addWindowListener(new WindowAdapter() {
 	
 			public void windowOpened(WindowEvent event) {
@@ -3263,5 +3272,13 @@ public class MainFrame extends JFrame {
 		text = "<h1>Round " + currentRound + ". Defenses: " + min + "-" + max + "</h1><br>" + text + "</table></body></html>";
 		
 		getInitDisplay().setHTML(text);
+	}
+
+	/**
+	 * Event: Window resized.
+	 * @param event
+	 */
+	private void componentComponentResized(ComponentEvent event) {
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
 	}
 }
