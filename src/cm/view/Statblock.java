@@ -164,7 +164,7 @@ public class Statblock extends JDialog {
 	private JTextPane jTextPaneNotes;
 	private JScrollPane jScrollPaneNotes;
 	private JPanel jPanelPowers;
-	private JButton jButtonRTFPaste;
+	private JButton jButtonATLoad;
 	private JButton jButtonCBLoad;
 	private JButton jButtonOK;
 	private JButton jButtonCancel;
@@ -209,7 +209,7 @@ public class Statblock extends JDialog {
 		add(getJPanelHitPoints(), new Constraints(new Leading(293, 156, 12, 12), new Leading(163, 59, 12, 12)));
 		add(getJTabbedPaneTraits(), new Constraints(new Leading(12, 438, 12, 12), new Bilateral(223, 0, 7)));
 		add(getJPanelPowers(), new Constraints(new Bilateral(456, 12, 0), new Bilateral(10, 44, 0)));
-		add(getJButtonRTFPaste(), new Constraints(new Leading(456, 12, 12), new Trailing(12, 50, 50)));
+		add(getJButtonATLoad(), new Constraints(new Leading(456, 12, 12), new Trailing(12, 50, 50)));
 		add(getJButtonCBLoad(), new Constraints(new Leading(553, 12, 12), new Trailing(12, 50, 50)));
 		add(getJButtonCancel(), new Constraints(new Trailing(12, 703, 703), new Trailing(12, 50, 50)));
 		add(getJButtonOK(), new Constraints(new Trailing(91, 646, 646), new Trailing(12, 50, 50)));
@@ -512,18 +512,18 @@ public class Statblock extends JDialog {
 		return jButtonCBLoad;
 	}
 
-	private JButton getJButtonRTFPaste() {
-		if (jButtonRTFPaste == null) {
-			jButtonRTFPaste = new JButton();
-			jButtonRTFPaste.setText("RTF Paste");
-			jButtonRTFPaste.addActionListener(new ActionListener() {
+	private JButton getJButtonATLoad() {
+		if (jButtonATLoad == null) {
+			jButtonATLoad = new JButton();
+			jButtonATLoad.setText("AT Load");
+			jButtonATLoad.addActionListener(new ActionListener() {
 	
 				public void actionPerformed(ActionEvent event) {
 					jButtonATLoadActionActionPerformed(event);
 				}
 			});
 		}
-		return jButtonRTFPaste;
+		return jButtonATLoad;
 	}
 
 	private JPanel getJPanelPowers() {
