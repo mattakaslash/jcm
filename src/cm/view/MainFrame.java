@@ -49,6 +49,8 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JToggleButton;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerNumberModel;
@@ -74,6 +76,7 @@ import org.dyno.visual.swing.layouts.Bilateral;
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
+import org.dyno.visual.swing.layouts.Trailing;
 
 import cm.model.Combatant;
 import cm.model.Effect;
@@ -199,24 +202,95 @@ public class MainFrame extends JFrame {
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		setForeground(Color.black);
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
+		addWindowListener(new WindowAdapter() {
+	
+			public void windowClosing(WindowEvent event) {
+				windowWindowClosing(event);
+			}
+	
+			public void windowOpened(WindowEvent event) {
+				windowWindowOpened(event);
+			}
+		});
 		addComponentListener(new ComponentAdapter() {
 	
 			public void componentResized(ComponentEvent event) {
 				componentComponentResized(event);
 			}
 		});
-		addWindowListener(new WindowAdapter() {
-	
-			public void windowOpened(WindowEvent event) {
-				windowWindowOpened(event);
-			}
-	
-			public void windowClosing(WindowEvent event) {
-				windowWindowClosing(event);
-			}
-		});
 		setJMenuBar(getMenuBarMain());
-		pack();
+		setSize(786, 605);
+	}
+
+	private JButton getJButtonMiscDaily() {
+		if (jButtonMiscDaily == null) {
+			jButtonMiscDaily = new JButton();
+			jButtonMiscDaily.setText("Daily");
+		}
+		return jButtonMiscDaily;
+	}
+
+	private JButton getJButtonMiscVictory() {
+		if (jButtonMiscVictory == null) {
+			jButtonMiscVictory = new JButton();
+			jButtonMiscVictory.setText("Victory");
+		}
+		return jButtonMiscVictory;
+	}
+
+	private JPanel getJPanelMisc() {
+		if (jPanelMisc == null) {
+			jPanelMisc = new JPanel();
+			jPanelMisc.setBorder(BorderFactory.createTitledBorder(null, "Misc", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION,
+					new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			jPanelMisc.setLayout(new GroupLayout());
+			jPanelMisc.add(getJButtonMiscVictory(), new Constraints(new Bilateral(0, 0, 61), new Leading(0, 12, 12)));
+			jPanelMisc.add(getJButtonMiscDaily(), new Constraints(new Bilateral(0, 0, 61), new Leading(32, 12, 12)));
+		}
+		return jPanelMisc;
+	}
+
+	private JButton getJButtonCritHit() {
+		if (jButtonCritHit == null) {
+			jButtonCritHit = new JButton();
+			jButtonCritHit.setText("Hit");
+		}
+		return jButtonCritHit;
+	}
+
+	private JButton getJButtonCritMiss() {
+		if (jButtonCritMiss == null) {
+			jButtonCritMiss = new JButton();
+			jButtonCritMiss.setText("Miss");
+		}
+		return jButtonCritMiss;
+	}
+
+	private JPanel getJPanelCrits() {
+		if (jPanelCrits == null) {
+			jPanelCrits = new JPanel();
+			jPanelCrits.setBorder(BorderFactory.createTitledBorder(null, "Crits", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
+					Font.BOLD, 12), new Color(51, 51, 51)));
+			jPanelCrits.setLayout(new GroupLayout());
+			jPanelCrits.add(getJButtonCritHit(), new Constraints(new Bilateral(0, 0, 49), new Leading(0, 12, 12)));
+			jPanelCrits.add(getJButtonCritMiss(), new Constraints(new Bilateral(0, 0, 61), new Leading(32, 12, 12)));
+		}
+		return jPanelCrits;
+	}
+
+	private JToolBar getJToolBarMusic() {
+		if (jToolBar0 == null) {
+			jToolBar0 = new JToolBar();
+		}
+		return jToolBar0;
+	}
+
+	private JToggleButton getJToggleButtonPlay() {
+		if (jToggleButtonPlay == null) {
+			jToggleButtonPlay = new JToggleButton();
+			jToggleButtonPlay.setText("Play");
+		}
+		return jToggleButtonPlay;
 	}
 
 	private JPanel getJPanelEffectButtons() {
@@ -267,7 +341,13 @@ public class MainFrame extends JFrame {
 	private JPanel getJPanelMusic() {
 		if (jPanelMusic == null) {
 			jPanelMusic = new JPanel();
+			jPanelMusic.setBorder(BorderFactory.createTitledBorder(null, "Music Player", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
+					Font.BOLD, 12), new Color(51, 51, 51)));
 			jPanelMusic.setLayout(new GroupLayout());
+			jPanelMusic.add(getJToggleButtonPlay(), new Constraints(new Leading(0, 165, 165), new Trailing(29, 84, 12, 12)));
+			jPanelMusic.add(getJToolBarMusic(), new Constraints(new Bilateral(0, 0, 18), new Trailing(0, 23, 144, 144)));
+			jPanelMusic.add(getJPanelCrits(), new Constraints(new Bilateral(64, 88, 71), new Trailing(29, 84, 12, 12)));
+			jPanelMusic.add(getJPanelMisc(), new Constraints(new Trailing(0, 10, 141), new Trailing(29, 84, 12, 12)));
 		}
 		return jPanelMusic;
 	}
@@ -1132,8 +1212,8 @@ public class MainFrame extends JFrame {
 			jSplitPaneLeft = new JSplitPane();
 			jSplitPaneLeft.setDividerLocation(350);
 			jSplitPaneLeft.setDividerSize(0);
-			jSplitPaneLeft.setResizeWeight(1.0);
 			jSplitPaneLeft.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			jSplitPaneLeft.setResizeWeight(1.0);
 			jSplitPaneLeft.setTopComponent(getJScrollPaneRoster());
 			jSplitPaneLeft.setBottomComponent(getJTabbedPaneUtils());
 		}
@@ -2532,6 +2612,14 @@ public class MainFrame extends JFrame {
 	private JPanel jPanelHealth;
 	private JPanel jPanelSurges;
 	private JPanel jPanelEffectButtons;
+	private JToggleButton jToggleButtonPlay;
+	private JToolBar jToolBar0;
+	private JPanel jPanelCrits;
+	private JButton jButtonCritMiss;
+	private JButton jButtonCritHit;
+	private JPanel jPanelMisc;
+	private JButton jButtonMiscVictory;
+	private JButton jButtonMiscDaily;
 	/**
 	 * Returns the tracker's encounter.
 	 * @return the encounter
