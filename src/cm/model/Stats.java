@@ -2259,7 +2259,9 @@ public class Stats {
 
 				// notes
 				node = (Node) xpath.evaluate("/Monster/Tactics/text()", doc, XPathConstants.NODE);
-				setNotes(node.getNodeValue());
+				if (node != null) {
+					setNotes(node.getNodeValue());
+				}
 
 				// level
 				node = (Node) xpath.evaluate("/Monster/Level/text()", doc, XPathConstants.NODE);
@@ -2427,7 +2429,7 @@ public class Stats {
 						Node range = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
 								+ "\"]/Attacks/MonsterAttack/Range/text()", doc, XPathConstants.NODE);
 						desc += "Attack: "
-								+ node.getNodeValue().replace("Attack", range.getNodeValue() + "; +" + bonus.getNodeValue()) + "\n";
+								+ node.getNodeValue().replace("Attack", (range == null ? "Melee 1" : range.getNodeValue()) + "; +" + bonus.getNodeValue()) + "\n";
 					}
 					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
 							+ "\"]/Attacks/MonsterAttack/Hit/Damage/Expression/text()", doc, XPathConstants.NODE);
