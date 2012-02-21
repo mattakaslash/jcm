@@ -20,21 +20,34 @@ import org.xml.sax.InputSource;
 import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
 import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
 
+/**
+ * Defines a statblock library to store creature information.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
 public class StatLibrary {
+	/**
+	 * A mapping of handles to their {@link Stats}.
+	 */
 	private SortedMap<String, Stats> _library = new TreeMap<String, Stats>();
-	
+
 	/**
 	 * Add a statblock to the library.
-	 * @param stats the statblock
-	 * @param overwrite if true, overwrite any existing statblock with the provided statblock's handle
+	 * 
+	 * @param stats
+	 *            the statblock
+	 * @param overwrite
+	 *            if true, overwrite any existing statblock with the provided
+	 *            statblock's handle
 	 * @return true on successful addition
 	 */
 	public Boolean add(Stats stats, Boolean overwrite) {
 		if (!stats.isValid()) {
 			return false;
 		}
-		
-		if(haveKey(stats.getHandle())) {
+
+		if (contains(stats.getHandle())) {
 			if (overwrite) {
 				add(stats.getHandle(), stats);
 			} else {
@@ -45,10 +58,13 @@ public class StatLibrary {
 		}
 		return true;
 	}
-	
+
 	/**
-	 * Add a statblock to the library. Calls {@link #add(Stats, Boolean)} with overwrite = false.
-	 * @param stats the statblock
+	 * Add a statblock to the library. Calls {@link #add(Stats, Boolean)} with
+	 * overwrite = false.
+	 * 
+	 * @param stats
+	 *            the statblock
 	 * @return true on successful addition
 	 */
 	public Boolean add(Stats stats) {
@@ -56,10 +72,13 @@ public class StatLibrary {
 	}
 
 	/**
-	 * Adds an entry to the library, overwriting a previous entry with the same handle.
-	 * Stats are only added if they are valid.
-	 * @param handle the statblock's handle
-	 * @param stats the statblock
+	 * Adds an entry to the library, overwriting a previous entry with the same
+	 * handle. Stats are only added if they are valid.
+	 * 
+	 * @param handle
+	 *            the statblock's handle
+	 * @param stats
+	 *            the statblock
 	 */
 	private void add(String handle, Stats stats) {
 		if (stats.isValid()) {
@@ -68,7 +87,37 @@ public class StatLibrary {
 	}
 
 	/**
+	 * Deletes all entries from the stat library.
+	 */
+	private void clear() {
+		getLibrary().clear();
+	}
+
+	/**
+	 * Indicates if a given handle is present in the library.
+	 * 
+	 * @param handle
+	 *            the handle
+	 * @return true, if the handle is present in the library
+	 */
+	public Boolean contains(String handle) {
+		return getLibrary().containsKey(handle);
+	}
+
+	/**
+	 * Returns the statblock identified by the handle in the library.
+	 * 
+	 * @param handle
+	 *            the statblock's handle
+	 * @return the statblock
+	 */
+	public Stats get(String handle) {
+		return getLibrary().get(handle);
+	}
+
+	/**
 	 * Returns the statblock library hashtable.
+	 * 
 	 * @return the library
 	 */
 	private SortedMap<String, Stats> getLibrary() {
@@ -76,56 +125,24 @@ public class StatLibrary {
 	}
 
 	/**
-	 * Checks for handle in the library.
-	 * @param handle the handle to search
-	 * @return true if the handle exists in the library
-	 */
-	private Boolean haveKey(String handle) {
-		return getLibrary().containsKey(handle);
-	}
-	
-	/**
 	 * Removes a statblock from the library.
-	 * @param handle the statblock's handle
+	 * 
+	 * @param handle
+	 *            the statblock's handle
 	 * @return true if the entry had existed and was removed
 	 */
 	public Boolean remove(String handle) {
-		if (haveKey(handle)) {
+		if (contains(handle)) {
 			getLibrary().remove(handle);
 			return true;
 		} else {
 			return false;
 		}
 	}
-	
-	/**
-	 * Returns the statblock identified by the handle in the library.
-	 * @param handle the statblock's handle
-	 * @return the statblock
-	 */
-	public Stats get(String handle) {
-		return getLibrary().get(handle);
-	}
-	
-	/**
-	 * Deletes all entries from the stat library.
-	 */
-	private void clear() {
-		getLibrary().clear();
-	}
-	
-	/**
-	 * Indicates if a given handle is present in the library.
-	 * @param handle the handle
-	 * @return true, if the handle is present in the library
-	 */
-	public Boolean contains(String handle) {
-		return getLibrary().containsKey(handle);
-	}
-	
+
 	/**
 	 * Returns the values from the library.
-	 * @return 
+	 * 
 	 * @return the values
 	 */
 	public Collection<Stats> values() {
@@ -134,28 +151,34 @@ public class StatLibrary {
 
 	/**
 	 * Writes the statblock library to an XML stream.
-	 * @param writer the XML stream
-	 * @throws XMLStreamException from the writer
+	 * 
+	 * @param writer
+	 *            the XML stream
+	 * @throws XMLStreamException
+	 *             from the writer
 	 */
 	private void exportXML(XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeStartElement("statblocklibrary");
-		
-		for(Stats stat : getLibrary().values()) {
+
+		for (Stats stat : getLibrary().values()) {
 			stat.exportXML(writer);
 		}
-		
+
 		writer.writeEndElement();
 	}
-	
+
 	/**
 	 * Loads a statlibrary from an XML stream.
-	 * @param reader the XML stream
+	 * 
+	 * @param reader
+	 *            the XML stream
 	 * @return true on success
-	 * @throws XMLStreamException from the reader
+	 * @throws XMLStreamException
+	 *             from the reader
 	 */
 	private Boolean importXML(XMLStreamReader reader) throws XMLStreamException {
 		Stats newStat;
-		
+
 		if (reader.isStartElement() && reader.getName().toString().contentEquals("statblocklibrary")) {
 			while (reader.hasNext()) {
 				reader.next();
@@ -174,21 +197,23 @@ public class StatLibrary {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Reads a statblock library from an XML file.
-	 * @param filename the location of the XML file
-	 * @param clearBeforeLoading if true, clears the existing library before loading
+	 * 
+	 * @param filename
+	 *            the location of the XML file
+	 * @param clearBeforeLoading
+	 *            if true, clears the existing library before loading
 	 * @return true on success
 	 */
 	public Boolean loadFromFile(String filename, Boolean clearBeforeLoading) {
 		File libraryBackup = new File(filename + ".bak");
-		
+
 		if (libraryBackup.exists()) {
 			// may be a problem if this happens
-			JOptionPane.showMessageDialog(null, "Previous library backup found. It is possible a previous " +
-					"session failed. Backup has been copied to prevent data loss.", "Backup Found",
-					JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, "Previous library backup found. It is possible a previous "
+					+ "session failed. Backup has been copied to prevent data loss.", "Backup Found", JOptionPane.ERROR_MESSAGE);
 			try {
 				FileChannel src = new FileInputStream(libraryBackup).getChannel();
 				FileChannel dst = new FileOutputStream(new File(filename + ".saved.bak")).getChannel();
@@ -201,9 +226,9 @@ public class StatLibrary {
 				return false;
 			}
 		}
-		
+
 		File library = new File(filename);
-		
+
 		if (library.exists()) {
 			try {
 				FileChannel src = new FileInputStream(library).getChannel();
@@ -216,7 +241,7 @@ public class StatLibrary {
 				e.printStackTrace();
 				return false;
 			}
-			
+
 			try {
 				InputSource input = new InputSource(new FileInputStream(library));
 				XMLStreamReader reader = XMLStreamReaderFactory.create(input, false);
@@ -228,7 +253,8 @@ public class StatLibrary {
 				}
 				importXML(reader);
 			} catch (FileNotFoundException e) {
-				// this shouldn't happen, should it? We checked for file existence above with library.exists()
+				// this shouldn't happen, should it? We checked for file
+				// existence above with library.exists()
 				e.printStackTrace();
 				return false;
 			} catch (XMLStreamException e) {
@@ -238,13 +264,15 @@ public class StatLibrary {
 		} else {
 			return false;
 		}
-		
+
 		return true;
 	}
-	
+
 	/**
 	 * Saves the stat library to an XML file.
-	 * @param filename the location of the XML file
+	 * 
+	 * @param filename
+	 *            the location of the XML file
 	 * @return true on success
 	 */
 	public Boolean saveToFile(String filename) {

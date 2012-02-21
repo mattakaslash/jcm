@@ -4,9 +4,42 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
+/**
+ * Defines an effect in place on a combatant during an encounter.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
 public class Effect extends EffectBase {
-	private String _sourceHandle = "", _targetHandle = "";
-	private Integer _effectID = 0, _endInitSeq = 0, _roundTill = 0;
+	/**
+	 * The combat handle for the effect's source.
+	 */
+	private String _sourceHandle = "";
+
+	/**
+	 * The combat handle for the effect's target.
+	 */
+	private String _targetHandle = "";
+
+	/**
+	 * An identifier for the effect within the encounter.
+	 */
+	private Integer _effectID = 0;
+
+	/**
+	 * The initiative sequence at which this effect ends.
+	 */
+	private Integer _endInitSeq = 0;
+
+	/**
+	 * The round in which this effect ends.
+	 */
+	private Integer _roundTill = 0;
+
+	/**
+	 * If true, indicates the effect should be hidden from the initiative
+	 * display.
+	 */
 	private Boolean _hidden = false;
 
 	/**
@@ -34,8 +67,7 @@ public class Effect extends EffectBase {
 	 * @param beneficial
 	 *            true if the effect is beneficial to its target
 	 */
-	public Effect(String name, Integer ID, String source, String target,
-			Integer roundTill, Duration dur, Boolean beneficial) {
+	public Effect(String name, Integer ID, String source, String target, Integer roundTill, Duration dur, Boolean beneficial) {
 		clearAll();
 		setName(name);
 		setEffectID(ID);
@@ -47,7 +79,7 @@ public class Effect extends EffectBase {
 	}
 
 	/**
-	 * Indicates if the effect is active for the specified init sequence
+	 * Indicates if the effect is active for the specified init sequence.
 	 * 
 	 * @param currentSeq
 	 *            the initiative sequence of combat
@@ -65,7 +97,7 @@ public class Effect extends EffectBase {
 	}
 
 	/**
-	 * Sets the effect inactive as of the specified init sequence
+	 * Sets the effect inactive as of the specified init sequence.
 	 * 
 	 * @param currentSeq
 	 *            the initiative sequence
@@ -76,8 +108,10 @@ public class Effect extends EffectBase {
 
 	/**
 	 * Returns {@link EffectBase#isBeneficial()}.
+	 * 
 	 * @return {@link EffectBase#isBeneficial()}
 	 */
+	@Override
 	public Boolean isBeneficial() {
 		return super.isBeneficial();
 	}
@@ -168,6 +202,25 @@ public class Effect extends EffectBase {
 	}
 
 	/**
+	 * Indicates if the effect should be hidden from the init display.
+	 * 
+	 * @return true, if the effect should be hidden
+	 */
+	public Boolean isHidden() {
+		return _hidden;
+	}
+
+	/**
+	 * Sets the indicator of hiding the status from the init display.
+	 * 
+	 * @param hidden
+	 *            true, if the effect should be hidden
+	 */
+	public void setHidden(Boolean hidden) {
+		_hidden = hidden;
+	}
+
+	/**
 	 * Gets the round in which the effect expires.
 	 * 
 	 * @return the round of combat
@@ -231,9 +284,9 @@ public class Effect extends EffectBase {
 	 *         effect ID are set
 	 * @see cm.model.EffectBase#isValid()
 	 */
+	@Override
 	public Boolean isValid() {
-		return (super.isValid() && !getSourceHandle().contentEquals("")
-				&& !getTargetHandle().contentEquals("") && getEffectID() != 0);
+		return (super.isValid() && !getSourceHandle().contentEquals("") && !getTargetHandle().contentEquals("") && getEffectID() != 0);
 	}
 
 	/**
@@ -241,6 +294,7 @@ public class Effect extends EffectBase {
 	 * 
 	 * @see cm.model.EffectBase#clearAll()
 	 */
+	@Override
 	protected void clearAll() {
 		super.clearAll();
 		setSourceHandle("");
@@ -259,6 +313,7 @@ public class Effect extends EffectBase {
 	 *             from the writer
 	 * @see cm.model.EffectBase#exportXML(javax.xml.stream.XMLStreamWriter)
 	 */
+	@Override
 	public void exportXML(XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeStartElement("effect");
 
@@ -297,11 +352,11 @@ public class Effect extends EffectBase {
 	 *             from the reader
 	 * @see cm.model.EffectBase#importXML(javax.xml.stream.XMLStreamReader)
 	 */
+	@Override
 	public Boolean importXML(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("effect")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("effect")) {
 			clearAll();
 
 			while (reader.hasNext()) {
@@ -322,9 +377,7 @@ public class Effect extends EffectBase {
 					} else if (elementName.contentEquals("nEndInitSeq")) {
 						setEndInitSeq(Integer.valueOf(reader.getText()));
 					}
-				} else if (reader.isEndElement()
-						&& reader.getName().toString()
-								.contentEquals("effectbase")) {
+				} else if (reader.isEndElement() && reader.getName().toString().contentEquals("effectbase")) {
 					return true;
 				}
 			}
@@ -332,26 +385,12 @@ public class Effect extends EffectBase {
 		return false;
 	}
 
-	/**
-	 * Indicates if the effect should be hidden from the init display.
-	 * @return true, if the effect should be hidden
-	 */
-	public Boolean isHidden() {
-		return _hidden;
-	}
-
-	/**
-	 * Sets the indicator of hiding the status from the init display.
-	 * @param hidden true, if the effect should be hidden
-	 */
-	public void setHidden(Boolean hidden) {
-		_hidden = hidden;
-	}
-	
-	/**
-	 * Returns {@link #getName()}.
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
+	@Override
 	public String toString() {
 		return getName();
 	}

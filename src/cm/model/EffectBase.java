@@ -8,40 +8,46 @@ import javax.xml.stream.XMLStreamWriter;
  * Defines the basic attributes of an effect (e.g., dazed, blinded, etc.) in D&D
  * 4e.
  * 
- * @author matthew.rinehart
- * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
  */
 public class EffectBase implements Comparable<EffectBase> {
-	private String _name;
-	private Boolean _beneficial;
-	private Duration _durationCode;
+	/**
+	 * The name of the effect.
+	 */
+	private String _name = "";
+
+	/**
+	 * If true, the effect provides a benefit as opposed to a hindrance.
+	 */
+	private Boolean _beneficial = false;
+
+	/**
+	 * The {@link Duration} of the effect.
+	 */
+	private Duration _durationCode = Duration.None;
 
 	/**
 	 * Defines possible effect durations in D&D 4e.
 	 * 
-	 * @author matthew.rinehart
-	 * 
+	 * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+	 * @since 1.0
 	 */
 	public enum Duration {
-		None("None", null),
-		SaveEnds("Save Ends", "SE"),
-		TargetStart("Start of Target's Next Turn", "SOT Target"),
-		TargetEnd("End of Target's Next Turn", "EOT Target"),
-		SourceStart("Start of Source's Next Turn", "SOT Source"),
-		SourceEnd("End of Source's Next Turn", "EOT Source"),
-		TurnEnd("End of the Current Turn", "EOT"),
-		Encounter("End of the Encounter", "EOE"),
-		Sustained("Sustained", null), 
-		Special("Special", null);
+		None("None", "None"), SaveEnds("Save Ends", "SE"), TargetStart("Start of Target's Next Turn", "SOT Target"), TargetEnd(
+				"End of Target's Next Turn", "EOT Target"), SourceStart("Start of Source's Next Turn", "SOT Source"), SourceEnd(
+				"End of Source's Next Turn", "EOT Source"), TurnEnd("End of the Current Turn", "EOT"), Encounter(
+				"End of the Encounter", "EOE"), Sustained("Sustained", "Sus"), Special("Special", "Spec");
 
-		private final String _desc;
 		private final String _abbr;
-
+		private final String _desc;
 		/**
-		 * Creates a new Duration.
+		 * Creates a new duration.
 		 * 
 		 * @param desc
+		 *            the description of the duration
 		 * @param abbr
+		 *            an abbreviation of the duration
 		 */
 		private Duration(String desc, String abbr) {
 			this._desc = desc;
@@ -49,21 +55,21 @@ public class EffectBase implements Comparable<EffectBase> {
 		}
 
 		/**
-		 * Returns the description of this Duration.
-		 * 
-		 * @see java.lang.Enum#toString()
-		 */
-		public String getDesc() {
-			return this._desc;
-		}
-
-		/**
-		 * Returns the abbreviation of this Duration.
+		 * Returns the abbreviation of this duration.
 		 * 
 		 * @return the abbreviation
 		 */
 		public String getAbbr() {
 			return this._abbr;
+		}
+
+		/**
+		 * Returns the description of this duration.
+		 * 
+		 * @return the description
+		 */
+		public String getDesc() {
+			return this._desc;
 		}
 	}
 
@@ -105,25 +111,6 @@ public class EffectBase implements Comparable<EffectBase> {
 	}
 
 	/**
-	 * Returns the name of this effect.
-	 * 
-	 * @return the name
-	 */
-	public String getName() {
-		return _name;
-	}
-
-	/**
-	 * Sets the name of this effect.
-	 * 
-	 * @param name
-	 *            the name to set
-	 */
-	public void setName(String name) {
-		_name = name;
-	}
-
-	/**
 	 * Indicates if this effect is beneficial to the target.
 	 * 
 	 * @return true if beneficial
@@ -162,6 +149,16 @@ public class EffectBase implements Comparable<EffectBase> {
 	}
 
 	/**
+	 * Returns a concatenated string of effect properties.
+	 * 
+	 * @return {@link #getName()} + {@link #getDurationCode()} +
+	 *         {@link #isBeneficial()}
+	 */
+	public String getEffectBaseID() {
+		return getName() + getDurationCode() + isBeneficial();
+	}
+
+	/**
 	 * Indicates whether this status effect marks the target.
 	 * 
 	 * @return true if this effect marks the target
@@ -171,22 +168,31 @@ public class EffectBase implements Comparable<EffectBase> {
 	}
 
 	/**
+	 * Returns the name of this effect.
+	 * 
+	 * @return the name
+	 */
+	public String getName() {
+		return _name;
+	}
+
+	/**
+	 * Sets the name of this effect.
+	 * 
+	 * @param name
+	 *            the name to set
+	 */
+	public void setName(String name) {
+		_name = name;
+	}
+
+	/**
 	 * Indicates if the effect is valid.
 	 * 
 	 * @return true if the effect has a defined name and duration
 	 */
 	public Boolean isValid() {
 		return !(getName().contentEquals("") || getName() == null || getDurationCode() == Duration.None);
-	}
-
-	/**
-	 * Returns a concatenated string of effect properties.
-	 * 
-	 * @return {@link #getName()} + {@link #getDurationCode()} +
-	 *         {@link #isBeneficial()}
-	 */
-	public String getEffectBaseID() {
-		return getName() + getDurationCode() + isBeneficial();
 	}
 
 	/**
@@ -221,7 +227,7 @@ public class EffectBase implements Comparable<EffectBase> {
 		writer.writeCharacters(getDurationCode().toString());
 		writer.writeEndElement();
 
-		writer.writeEndElement(); // effectbase
+		writer.writeEndElement();
 	}
 
 	/**
@@ -236,8 +242,7 @@ public class EffectBase implements Comparable<EffectBase> {
 	public Boolean importXML(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("effectbase")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("effectbase")) {
 			clearAll();
 
 			while (reader.hasNext()) {
@@ -251,7 +256,8 @@ public class EffectBase implements Comparable<EffectBase> {
 						setBeneficial(Boolean.valueOf(reader.getText()));
 					} else if (elementName.contentEquals("durcode")) {
 						if (reader.getText().length() == 1) {
-							// TODO: supports original; remove when no longer needed
+							// TODO: supports original; remove when no longer
+							// needed
 							switch (Integer.valueOf(reader.getText())) {
 							default:
 							case 0:
@@ -300,6 +306,11 @@ public class EffectBase implements Comparable<EffectBase> {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
 	@Override
 	public int compareTo(EffectBase o) {
 		return getName().compareTo(o.getName());

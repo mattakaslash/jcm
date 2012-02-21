@@ -25,7 +25,6 @@ import javax.xml.stream.XMLStreamWriter;
 import org.xml.sax.InputSource;
 
 import cm.model.EffectBase.Duration;
-import cm.util.DiceBag;
 import cm.view.RechargeWin;
 import cm.view.SavingThrows;
 
@@ -34,26 +33,83 @@ import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
 
 /**
  * Defines a D&D 4e encounter.
- * @author matthew.rinehart
- *
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
  */
 public class Encounter {
+	/**
+	 * The {@link StatLibrary} to use.
+	 */
 	private StatLibrary _statLib = new StatLibrary();
+
+	/**
+	 * The roster of combatants.
+	 */
 	private SortedMap<String, Combatant> _roster = new TreeMap<String, Combatant>();
+
+	/**
+	 * If true, rolls are modified by role modifier.
+	 */
+	// TODO: determine if this is even used
 	private Boolean _useRollMod = false;
+
+	/**
+	 * If true, a popup is displayed when a creature starts its turn and has an
+	 * effect dealing ongoing damage.
+	 */
+	// TODO: determine if this can be replaced by
+	// Settings.doPopupForOngoingDamage()
 	private Boolean _ongoingPopup = true;
+
+	/**
+	 * A coded form of the encounter notes.
+	 */
 	private String _globalNotesCoded = "";
+
+	/**
+	 * The combat handle of the fighter currently selected in the roster.
+	 */
 	private String _selectedFighterHandle = "";
+
+	/**
+	 * A table of active effects in the encounter.
+	 */
 	private Hashtable<Integer, Effect> _activeEffects = new Hashtable<Integer, Effect>();
+
+	/**
+	 * An incrementing effect identifier.
+	 */
 	private Integer _nextEffectID = 1;
+
+	/**
+	 * If true, the program will automatically roll saving throws for effects
+	 * that have Duration.SaveEnds.
+	 */
+	// TODO: determine if this can be replaced by Settings.doSavingThrows()
 	private Boolean _rollEffectSaves = true;
+
+	/**
+	 * If true, the program will automatically roll to recharge powers at the
+	 * start of the creature's turn.
+	 */
+	// TODO: determine if this can be replaced by Settings.doPowerRecharge()
 	private Boolean _rollPowerRecharge = true;
+
+	/**
+	 * A pointer to the parent frame for dialog box purposes.
+	 */
 	private JFrame _parent = null;
 
 	/**
-	 * Creates a new encounter using the given {@link StatLibrary} and {@link DiceBag}.
-	 * @param statLibrary the {@link StatLibrary}
-	 * @param useRoleMod if true, rolls will be modified according to fighter role
+	 * Creates a new encounter using the given {@link StatLibrary}.
+	 * 
+	 * @param statLibrary
+	 *            the {@link StatLibrary}
+	 * @param useRoleMod
+	 *            if true, rolls will be modified according to fighter role
+	 * @param parent
+	 *            the parent frame for dialog boxes
 	 */
 	public Encounter(StatLibrary statLibrary, Boolean useRoleMod, JFrame parent) {
 		clearAll();
@@ -66,15 +122,8 @@ public class Encounter {
 	}
 
 	/**
-	 * Sets the parent frame for the encounter.
-	 * @param parent the parent frame
-	 */
-	private void setParent(JFrame parent) {
-		_parent = parent;
-	}
-
-	/**
 	 * Returns the table of active status effects for this encounter.
+	 * 
 	 * @return the active effects table
 	 */
 	private Hashtable<Integer, Effect> getActiveEffects() {
@@ -82,7 +131,19 @@ public class Encounter {
 	}
 
 	/**
-	 * Returns the {@link Combatant} whose turn it is
+	 * Returns the active effect with the provided effect ID.
+	 * 
+	 * @param effectID
+	 *            the effect ID
+	 * @return the active effect
+	 */
+	public Effect getActiveEffect(Integer effectID) {
+		return getActiveEffects().get(effectID);
+	}
+
+	/**
+	 * Returns the {@link Combatant} whose turn it is.
+	 * 
 	 * @return the {@link Combatant}
 	 */
 	public Combatant getCurrentFighter() {
@@ -90,7 +151,8 @@ public class Encounter {
 	}
 
 	/**
-	 * Returns the combat handle of the {@link Combatant} whose turn it is
+	 * Returns the combat handle of the {@link Combatant} whose turn it is.
+	 * 
 	 * @return the combat handle, or "" if no one has rolled initiative
 	 */
 	public String getCurrentFighterHandle() {
@@ -103,6 +165,7 @@ public class Encounter {
 
 	/**
 	 * Returns the initiative sequence of the current {@link Combatant}.
+	 * 
 	 * @return the initiative sequence
 	 */
 	private Integer getCurrentInitSequence() {
@@ -110,7 +173,9 @@ public class Encounter {
 	}
 
 	/**
-	 * Returns the highest round number of all {@link Combatant}s who have rolled initiative.
+	 * Returns the highest round number of all {@link Combatant}s who have
+	 * rolled initiative.
+	 * 
 	 * @return the round number
 	 */
 	public Integer getCurrentRound() {
@@ -130,47 +195,53 @@ public class Encounter {
 
 	/**
 	 * Returns a list of active {@link Effect}s from the given source.
-	 * @param sourceHandle the source handle
+	 * 
+	 * @param sourceHandle
+	 *            the source handle
 	 * @return the list of {@link Effect}s
 	 */
 	private List<Effect> getEffectsBySource(String sourceHandle) {
 		List<Effect> list = new ArrayList<Effect>();
-		
+
 		for (Effect eff : getActiveEffects().values()) {
 			if (eff.getSourceHandle().contentEquals(sourceHandle) && eff.isActive(getCurrentInitSequence())) {
 				list.add(eff);
 			}
 		}
-		
+
 		return list;
 	}
 
 	/**
 	 * Returns a list of active {@link Effect}s on the given target.
-	 * @param targetHandle the target handle
+	 * 
+	 * @param targetHandle
+	 *            the target handle
 	 * @return the list of {@link Effect}s
-	 */	
+	 */
 	public ArrayList<Effect> getEffectsByTarget(String targetHandle) {
 		ArrayList<Effect> list = new ArrayList<Effect>();
-		
+
 		for (Effect eff : getActiveEffects().values()) {
 			if (eff.getTargetHandle().contentEquals(targetHandle) && eff.isActive(getCurrentInitSequence())) {
 				list.add(eff);
 			}
 		}
-		
+
 		return list;
 	}
 
 	/**
 	 * Returns a list of unique {@link Effect}s by the source.
-	 * @param sourceHandle the source handle
+	 * 
+	 * @param sourceHandle
+	 *            the source handle
 	 * @return the list
 	 */
 	public ArrayList<Effect> getEffectsUniqueHistoryBySource(String sourceHandle) {
 		ArrayList<String> uniqueList = new ArrayList<String>();
 		ArrayList<Effect> returnList = new ArrayList<Effect>();
-		
+
 		for (Effect eff : _activeEffects.values()) {
 			if (eff.getSourceHandle().contentEquals(sourceHandle)) {
 				if (!uniqueList.contains(eff.getEffectBaseID())) {
@@ -179,22 +250,41 @@ public class Encounter {
 				}
 			}
 		}
-		
+
 		return returnList;
 	}
 
 	/**
+	 * Returns a {@link Combatant} with the matching combat handle.
+	 * 
+	 * @param handle
+	 *            the combat handle
+	 * @return the {@link Combatant}, or null if none was found
+	 */
+	public Combatant getFighterByHandle(String handle) {
+		for (Combatant fighter : getRoster().values()) {
+			if (fighter.getCombatHandle().contentEquals(handle)) {
+				return fighter;
+			}
+		}
+		return null;
+	}
+
+	/**
 	 * Returns the {@link Combatant} at the requested index.
-	 * @param index the index requested
-	 * @return the {@link Combatant}, or {@code null} if none exists at the requested index
+	 * 
+	 * @param index
+	 *            the index requested
+	 * @return the {@link Combatant}, or {@code null} if none exists at the
+	 *         requested index
 	 */
 	public Combatant getFighterByIndex(Integer index) {
 		SortedMap<String, Combatant> list = new TreeMap<String, Combatant>();
-		
+
 		for (Combatant fighter : getRoster().values()) {
 			list.put(getInitSortValue(fighter), fighter);
 		}
-		
+
 		if (index >= list.size()) {
 			return null;
 		}
@@ -202,23 +292,40 @@ public class Encounter {
 	}
 
 	/**
+	 * Returns a list of all fighters in this encounter.
+	 * 
+	 * @return the list
+	 */
+	public SortedSet<Combatant> getFullList() {
+		SortedSet<Combatant> list = new TreeSet<Combatant>();
+		for (Combatant fighter : getRoster().values()) {
+			list.add(fighter);
+		}
+		return list;
+	}
+
+	/**
 	 * Returns the global notes for the encounter.
+	 * 
 	 * @return the global notes
 	 */
 	public String getGlobalNotes() {
 		return _globalNotesCoded.replace("###", "\n");
 	}
-	
+
 	/**
 	 * Sets the global notes for the encounter.
-	 * @param value the global notes
+	 * 
+	 * @param value
+	 *            the global notes
 	 */
 	public void setGlobalNotes(String value) {
 		_globalNotesCoded = value.replace("\n", "###");
 	}
-	
+
 	/**
 	 * Returns the coded form of the global notes.
+	 * 
 	 * @return global notes (coded)
 	 */
 	private String getGlobalNotesCoded() {
@@ -227,14 +334,18 @@ public class Encounter {
 
 	/**
 	 * Sets the coded form of the global notes.
-	 * @param string global notes
+	 * 
+	 * @param string
+	 *            global notes
 	 */
 	private void setGlobalNotesCoded(String string) {
-		_globalNotesCoded = string.replace("\n", "###");	
+		_globalNotesCoded = string.replace("\n", "###");
 	}
 
 	/**
-	 * Returns a generated list of combatants who have rolled initiative, but are inactive.
+	 * Returns a generated list of combatants who have rolled initiative, but
+	 * are inactive.
+	 * 
 	 * @return the combatants who have rolled initiative, but are inactive
 	 */
 	private SortedSet<Combatant> getInactiveRolledFighters() {
@@ -247,8 +358,11 @@ public class Encounter {
 		return list;
 	}
 
-	/** Returns the initiative sort value for the provided {@link Combatant}.
-	 * @param fighter the {@link Combatant} whose value we want
+	/**
+	 * Returns the initiative sort value for the provided {@link Combatant}.
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant} whose value we want
 	 * @return the fighter's {@link Combatant#getInitSort()}
 	 */
 	private String getInitSortValue(Combatant fighter) {
@@ -256,41 +370,40 @@ public class Encounter {
 	}
 
 	/**
-		 * Sets the initiative status of the supposed fighter to the provided status.
-		 * @param fighter the {@link Combatant}
-		 * @param status the init status
-		 */
-		public void setInitStatus(Combatant fighter, String status) {
-			if (fighter != null) {
-				if (status.contentEquals("Ready")) {
-	//				if (!fighter.getCombatHandle().contentEquals(getCurrentFighterHandle())) {
-	//					effectRemoveStart(fighter);
-	//				}
-	//				effectRemoveEnd(fighter);
-	//				fighter.initClear();
-	//				fighter.setInitStatus(status);
-					if (!fighter.getInitStatus().contentEquals("Reserve")) {
-						fighter.setReady(true);
-					}
-				} else if (status.contentEquals("Delay")) {
-					if (!fighter.getCombatHandle().contentEquals(getCurrentFighterHandle())) {
-						effectRemoveStart(fighter);
-					}
-					effectRemoveEnd(fighter);
-					fighter.initClear();
-					fighter.setInitStatus(status);
-				} else if (status.contentEquals("Reserve")) {
-					fighter.resetInit();
-					if (!fighter.isPC()) {
-						fighter.resetHealth();
-					}
-					effectRemoveAllByTarget(fighter.getCombatHandle());
+	 * Sets the initiative status of the supposed fighter to the provided
+	 * status.
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant}
+	 * @param status
+	 *            the init status
+	 */
+	public void setInitStatus(Combatant fighter, String status) {
+		if (fighter != null) {
+			if (status.contentEquals("Ready")) {
+				if (!fighter.getInitStatus().contentEquals("Reserve")) {
+					fighter.setReady(true);
 				}
+			} else if (status.contentEquals("Delay")) {
+				if (!fighter.getCombatHandle().contentEquals(getCurrentFighterHandle())) {
+					effectRemoveStart(fighter);
+				}
+				effectRemoveEnd(fighter);
+				fighter.initClear();
+				fighter.setInitStatus(status);
+			} else if (status.contentEquals("Reserve")) {
+				fighter.resetInit();
+				if (!fighter.isPC()) {
+					fighter.resetHealth();
+				}
+				effectRemoveAllByTarget(fighter.getCombatHandle());
 			}
 		}
+	}
 
 	/**
 	 * Returns the next effect ID.
+	 * 
 	 * @return the effect ID
 	 */
 	private Integer getNextEffectID() {
@@ -299,7 +412,9 @@ public class Encounter {
 
 	/**
 	 * Sets the next effect ID to the provided value.
-	 * @param id the effect ID
+	 * 
+	 * @param id
+	 *            the effect ID
 	 */
 	private void setNextEffectID(Integer id) {
 		_nextEffectID = id;
@@ -307,6 +422,7 @@ public class Encounter {
 
 	/**
 	 * Indicates if the encounter is ongoing.
+	 * 
 	 * @return {@link #getRoster()}.size() != {@link #getReserveList()}.size()
 	 */
 	public Boolean isOngoingFight() {
@@ -314,7 +430,9 @@ public class Encounter {
 	}
 
 	/**
-	 * Indicates if a popup should be displayed reminding the user of ongoing damage in effect on the current fighter.
+	 * Indicates if a popup should be displayed reminding the user of ongoing
+	 * damage in effect on the current fighter.
+	 * 
 	 * @return true if the popup is desired in the application configuration
 	 */
 	private boolean doOngoingPopup() {
@@ -323,15 +441,29 @@ public class Encounter {
 
 	/**
 	 * Sets the indicator of ongoing effect popups.
-	 * @param ongoingPopup true if the application should remind the user of ongoing effects
-	 * at the start of the fighter's turn.
+	 * 
+	 * @param ongoingPopup
+	 *            true if the application should remind the user of ongoing
+	 *            effects at the start of the fighter's turn.
 	 */
 	public void setOngoingPopup(Boolean ongoingPopup) {
 		_ongoingPopup = ongoingPopup;
 	}
 
 	/**
-	 * Returns the combat handle of the {@link Combatant} whose turn has just ended
+	 * Sets the parent frame for the encounter.
+	 * 
+	 * @param parent
+	 *            the parent frame
+	 */
+	private void setParent(JFrame parent) {
+		_parent = parent;
+	}
+
+	/**
+	 * Returns the combat handle of the {@link Combatant} whose turn has just
+	 * ended.
+	 * 
 	 * @return the combat handle
 	 */
 	public String getPriorFighterHandle() {
@@ -343,19 +475,8 @@ public class Encounter {
 	}
 
 	/**
-	 * Returns a list of all fighters in this encounter.
-	 * @return the list
-	 */
-	public SortedSet<Combatant> getFullList() {
-		SortedSet<Combatant> list = new TreeSet<Combatant>();
-		for (Combatant fighter : getRoster().values()) {
-			list.add(fighter);
-		}
-		return list;
-	}
-
-	/**
 	 * Returns a generated list of combatants who are in reserve.
+	 * 
 	 * @return the combatants who are in reserve
 	 */
 	public SortedSet<String> getReserveList() {
@@ -370,6 +491,7 @@ public class Encounter {
 
 	/**
 	 * Returns a generated list of combatants who have rolled initiative.
+	 * 
 	 * @return the combatants who have rolled initiative
 	 */
 	public SortedMap<Integer, String> getRolledList() {
@@ -383,12 +505,13 @@ public class Encounter {
 				}
 			}
 		}
-		
+
 		return list;
 	}
-	
+
 	/**
 	 * Indicates if the application should roll saving throws for fighters.
+	 * 
 	 * @return true if the application has been configured to roll saving throws
 	 */
 	private boolean doRollEffectSaves() {
@@ -397,7 +520,10 @@ public class Encounter {
 
 	/**
 	 * Sets the indicator of rolling saving throws.
-	 * @param rollEffectSaves true if the application should automatically roll saving throws
+	 * 
+	 * @param rollEffectSaves
+	 *            true if the application should automatically roll saving
+	 *            throws
 	 */
 	public void setRollEffectSaves(Boolean rollEffectSaves) {
 		_rollEffectSaves = rollEffectSaves;
@@ -405,7 +531,9 @@ public class Encounter {
 
 	/**
 	 * Indicates if the application should roll to recharge fighter powers.
-	 * @return true if the application has been configured to roll recharges for fighter powers
+	 * 
+	 * @return true if the application has been configured to roll recharges for
+	 *         fighter powers
 	 */
 	private boolean doRollPowerRecharge() {
 		return _rollPowerRecharge;
@@ -413,7 +541,10 @@ public class Encounter {
 
 	/**
 	 * Sets the indicator of rolling power recharges.
-	 * @param rollPowerRecharge true if the application should roll power recharges automatically
+	 * 
+	 * @param rollPowerRecharge
+	 *            true if the application should roll power recharges
+	 *            automatically
 	 */
 	public void setRollPowerRecharge(Boolean rollPowerRecharge) {
 		_rollPowerRecharge = rollPowerRecharge;
@@ -421,14 +552,16 @@ public class Encounter {
 
 	/**
 	 * Returns the encounter roster.
+	 * 
 	 * @return the encounter roster
 	 */
 	private SortedMap<String, Combatant> getRoster() {
 		return _roster;
 	}
-	
+
 	/**
 	 * Returns an indicator of if a fighter is selected in the roster.
+	 * 
 	 * @return !{@link #getSelectedFighterHandle()}.contentEquals("")
 	 */
 	public Boolean hasSelectedFighter() {
@@ -437,6 +570,7 @@ public class Encounter {
 
 	/**
 	 * Returns the selected {@link Combatant}, or {@code null} if there is none.
+	 * 
 	 * @return the {@link Combatant}
 	 */
 	public Combatant getSelectedFighter() {
@@ -449,7 +583,9 @@ public class Encounter {
 
 	/**
 	 * Sets the selected fighter to the one provided.
-	 * @param value the {@link Combatant}
+	 * 
+	 * @param value
+	 *            the {@link Combatant}
 	 * @see #setSelectedFighterHandle(String)
 	 */
 	public void setSelectedFighter(Combatant value) {
@@ -458,6 +594,7 @@ public class Encounter {
 
 	/**
 	 * Returns the combat handle of the selected fighter.
+	 * 
 	 * @return the combat handle
 	 */
 	public String getSelectedFighterHandle() {
@@ -465,8 +602,11 @@ public class Encounter {
 	}
 
 	/**
-	 * Sets the selected fighter handle to the provided value, or {@code null} if no such fighter is in the roster.
-	 * @param value the combat handle
+	 * Sets the selected fighter handle to the provided value, or {@code null}
+	 * if no such fighter is in the roster.
+	 * 
+	 * @param value
+	 *            the combat handle
 	 */
 	public void setSelectedFighterHandle(String value) {
 		if (getRoster().containsKey(value)) {
@@ -478,6 +618,7 @@ public class Encounter {
 
 	/**
 	 * Returns the stat library for the encounter.
+	 * 
 	 * @return the {@link StatLibrary}
 	 */
 	private StatLibrary getStatLib() {
@@ -486,7 +627,9 @@ public class Encounter {
 
 	/**
 	 * Sets the {@link StatLibrary} to be used in the encounter.
-	 * @param statLib the {@link StatLibrary}
+	 * 
+	 * @param statLib
+	 *            the {@link StatLibrary}
 	 */
 	private void setStatLib(StatLibrary statLib) {
 		_statLib = statLib;
@@ -494,6 +637,7 @@ public class Encounter {
 
 	/**
 	 * Indicates if the role modifier should be used.
+	 * 
 	 * @return true if the role modifier should be used
 	 */
 	private Boolean getUseRollMod() {
@@ -502,7 +646,9 @@ public class Encounter {
 
 	/**
 	 * Sets the indicator of using the role modifier to effect dice rolls.
-	 * @param useRollMod true if the role modifier should modify dice rolls
+	 * 
+	 * @param useRollMod
+	 *            true if the role modifier should modify dice rolls
 	 */
 	private void setUseRollMod(Boolean useRollMod) {
 		_useRollMod = useRollMod;
@@ -510,20 +656,30 @@ public class Encounter {
 
 	/**
 	 * Adds a new {@link Combatant} with the supplied stats to the encounter.
-	 * Calls {@link #add(Combatant, Boolean, Boolean)} with a final parameter of 'true'.
-	 * @param stats the {@link Stats}
-	 * @param libUpdate if true, calls {@link Combatant#updateLibrary(StatLibrary, Boolean)}
+	 * Calls {@link #add(Combatant, Boolean, Boolean)} with a final parameter of
+	 * 'true'.
+	 * 
+	 * @param stats
+	 *            the {@link Stats}
+	 * @param libUpdate
+	 *            if true, calls
+	 *            {@link Combatant#updateLibrary(StatLibrary, Boolean)}
 	 */
 	public void add(Stats stats, Boolean libUpdate) {
 		Combatant newFighter = new Combatant(stats);
 		add(newFighter, libUpdate, true);
 	}
-	
+
 	/**
 	 * Adds a new {@link Combatant} to the encounter.
-	 * @param combatant the {@link Combatant}
-	 * @param libUpdate if true, calls {@link Combatant#updateLibrary(StatLibrary, Boolean)}
-	 * @param configEntry if true, updates a non-PC's fighter number from 0 to 1
+	 * 
+	 * @param combatant
+	 *            the {@link Combatant}
+	 * @param libUpdate
+	 *            if true, calls
+	 *            {@link Combatant#updateLibrary(StatLibrary, Boolean)}
+	 * @param configEntry
+	 *            if true, updates a non-PC's fighter number from 0 to 1
 	 */
 	public void add(Combatant combatant, Boolean libUpdate, Boolean configEntry) {
 		if (configEntry) {
@@ -531,11 +687,11 @@ public class Encounter {
 				combatant.setFighterNumber(1);
 			}
 		}
-		
-		while(getRoster().containsKey(combatant.getCombatHandle())) {
+
+		while (getRoster().containsKey(combatant.getCombatHandle())) {
 			combatant.setFighterNumber(combatant.getFighterNumber() + 1);
 		}
-		
+
 		getRoster().put(combatant.getCombatHandle(), combatant);
 		if (libUpdate) {
 			combatant.updateLibrary(getStatLib(), configEntry);
@@ -544,10 +700,12 @@ public class Encounter {
 			combatant.setRoleMod("");
 		}
 	}
-	
+
 	/**
 	 * Rolls initiative for all in the roster and selects the current fighter.
-	 * @param groupSimilar if true, similar NPCs will share the same initiative count
+	 * 
+	 * @param groupSimilar
+	 *            if true, similar NPCs will share the same initiative count
 	 */
 	public void startFight(Boolean groupSimilar) {
 		if (groupSimilar) {
@@ -573,14 +731,21 @@ public class Encounter {
 
 	/**
 	 * Updates one fighter's initiative to match another's.
-	 * @param movingHandle the combat handle of the {@link Combatant} who is being updated
-	 * @param targetHandle the combat handle of the {@link Combatant} who is being matched
-	 * @param moveAfter if true, the moved fighter will go after the target instead of before
+	 * 
+	 * @param movingHandle
+	 *            the combat handle of the {@link Combatant} who is being
+	 *            updated
+	 * @param targetHandle
+	 *            the combat handle of the {@link Combatant} who is being
+	 *            matched
+	 * @param moveAfter
+	 *            if true, the moved fighter will go after the target instead of
+	 *            before
 	 * @see #fighterInitUpdate(String, Integer, Integer, Integer, Boolean)
 	 */
 	private void fighterInitMatch(String movingHandle, String targetHandle, Boolean moveAfter) {
 		Combatant target = getRoster().get(targetHandle);
-		
+
 		fighterInitUpdate(movingHandle, target.getRound(), target.getInitRoll(), target.getRandom3(), moveAfter);
 		if (movingHandle.contentEquals(getCurrentFighterHandle())) {
 			fighterStartTurn(getCurrentFighterHandle());
@@ -588,17 +753,21 @@ public class Encounter {
 	}
 
 	/**
-	 * Updates the initiative roll of the fighter with the given combat handle to the result provided.
-	 * @param combatHandle the combat handle
-	 * @param init the new init roll
+	 * Updates the initiative roll of the fighter with the given combat handle
+	 * to the result provided.
+	 * 
+	 * @param combatHandle
+	 *            the combat handle
+	 * @param init
+	 *            the new init roll
 	 * @see #fighterInitUpdate(String, Integer, Integer, Integer, Boolean)
 	 */
 	public void fighterInitRollUpdate(String combatHandle, Integer init) {
 		if (getRoster().containsKey(combatHandle)) {
 			Combatant fighter = getRoster().get(combatHandle);
-			
+
 			fighterInitUpdate(combatHandle, fighter.getRound(), init, fighter.getRandom3(), true);
-			
+
 			if (fighter.getCombatHandle().contentEquals(getCurrentFighterHandle())) {
 				fighterStartTurn(getCurrentFighterHandle());
 			}
@@ -606,51 +775,64 @@ public class Encounter {
 	}
 
 	/**
-	 * Updates the initiative roll, current round, and random3 value of the fighter with the provided combat handle.
-	 * @param combatHandle the combat handle
-	 * @param round the new round
-	 * @param init the new init roll
-	 * @param random3 the new random3 value
-	 * @param goAfter if true, the fighter will be placed after others with the same initiative result instead of before
+	 * Updates the initiative roll, current round, and random3 value of the
+	 * fighter with the provided combat handle.
+	 * 
+	 * @param combatHandle
+	 *            the combat handle
+	 * @param round
+	 *            the new round
+	 * @param init
+	 *            the new init roll
+	 * @param random3
+	 *            the new random3 value
+	 * @param goAfter
+	 *            if true, the fighter will be placed after others with the same
+	 *            initiative result instead of before
 	 * @see #fighterInitUpdate(Combatant, Boolean)
 	 */
-	private void fighterInitUpdate(String combatHandle, Integer round, Integer init,
-			Integer random3, Boolean goAfter) {
+	private void fighterInitUpdate(String combatHandle, Integer round, Integer init, Integer random3, Boolean goAfter) {
 		if (getRoster().containsKey(combatHandle)) {
 			Combatant fighter = getRoster().get(combatHandle);
-			
+
 			fighter.setRound(round);
 			fighter.setInitRoll(init);
 			fighter.setRandom3(random3);
-			
+
 			fighterInitUpdate(fighter, goAfter);
 		}
 	}
 
 	/**
 	 * Updates the initiative roll of the fighter provided.
-	 * @param fighter the {@link Combatant}
-	 * @param goAfter if true, the fighter will be placed after others with the same initiative result instead of before
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant}
+	 * @param goAfter
+	 *            if true, the fighter will be placed after others with the same
+	 *            initiative result instead of before
 	 */
 	private void fighterInitUpdate(Combatant fighter, Boolean goAfter) {
 		if (fighter != null) {
 			fighter.setInitStatus("Rolling");
-			
+
 			while (getRolledList().containsKey(fighter.getInitSequence())) {
-				if(goAfter) {
+				if (goAfter) {
 					fighter.setRandom3(fighter.getRandom3() + 1);
 				} else {
 					fighter.setRandom3(fighter.getRandom3() - 1);
 				}
 			}
 		}
-		
+
 		fighter.setInitStatus("Rolled");
 	}
 
 	/**
 	 * Starts the turn of the fighter with the specified combat handle.
-	 * @param combatHandle the combat handle
+	 * 
+	 * @param combatHandle
+	 *            the combat handle
 	 * @see #effectRemoveStart(Combatant)
 	 * @see #doRollPowerRecharge()
 	 * @see #doOngoingPopup()
@@ -662,27 +844,29 @@ public class Encounter {
 		if (doRollPowerRecharge()) {
 			powerCheckRecharge(fighter);
 		}
-		
+
 		if (doOngoingPopup()) {
 			String text = new String("");
-			
+
 			for (Effect eff : getActiveEffects().values()) {
-				if (eff.isActive(getCurrentInitSequence())
-						&& eff.getTargetHandle().contentEquals(fighter.getCombatHandle()) 
+				if (eff.isActive(getCurrentInitSequence()) && eff.getTargetHandle().contentEquals(fighter.getCombatHandle())
 						&& eff.getName().toLowerCase().contains("ongoing")) {
 					text += "\n" + eff.getName();
 				}
 			}
-			
+
 			if (text.length() > 0) {
-				JOptionPane.showMessageDialog(null, "The following ongoing effects are in place on this monster:\n" + text, "Reminder", JOptionPane.INFORMATION_MESSAGE);
+				JOptionPane.showMessageDialog(null, "The following ongoing effects are in place on this monster:\n" + text,
+						"Reminder", JOptionPane.INFORMATION_MESSAGE);
 			}
 		}
 	}
 
 	/**
 	 * Ends the turn of the fighter with the provided combat handle.
-	 * @param combatHandle the combat handle
+	 * 
+	 * @param combatHandle
+	 *            the combat handle
 	 * @see #effectRemoveEnd(Combatant)
 	 * @see #effectMakeSaves(Combatant)
 	 */
@@ -696,8 +880,11 @@ public class Encounter {
 	}
 
 	/**
-	 * Reverses initiative tracking to the start of the turn of the fighter with the supplied combat handle.
-	 * @param combatHandle the combat handle
+	 * Reverses initiative tracking to the start of the turn of the fighter with
+	 * the supplied combat handle.
+	 * 
+	 * @param combatHandle
+	 *            the combat handle
 	 * @see #fighterUndoTurn(Combatant)
 	 */
 	public void fighterUndoTurn(String combatHandle) {
@@ -706,18 +893,21 @@ public class Encounter {
 	}
 
 	/**
-	 * Reverses initiative tracking to the start of the turn of the provided fighter.
-	 * @param fighter the {@link Combatant}
+	 * Reverses initiative tracking to the start of the turn of the provided
+	 * fighter.
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant}
 	 */
 	private void fighterUndoTurn(Combatant fighter) {
 		if (fighter != null) {
 			Integer newRound = fighter.getRound();
 			newRound -= 1;
-			
+
 			if (newRound < 0) {
 				newRound = 0;
 			}
-			
+
 			fighterInitUpdate(fighter.getCombatHandle(), newRound, fighter.getInitRoll(), fighter.getRandom3(), true);
 			setSelectedFighterHandle(getCurrentFighterHandle());
 			fighterStartTurn(getCurrentFighterHandle());
@@ -729,7 +919,7 @@ public class Encounter {
 	 */
 	public void clearAll() {
 		getRoster().clear();
-		
+
 		setSelectedFighterHandle("");
 		setGlobalNotes("");
 		getActiveEffects().clear();
@@ -740,17 +930,17 @@ public class Encounter {
 	 */
 	public void clearNPCs() {
 		List<String> toRemove = new ArrayList<String>();
-		
+
 		for (Combatant fighter : getRoster().values()) {
 			if (!fighter.isPC()) {
 				toRemove.add(fighter.getCombatHandle());
 			}
 		}
-		
+
 		for (String handle : toRemove) {
 			getRoster().remove(handle);
 		}
-		
+
 		resetEncounter(false);
 	}
 
@@ -759,17 +949,17 @@ public class Encounter {
 	 */
 	public void clearPCs() {
 		List<String> toRemove = new ArrayList<String>();
-		
+
 		for (Combatant fighter : getRoster().values()) {
 			if (fighter.isPC()) {
 				toRemove.add(fighter.getCombatHandle());
 			}
 		}
-		
+
 		for (String handle : toRemove) {
 			getRoster().remove(handle);
 		}
-		
+
 		resetEncounter(true);
 	}
 
@@ -782,7 +972,9 @@ public class Encounter {
 
 	/**
 	 * Adds the provided effect to the encounter.
-	 * @param eff the effect
+	 * 
+	 * @param eff
+	 *            the effect
 	 * @see #effectAdd(String, String, String, Duration, Boolean)
 	 */
 	public void effectAdd(Effect eff) {
@@ -791,15 +983,22 @@ public class Encounter {
 
 	/**
 	 * Adds a new {@link Effect} to the encounter with the provided properties.
-	 * @param name the name of the effect
-	 * @param source the source handle of the effect
-	 * @param target the target handle of the effect
-	 * @param dur the {@link Duration} of the effect
-	 * @param beneficial true if the effect is beneficial to the target
+	 * 
+	 * @param name
+	 *            the name of the effect
+	 * @param source
+	 *            the source handle of the effect
+	 * @param target
+	 *            the target handle of the effect
+	 * @param dur
+	 *            the {@link Duration} of the effect
+	 * @param beneficial
+	 *            true if the effect is beneficial to the target
 	 */
 	public void effectAdd(String name, String source, String target, Duration dur, Boolean beneficial) {
-		Effect newEffect = new Effect(name, getNextEffectID(), source, target, effectTillRound(source, target, dur), dur, beneficial);
-		
+		Effect newEffect = new Effect(name, getNextEffectID(), source, target, effectTillRound(source, target, dur), dur,
+				beneficial);
+
 		if (newEffect.isValid()) {
 			if (!getActiveEffects().containsKey(getNextEffectID())) {
 				// remove prior marks if effect is a mark
@@ -815,54 +1014,61 @@ public class Encounter {
 
 	/**
 	 * Updates effect duration when an effect has changed.
-	 * @param eff the effect
+	 * 
+	 * @param eff
+	 *            the effect
 	 */
 	public void effectChange(Effect eff) {
 		if (eff.isValid()) {
 			if (getActiveEffects().containsKey(eff.getEffectID())) {
 				eff.setRoundTill(effectTillRound(eff.getSourceHandle(), eff.getTargetHandle(), eff.getDurationCode()));
-				// not sure the next two lines are actually necessary, but I don't feel like taking them out right now
+				// not sure the next two lines are actually necessary, but I
+				// don't feel like taking them out right now
 				eff.setEndInitSeq(getActiveEffects().get(eff.getEffectID()).getEndInitSeq());
 				getActiveEffects().put(eff.getEffectID(), eff);
 			}
 		}
 	}
-	
+
 	/**
 	 * Handle effects that a save can end for the given fighter.
-	 * @param fighter the {@link Combatant}
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant}
 	 */
 	private void effectMakeSaves(Combatant fighter) {
 		if (!fighter.isAlive()) {
 			return;
 		}
-		
+
 		List<Effect> list = new ArrayList<Effect>();
-		
+
 		for (Effect eff : getEffectsByTarget(fighter.getCombatHandle())) {
 			if (eff.getDurationCode() == Duration.SaveEnds) {
 				list.add(eff);
 			}
 		}
-		
+
 		if (list.size() > 0) {
 			SavingThrows saveWin = new SavingThrows(list, fighter.getStats().getSaveBonus(), getParent());
 			saveWin.setVisible(true);
-			
+
 			if (saveWin.getSuccessfulSaves().size() > 0) {
 				for (Integer id : saveWin.getSuccessfulSaves()) {
 					Effect eff = getActiveEffect(id);
 					eff.setInactive(getCurrentInitSequence() + 1);
 				}
 			}
-			
+
 			saveWin.dispose();
 		}
 	}
 
 	/**
-	 * Sets the {@link Effect} with the given effect ID to be inactive. 
-	 * @param id the effect ID
+	 * Sets the {@link Effect} with the given effect ID to be inactive.
+	 * 
+	 * @param id
+	 *            the effect ID
 	 */
 	public void effectRemove(Integer id) {
 		if (getActiveEffects().containsKey(id)) {
@@ -872,15 +1078,17 @@ public class Encounter {
 
 	/**
 	 * Removes all {@link Effect}s on the given target from them.
-	 * @param targetHandle the target handle
+	 * 
+	 * @param targetHandle
+	 *            the target handle
 	 */
 	private void effectRemoveAllByTarget(String targetHandle) {
 		List<Integer> list = new ArrayList<Integer>();
-		
+
 		for (Effect eff : getEffectsByTarget(targetHandle)) {
 			list.add(eff.getEffectID());
 		}
-		
+
 		for (Integer id : list) {
 			effectRemove(id);
 		}
@@ -888,29 +1096,34 @@ public class Encounter {
 
 	/**
 	 * Removes all marks on the given from them.
-	 * @param targetHandle the target handle
+	 * 
+	 * @param targetHandle
+	 *            the target handle
 	 */
 	private void effectRemoveMarksByTarget(String targetHandle) {
 		ArrayList<Effect> list = new ArrayList<Effect>();
-		
+
 		for (Effect eff : getEffectsByTarget(targetHandle)) {
 			if (eff.isMark()) {
 				list.add(eff);
 			}
 		}
-		
+
 		for (Effect eff : list) {
 			effectRemove(eff.getEffectID());
 		}
 	}
 
 	/**
-	 * Removes effects relating to the provided fighter at the start of its turn.
-	 * @param fighter the {@link Combatant}
+	 * Removes effects relating to the provided fighter at the start of its
+	 * turn.
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant}
 	 */
 	private void effectRemoveStart(Combatant fighter) {
 		List<Effect> list = new ArrayList<Effect>();
-		
+
 		for (Effect eff : getEffectsBySource(fighter.getCombatHandle())) {
 			if (eff.getDurationCode() == Duration.SourceStart) {
 				if (eff.getRoundTill() <= fighter.getRound()) {
@@ -918,7 +1131,7 @@ public class Encounter {
 				}
 			}
 		}
-	
+
 		for (Effect eff : getEffectsByTarget(fighter.getCombatHandle())) {
 			if (eff.getDurationCode() == Duration.TargetStart) {
 				if (eff.getRoundTill() <= fighter.getRound()) {
@@ -926,7 +1139,7 @@ public class Encounter {
 				}
 			}
 		}
-		
+
 		for (Effect eff : list) {
 			eff.setInactive(getCurrentInitSequence());
 		}
@@ -934,11 +1147,13 @@ public class Encounter {
 
 	/**
 	 * Removes effects relating to the provided fighter at the end of its turn.
-	 * @param fighter the {@link Combatant}
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant}
 	 */
 	private void effectRemoveEnd(Combatant fighter) {
 		List<Effect> list = new ArrayList<Effect>();
-		
+
 		for (Effect eff : getEffectsBySource(fighter.getCombatHandle())) {
 			if (eff.getDurationCode() == Duration.SourceEnd || eff.getDurationCode() == Duration.TurnEnd) {
 				if (eff.getRoundTill() <= fighter.getRound()) {
@@ -946,7 +1161,7 @@ public class Encounter {
 				}
 			}
 		}
-	
+
 		for (Effect eff : getEffectsByTarget(fighter.getCombatHandle())) {
 			if (eff.getDurationCode() == Duration.TargetEnd || eff.getDurationCode() == Duration.TurnEnd) {
 				if (eff.getRoundTill() <= fighter.getRound()) {
@@ -954,22 +1169,27 @@ public class Encounter {
 				}
 			}
 		}
-		
+
 		for (Effect eff : list) {
 			eff.setInactive(getCurrentInitSequence() + 1);
 		}
 	}
 
 	/**
-	 * Returns the round in which an effect with the given duration would expire.
-	 * @param source the source handle
-	 * @param target the target handle
-	 * @param dur the {@link Duration}
+	 * Returns the round in which an effect with the given duration would
+	 * expire.
+	 * 
+	 * @param source
+	 *            the source handle
+	 * @param target
+	 *            the target handle
+	 * @param dur
+	 *            the {@link Duration}
 	 * @return the round in which the effect would expire
 	 */
 	private Integer effectTillRound(String source, String target, Duration dur) {
 		Integer tillRound = 99;
-		
+
 		switch (dur) {
 		case TargetStart:
 		case TargetEnd:
@@ -995,7 +1215,9 @@ public class Encounter {
 
 	/**
 	 * Relocates the provided fighter to the top of the initiative order.
-	 * @param fighter the {@link Combatant}
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant}
 	 * @see #fighterInitMatch(String, String, Boolean)
 	 */
 	public void moveToTop(Combatant fighter) {
@@ -1003,18 +1225,20 @@ public class Encounter {
 			fighterInitMatch(fighter.getCombatHandle(), getCurrentFighterHandle(), false);
 		}
 	}
-	
+
 	/**
 	 * Handle recharge powers for the given fighter.
-	 * @param fighter the {@link Combatant}
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant}
 	 */
 	private void powerCheckRecharge(Combatant fighter) {
 		if (!fighter.isAlive()) {
 			return;
 		}
-		
+
 		List<Power> list = new ArrayList<Power>();
-		
+
 		for (Power pow : fighter.getStats().getPowerList()) {
 			if (pow.getRechargeVal() > 0) {
 				if (fighter.isPowerUsed(pow.getName())) {
@@ -1022,23 +1246,24 @@ public class Encounter {
 				}
 			}
 		}
-		
+
 		if (list.size() > 0) {
 			RechargeWin win = new RechargeWin(fighter.getCombatHandle(), list, getParent());
 			win.setVisible(true);
-			
+
 			if (win.getRecharged().size() > 0) {
 				for (String powName : win.getRecharged()) {
 					fighter.setPowerUsed(powName, false);
 				}
 			}
-			
+
 			win.dispose();
 		}
 	}
 
 	/**
 	 * Returns the parent frame registered with this encounter.
+	 * 
 	 * @return the parent frame
 	 */
 	private JFrame getParent() {
@@ -1047,7 +1272,9 @@ public class Encounter {
 
 	/**
 	 * Removes a given fighter from the roster.
-	 * @param combatHandle the fighter's combat handle
+	 * 
+	 * @param combatHandle
+	 *            the fighter's combat handle
 	 */
 	public void remove(String combatHandle) {
 		getRoster().remove(combatHandle);
@@ -1055,7 +1282,10 @@ public class Encounter {
 
 	/**
 	 * Resets initiative for all {@link Combatant}s in the encounter.
-	 * @param resetPCs if true, resets health and power usage for PCs in addition to enemies
+	 * 
+	 * @param resetPCs
+	 *            if true, resets health and power usage for PCs in addition to
+	 *            enemies
 	 */
 	public void resetEncounter(Boolean resetPCs) {
 		for (Combatant fighter : getRoster().values()) {
@@ -1068,21 +1298,22 @@ public class Encounter {
 		clearSelectedFighter();
 		getActiveEffects().clear();
 	}
-	
+
 	/**
-	 * Rolls initiative for each group of fighters, then starts the first fighter's turn.
+	 * Rolls initiative for each group of fighters, then starts the first
+	 * fighter's turn.
 	 */
 	private void rollAllInitGrouped() {
 		HashMap<String, String> initList = new HashMap<String, String>();
 		Combatant firstRoller;
-	
+
 		for (Combatant fighter : getRoster().values()) {
 			if (initList.containsKey(fighter.getHandle())) {
 				if (!fighter.getInitStatus().contentEquals("Rolled")) {
 					firstRoller = getRoster().get(initList.get(fighter.getHandle()));
 					fighter.resetInit();
-					fighterInitUpdate(fighter.getCombatHandle(), firstRoller.getRound(),
-							firstRoller.getInitRoll(), firstRoller.getRandom3(), true);
+					fighterInitUpdate(fighter.getCombatHandle(), firstRoller.getRound(), firstRoller.getInitRoll(), firstRoller
+							.getRandom3(), true);
 				}
 			} else {
 				if (!fighter.getInitStatus().contentEquals("Rolled")) {
@@ -1098,8 +1329,8 @@ public class Encounter {
 	}
 
 	/**
-	 * Individually rolls initiative for each {@link Combatant} in the encounter roster,
-	 * then starts the first player's turn.
+	 * Individually rolls initiative for each {@link Combatant} in the encounter
+	 * roster, then starts the first player's turn.
 	 */
 	private void rollAllInitUngrouped() {
 		for (Combatant fighter : getRoster().values()) {
@@ -1115,8 +1346,11 @@ public class Encounter {
 	}
 
 	/**
-	 * Rolls initiative for a single fighter, and starts their turn if it puts them at the top of the list.
-	 * @param fighter the {@link Combatant} for which we are rolling
+	 * Rolls initiative for a single fighter, and starts their turn if it puts
+	 * them at the top of the list.
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant} for which we are rolling
 	 */
 	public void rollOneInit(Combatant fighter) {
 		if (fighter != null) {
@@ -1134,18 +1368,20 @@ public class Encounter {
 	}
 
 	/**
-	 * Selects the current fighter. Calls {@link #setSelectedFighter(Combatant)} with {@link #getCurrentFighter()}.
+	 * Selects the current fighter. Calls {@link #setSelectedFighter(Combatant)}
+	 * with {@link #getCurrentFighter()}.
 	 */
 	private void selectCurrentFighter() {
 		setSelectedFighter(getCurrentFighter());
 	}
 
 	/**
-	 * Starts and immediately ends the turns of any inactive fighters between the previous active and the next active.
+	 * Starts and immediately ends the turns of any inactive fighters between
+	 * the previous active and the next active.
 	 */
 	private void skipInactive() {
 		Integer lowestActiveInt = getCurrentInitSequence();
-		
+
 		if (lowestActiveInt > 0) {
 			for (Combatant fighter : getInactiveRolledFighters()) {
 				if (fighter.getInitSequence() < lowestActiveInt) {
@@ -1173,7 +1409,7 @@ public class Encounter {
 			}
 		}
 	}
-	
+
 	/**
 	 * Removes all enemies from the roster and applies a short rest to the PCs.
 	 * Also grants an action point to each PC.
@@ -1189,71 +1425,82 @@ public class Encounter {
 			}
 		}
 	}
-	
+
 	/**
-	 * Removes all enemies from the roster and applies an extended rest to the PCs.
+	 * Removes all enemies from the roster and applies an extended rest to the
+	 * PCs.
 	 */
 	public void takeExtendedRest() {
 		clearNPCs();
 		resetEncounter(true);
 	}
-	
+
 	/**
-	 * Calls {@link Combatant#updateLibrary(StatLibrary, Boolean)} for each fighter in the roster.
+	 * Calls {@link Combatant#updateLibrary(StatLibrary, Boolean)} for each
+	 * fighter in the roster.
+	 * 
 	 * @see #getStatLib()
-	 * @param configEntries this is passed as the second parameter to {@link Combatant#updateLibrary(StatLibrary, Boolean)}
+	 * @param configEntries
+	 *            this is passed as the second parameter to
+	 *            {@link Combatant#updateLibrary(StatLibrary, Boolean)}
 	 */
 	public void updateAllStats(Boolean configEntries) {
-		for (Combatant fighter: getRoster().values()) {
+		for (Combatant fighter : getRoster().values()) {
 			fighter.updateLibrary(getStatLib(), configEntries);
 		}
 	}
-	
+
 	/**
 	 * Writes the encounter data out to an XML stream.
-	 * @param writer the XML stream
-	 * @throws XMLStreamException from the writer
+	 * 
+	 * @param writer
+	 *            the XML stream
+	 * @throws XMLStreamException
+	 *             from the writer
 	 */
 	private void exportXML(XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeStartElement("encounter");
-		
+
 		writer.writeStartElement("ongoingfight");
 		writer.writeCharacters(isOngoingFight().toString());
 		writer.writeEndElement();
-		
+
 		writer.writeStartElement("globalnotes");
 		writer.writeCharacters(getGlobalNotesCoded());
 		writer.writeEndElement();
-		
+
 		for (Combatant fighter : getRoster().values()) {
 			fighter.exportXML(writer, isOngoingFight());
 		}
-		
+
 		if (isOngoingFight()) {
 			writer.writeStartElement("nexteffectID");
 			writer.writeCharacters(getNextEffectID().toString());
 			writer.writeEndElement();
-			
+
 			for (Effect eff : getActiveEffects().values()) {
 				eff.exportXML(writer);
 			}
 		}
-		
+
 		writer.writeEndElement();
 	}
-	
+
 	/**
 	 * Sets encounter properties from an XML stream.
-	 * @param reader the XML stream
+	 * 
+	 * @param reader
+	 *            the XML stream
 	 * @return true on success
-	 * @throws XMLStreamException from the reader
+	 * @throws XMLStreamException
+	 *             from the reader
 	 */
 	private Boolean importXML(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
 		Combatant fighter;
 		Effect eff;
 		Boolean resetInit = true;
-		
+
 		if (reader.isStartElement() && reader.getName().toString().contentEquals("encounter")) {
 			while (reader.hasNext()) {
 				reader.next();
@@ -1279,14 +1526,14 @@ public class Encounter {
 					} else if (elementName.contentEquals("ongoingfight")) {
 						if (Boolean.valueOf(reader.getText())) {
 							if (getRoster().size() > 0) {
-								JOptionPane.showMessageDialog(null, "An ongoing encounter cannot be imported " +
-										"with pre-existing combatants. Please clear the list before attempting " +
-										"this operation.", "Import Error", JOptionPane.ERROR_MESSAGE);
+								JOptionPane.showMessageDialog(null, "An ongoing encounter cannot be imported "
+										+ "with pre-existing combatants. Please clear the list before attempting "
+										+ "this operation.", "Import Error", JOptionPane.ERROR_MESSAGE);
 								resetInit = false;
 							}
 						}
 					} else if (elementName.contentEquals("nexteffectID")) {
-						setNextEffectID(Integer.valueOf(reader.getText()));						
+						setNextEffectID(Integer.valueOf(reader.getText()));
 					}
 				} else if (reader.isEndElement()) {
 					elementName = "";
@@ -1298,16 +1545,20 @@ public class Encounter {
 		}
 		return false;
 	}
-	
+
 	/**
 	 * Loads encounter data from a file.
-	 * @param filename the filename to load from
-	 * @param clearBeforeLoading true if the encounter should be cleared before loading the file
+	 * 
+	 * @param filename
+	 *            the filename to load from
+	 * @param clearBeforeLoading
+	 *            true if the encounter should be cleared before loading the
+	 *            file
 	 * @return true on success
 	 */
 	public Boolean loadFromFile(String filename, Boolean clearBeforeLoading) {
 		File encounter = new File(filename);
-		
+
 		if (encounter.exists()) {
 			try {
 				InputSource input = new InputSource(new FileInputStream(encounter));
@@ -1320,7 +1571,8 @@ public class Encounter {
 				}
 				importXML(reader);
 			} catch (FileNotFoundException e) {
-				// this shouldn't happen, should it? We checked for file existence above with encounter.exists()
+				// this shouldn't happen, should it? We checked for file
+				// existence above with encounter.exists()
 				e.printStackTrace();
 				return false;
 			} catch (XMLStreamException e) {
@@ -1332,12 +1584,15 @@ public class Encounter {
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Writes the encounter data out to a file.
-	 * @param filename the filename to save to
+	 * 
+	 * @param filename
+	 *            the filename to save to
 	 * @return true on success
-	 * @throws IOException from the file channels
+	 * @throws IOException
+	 *             from the file channels
 	 */
 	public Boolean saveToFile(String filename) {
 		String tmpFilename = filename + ".tmp";
@@ -1345,7 +1600,7 @@ public class Encounter {
 		File tmpFile = new File(tmpFilename);
 		FileChannel src = null;
 		FileChannel dst = null;
-		
+
 		if (tmpFile.exists()) {
 			if (!tmpFile.delete()) {
 				return false;
@@ -1356,7 +1611,7 @@ public class Encounter {
 			OutputStream output = new FileOutputStream(tmpFile);
 			XMLStreamWriter writer = XMLStreamWriterFactory.create(output);
 			exportXML(writer);
-			
+
 			src = new FileInputStream(tmpFile).getChannel();
 			dst = new FileOutputStream(encounter).getChannel();
 			dst.transferFrom(src, 0, src.size());
@@ -1387,31 +1642,8 @@ public class Encounter {
 				}
 			}
 		}
-		
+
 		tmpFile.delete();
 		return true;
-	}
-
-	/**
-	 * Returns the active effect with the provided effect ID.
-	 * @param effectID the effect ID
-	 * @return the active effect
-	 */
-	public Effect getActiveEffect(Integer effectID) {
-		return getActiveEffects().get(effectID);
-	}
-
-	/**
-	 * Returns a {@link Combatant} with the matching combat handle.
-	 * @param handle the combat handle
-	 * @return the {@link Combatant}, or null if none was found
-	 */
-	public Combatant getFighterByHandle(String handle) {
-		for (Combatant fighter : getRoster().values()) {
-			if (fighter.getCombatHandle().contentEquals(handle)) {
-				return fighter;
-			}
-		}
-		return null;
 	}
 }

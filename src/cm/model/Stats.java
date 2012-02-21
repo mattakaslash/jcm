@@ -32,21 +32,200 @@ import cm.util.RTFManip;
 import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
 
 /**
- * @author matthew.rinehart
+ * Defines a D&D 4e statblock.
  * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
  */
 public class Stats {
-	private String _name = "", _type = "", _role = "", _role2 = "",
-			_senses = "", _speed = "", _resist = "", _immune = "", _vuln = "",
-			_regen = "", _alignment = "", _skills = "", _languages = "",
-			_equipment = "", _source = "", _feats = "";
-	private Integer _level = 0, _XP = 0, _init = 0, _maxHP = 0, _saveBonus = 0,
-			_actionPoints = 0, _powerPoints = 0, _surges = 0, _AC = 0,
-			_fort = 0, _ref = 0, _will = 0, _str = 0, _con = 0, _dex = 0,
-			_int = 0, _wis = 0, _cha = 0;
+	/**
+	 * The name.
+	 */
+	private String _name = "";
+
+	/**
+	 * The type and keywords.
+	 */
+	private String _type = "";
+
+	/**
+	 * The primary role, e.g. Artillery, Controller.
+	 */
+	private String _role = "";
+
+	/**
+	 * The secondary role, e.g. Elite, Solo.
+	 */
+	private String _role2 = "";
+
+	/**
+	 * Extra senses, e.g., low-light vision, darkvision.
+	 */
+	private String _senses = "";
+
+	/**
+	 * Speed data.
+	 */
+	private String _speed = "";
+
+	/**
+	 * Resistances.
+	 */
+	private String _resist = "";
+
+	/**
+	 * Immunities.
+	 */
+	private String _immune = "";
+
+	/**
+	 * Vulnerabilities.
+	 */
+	private String _vuln = "";
+
+	/**
+	 * Regeneration.
+	 */
+	private String _regen = "";
+
+	/**
+	 * Alignment.
+	 */
+	private String _alignment = "";
+
+	/**
+	 * Skills with bonuses.
+	 */
+	private String _skills = "";
+
+	/**
+	 * Known languages.
+	 */
+	private String _languages = "";
+
+	/**
+	 * Possessed equipment.
+	 */
+	private String _equipment = "";
+
+	/**
+	 * Source, e.g. WotC Character Builder, WotC Adventure Tools, etc.
+	 */
+	private String _source = "";
+
+	/**
+	 * List of feats.
+	 */
+	private String _feats = "";
+
+	/**
+	 * Level.
+	 */
+	private Integer _level = 0;
+
+	/**
+	 * Experience point value.
+	 */
+	private Integer _XP = 0;
+
+	/**
+	 * Initiative bonus.
+	 */
+	private Integer _init = 0;
+
+	/**
+	 * Maximum hit points.
+	 */
+	private Integer _maxHP = 0;
+
+	/**
+	 * Saving throw bonus.
+	 */
+	private Integer _saveBonus = 0;
+
+	/**
+	 * Total action points.
+	 */
+	private Integer _actionPoints = 0;
+
+	/**
+	 * Total power points.
+	 */
+	private Integer _powerPoints = 0;
+
+	/**
+	 * Total healing surges.
+	 */
+	private Integer _surges = 0;
+
+	/**
+	 * Armor class defense.
+	 */
+	private Integer _AC = 0;
+
+	/**
+	 * Fortitude defense.
+	 */
+	private Integer _fort = 0;
+
+	/**
+	 * Reflex defense.
+	 */
+	private Integer _ref = 0;
+
+	/**
+	 * Will defense.
+	 */
+	private Integer _will = 0;
+
+	/**
+	 * Strength ability score.
+	 */
+	private Integer _str = 0;
+
+	/**
+	 * Constitution ability score.
+	 */
+	private Integer _con = 0;
+
+	/**
+	 * Dexterity ability score.
+	 */
+	private Integer _dex = 0;
+
+	/**
+	 * Intelligence ability score.
+	 */
+	private Integer _int = 0;
+
+	/**
+	 * Wisdom ability score.
+	 */
+	private Integer _wis = 0;
+
+	/**
+	 * Charisma ability score.
+	 */
+	private Integer _cha = 0;
+
+	/**
+	 * Indicates if the statblock is considered a leader.
+	 */
 	private Boolean _leader = false;
+
+	/**
+	 * A list of {@link Power}s the statblock can use.
+	 */
 	private List<Power> _powerList = new ArrayList<Power>();
+
+	/**
+	 * A list of {@link EffectBase}s the statblock can generate in an encounter.
+	 */
 	private Hashtable<String, EffectBase> _presetEffects = new Hashtable<String, EffectBase>();
+
+	/**
+	 * Coded notes stored for the statblock.
+	 */
 	private String _notesBase = "";
 
 	/**
@@ -143,7 +322,7 @@ public class Stats {
 	}
 
 	/**
-	 * Returns the CON ability score
+	 * Returns the CON ability score.
 	 * 
 	 * @return CON
 	 */
@@ -276,7 +455,7 @@ public class Stats {
 	/**
 	 * Returns initiative modifier.
 	 * 
-	 * @return init mod
+	 * @return initiative modifier
 	 */
 	public Integer getInit() {
 		return _init;
@@ -292,7 +471,7 @@ public class Stats {
 	}
 
 	/**
-	 * Returns the INT ability score
+	 * Returns the INT ability score.
 	 * 
 	 * @return INT
 	 */
@@ -337,7 +516,7 @@ public class Stats {
 	}
 
 	/**
-	 * Sets an indicator of the character being a leader
+	 * Sets an indicator of the character being a leader.
 	 * 
 	 * @param leader
 	 */
@@ -385,7 +564,7 @@ public class Stats {
 	}
 
 	/**
-	 * Sets the level and role from a single line
+	 * Sets the level and role from a single line.
 	 * 
 	 * @param line
 	 *            the line
@@ -483,7 +662,7 @@ public class Stats {
 	/**
 	 * Sets the character's stored notes.
 	 * 
-	 * @param value
+	 * @param notes
 	 *            the notes
 	 */
 	public void setNotes(String notes) {
@@ -573,7 +752,7 @@ public class Stats {
 	}
 
 	/**
-	 * Sets the Reflex defense
+	 * Sets the Reflex defense.
 	 * 
 	 * @param ref
 	 */
@@ -582,7 +761,7 @@ public class Stats {
 	}
 
 	/**
-	 * Returns the amount of regeneration.
+	 * Returns the amount and type of regeneration.
 	 * 
 	 * @return the regen
 	 */
@@ -618,16 +797,16 @@ public class Stats {
 	}
 
 	/**
-	 * Returns the first part of the character role.
+	 * Returns primary role.
 	 * 
-	 * @return the first part of the role
+	 * @return the primary role
 	 */
 	public String getRole() {
 		return _role;
 	}
 
 	/**
-	 * Sets the role (e.g., artillery, soldier, controller).
+	 * Sets the primary role.
 	 * 
 	 * @param role
 	 */
@@ -636,10 +815,9 @@ public class Stats {
 	}
 
 	/**
-	 * Returns the second part of the character role (e.g., minion, elite,
-	 * solo).
+	 * Returns the secondary role (e.g., minion, elite, solo).
 	 * 
-	 * @return the second part of the role
+	 * @return the secondary role
 	 */
 	public String getRole2() {
 		return _role2;
@@ -654,10 +832,6 @@ public class Stats {
 	public void setRole2(String role2) {
 		_role2 = role2;
 	}
-
-	// public String getStatsRTF() {
-	// return StatsRTFOut();
-	// }
 
 	/**
 	 * Returns save bonus.
@@ -761,11 +935,9 @@ public class Stats {
 
 		String value = "";
 		value += "<html><head><style type='text/css'>html {font-family: Arial, Sans-Serif; font-size: 9.5pt}  body {margin: 0px; padding: 0px; text-align:left; font-weight: normal;}  DIV.symbol {font-family: DnD4Attack} DIV.mbwrap {width: 100%; max-width: 570px;}  DIV.ggdark {width: 100%; padding-left:5px; padding-right:5px; padding-top:2px; padding-bottom:2px; background-color: #374b27; min-height: 14px;}  DIV.mbheadleft {float: left;  align: left; color: #ffffff; font-size: 13px;}  DIV.mbheadright {float: right; align: right; color: #ffffff; font-size: 13px;}  DIV.mbsubleft {float: left; align: left; color: #ffffff;}  DIV.mbsubright {float: right; align: right; color: #ffffff;}  DIV.gglt {width: 100%; padding-left:5px; padding-right:5px; padding-top:1px; padding-bottom:1px; background-color: #e1e6c4; min-height: 14px;}  DIV.ggmed {width: 100%; padding-left:5px; padding-right:5px; padding-top:1px; padding-bottom:1px; background-color: #9fa48c; min-height: 14px; }  DIV.ggtype {width: 100%; padding-left:5px; padding-right:5px; padding-top:1px; padding-bottom:1px; background-color: #727c55; min-height: 14px; }  DIV.ggindent {padding-left:20px;} TD.indlt {padding-left: 4px; padding-right: 4px; font-size: 9.5pt; background-color: #e1e6c4;} TD.indmed {padding-left: 4px; padding-right: 4px; font-size: 9.5pt; background-color: #9fa48c;}</style></head><body>";
-		value += "<div class='ggdark'><div class='mbheadleft'><b>" + getName()
-				+ "</b></div><div class='mbheadright'><b>" + getLevelRole()
-				+ "</b></div></div>";
-		value += "<div class='ggdark'><div class='mbsubleft'>" + getType()
-				+ "</div><div class='mbsubright'>XP " + getXP()
+		value += "<div class='ggdark'><div class='mbheadleft'><b>" + getName() + "</b></div><div class='mbheadright'><b>"
+				+ getLevelRole() + "</b></div></div>";
+		value += "<div class='ggdark'><div class='mbsubleft'>" + getType() + "</div><div class='mbsubright'>XP " + getXP()
 				+ "</div></div>";
 		value += "<table width='100%' border='0' cellpadding='0' cellspacing='0'>";
 		value += "<tr><td class='indlt'><b>HP</b> ";
@@ -782,19 +954,16 @@ public class Stats {
 			value += "<br><b>Regeneration</b> " + getRegen();
 		}
 
-		value += "<br><b>AC</b> " + getAC() + ", <b>Fortitude</b> " + getFort()
-				+ ", <b>Reflex</b> " + getRef() + ", <b>Will</b> " + getWill()
-				+ "<br><b>Speed</b> " + getSpeed();
+		value += "<br><b>AC</b> " + getAC() + ", <b>Fortitude</b> " + getFort() + ", <b>Reflex</b> " + getRef() + ", <b>Will</b> "
+				+ getWill() + "<br><b>Speed</b> " + getSpeed();
 
-		if (!(getImmunity().isEmpty() && getResistance().isEmpty() && getVulnerability()
-				.isEmpty())) {
+		if (!(getImmunity().isEmpty() && getResistance().isEmpty() && getVulnerability().isEmpty())) {
 			value += "<br>";
 		}
 		if (!getImmunity().isEmpty()) {
 			value += "<b>Immune</b> " + getImmunity();
 		}
-		if (!getImmunity().isEmpty()
-				&& !(getResistance().isEmpty() && getVulnerability().isEmpty())) {
+		if (!getImmunity().isEmpty() && !(getResistance().isEmpty() && getVulnerability().isEmpty())) {
 			value += "; ";
 		}
 		if (!getResistance().isEmpty()) {
@@ -812,8 +981,7 @@ public class Stats {
 		if (getSaveBonus() > 0) {
 			value += "<b>Saving Throws</b> " + getSaveBonus().toString();
 		}
-		if (getSaveBonus() > 0
-				&& (getActionPoints() > 0 || getPowerPoints() > 0)) {
+		if (getSaveBonus() > 0 && (getActionPoints() > 0 || getPowerPoints() > 0)) {
 			value += "; ";
 		}
 		if (getActionPoints() > 0) {
@@ -833,9 +1001,8 @@ public class Stats {
 		}
 		value += getInit().toString() + "<br>";
 		if (!getSenses().isEmpty()) {
-			value += getSenses().replace("Perception", "<b>Perception</b>")
-					.replace("Insight", "<b>Insight</b>").replace(",", "<br>")
-					.replace(";", "<br>");
+			value += getSenses().replace("Perception", "<b>Perception</b>").replace("Insight", "<b>Insight</b>").replace(",",
+					"<br>").replace(";", "<br>");
 		}
 		value += "</td></tr></table>";
 
@@ -907,14 +1074,10 @@ public class Stats {
 
 		flag = false;
 		for (Power pow : getPowerList()) {
-			if (!(pow.getAction().toLowerCase().contains("standard")
-					|| pow.getAction().toLowerCase().contains("move")
-					|| pow.getAction().toLowerCase().contains("minor")
-					|| pow.getAction().toLowerCase().contains("free")
-					|| pow.getAction().toLowerCase().contains("triggered")
-					|| pow.getAction().isEmpty()
-					|| pow.getAura() > 0
-					|| pow.getAction().toLowerCase().contains("item"))) {
+			if (!(pow.getAction().toLowerCase().contains("standard") || pow.getAction().toLowerCase().contains("move")
+					|| pow.getAction().toLowerCase().contains("minor") || pow.getAction().toLowerCase().contains("free")
+					|| pow.getAction().toLowerCase().contains("triggered") || pow.getAction().isEmpty() || pow.getAura() > 0 || pow
+					.getAction().toLowerCase().contains("item"))) {
 				if (!flag) {
 					value += "<div class='ggtype'><div class='mbsubleft'><b>Other Powers</b></div></div>";
 					flag = true;
@@ -925,14 +1088,12 @@ public class Stats {
 
 		value += "<div class='ggmed'><table width='100%' border='0' cellpadding='0' cellspacing='0'>";
 		if (!getSkills().isEmpty()) {
-			value += "<tr><td colspan='3' class='indmed'><b>Skills</b> "
-					+ getSkills() + "</td></tr>";
+			value += "<tr><td colspan='3' class='indmed'><b>Skills</b> " + getSkills() + "</td></tr>";
 		}
 		if (!getFeats().isEmpty()) {
-			value += "<tr><td colspan='3' class='indmed'><b>Feats</b> "
-					+ getFeats() + "</td></tr>";
+			value += "<tr><td colspan='3' class='indmed'><b>Feats</b> " + getFeats() + "</td></tr>";
 		}
-		
+
 		if (getStr() > 0) {
 			value += "<tr><td class='indmed'><b>Str</b> " + RTFManip.statBonus(getStr()) + "</td>";
 			value += "<td class='indmed'><b>Dex</b> " + RTFManip.statBonus(getDex()) + "</td>";
@@ -941,7 +1102,7 @@ public class Stats {
 			value += "<td class='indmed'><b>Int</b> " + RTFManip.statBonus(getInt()) + "</td>";
 			value += "<td class='indmed'><b>Cha</b> " + RTFManip.statBonus(getCha()) + "</td></tr>";
 		}
-		
+
 		value += "</table></div>";
 		value += "<div class='gglt'>";
 		if (!getAlignment().isEmpty()) {
@@ -968,17 +1129,7 @@ public class Stats {
 	}
 
 	/**
-	 * Loads stats data from an RTF text block.
-	 * 
-	 * @param value
-	 *            the RTF text
-	 */
-	private void setStatsRTF(String value) {
-		statsDetailImport(RTFManip.importToDetails(value));
-	}
-
-	/**
-	 * Returns the STR ability score
+	 * Returns the STR ability score.
 	 * 
 	 * @return STR
 	 */
@@ -1027,9 +1178,9 @@ public class Stats {
 	}
 
 	/**
-	 * Returns the character's type
+	 * Returns the character's type and keywords.
 	 * 
-	 * @return the type
+	 * @return the type and keywords
 	 */
 	public String getType() {
 		return _type;
@@ -1048,7 +1199,7 @@ public class Stats {
 	 * Indicates if the character is valid.
 	 * 
 	 * @return true if the name and role are non-blank and the level is 1 or
-	 *         better
+	 *         higher
 	 */
 	public Boolean isValid() {
 		return (!getName().isEmpty() && getLevel() >= 1 && !getRole().isEmpty());
@@ -1091,7 +1242,7 @@ public class Stats {
 	}
 
 	/**
-	 * Returns the WIS ability score
+	 * Returns the WIS ability score.
 	 * 
 	 * @return WIS
 	 */
@@ -1109,7 +1260,7 @@ public class Stats {
 	}
 
 	/**
-	 * Returns the character's XP
+	 * Returns the character's XP value.
 	 * 
 	 * @return the XP
 	 */
@@ -1177,165 +1328,18 @@ public class Stats {
 	 *            the {@link Effect}
 	 */
 	public void presetEffectAdd(EffectBase eff) {
-		if (eff.isValid()
-				&& !getPresetEffects().contains(eff.getEffectBaseID())) {
+		if (eff.isValid() && !getPresetEffects().contains(eff.getEffectBaseID())) {
 			getPresetEffects().put(eff.getEffectBaseID(), eff);
 		}
 	}
 
-	// public String getStatsRTF() {
-	// return StatsRTFOut();
-	// }
-
-	private void statsDetailImport(String input) {
-		String lines[], lines2[];
-		String head, tail, head2, tail2;
-		String type = "Senses";
-
-		lines = input.split("\n");
-
-		if (!lines[0].contentEquals("@4eSB001")) {
-			return;
-		}
-
-		clearAll();
-
-		for (String line : lines) {
-			if (line.contains("Str ") || line.contains("Con ")
-					|| line.contains("Skills ")) {
-				line = line.substring(4).trim();
-			}
-
-			if (line.indexOf(" ") > 0) {
-				line = line.trim();
-				head = line.substring(0, line.indexOf(" ")).trim();
-				tail = line.substring(line.indexOf(" ")).trim();
-			} else {
-				line = line.trim();
-				head = line.trim();
-				tail = "";
-			}
-
-			if (head.contentEquals("Level")) {
-				setLevelRole(line);
-			} else if (head.contentEquals("XP")) {
-				setXP(Integer.valueOf(tail.replace(",", "")));
-			} else if (head.contentEquals("Initiative")) {
-				setInit(Integer.valueOf(tail.replace("+", "")));
-			} else if (head.contentEquals("Senses") && _senses.isEmpty()) {
-				setSenses(tail);
-			} else if (head.contentEquals("HP") && _maxHP == 0) {
-				setMaxHP(Integer.valueOf(tail.substring(0, tail.indexOf(";"))
-						.replace(",", "")));
-			} else if (head.contentEquals("AC") && _AC == 0) {
-				lines2 = line.split(";");
-				for (String line2 : lines2) {
-					line2 = line2.trim();
-					head2 = line2.substring(0, line2.indexOf(" ")).trim();
-					tail2 = line2.substring(line2.indexOf(" ")).trim();
-					if (head2.contentEquals("AC")) {
-						setAC(Integer.valueOf(tail2));
-					} else if (head2.contentEquals("Fortitude")) {
-						setFort(Integer.valueOf(tail2));
-					} else if (head2.contentEquals("Reflex")) {
-						setRef(Integer.valueOf(tail2));
-					} else if (head2.contentEquals("Will")) {
-						setWill(Integer.valueOf(tail2));
-					}
-				}
-			} else if (head.contentEquals("Vulnerable") && _vuln.isEmpty()) {
-				setVulnerability(tail);
-			} else if (head.contentEquals("Immune") && _immune.isEmpty()) {
-				setImmunity(tail);
-			} else if (head.contentEquals("Resist") && _resist.isEmpty()) {
-				setResistance(tail);
-			} else if (head.contentEquals("Regeneration") && _regen.isEmpty()) {
-				setRegen(tail);
-			} else if (line.startsWith("Saving Throws")) {
-				tail = tail.substring(tail.indexOf(" ")).trim();
-				setSaveBonus(Integer.valueOf(tail.replace("+", "")));
-			} else if (head.contentEquals("Speed") && _speed.isEmpty()) {
-				setSpeed(tail);
-			} else if (line.startsWith("Action Points")) {
-				tail = tail.substring(tail.indexOf(" ")).trim();
-				setActionPoints(Integer.valueOf(tail));
-			} else if (head.contentEquals("Alignment") && _alignment.isEmpty()) {
-				setAlignment(tail);
-			} else if (head.contentEquals("Str")) {
-				setStr(Integer.valueOf(tail.substring(0, 2).trim()));
-			} else if (head.contentEquals("Con")) {
-				setCon(Integer.valueOf(tail.substring(0, 2).trim()));
-			} else if (head.contentEquals("Dex")) {
-				setDex(Integer.valueOf(tail.substring(0, 2).trim()));
-			} else if (head.contentEquals("Int")) {
-				setInt(Integer.valueOf(tail.substring(0, 2).trim()));
-			} else if (head.contentEquals("Wis")) {
-				setWis(Integer.valueOf(tail.substring(0, 2).trim()));
-			} else if (head.contentEquals("Cha")) {
-				setCha(Integer.valueOf(tail.substring(0, 2).trim()));
-			} else if (head.contentEquals("Languages")
-					&& getLanguages().isEmpty()) {
-				setLanguages(tail);
-			} else if (head.contentEquals("Equipment")
-					&& getEquipment().isEmpty()) {
-				setEquipment(tail);
-			} else if (line.startsWith("Monster found in ")) {
-				setSource(line.replace("Monster found in ", ""));
-			} else if (head.contentEquals("Skills") && getSkills().isEmpty()) {
-				setSkills(tail);
-			} else {
-				if (line.isEmpty()) {
-					// do nothing - skip it
-				} else if (line.contentEquals("Standard Actions")) {
-					type = "standard";
-				} else if (line.contentEquals("Move Actions")) {
-					type = "move";
-				} else if (line.contentEquals("Minor Actions")) {
-					type = "minor";
-				} else if (line.contentEquals("Triggered Actions")) {
-					type = "triggered";
-				} else if (line.contentEquals("Trait")) {
-					type = "trait";
-				} else if (line.contentEquals("Free Actions")) {
-					type = "free";
-				} else if (line.contentEquals("Other Powers")) {
-					type = "other";
-				} else {
-					if (getName().isEmpty()) {
-						if (!head.startsWith("@4eSB")) {
-							setName(line);
-						}
-					} else if (getType().isEmpty()) {
-						setType(line);
-					} else if (type.contentEquals("Senses")) {
-						if (getSenses().isEmpty()) {
-							setSenses(line);
-						} else {
-							setSenses(getSenses() + ", " + line);
-						}
-					} else if (line.toLowerCase().trim().startsWith("@")) {
-						getPowerList().add(new Power(line, type));
-					} else if (getPowerList().size() > 0) {
-						getPowerList().get(getPowerList().size() - 1)
-								.detailImport(line, type);
-					}
-				}
-				if (getLevel() > 0 && getMaxHP() > 1 && getSurges() == 0) {
-					if (getLevel() >= 21) {
-						setSurges(3);
-					} else if (getLevel() >= 11) {
-						setSurges(2);
-					} else {
-						setSurges(1);
-					}
-				}
-			}
-		}
-	}
-
 	/**
+	 * Writes the statblock to an XML stream.
+	 * 
 	 * @param writer
+	 *            the XML stream
 	 * @throws XMLStreamException
+	 *             from the writer
 	 */
 	public void exportXML(XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeStartElement("statblock");
@@ -1497,8 +1501,7 @@ public class Stats {
 		Power newPower;
 		EffectBase newEffect;
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("statblock")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("statblock")) {
 			clearAll();
 
 			while (reader.hasNext()) {
@@ -1508,8 +1511,7 @@ public class Stats {
 						newPower = new Power();
 						newPower.importXML(reader);
 						getPowerList().add(newPower);
-					} else if (reader.getName().toString()
-							.contentEquals("effectbase")) {
+					} else if (reader.getName().toString().contentEquals("effectbase")) {
 						newEffect = new EffectBase();
 						newEffect.importXML(reader);
 						presetEffectAdd(newEffect);
@@ -1603,47 +1605,35 @@ public class Stats {
 	 * @throws XMLStreamException
 	 *             from the reader
 	 */
-	private void importCharFromCBXML(XMLStreamReader reader)
-			throws XMLStreamException {
+	private void importCharFromCBXML(XMLStreamReader reader) throws XMLStreamException {
 		clearAll();
 		setRole("Hero");
 		setSource("WotC Character Builder");
 		setActionPoints(1);
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("D20Character")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("D20Character")) {
 			while (reader.hasNext()) {
 				reader.next();
-				if (reader.isStartElement()
-						&& reader.getName().toString()
-								.contentEquals("CharacterSheet")) {
+				if (reader.isStartElement() && reader.getName().toString().contentEquals("CharacterSheet")) {
 					while (reader.hasNext()) {
 						reader.next();
 						if (reader.isStartElement()) {
-							if (reader.getName().toString()
-									.contentEquals("Details")) {
+							if (reader.getName().toString().contentEquals("Details")) {
 								importCharFromCBXMLDetails(reader);
-							} else if (reader.getName().toString()
-									.contentEquals("StatBlock")) {
+							} else if (reader.getName().toString().contentEquals("StatBlock")) {
 								importCharFromCBXMLStatBlock(reader);
-							} else if (reader.getName().toString()
-									.contentEquals("RulesElementTally")) {
+							} else if (reader.getName().toString().contentEquals("RulesElementTally")) {
 								importCharFromCBXMLRulesElementTally(reader);
-							} else if (reader.getName().toString()
-									.contentEquals("LootTally")) {
+							} else if (reader.getName().toString().contentEquals("LootTally")) {
 								importCharFromCBXMLLootTally(reader);
-							} else if (reader.getName().toString()
-									.contentEquals("PowerStats")) {
+							} else if (reader.getName().toString().contentEquals("PowerStats")) {
 								importCharFromCBXMLPowerStats(reader);
 							}
-						} else if (reader.isEndElement()
-								&& reader.getName().toString()
-										.contentEquals("CharacterSheet")) {
+						} else if (reader.isEndElement() && reader.getName().toString().contentEquals("CharacterSheet")) {
 							break;
 						}
 					}
-				} else if (reader.isStartElement()
-						&& reader.getName().toString().contentEquals("Level")) {
+				} else if (reader.isStartElement() && reader.getName().toString().contentEquals("Level")) {
 					importCharFromCBXMLPowerURLs(reader);
 				}
 			}
@@ -1658,12 +1648,10 @@ public class Stats {
 	 * @throws XMLStreamException
 	 *             from the reader
 	 */
-	private void importCharFromCBXMLDetails(XMLStreamReader reader)
-			throws XMLStreamException {
+	private void importCharFromCBXMLDetails(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("Details")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("Details")) {
 			while (reader.hasNext()) {
 				reader.next();
 				if (reader.isStartElement()) {
@@ -1694,15 +1682,13 @@ public class Stats {
 	 * @throws XMLStreamException
 	 *             from the reader
 	 */
-	private void importCharFromCBXMLStatBlock(XMLStreamReader reader)
-			throws XMLStreamException {
+	private void importCharFromCBXMLStatBlock(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
 		Hashtable<String, String> attList = new Hashtable<String, String>();
 		SortedMap<String, String> skillList = new TreeMap<String, String>();
 		String tempValue = "0";
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("StatBlock")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("StatBlock")) {
 			while (reader.hasNext()) {
 				reader.next();
 				if (reader.isStartElement()) {
@@ -1710,92 +1696,61 @@ public class Stats {
 					attList.clear();
 					if (reader.getAttributeCount() > 0) {
 						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString()
-									.trim(), reader.getAttributeValue(i)
-									.toString().trim());
+							attList
+									.put(reader.getAttributeName(i).toString().trim(), reader.getAttributeValue(i).toString()
+											.trim());
 						}
-						if (elementName.contentEquals("Stat")
-								&& attList.containsKey("value")) {
+						if (elementName.contentEquals("Stat") && attList.containsKey("value")) {
 							tempValue = attList.get("value");
 						}
 					}
-					if (elementName.contentEquals("alias")
-							&& attList.containsKey("name")) {
+					if (elementName.contentEquals("alias") && attList.containsKey("name")) {
 						if (attList.get("name").contentEquals("Strength")) {
 							setStr(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Constitution")) {
+						} else if (attList.get("name").contentEquals("Constitution")) {
 							setCon(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Dexterity")) {
+						} else if (attList.get("name").contentEquals("Dexterity")) {
 							setDex(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Intelligence")) {
+						} else if (attList.get("name").contentEquals("Intelligence")) {
 							setInt(Integer.valueOf(tempValue));
 						} else if (attList.get("name").contentEquals("Wisdom")) {
 							setWis(Integer.valueOf(tempValue));
-						} else if (attList.get("name")
-								.contentEquals("Charisma")) {
+						} else if (attList.get("name").contentEquals("Charisma")) {
 							setCha(Integer.valueOf(tempValue));
 						} else if (attList.get("name").contentEquals("AC")) {
 							setAC(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Fortitude Defense")) {
+						} else if (attList.get("name").contentEquals("Fortitude Defense")) {
 							setFort(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Reflex Defense")) {
+						} else if (attList.get("name").contentEquals("Reflex Defense")) {
 							setRef(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Will Defense")) {
+						} else if (attList.get("name").contentEquals("Will Defense")) {
 							setWill(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Hit Points")) {
+						} else if (attList.get("name").contentEquals("Hit Points")) {
 							setMaxHP(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Initiative")) {
+						} else if (attList.get("name").contentEquals("Initiative")) {
 							setInit(Integer.valueOf(tempValue));
 						} else if (attList.get("name").contentEquals("Speed")) {
 							setSpeed(tempValue);
-						} else if (attList.get("name").contentEquals(
-								"Power Points")) {
+						} else if (attList.get("name").contentEquals("Power Points")) {
 							setPowerPoints(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Healing Surges")) {
+						} else if (attList.get("name").contentEquals("Healing Surges")) {
 							setSurges(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals(
-								"Acrobatics")
-								|| attList.get("name").contentEquals("Arcana")
-								|| attList.get("name").contentEquals(
-										"Athletics")
-								|| attList.get("name").contentEquals("Bluff")
-								|| attList.get("name").contentEquals(
-										"Diplomacy")
-								|| attList.get("name").contentEquals(
-										"Dungeoneering")
-								|| attList.get("name").contentEquals(
-										"Endurance")
-								|| attList.get("name").contentEquals("Heal")
-								|| attList.get("name").contentEquals("History")
-								|| attList.get("name").contentEquals("Insight")
-								|| attList.get("name").contentEquals("Nature")
-								|| attList.get("name").contentEquals(
-										"Perception")
-								|| attList.get("name")
-										.contentEquals("Religion")
-								|| attList.get("name").contentEquals("Stealth")
-								|| attList.get("name").contentEquals(
-										"Streetwise")
-								|| attList.get("name")
-										.contentEquals("Thievery")) {
+						} else if (attList.get("name").contentEquals("Acrobatics") || attList.get("name").contentEquals("Arcana")
+								|| attList.get("name").contentEquals("Athletics") || attList.get("name").contentEquals("Bluff")
+								|| attList.get("name").contentEquals("Diplomacy")
+								|| attList.get("name").contentEquals("Dungeoneering")
+								|| attList.get("name").contentEquals("Endurance") || attList.get("name").contentEquals("Heal")
+								|| attList.get("name").contentEquals("History") || attList.get("name").contentEquals("Insight")
+								|| attList.get("name").contentEquals("Nature") || attList.get("name").contentEquals("Perception")
+								|| attList.get("name").contentEquals("Religion") || attList.get("name").contentEquals("Stealth")
+								|| attList.get("name").contentEquals("Streetwise") || attList.get("name").contentEquals("Thievery")) {
 							skillList.put(attList.get("name"), tempValue);
-						} else if (attList.get("name").contentEquals(
-								"Passive Perception")) {
+						} else if (attList.get("name").contentEquals("Passive Perception")) {
 							if (!getSenses().isEmpty()) {
 								setSenses(getSenses() + "; ");
 							}
 							setSenses(getSenses() + "Perception " + tempValue);
-						} else if (attList.get("name").contentEquals(
-								"Passive Insight")) {
+						} else if (attList.get("name").contentEquals("Passive Insight")) {
 							if (!getSenses().isEmpty()) {
 								setSenses(getSenses() + "; ");
 							}
@@ -1811,10 +1766,7 @@ public class Stats {
 								if (!skillTemp.isEmpty()) {
 									skillTemp += "; ";
 								}
-								skillTemp += skillName
-										+ " "
-										+ RTFManip.integerFormatForPlus(skillList
-												.get(skillName));
+								skillTemp += skillName + " " + RTFManip.integerFormatForPlus(skillList.get(skillName));
 							}
 							setSkills(skillTemp);
 						}
@@ -1833,16 +1785,13 @@ public class Stats {
 	 * @throws XMLStreamException
 	 *             from the reader
 	 */
-	private void importCharFromCBXMLRulesElementTally(XMLStreamReader reader)
-			throws XMLStreamException {
+	private void importCharFromCBXMLRulesElementTally(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
 		Hashtable<String, String> attList = new Hashtable<String, String>();
 		String powerSource = "";
 		String classRole = "";
 
-		if (reader.isStartElement()
-				&& reader.getName().toString()
-						.contentEquals("RulesElementTally")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("RulesElementTally")) {
 			while (reader.hasNext()) {
 				reader.next();
 				if (reader.isStartElement()) {
@@ -1850,16 +1799,12 @@ public class Stats {
 					attList.clear();
 					if (reader.getAttributeCount() > 0) {
 						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString(),
-									reader.getAttributeValue(i));
+							attList.put(reader.getAttributeName(i).toString(), reader.getAttributeValue(i));
 						}
 					}
 
-					if (elementName.contentEquals("RulesElement")
-							&& attList.containsKey("name")
-							&& attList.containsKey("type")) {
-						if (attList.get("type").contentEquals("Gender")
-								|| attList.get("type").contentEquals("Race")
+					if (elementName.contentEquals("RulesElement") && attList.containsKey("name") && attList.containsKey("type")) {
+						if (attList.get("type").contentEquals("Gender") || attList.get("type").contentEquals("Race")
 								|| attList.get("type").contentEquals("Class")) {
 							if (!getType().isEmpty()) {
 								setType(getType() + "; ");
@@ -1867,11 +1812,9 @@ public class Stats {
 							setType(getType() + attList.get("name"));
 						} else if (attList.get("type").contentEquals("Role")) {
 							classRole = attList.get("name");
-						} else if (attList.get("type").contentEquals(
-								"Power Source")) {
+						} else if (attList.get("type").contentEquals("Power Source")) {
 							powerSource = attList.get("name");
-						} else if (attList.get("type").contentEquals(
-								"Alignment")) {
+						} else if (attList.get("type").contentEquals("Alignment")) {
 							setAlignment(attList.get("name"));
 						} else if (attList.get("type").contentEquals("Vision")) {
 							if (!attList.get("name").contentEquals("Normal")) {
@@ -1885,8 +1828,7 @@ public class Stats {
 								setFeats(getFeats() + "; ");
 							}
 							setFeats(getFeats() + attList.get("name"));
-						} else if (attList.get("type")
-								.contentEquals("Language")) {
+						} else if (attList.get("type").contentEquals("Language")) {
 							if (!getLanguages().isEmpty()) {
 								setLanguages(getLanguages() + "; ");
 							}
@@ -1894,8 +1836,7 @@ public class Stats {
 						}
 					}
 				} else if (reader.isEndElement()) {
-					if (reader.getName().toString()
-							.contentEquals("RulesElementTally")) {
+					if (reader.getName().toString().contentEquals("RulesElementTally")) {
 						if (!classRole.isEmpty() || !powerSource.isEmpty()) {
 							String temp = powerSource + " " + classRole;
 							temp = temp.trim();
@@ -1916,15 +1857,13 @@ public class Stats {
 	 * @throws XMLStreamException
 	 *             from the reader
 	 */
-	private void importCharFromCBXMLLootTally(XMLStreamReader reader)
-			throws XMLStreamException {
+	private void importCharFromCBXMLLootTally(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
 		Hashtable<String, String> attList = new Hashtable<String, String>();
 		String itemName = "";
 		Integer count = 0;
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("LootTally")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("LootTally")) {
 			while (reader.hasNext()) {
 				reader.next();
 				if (reader.isStartElement()) {
@@ -1932,15 +1871,13 @@ public class Stats {
 					attList.clear();
 					if (reader.getAttributeCount() > 0) {
 						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString()
-									.trim(), reader.getAttributeValue(i).trim());
+							attList.put(reader.getAttributeName(i).toString().trim(), reader.getAttributeValue(i).trim());
 						}
 					}
 					if (elementName.contentEquals("loot")) {
 						itemName = "";
 						count = Integer.valueOf(attList.get("count"));
-					} else if (elementName.contentEquals("RulesElement")
-							&& attList.containsKey("name")
+					} else if (elementName.contentEquals("RulesElement") && attList.containsKey("name")
 							&& attList.containsKey("type")) {
 						if (!itemName.isEmpty()) {
 							itemName += " ";
@@ -1950,11 +1887,8 @@ public class Stats {
 				} else if (reader.isEndElement()) {
 					if (reader.getName().toString().contentEquals("LootTally")) {
 						return;
-					} else if (reader.getName().toString()
-							.contentEquals("loot")
-							&& !itemName.isEmpty() && count > 0) {
-						itemName = itemName.replace(" (heroic tier)", "")
-								.replace(" (paragon tier)", "")
+					} else if (reader.getName().toString().contentEquals("loot") && !itemName.isEmpty() && count > 0) {
+						itemName = itemName.replace(" (heroic tier)", "").replace(" (paragon tier)", "")
 								.replace(" (epic tier)", "");
 						if (count > 1) {
 							itemName += " x" + count.toString();
@@ -1979,15 +1913,13 @@ public class Stats {
 	 * @throws XMLStreamException
 	 *             from the reader
 	 */
-	private void importCharFromCBXMLPowerStats(XMLStreamReader reader)
-			throws XMLStreamException {
+	private void importCharFromCBXMLPowerStats(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
 		Hashtable<String, String> attList = new Hashtable<String, String>();
 		String weaponStats = "";
 		Power newPow = null;
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("PowerStats")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("PowerStats")) {
 			while (reader.hasNext()) {
 				reader.next();
 				if (reader.isStartElement()) {
@@ -1995,8 +1927,7 @@ public class Stats {
 					attList.clear();
 					if (reader.getAttributeCount() > 0) {
 						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString()
-									.trim(), reader.getAttributeValue(i).trim());
+							attList.put(reader.getAttributeName(i).toString().trim(), reader.getAttributeValue(i).trim());
 						}
 					}
 					if (elementName.contentEquals("Power")) {
@@ -2004,54 +1935,40 @@ public class Stats {
 						newPow.setName(attList.get("name"));
 						newPow.setDesc("");
 						weaponStats = "";
-					} else if (elementName.contentEquals("specific")
-							&& attList.get("name").contentEquals("Power Usage")
+					} else if (elementName.contentEquals("specific") && attList.get("name").contentEquals("Power Usage")
 							&& newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
-							newPow.setAction(newPow.getAction() + "; "
-									+ reader.getText().toLowerCase().trim());
+							newPow.setAction(newPow.getAction() + "; " + reader.getText().toLowerCase().trim());
 						}
-					} else if (elementName.contentEquals("specific")
-							&& attList.get("name").contentEquals("Action Type")
+					} else if (elementName.contentEquals("specific") && attList.get("name").contentEquals("Action Type")
 							&& newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
-							newPow.setAction(reader.getText().toLowerCase()
-									.trim().replace(" action", "")
-									+ newPow.getAction());
+							newPow.setAction(reader.getText().toLowerCase().trim().replace(" action", "") + newPow.getAction());
 						}
-					} else if (elementName.contentEquals("Weapon")
-							&& newPow != null) {
-						weaponStats += attList.get("name")
-								+ ": UUU (WWW) vs YYY, ZZZ damage###";
-					} else if (elementName.contentEquals("AttackBonus")
-							&& newPow != null) {
+					} else if (elementName.contentEquals("Weapon") && newPow != null) {
+						weaponStats += attList.get("name") + ": UUU (WWW) vs YYY, ZZZ damage###";
+					} else if (elementName.contentEquals("AttackBonus") && newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
 							if (Integer.valueOf(reader.getText().trim()) >= 0) {
-								weaponStats = weaponStats.replace("UUU", "+"
-										+ reader.getText().trim());
+								weaponStats = weaponStats.replace("UUU", "+" + reader.getText().trim());
 							} else {
-								weaponStats = weaponStats.replace("UUU", reader.getText()
-										.trim());
+								weaponStats = weaponStats.replace("UUU", reader.getText().trim());
 							}
 						}
-					} else if (elementName.contentEquals("AttackStat")
-							&& newPow != null) {
+					} else if (elementName.contentEquals("AttackStat") && newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
-							weaponStats = weaponStats.replace("WWW", reader.getText().trim()
-									.substring(0, 3));
+							weaponStats = weaponStats.replace("WWW", reader.getText().trim().substring(0, 3));
 						}
-					} else if (elementName.contentEquals("Defense")
-							&& newPow != null) {
+					} else if (elementName.contentEquals("Defense") && newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
 							weaponStats = weaponStats.replace("YYY", reader.getText().trim());
 						}
-					} else if (elementName.contentEquals("Damage")
-							&& newPow != null) {
+					} else if (elementName.contentEquals("Damage") && newPow != null) {
 						reader.next();
 						if (reader.isCharacters()) {
 							weaponStats = weaponStats.replace("ZZZ", reader.getText().trim());
@@ -2060,29 +1977,22 @@ public class Stats {
 				} else if (reader.isEndElement()) {
 					if (reader.getName().toString().contentEquals("PowerStats")) {
 						return;
-					} else if (reader.getName().toString()
-							.contentEquals("Power")) {
+					} else if (reader.getName().toString().contentEquals("Power")) {
 						if (newPow != null) {
-							if (!newPow.getName().isEmpty()
-									&& !newPow.getName().endsWith(
-											"Basic Attack")) {
-								weaponStats = weaponStats.replace("ZZZ", "No").replace(
-										"(Unk) vs. Unknown, No damage", "");
+							if (!newPow.getName().isEmpty() && !newPow.getName().endsWith("Basic Attack")) {
+								weaponStats = weaponStats.replace("ZZZ", "No").replace("(Unk) vs. Unknown, No damage", "");
 								newPow.setDesc(weaponStats);
 								getPowerList().add(newPow);
-								if (newPow.getAction().toLowerCase()
-										.contains("encounter (special)")
+								if (newPow.getAction().toLowerCase().contains("encounter (special)")
 										&& "healing infusion majestic word rune of mending healing word inspiring word healing spirit"
-												.contains(newPow.getName()
-														.toLowerCase())) {
+												.contains(newPow.getName().toLowerCase())) {
 									Power newPow2 = new Power();
 									newPow2.setName(newPow.getName() + " - 2");
 									newPow2.setAction(newPow.getAction());
 									getPowerList().add(newPow2);
 									if (getLevel() >= 16) {
 										Power newPow3 = new Power();
-										newPow3.setName(newPow.getName()
-												+ " - 3");
+										newPow3.setName(newPow.getName() + " - 3");
 										newPow3.setAction(newPow.getAction());
 										getPowerList().add(newPow3);
 									}
@@ -2097,20 +2007,18 @@ public class Stats {
 	}
 
 	/**
-	 * Sets Compendium URLs for powers from a dnd4e XML stream
+	 * Sets Compendium URLs for powers from a dnd4e XML stream.
 	 * 
 	 * @param reader
 	 *            the XML stream
 	 * @throws XMLStreamException
 	 *             from the reader
 	 */
-	private void importCharFromCBXMLPowerURLs(XMLStreamReader reader)
-			throws XMLStreamException {
+	private void importCharFromCBXMLPowerURLs(XMLStreamReader reader) throws XMLStreamException {
 		String name = "";
 		Hashtable<String, String> attList = new Hashtable<String, String>();
 
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("Level")) {
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("Level")) {
 			while (reader.hasNext()) {
 				reader.next();
 				if (reader.isStartElement()) {
@@ -2118,22 +2026,15 @@ public class Stats {
 					attList.clear();
 					if (reader.getAttributeCount() > 0) {
 						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString()
-									.trim(), reader.getAttributeValue(i).trim());
+							attList.put(reader.getAttributeName(i).toString().trim(), reader.getAttributeValue(i).trim());
 						}
 					}
-					if (name.contentEquals("RulesElement")
-							&& attList.get("type").contentEquals("Power")) {
+					if (name.contentEquals("RulesElement") && attList.get("type").contentEquals("Power")) {
 						for (Power pow : getPowerList()) {
-							if (pow.getName().contains(attList.get("name"))
-									&& attList.containsKey("url") && !attList.get("url").isEmpty()) {
-								pow.setURL(attList
-										.get("url")
-										.replace("&amp;", "&")
-										.replace("aspx", "php")
-										.replace(
-												"www.wizards.com/dndinsider/compendium",
-												"localhost/ddi"));
+							if (pow.getName().contains(attList.get("name")) && attList.containsKey("url")
+									&& !attList.get("url").isEmpty()) {
+								pow.setURL(attList.get("url").replace("&amp;", "&").replace("aspx", "php").replace(
+										"www.wizards.com/dndinsider/compendium", "localhost/ddi"));
 							}
 						}
 					}
@@ -2155,15 +2056,15 @@ public class Stats {
 		if (dnd4e.exists()) {
 			try {
 				InputSource input = new InputSource(new FileInputStream(dnd4e));
-				XMLStreamReader reader = XMLStreamReaderFactory.create(input,
-						false);
+				XMLStreamReader reader = XMLStreamReaderFactory.create(input, false);
 				while (reader.hasNext() && !reader.isStartElement()) {
 					reader.next();
 				}
 				importCharFromCBXML(reader);
 				return true;
 			} catch (FileNotFoundException e) {
-				// this shouldn't happen, should it? We checked for existence above
+				// this shouldn't happen, should it? We checked for existence
+				// above
 				e.printStackTrace();
 				return false;
 			} catch (XMLStreamException e) {
@@ -2176,14 +2077,16 @@ public class Stats {
 
 	/**
 	 * Loads a statblock from an Adventure Tools monster file.
-	 * @param filename the location of the .monster file
+	 * 
+	 * @param filename
+	 *            the location of the .monster file
 	 * @return true on success
 	 */
 	public boolean loadFromMonsterFile(String filename) {
 		File monster = new File(filename);
 		Node node = null;
 		NodeList nodelist = null;
-		
+
 		if (monster.exists()) {
 			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 			domFactory.setNamespaceAware(true);
@@ -2191,23 +2094,23 @@ public class Stats {
 				DocumentBuilder builder = domFactory.newDocumentBuilder();
 				Document doc = builder.parse(monster);
 				XPath xpath = XPathFactory.newInstance().newXPath();
-				
+
 				// name
 				node = (Node) xpath.evaluate("/Monster/Name/text()", doc, XPathConstants.NODE);
 				setName(node.getNodeValue());
-				
+
 				// role
 				node = (Node) xpath.evaluate("/Monster/Role/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
 				setRole(node.getNodeValue());
-				
+
 				// role 2 (group role)
 				node = (Node) xpath.evaluate("/Monster/GroupRole/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
 				setRole2(node.getNodeValue());
-				
+
 				// leader
 				node = (Node) xpath.evaluate("/Monster/IsLeader/text()", doc, XPathConstants.NODE);
 				setLeader(Boolean.valueOf(node.getNodeValue()));
-				
+
 				// type
 				node = (Node) xpath.evaluate("/Monster/Origin/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
 				String typeKeywords = node.getNodeValue();
@@ -2220,11 +2123,12 @@ public class Stats {
 				}
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					typeKeywords += nodelist.item(i).getNodeValue() + ", ";
-				}				
+				}
 				setType(typeKeywords.replaceAll(", $", ")"));
-				
+
 				// senses
-				nodelist = (NodeList) xpath.evaluate("/Monster/Senses/SenseReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/Senses/SenseReference/ReferencedObject/Name/text()", doc,
+						XPathConstants.NODESET);
 				String senses = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					senses += nodelist.item(i).getNodeValue() + ", ";
@@ -2232,12 +2136,15 @@ public class Stats {
 				setSenses(senses.replaceAll(", $", ""));
 
 				// resistance
-				nodelist = (NodeList) xpath.evaluate("/Monster/Resistances/CreatureSusceptibility/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/Resistances/CreatureSusceptibility/ReferencedObject/Name/text()",
+						doc, XPathConstants.NODESET);
 				String resists = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String resist = nodelist.item(i).getNodeValue();
-					Node amount = (Node) xpath.evaluate("/Monster/Resistances/CreatureSusceptibility[ReferencedObject/Name=\"" + resist + "\"]/Amount/@FinalValue", doc, XPathConstants.NODE);
-					Node details = (Node) xpath.evaluate("/Monster/Resistances/CreatureSusceptibility[ReferencedObject/Name=\"" + resist + "\"]/Details/text()", doc, XPathConstants.NODE);
+					Node amount = (Node) xpath.evaluate("/Monster/Resistances/CreatureSusceptibility[ReferencedObject/Name=\""
+							+ resist + "\"]/Amount/@FinalValue", doc, XPathConstants.NODE);
+					Node details = (Node) xpath.evaluate("/Monster/Resistances/CreatureSusceptibility[ReferencedObject/Name=\""
+							+ resist + "\"]/Details/text()", doc, XPathConstants.NODE);
 					if (amount != null) {
 						resist += " " + amount.getNodeValue();
 					}
@@ -2247,14 +2154,17 @@ public class Stats {
 					resists += resist + ", ";
 				}
 				setResistance(resists.replaceAll(", $", ""));
-				
+
 				// immunity
-				nodelist = (NodeList) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility/ReferencedObject/Name/text()",
+						doc, XPathConstants.NODESET);
 				String immuns = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String immun = nodelist.item(i).getNodeValue();
-					Node amount = (Node) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility[ReferencedObject/Name=\"" + immun + "\"]/Amount/@FinalValue", doc, XPathConstants.NODE);
-					Node details = (Node) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility[ReferencedObject/Name=\"" + immun + "\"]/Details/text()", doc, XPathConstants.NODE);
+					Node amount = (Node) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility[ReferencedObject/Name=\""
+							+ immun + "\"]/Amount/@FinalValue", doc, XPathConstants.NODE);
+					Node details = (Node) xpath.evaluate("/Monster/Immunities/CreatureSusceptibility[ReferencedObject/Name=\""
+							+ immun + "\"]/Details/text()", doc, XPathConstants.NODE);
 					if (amount != null) {
 						immun += " " + amount.getNodeValue();
 					}
@@ -2264,14 +2174,17 @@ public class Stats {
 					immuns += immun + ", ";
 				}
 				setImmunity(immuns.replaceAll(", $", ""));
-				
+
 				// vulnerability
-				nodelist = (NodeList) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility/ReferencedObject/Name/text()",
+						doc, XPathConstants.NODESET);
 				String vulns = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String vuln = nodelist.item(i).getNodeValue();
-					Node amount = (Node) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility[ReferencedObject/Name=\"" + vuln + "\"]/Amount/@FinalValue", doc, XPathConstants.NODE);
-					Node details = (Node) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility[ReferencedObject/Name=\"" + vuln + "\"]/Details/text()", doc, XPathConstants.NODE);
+					Node amount = (Node) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility[ReferencedObject/Name=\""
+							+ vuln + "\"]/Amount/@FinalValue", doc, XPathConstants.NODE);
+					Node details = (Node) xpath.evaluate("/Monster/Weaknesses/CreatureSusceptibility[ReferencedObject/Name=\""
+							+ vuln + "\"]/Details/text()", doc, XPathConstants.NODE);
 					if (amount != null) {
 						vuln += " " + amount.getNodeValue();
 					}
@@ -2281,14 +2194,16 @@ public class Stats {
 					vulns += vuln + ", ";
 				}
 				setVulnerability(vulns.replaceAll(", $", ""));
-				
+
 				// speeds
 				node = (Node) xpath.evaluate("/Monster/LandSpeed/Speed/@FinalValue", doc, XPathConstants.NODE);
 				String speeds = node.getNodeValue();
-				nodelist = (NodeList) xpath.evaluate("/Monster/Speeds/CreatureSpeed/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/Speeds/CreatureSpeed/ReferencedObject/Name/text()", doc,
+						XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String speed = nodelist.item(i).getNodeValue();
-					Node amount = (Node) xpath.evaluate("/Monster/Speeds/CreatureSpeed[ReferencedObject/Name=\"" + speed + "\"]/Speed/@FinalValue", doc, XPathConstants.NODE);
+					Node amount = (Node) xpath.evaluate("/Monster/Speeds/CreatureSpeed[ReferencedObject/Name=\"" + speed
+							+ "\"]/Speed/@FinalValue", doc, XPathConstants.NODE);
 					if (amount != null) {
 						speed += " " + amount.getNodeValue();
 					}
@@ -2306,63 +2221,69 @@ public class Stats {
 				// alignment
 				node = (Node) xpath.evaluate("/Monster/Alignment/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
 				setAlignment(node.getNodeValue());
-				
+
 				// skills
 				nodelist = (NodeList) xpath.evaluate("/Monster/Skills/Values/SkillNumber/Name/text()", doc, XPathConstants.NODESET);
 				String skills = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String skill = nodelist.item(i).getNodeValue();
-					Node bonus = (Node) xpath.evaluate("/Monster/Skills/Values/SkillNumber[Name=\"" + skill + "\"]/@FinalValue", doc, XPathConstants.NODE);
+					Node bonus = (Node) xpath.evaluate("/Monster/Skills/Values/SkillNumber[Name=\"" + skill + "\"]/@FinalValue",
+							doc, XPathConstants.NODE);
 					skills += skill + " +" + bonus.getNodeValue() + ", ";
 				}
 				setSkills(skills.replaceAll(", $", ""));
-				
+
 				// languages
-				nodelist = (NodeList) xpath.evaluate("/Monster/Languages/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/Languages/ObjectReference/ReferencedObject/Name/text()", doc,
+						XPathConstants.NODESET);
 				String langs = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					langs += nodelist.item(i).getNodeValue() + ", ";
 				}
 				setLanguages(langs.replaceAll(", $", ""));
-				
+
 				// equipment
-				nodelist = (NodeList) xpath.evaluate("/Monster/Items/ItemAndQuantity/Item/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/Items/ItemAndQuantity/Item/ReferencedObject/Name/text()", doc,
+						XPathConstants.NODESET);
 				String equips = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String equip = nodelist.item(i).getNodeValue();
-					Node quantity = (Node) xpath.evaluate("/Monster/Items/ItemAndQuantity[Item/ReferencedObject/Name=\"" + equip + "\"]/Quantity/text()", doc, XPathConstants.NODE);
+					Node quantity = (Node) xpath.evaluate("/Monster/Items/ItemAndQuantity[Item/ReferencedObject/Name=\"" + equip
+							+ "\"]/Quantity/text()", doc, XPathConstants.NODE);
 					equips += equip + " x" + quantity.getNodeValue() + ", ";
 				}
 				setEquipment(equips.replaceAll(", $", ""));
-				
+
 				// source
 				setSource("Adventure Tools Monster Builder");
 
 				// notes
 				node = (Node) xpath.evaluate("/Monster/Tactics/text()", doc, XPathConstants.NODE);
 				setNotes(node.getNodeValue());
-				
+
 				// level
 				node = (Node) xpath.evaluate("/Monster/Level/text()", doc, XPathConstants.NODE);
 				setLevel(Integer.valueOf(node.getNodeValue()));
-				
+
 				// experience points
 				node = (Node) xpath.evaluate("/Monster/Experience/@FinalValue", doc, XPathConstants.NODE);
 				setXP(Integer.valueOf(node.getNodeValue()));
-				
+
 				// initiative
 				node = (Node) xpath.evaluate("/Monster/Initiative/@FinalValue", doc, XPathConstants.NODE);
 				setInit(Integer.valueOf(node.getNodeValue()));
-				
+
 				// hit points
 				node = (Node) xpath.evaluate("/Monster/HitPoints/@FinalValue", doc, XPathConstants.NODE);
 				setMaxHP(Integer.valueOf(node.getNodeValue()));
-				
+
 				// defenses
-				nodelist = (NodeList) xpath.evaluate("/Monster/Defenses/Values/SimpleAdjustableNumber/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/Defenses/Values/SimpleAdjustableNumber/Name/text()", doc,
+						XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String defense = nodelist.item(i).getNodeValue();
-					Node value = (Node) xpath.evaluate("/Monster/Defenses/Values/SimpleAdjustableNumber[Name=\"" + defense + "\"]/@FinalValue", doc, XPathConstants.NODE);
+					Node value = (Node) xpath.evaluate("/Monster/Defenses/Values/SimpleAdjustableNumber[Name=\"" + defense
+							+ "\"]/@FinalValue", doc, XPathConstants.NODE);
 					if (defense.contentEquals("AC")) {
 						setAC(Integer.valueOf(value.getNodeValue()));
 					} else if (defense.contentEquals("Fortitude")) {
@@ -2381,7 +2302,7 @@ public class Stats {
 				} else {
 					setSaveBonus(0);
 				}
-				
+
 				// action points
 				node = (Node) xpath.evaluate("/Monster/ActionPoints/@FinalValue", doc, XPathConstants.NODE);
 				if (node != null) {
@@ -2389,10 +2310,10 @@ public class Stats {
 				} else {
 					setActionPoints(0);
 				}
-				
+
 				// power points
 				setPowerPoints(0);
-				
+
 				// healing surges
 				if (getRole2().contentEquals("Solo")) {
 					setSurges(2);
@@ -2401,12 +2322,14 @@ public class Stats {
 				} else {
 					setSurges(0);
 				}
-				
+
 				// ability scores
-				nodelist = (NodeList) xpath.evaluate("/Monster/AbilityScores/Values/AbilityScoreNumber/Name/text()", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/Monster/AbilityScores/Values/AbilityScoreNumber/Name/text()", doc,
+						XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String ability = nodelist.item(i).getNodeValue();
-					Node score = (Node) xpath.evaluate("/Monster/AbilityScores/Values/AbilityScoreNumber[Name=\"" + ability + "\"]/@FinalValue", doc, XPathConstants.NODE);
+					Node score = (Node) xpath.evaluate("/Monster/AbilityScores/Values/AbilityScoreNumber[Name=\"" + ability
+							+ "\"]/@FinalValue", doc, XPathConstants.NODE);
 					if (ability.contentEquals("Strength")) {
 						setStr(Integer.valueOf(score.getNodeValue()));
 					} else if (ability.contentEquals("Constitution")) {
@@ -2427,16 +2350,18 @@ public class Stats {
 				nodelist = (NodeList) xpath.evaluate("/Monster/Powers/MonsterPower/Name/text()", doc, XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					Power pow = new Power();
-					
+
 					// power name
 					String name = nodelist.item(i).getNodeValue();
 					pow.setName(name);
-					
+
 					// power type
 					Boolean basic = false;
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/IsBasic/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/IsBasic/text()", doc,
+							XPathConstants.NODE);
 					basic = Boolean.valueOf(node.getNodeValue());
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Type/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Type/text()", doc,
+							XPathConstants.NODE);
 					if (node != null) {
 						if (basic) {
 							pow.setType("basic " + node.getNodeValue());
@@ -2444,110 +2369,132 @@ public class Stats {
 							pow.setType(node.getNodeValue());
 						}
 					}
-					
+
 					// power action
 					String action = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Action/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Action/text()", doc,
+							XPathConstants.NODE);
 					if (node != null) {
 						action += node.getNodeValue().toLowerCase() + "; ";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Usage/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Usage/text()", doc,
+							XPathConstants.NODE);
 					if (node != null) {
 						action += node.getNodeValue().toLowerCase();
 					}
 					if (action.toLowerCase().contains("recharge")) {
-						node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/UsageDetails/text()", doc, XPathConstants.NODE);
+						node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/UsageDetails/text()",
+								doc, XPathConstants.NODE);
 						if (node != null) {
 							action += " " + node.getNodeValue();
 						}
 					}
 					pow.setAction(action);
-					
+
 					// power keywords
 					String keywords = "";
-					NodeList nl = (NodeList) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+					NodeList nl = (NodeList) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
+							+ "\"]/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
 					if (nl != null) {
 						for (int j = 0; j < nl.getLength(); j++) {
 							keywords += nl.item(j).getNodeValue().toLowerCase() + ", ";
 						}
 						pow.setKeywords(keywords.replaceAll(", $", ""));
 					}
-					
+
 					// power description
 					String desc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Description/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
+							+ "\"]/Attacks/MonsterAttack/Description/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += node.getNodeValue() + "\n";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Trigger/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Trigger/text()", doc,
+							XPathConstants.NODE);
 					if (node != null) {
 						desc += "Trigger: " + node.getNodeValue() + "\n";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/Defense/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath
+							.evaluate(
+									"/Monster/Powers/MonsterPower[Name=\""
+											+ name
+											+ "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/Defense/ReferencedObject/Name/text()",
+									doc, XPathConstants.NODE);
 					if (node != null) {
-						Node bonus = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/@FinalValue", doc, XPathConstants.NODE);
-						Node range = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Range/text()", doc, XPathConstants.NODE);
-						desc += "Attack: " + node.getNodeValue().replace("Attack", range.getNodeValue() + "; +" + bonus.getNodeValue()) + "\n";
+						Node bonus = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
+								+ "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/@FinalValue", doc,
+								XPathConstants.NODE);
+						Node range = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
+								+ "\"]/Attacks/MonsterAttack/Range/text()", doc, XPathConstants.NODE);
+						desc += "Attack: "
+								+ node.getNodeValue().replace("Attack", range.getNodeValue() + "; +" + bonus.getNodeValue()) + "\n";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/Damage/Expression/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
+							+ "\"]/Attacks/MonsterAttack/Hit/Damage/Expression/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += "Hit: " + node.getNodeValue() + " ";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/Description/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
+							+ "\"]/Attacks/MonsterAttack/Hit/Description/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += node.getNodeValue() + "\n";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Miss/Description/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
+							+ "\"]/Attacks/MonsterAttack/Miss/Description/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += "Miss: " + node.getNodeValue() + "\n";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/Description/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
+							+ "\"]/Attacks/MonsterAttack/Effect/Description/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += "Effect: " + node.getNodeValue() + "\n";
 					}
 					pow.setDesc(desc);
-					
+
 					// add to list
 					getPowerList().add(pow);
 				}
-				
+
 				// traits
 				nodelist = (NodeList) xpath.evaluate("/Monster/Powers/MonsterTrait/Name/text()", doc, XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					Power pow = new Power();
-					
+
 					// trait name
 					String name = nodelist.item(i).getNodeValue();
 					pow.setName(name);
-					
+
 					// trait range (aura)
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Range/@FinalValue", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Range/@FinalValue", doc,
+							XPathConstants.NODE);
 					if (node != null) {
 						pow.setAura(Integer.valueOf(node.getNodeValue()));
 					}
-					
+
 					// trait keywords
 					String keywords = "";
-					NodeList nl = (NodeList) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+					NodeList nl = (NodeList) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name
+							+ "\"]/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
 					if (nl != null) {
 						for (int j = 0; j < nl.getLength(); j++) {
 							keywords += nl.item(j).getNodeValue().toLowerCase() + ", ";
 						}
 						pow.setKeywords(keywords.replaceAll(", $", ""));
 					}
-					
+
 					// trait description
 					String desc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Details/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Details/text()", doc,
+							XPathConstants.NODE);
 					if (node != null) {
 						desc += node.getNodeValue() + "\n";
 					}
 					pow.setDesc(desc);
-					
+
 					// add to list
 					getPowerList().add(pow);
 				}
-				
+
 				// preset effects
 				getPresetEffects().clear();
 				return true;

@@ -10,13 +10,47 @@ import cm.util.Colors;
 
 /**
  * Defines a D&D 4e creature power.
- * @author matthew.rinehart
- *
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
  */
 public class Power {
-	private String _name = "", _typeCode = "", _action = "", _keywords = "", _descCoded = "", _url = "";
+	/**
+	 * The name of the power.
+	 */
+	private String _name = "";
+
+	/**
+	 * A single-character type code derived from usage; e.g., melee basic is
+	 * 'm'.
+	 */
+	private String _typeCode = "";
+
+	/**
+	 * The power's action, e.g., standard; at-will
+	 */
+	private String _action = "";
+
+	/**
+	 * The power's keywords.
+	 */
+	private String _keywords = "";
+
+	/**
+	 * A coded form of the power's description.
+	 */
+	private String _descCoded = "";
+
+	/**
+	 * The compendium URL for the power.
+	 */
+	private String _url = "";
+
+	/**
+	 * The size of the power's aura.
+	 */
 	private Integer _aura = 0;
-	
+
 	/**
 	 * A blank power.
 	 */
@@ -26,12 +60,19 @@ public class Power {
 
 	/**
 	 * A new power with the provided properties.
-	 * @param name the name
-	 * @param type the full type
-	 * @param action the action
-	 * @param keywords the keywords
-	 * @param desc the description
-	 * @param aura the size of the aura
+	 * 
+	 * @param name
+	 *            the name
+	 * @param type
+	 *            the full type
+	 * @param action
+	 *            the action
+	 * @param keywords
+	 *            the keywords
+	 * @param desc
+	 *            the description
+	 * @param aura
+	 *            the size of the aura
 	 */
 	public Power(String name, String type, String action, String keywords, String desc, Integer aura) {
 		setName(name);
@@ -43,24 +84,18 @@ public class Power {
 	}
 
 	/**
-	 * A power created from RTF data.
-	 * @param line1 RTF data
-	 * @param type power type
-	 */
-	public Power (String line1, String type) {
-		detailImport(line1, type);
-	}
-
-	/**
 	 * A power created as a copy of another power.
-	 * @param pow the source power
+	 * 
+	 * @param pow
+	 *            the source power
 	 */
-	public Power (Power pow) {
+	public Power(Power pow) {
 		copy(pow);
 	}
 
 	/**
-	 * Returns the power's action
+	 * Returns the power's action.
+	 * 
 	 * @return the action
 	 */
 	public String getAction() {
@@ -68,35 +103,40 @@ public class Power {
 	}
 
 	/**
-	 * Sets the power's action
-	 * @param action the action
+	 * Sets the power's action.
+	 * 
+	 * @param action
+	 *            the action
 	 */
 	public void setAction(String action) {
 		_action = action;
 	}
 
 	/**
-	 * Returns recharge dice in the DnD4Attack font
+	 * Returns recharge dice in the DnD4Attack font.
+	 * 
 	 * @return recharge dice
 	 */
 	private String getActionDiceHTML() {
 		String out = "";
 		out += getAction();
-	    out = out.replace("recharge 6", "recharge <font face='DnD4Attack'>6</font>");
-	    out = out.replace("recharge 5", "recharge <font face='DnD4Attack'>5 6</font>");
-	    out = out.replace("recharge 4", "recharge <font face='DnD4Attack'>4 5 6</font>");
-	    out = out.replace("recharge 3", "recharge <font face='DnD4Attack'>3 4 5 6</font>");
-	    out = out.replace("recharge 2", "recharge <font face='DnD4Attack'>2 3 4 5 6</font>");
-	    return out;
+		out = out.replace("recharge 6", "recharge <font face='DnD4Attack'>6</font>");
+		out = out.replace("recharge 5", "recharge <font face='DnD4Attack'>5 6</font>");
+		out = out.replace("recharge 4", "recharge <font face='DnD4Attack'>4 5 6</font>");
+		out = out.replace("recharge 3", "recharge <font face='DnD4Attack'>3 4 5 6</font>");
+		out = out.replace("recharge 2", "recharge <font face='DnD4Attack'>2 3 4 5 6</font>");
+		return out;
 	}
 
 	/**
-	 * Returns an action line, indicating the power usage frequency or aura-ness.
+	 * Returns an action line, indicating the power usage frequency or
+	 * aura-ness.
+	 * 
 	 * @return the action line
 	 */
 	public String getActionLine() {
 		String line = "";
-		
+
 		if (isAura()) {
 			line += "aura " + getAura().toString();
 		} else if (getAction().isEmpty()) {
@@ -105,8 +145,8 @@ public class Power {
 			line += "recharge *";
 		} else if (_action.toLowerCase().contains("recharge ")) {
 			line += "recharge ";
-			if (Integer.valueOf(getAction().substring(getAction().indexOf("recharge" ) + 9)) > 0) {
-				line += getAction().substring(getAction().indexOf("recharge" ) + 9);
+			if (Integer.valueOf(getAction().substring(getAction().indexOf("recharge") + 9)) > 0) {
+				line += getAction().substring(getAction().indexOf("recharge") + 9);
 			} else {
 				line += "*";
 			}
@@ -121,12 +161,13 @@ public class Power {
 		} else {
 			line += "special";
 		}
-		
+
 		return " (" + line + ")";
 	}
 
 	/**
-	 * Indicates if the power is an action point placeholder.
+	 * Indicates if the power is an action point place-holder.
+	 * 
 	 * @return true if the power's name contains "action point"
 	 */
 	public Boolean isActionPoint() {
@@ -135,14 +176,16 @@ public class Power {
 
 	/**
 	 * Indicates if the power is an aura.
+	 * 
 	 * @return true if there is a defined aura for this power
 	 */
 	public Boolean isAura() {
 		return (getAura() > 0);
 	}
-	
+
 	/**
 	 * Returns the size of the power's aura.
+	 * 
 	 * @return the aura size
 	 */
 	public Integer getAura() {
@@ -151,7 +194,9 @@ public class Power {
 
 	/**
 	 * Sets the size of the power's aura.
-	 * @param aura the aura size
+	 * 
+	 * @param aura
+	 *            the aura size
 	 */
 	public void setAura(Integer aura) {
 		_aura = aura;
@@ -159,13 +204,14 @@ public class Power {
 
 	/**
 	 * Returns the background {@link Color}.
+	 * 
 	 * @return the background {@link Color}
 	 */
 	public Color getBackColor() {
 		if (isAura()) {
 			return Color.BLUE;
 		}
-		
+
 		if (getAction().toLowerCase().contains("recharge")) {
 			return Color.ORANGE;
 		} else if (getAction().toLowerCase().contains("encounter")) {
@@ -181,6 +227,7 @@ public class Power {
 
 	/**
 	 * Returns the description of the power.
+	 * 
 	 * @return the power description
 	 */
 	public String getDesc() {
@@ -189,7 +236,9 @@ public class Power {
 
 	/**
 	 * Sets the power's description.
-	 * @param value the description
+	 * 
+	 * @param value
+	 *            the description
 	 */
 	public void setDesc(String value) {
 		setDescCoded(value.replace("\n", "###"));
@@ -197,6 +246,7 @@ public class Power {
 
 	/**
 	 * Returns the coded description.
+	 * 
 	 * @return the coded description
 	 */
 	private String getDescCoded() {
@@ -205,14 +255,18 @@ public class Power {
 
 	/**
 	 * Sets the coded description.
-	 * @param descCoded the coded description
+	 * 
+	 * @param descCoded
+	 *            the coded description
 	 */
 	private void setDescCoded(String descCoded) {
 		_descCoded = descCoded;
 	}
-	
+
 	/**
-	 * Returns an HTML version of the power description with dice expressions hyperlinked.
+	 * Returns an HTML version of the power description with dice expressions
+	 * hyperlinked.
+	 * 
 	 * @return an HTML-description
 	 */
 	public String getDescHTML() {
@@ -222,6 +276,7 @@ public class Power {
 
 	/**
 	 * Indicates if the power is a daily usage frequency.
+	 * 
 	 * @return true if the power's action contains "daily"
 	 */
 	public Boolean isDaily() {
@@ -230,6 +285,7 @@ public class Power {
 
 	/**
 	 * Indicates if the power is an item power.
+	 * 
 	 * @return true if the power's action contains "item"
 	 */
 	public Boolean isItem() {
@@ -238,13 +294,14 @@ public class Power {
 
 	/**
 	 * Returns the foreground {@link Color}.
+	 * 
 	 * @return the foreground {@link Color}
 	 */
 	public Color getForeColor() {
 		if (isAura()) {
 			return Color.WHITE;
 		}
-		
+
 		if (getAction().toLowerCase().contains("recharge")) {
 			return Color.WHITE;
 		} else if (getAction().toLowerCase().contains("encounter")) {
@@ -259,7 +316,8 @@ public class Power {
 	}
 
 	/**
-	 * Returns the power keywords
+	 * Returns the power keywords.
+	 * 
 	 * @return the keywords
 	 */
 	public String getKeywords() {
@@ -267,15 +325,18 @@ public class Power {
 	}
 
 	/**
-	 * Sets the power's keywords
-	 * @param keywords the keywords
+	 * Sets the power's keywords.
+	 * 
+	 * @param keywords
+	 *            the keywords
 	 */
 	public void setKeywords(String keywords) {
 		_keywords = keywords;
 	}
 
 	/**
-	 * Returns the power name
+	 * Returns the power name.
+	 * 
 	 * @return the name
 	 */
 	public String getName() {
@@ -283,8 +344,10 @@ public class Power {
 	}
 
 	/**
-	 * Sets the power's name
-	 * @param name the name
+	 * Sets the power's name.
+	 * 
+	 * @param name
+	 *            the name
 	 */
 	public void setName(String name) {
 		_name = name;
@@ -292,11 +355,12 @@ public class Power {
 
 	/**
 	 * Returns HTML-formatted power details.
+	 * 
 	 * @return HTML power details
 	 */
 	public String getPowerHTML() {
 		String out = "";
-		
+
 		if (getAura() > 0) {
 			out += "<div class='ggmed'><b>" + _name + "</b>";
 			if (!getKeywords().isEmpty()) {
@@ -331,6 +395,7 @@ public class Power {
 
 	/**
 	 * Returns the required d6 result to recharge this power.
+	 * 
 	 * @return the recharge value
 	 */
 	public Integer getRechargeVal() {
@@ -353,6 +418,7 @@ public class Power {
 
 	/**
 	 * Returns the power type, e.g. "Basic Melee", "Close", etc.
+	 * 
 	 * @return the power type
 	 */
 	public String getType() {
@@ -376,14 +442,16 @@ public class Power {
 			return "???";
 		}
 	}
-	
+
 	/**
 	 * Sets the type of the power.
-	 * @param value the type
+	 * 
+	 * @param value
+	 *            the type
 	 */
 	public void setType(String value) {
 		String type = value.trim().toLowerCase();
-		
+
 		if (type.startsWith("aura")) {
 			setAura(Integer.valueOf(type.replace("aura", "").trim()));
 			setTypeCode("");
@@ -407,6 +475,7 @@ public class Power {
 	/**
 	 * Returns the single-letter type code for the power. For example, a basic
 	 * ranged attack has code 'r'.
+	 * 
 	 * @return the type code
 	 */
 	private String getTypeCode() {
@@ -415,14 +484,17 @@ public class Power {
 
 	/**
 	 * Sets the type code of the power.
-	 * @param typeCode the type code
+	 * 
+	 * @param typeCode
+	 *            the type code
 	 */
 	private void setTypeCode(String typeCode) {
 		_typeCode = typeCode;
 	}
 
 	/**
-	 * Returns the power's information URL
+	 * Returns the power's information URL.
+	 * 
 	 * @return the URL
 	 */
 	public String getURL() {
@@ -430,8 +502,10 @@ public class Power {
 	}
 
 	/**
-	 * Sets the power's URL
-	 * @param url the URL
+	 * Sets the power's URL.
+	 * 
+	 * @param url
+	 *            the URL
 	 */
 	public void setURL(String url) {
 		_url = url;
@@ -451,7 +525,9 @@ public class Power {
 
 	/**
 	 * Sets this power's properties from another power.
-	 * @param pow the other power
+	 * 
+	 * @param pow
+	 *            the other power
 	 */
 	private void copy(Power pow) {
 		setName(pow.getName());
@@ -464,137 +540,61 @@ public class Power {
 	}
 
 	/**
-	 * Import power data from RTF.
-	 * @param line1 the RTF data
-	 * @param type the power type
-	 */
-	public void detailImport(String line1, String type) {
-		String temp = line1.trim();
-		
-		if (temp.endsWith("#")) {
-			temp = temp.replace("#", "").trim();
-			setAura(0);
-			
-			if (!getDescCoded().isEmpty()) {
-				setDescCoded(getDescCoded() + "###" + temp);
-			} else {
-				setDescCoded(temp);
-			}
-			
-			if (temp.startsWith("@B ") || temp.startsWith("@O ")
-					|| temp.startsWith("@M ") || temp.startsWith("@m ")
-					|| temp.startsWith("@R ") || temp.startsWith("@r ")
-					|| temp.startsWith("@A ") || temp.startsWith("@C ")) {
-				String action = "";
-				String keywords = "";
-				String name = "";
-				if (temp.startsWith("@O ")) {
-					setAura((int) Math.round(Double.valueOf(temp.substring(temp.indexOf("*") + 7).trim())));
-					if (temp.contains("Aura " + getAura().toString() + " ")) {
-						setDescCoded(temp.substring((temp.indexOf("*") + 9)).trim());
-					}
-				}
-				if (temp.startsWith("@M ") || temp.startsWith("@m ")
-						|| temp.startsWith("@R ") || temp.startsWith("@r ")
-						|| temp.startsWith("@A ") || temp.startsWith("@C ")) {
-					setTypeCode(temp.substring(temp.indexOf("@") + 1, 1));
-				}
-				if (temp.contains("*")) {
-					action = temp.substring(temp.indexOf("*") + 2);
-				}
-				if (temp.contains("(")) {
-					name = temp.substring(3, temp.indexOf("(") - 3).trim();
-					keywords = temp.substring(temp.indexOf("(") + 1, temp.indexOf(")") - temp.indexOf("(") - 1);
-				} else if (temp.contains("*")) {
-					name = temp.substring(3, temp.indexOf("*") - 3).trim();
-				} else {
-					name = temp.substring(3).trim();
-				}
-				setAction(action.toLowerCase());
-				setKeywords(keywords);
-				setName(name);
-				if (type.contentEquals("standard") || 
-						type.contentEquals("move") ||
-						type.contentEquals("minor") || 
-						type.contentEquals("free") || 
-						type.contentEquals("triggered")) {
-					if(getAction().isEmpty()) {
-						setAction(type);
-					} else {
-						setAction(type + "; " + getAction());
-					}
-				} else if (getName().isEmpty()) {
-					setName(temp);
-				} else if (!getDescCoded().isEmpty()) {
-					if (getDescCoded().endsWith("~")) {
-						setDescCoded(getDescCoded().replace("~", " "));
-					} else {
-						setDescCoded(getDescCoded() + "###");
-					}
-					if (temp.toLowerCase().startsWith("attack")) {
-						setDescCoded(getDescCoded() + temp + "~");
-					} else {
-						setDescCoded(getDescCoded() + temp);
-					}
-				} else if (temp.toLowerCase().startsWith("attack")) {
-					setDescCoded(temp + "~");
-				} else {
-					setDescCoded(temp);
-				}
-			}
-		}
-	}
-	
-	/**
-	 * Writes the power to an XML stream
-	 * @param writer the XML stream
-	 * @throws XMLStreamException from the writer
+	 * Writes the power to an XML stream.
+	 * 
+	 * @param writer
+	 *            the XML stream
+	 * @throws XMLStreamException
+	 *             from the writer
 	 */
 	public void exportXML(XMLStreamWriter writer) throws XMLStreamException {
 		writer.writeStartElement("power");
-		
+
 		writer.writeStartElement("name");
 		writer.writeCharacters(getName());
 		writer.writeEndElement();
-		
+
 		writer.writeStartElement("type");
 		writer.writeCharacters(getType());
 		writer.writeEndElement();
-		
+
 		writer.writeStartElement("act");
 		writer.writeCharacters(getAction());
 		writer.writeEndElement();
-		
+
 		writer.writeStartElement("key");
 		writer.writeCharacters(getKeywords());
 		writer.writeEndElement();
-		
+
 		writer.writeStartElement("desc");
 		writer.writeCharacters(getDescCoded());
 		writer.writeEndElement();
-		
+
 		writer.writeStartElement("url");
 		writer.writeCharacters(getURL());
 		writer.writeEndElement();
-		
+
 		writer.writeEndElement();
 	}
-	
+
 	/**
-	 * Sets this power's properties from an XML stream
-	 * @param reader the XML stream
+	 * Sets this power's properties from an XML stream.
+	 * 
+	 * @param reader
+	 *            the XML stream
 	 * @return true on success
-	 * @throws XMLStreamException from the reader
+	 * @throws XMLStreamException
+	 *             from the reader
 	 */
 	public Boolean importXML(XMLStreamReader reader) throws XMLStreamException {
 		String elementName = "";
-		
+
 		if (reader.isStartElement() && reader.getName().toString().contentEquals("power")) {
 			clearAll();
-			
-			while(reader.hasNext()) {
+
+			while (reader.hasNext()) {
 				reader.next();
-				
+
 				if (reader.isStartElement()) {
 					elementName = reader.getName().toString();
 				} else if (reader.isCharacters()) {
@@ -623,9 +623,10 @@ public class Power {
 		}
 		return true;
 	}
-	
-	/**
-	 * Returns {@link #getName()}.
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	public String toString() {

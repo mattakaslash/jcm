@@ -13,30 +13,92 @@ import cm.util.Colors;
 import cm.util.DiceBag;
 
 /**
- * Defines a Combatant in a D&D 4e encounter.
- * @author matthew.rinehart
- *
- */
-/**
- * @author matthew.rinehart
- *
+ * Defines a combatant in a D&D encounter. A combatant is a particular instance
+ * of a {@link Stats} with some additional encounter-specific information
+ * included.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
  */
 public class Combatant implements Comparable<Combatant> {
-	// Saved data
-	private Stats _stats = new Stats();
+	/**
+	 * The current hit points for the combatant in this encounter. 
+	 */
+	private Integer _currHP = 0;
+	
+	/**
+	 * A custom display name for the combatant, instead of what is stored with its {@link Stats}.
+	 */
 	private String _customName = "";
-	private String _mod = "";
-	// Encounter-specific data
-	private Integer _currHP = 0, _deathSaveFailed = 0, _tempHP = 0,
-			_surgesRemaining = 0, _round = 0, _initRoll = 0, _random3 = 0,
-			_fighterNumber = 0;
-	private String _roundStatus = "";
-	private Boolean _ready = false;
-	private Boolean _shown = true;
-	private List<String> _powersUsed = new ArrayList<String>();
+	
+	/**
+	 * Count of failed death saves. 
+	 */
+	private Integer _deathSaveFailed = 0;
+	
+	/**
+	 * An identifier, starting from 1, to differentiate combatants with the same name. This is only used for NPCs. 
+	 */
+	private Integer _fighterNumber = 0;
+	
+	/**
+	 * This combatant's initiative roll result.
+	 */
+	private Integer _initRoll = 0;
 
 	/**
-	 * Blank Combatant
+	 * A modifier for the combatant.
+	 */
+	// TODO: determine if this is even needed
+	private String _mod = "";
+	
+	/**
+	 * A list of power names for powers that are no longer available for the combatant's use. 
+	 */
+	private List<String> _powersUsed = new ArrayList<String>();
+	
+	/**
+	 * A random integer used as a tie-breaker for identical initiative results. 
+	 */
+	private Integer _random3 = 0;
+	
+	/**
+	 * Indicates if the combatant has a readied action. 
+	 */
+	private Boolean _ready = false;
+	
+	/**
+	 * The round of combat <em>this combatant</em> is on. This may not necessarily be the current round of combat for the encounter. 
+	 */
+	private Integer _round = 0;
+	
+	/**
+	 * Stores a string describing this combatants status in the combat. Valid values include "Reserve" and "Rolled". 
+	 */
+	private String _roundStatus = "";
+	
+	/**
+	 * Indicates if the combatant is to be shown on the player-visible initiative display. 
+	 */
+	private Boolean _shown = true;
+	
+	/**
+	 * This combatant's {@link Stats}.
+	 */
+	private Stats _stats = new Stats();
+	
+	/**
+	 * Count of remaining healing surges. 
+	 */
+	private Integer _surgesRemaining = 0;
+	
+	/**
+	 * Amount of temporary hit points.
+	 */
+	private Integer _tempHP = 0;
+
+	/**
+	 * Initializes a blank combatant, with blank {@link Stats}.
 	 */
 	public Combatant() {
 		clearAll();
@@ -45,10 +107,10 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Combatant with provided stats
+	 * Initializes a combatant with the provided {@link Stats}.
 	 * 
 	 * @param stats
-	 *            A Stats object for the combatant
+	 *            a {@link Stats} object for the combatant
 	 */
 	public Combatant(Stats stats) {
 		clearAll();
@@ -59,23 +121,44 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Combatant with provided stats and role
+	 * Initializes a combatant with provided {@link Stats} and role modifier.
 	 * 
 	 * @param stats
-	 *            A Stats object for the combatant
-	 * @param rolemod
-	 *            The role mod for the combatant
+	 *            a {@link Stats} object for the combatant
+	 * @param roleMod
+	 *            the role mod for the combatant
 	 */
-	public Combatant(Stats stats, String rolemod) {
+	public Combatant(Stats stats, String roleMod) {
 		clearAll();
 		setStats(stats);
-		setRoleMod(rolemod);
+		setRoleMod(roleMod);
 		resetInit();
 		resetHealth();
 	}
 
 	/**
-	 * Indicates if the Combatant is active.
+	 * Record a failed death save for the combatant, to a maximum of 3.
+	 */
+	public void failDeathSave() {
+		if (getDeathSaveFailed() < 3) {
+			setDeathSaveFailed(getDeathSaveFailed() + 1);
+		} else {
+			setDeathSaveFailed(3);
+		}
+	}
+
+	/**
+	 * Returns the armor class defense.
+	 * 
+	 * @return {@link Stats#getAC()}
+	 */
+	public Integer getAC() {
+		return getStats().getAC();
+	}
+
+	/**
+	 * Indicates if the combatant is active.
+	 * 
 	 * @return {@link #getMaxHP()} < 1 || {@link #getCurrHP()} > 0
 	 */
 	public Boolean isActive() {
@@ -83,8 +166,9 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Indicates if the Combatant is alive.
-	 * @return true if Combatant is alive
+	 * Indicates if the combatant is alive.
+	 * 
+	 * @return true if combatant is alive
 	 */
 	public Boolean isAlive() {
 		if (getMaxHP() < 1) {
@@ -103,23 +187,26 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Indicates if the Combatant is bloody.
-	 * @return true if Combatant is bloody, but conscious
+	 * Indicates if the combatant is bloody.
+	 * 
+	 * @return true if combatant is bloody, but conscious
 	 */
+	// TODO: add getMaxHP() != 1
 	public Boolean isBloody() {
 		return (getCurrHP() <= getBloodyHP() && isAlive());
 	}
 
 	/**
-	 * @return {@link Stats#getBloodyHP()
-
+	 * Returns the combatants bloodied value.
+	 * 
+	 * @return {@link Stats#getBloodyHP()}
 	 */
 	private Integer getBloodyHP() {
 		return getStats().getBloodyHP();
 	}
 
 	/**
-	 * Gives a combat handle in the format name-#
+	 * Returns a combat handle in the format name-#.
 	 * 
 	 * @return {@link #getName()}-{@link #getFighterNumber()}
 	 */
@@ -132,6 +219,8 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
+	 * Returns the combatant's current hit point total.
+	 * 
 	 * @return current HP
 	 */
 	public Integer getCurrHP() {
@@ -139,18 +228,18 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the current HP of the Combatant. During an encounter,
+	 * Sets the current hit points of the combatant. During an encounter,
 	 * {@link #damage(Integer)} and {@link #heal(Integer)} should be used to
-	 * adjust HP instead.
+	 * adjust hit points instead of directly setting the value.
 	 * 
-	 * @param HP
+	 * @param currHP the new hit points value
 	 */
-	private void setCurrHP(Integer HP) {
-		_currHP = HP;
+	private void setCurrHP(Integer currHP) {
+		_currHP = currHP;
 	}
 
 	/**
-	 * Returns the custom name of this Combatant
+	 * Returns the custom name of this combatant.
 	 * 
 	 * @return the custom name
 	 */
@@ -159,7 +248,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the custom name of this Combatant.
+	 * Sets the custom name of this combatant.
 	 * 
 	 * @param customName
 	 *            the new custom name
@@ -169,6 +258,8 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
+	 * Returns the count of failed death saves.
+	 * 
 	 * @return count of failed death saves
 	 */
 	private Integer getDeathSaveFailed() {
@@ -188,7 +279,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * If the player is bloodied, returns "(dying #/3 strikes)"
+	 * If the player is bloodied, returns "(dying #/3 strikes)".
 	 * 
 	 * @return a string indicating death status
 	 */
@@ -202,7 +293,36 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Indicates if the Combatant is dying or dead.
+	 * Returns a background color corresponding to the combatant's state.
+	 * 
+	 * @return black, if dead; gray, if inactive; green, if PC; red, if enemy
+	 */
+	public Color getDisplayBackColor() {
+		if (!isAlive()) {
+			return Colors.DAILY;
+		}
+		if (!isActive()) {
+			return Color.GRAY;
+		}
+		if (isPC()) {
+			return Colors.ATWILL;
+		} else {
+			return Colors.ENCOUNTER;
+		}
+	}
+
+	/**
+	 * Returns {@link Color#WHITE}.
+	 * 
+	 * @return {@link Color#WHITE}
+	 */
+	public Color getDisplayForeColor() {
+		return Color.WHITE;
+	}
+
+	/**
+	 * Indicates if the combatant is dying or dead.
+	 * 
 	 * @return {@link #getDeathSaveFailed()} > 0
 	 */
 	public Boolean isDyingOrDead() {
@@ -219,11 +339,22 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the fighter number.
-	 * @param fighterNumber the new number
+	 * Sets the fighter's number.
+	 * 
+	 * @param fighterNumber
+	 *            the new number
 	 */
 	public void setFighterNumber(int fighterNumber) {
 		_fighterNumber = fighterNumber;
+	}
+
+	/**
+	 * Returns the fortitude defense.
+	 * 
+	 * @return {@link Stats#getFort()}
+	 */
+	public Integer getFort() {
+		return getStats().getFort();
 	}
 
 	/**
@@ -268,7 +399,9 @@ public class Combatant implements Comparable<Combatant> {
 
 	/**
 	 * Sets the initiative roll result.
-	 * @param initRoll the new initiative roll result
+	 * 
+	 * @param initRoll
+	 *            the new initiative roll result
 	 */
 	public void setInitRoll(Integer initRoll) {
 		_initRoll = initRoll;
@@ -277,21 +410,20 @@ public class Combatant implements Comparable<Combatant> {
 	/**
 	 * Returns a value calculated from {@link #getRound()},
 	 * {@link #getInitRoll()}, and {@link #getRandom3()}. This value is used to
-	 * help sort Combatants by initiatve.
+	 * help sort combatants by initiative.
 	 * 
-	 * @return an integer designed to help sort Combatants by initiative
+	 * @return an integer designed to help sort combatants by initiative
 	 */
 	public Integer getInitSequence() {
 		if (getRandom3() == 0) {
 			return 0;
 		} else {
-			return (getRound() * 10000000) + ((95 - getInitRoll()) * 100000)
-					+ getRandom3();
+			return (getRound() * 10000000) + ((95 - getInitRoll()) * 100000) + getRandom3();
 		}
 	}
 
 	/**
-	 * Returns a string by which the Combatant is sorted in the initiative list.
+	 * Returns a string by which the combatant is sorted in the initiative list.
 	 * 
 	 * @return a prefix attached to {@link #getCombatHandle()}
 	 */
@@ -330,8 +462,7 @@ public class Combatant implements Comparable<Combatant> {
 	public String getInitStatus() {
 		if (!isActive() && !isPC()) {
 			return "Inactive";
-		} else if (getRoundStatus().contentEquals("Ready")
-				|| getRoundStatus().contentEquals("Delay")
+		} else if (getRoundStatus().contentEquals("Ready") || getRoundStatus().contentEquals("Delay")
 				|| getRoundStatus().contentEquals("Rolling")) {
 			return getRoundStatus();
 		} else if (getInitSequence() > 0) {
@@ -348,8 +479,7 @@ public class Combatant implements Comparable<Combatant> {
 	 *            the initiative status
 	 */
 	public void setInitStatus(String value) {
-		if (value.contentEquals("Ready") || value.contentEquals("Delay")
-				|| value.contentEquals("Rolling")) {
+		if (value.contentEquals("Ready") || value.contentEquals("Delay") || value.contentEquals("Rolling")) {
 			setRoundStatus(value);
 		} else if (getInitSequence() > 0) {
 			setRoundStatus("Rolled");
@@ -359,8 +489,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the Combatant's max HP, modified by role mod. Calls
-	 * {@link Stats#getMaxHP()}.
+	 * Returns the combatant's max HP. Calls {@link Stats#getMaxHP()}.
 	 * 
 	 * @return max HP
 	 */
@@ -377,7 +506,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Indicates if the Combatant is a minion.
+	 * Indicates if the combatant is a minion.
 	 * 
 	 * @return {@link Stats#isMinion()}
 	 */
@@ -386,7 +515,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the bare modifier for the Combatant.
+	 * Returns the bare modifier for the combatant.
 	 * 
 	 * @return mod, e.g., "Demi", "Semi", "Minion", etc.
 	 */
@@ -395,7 +524,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the modifier (demi, semi, minion, etc.) for this Combatant.
+	 * Sets the modifier (demi, semi, minion, etc.) for this combatant.
 	 * 
 	 * @param mod
 	 *            the new modifier
@@ -405,7 +534,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the name of this Combatant
+	 * Returns the name of this combatant.
 	 * 
 	 * @return a custom name, if set; otherwise, {@link Stats#getName()}
 	 */
@@ -418,7 +547,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the name of this Combatant.
+	 * Sets the name of this combatant.
 	 * 
 	 * @param name
 	 *            the new name
@@ -432,12 +561,53 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Indicates if the Combatant is a player character.
+	 * Indicates if the combatant is a player character.
 	 * 
 	 * @return {@link Stats#isPC()}
 	 */
 	public Boolean isPC() {
 		return getStats().isPC();
+	}
+
+	/**
+	 * Returns {@link Stats#getPowerList()}.
+	 * 
+	 * @return {@link Stats#getPowerList()}
+	 */
+	public List<Power> getPowerList() {
+		return getStats().getPowerList();
+	}
+
+	/**
+	 * Indicates if the named power has been used by the combatant in this
+	 * encounter.
+	 * 
+	 * @param powName
+	 *            the name of the power
+	 * @return true if the power has been used in this encounter
+	 */
+	public Boolean isPowerUsed(String powName) {
+		return (getPowersUsed().contains(powName));
+	}
+
+	/**
+	 * Sets a combatant's power usage.
+	 * 
+	 * @param powName
+	 *            the name of the power to be marked
+	 * @param isUsed
+	 *            true if the power has been used, false otherwise
+	 */
+	public void setPowerUsed(String powName, Boolean isUsed) {
+		if (isUsed) {
+			for (Power pow : getStats().getPowerList()) {
+				if (pow.getName().contentEquals(powName) && !getPowersUsed().contains(pow.getName())) {
+					getPowersUsed().add(pow.getName());
+				}
+			}
+		} else {
+			getPowersUsed().remove(powName);
+		}
 	}
 
 	/**
@@ -449,39 +619,27 @@ public class Combatant implements Comparable<Combatant> {
 		return _powersUsed;
 	}
 
+	/**
+	 * Sets the list of used powers.
+	 * 
+	 * @param powersUsed
+	 *            the list
+	 */
 	private void setPowersUsed(List<String> powersUsed) {
 		_powersUsed = powersUsed;
 	}
 
 	/**
-	 * Indicates if the named power has been used by the Combatant in this encounter.
-	 * @param powName the name of the power
-	 * @return true if the power has been used in this encounter
+	 * Returns a collection of preset {@link EffectBase}s for this fighter.
+	 * 
+	 * @return the collection
 	 */
-	public Boolean isPowerUsed(String powName) {
-		return (getPowersUsed().contains(powName));
+	public Collection<EffectBase> getPresetEffects() {
+		return getStats().getPresetEffects().values();
 	}
 
 	/**
-	 * Sets a Combatant's power usage.
-	 * @param powName the name of the power to be marked
-	 * @param isUsed true if the power has been used, false otherwise
-	 */
-	public void setPowerUsed(String powName, Boolean isUsed) {
-		if (isUsed) {
-			for (Power pow : getStats().getPowerList()) {
-				if (pow.getName().contentEquals(powName)
-						&& !getPowersUsed().contains(pow.getName())) {
-					getPowersUsed().add(pow.getName());
-				}
-			}
-		} else {
-			getPowersUsed().remove(powName);
-		}
-	}
-
-	/**
-	 * Returns the random3 used for this Combatant's initiative.
+	 * Returns the random3 used for this combatant's initiative.
 	 * 
 	 * @return the random3 value
 	 */
@@ -491,14 +649,16 @@ public class Combatant implements Comparable<Combatant> {
 
 	/**
 	 * Sets an externally-determined random3 value.
-	 * @param random3 the new random3 value
+	 * 
+	 * @param random3
+	 *            the new random3 value
 	 */
 	public void setRandom3(Integer random3) {
 		_random3 = random3;
 	}
 
 	/**
-	 * Indicates if the Combatant is ready for combat (rolled initiative, etc.).
+	 * Indicates if the combatant is ready for combat (rolled initiative, etc.).
 	 * 
 	 * @return a boolean indicator of readiness
 	 */
@@ -507,22 +667,33 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the indicator of Combatant readiness.
-	 * @param ready true if Combatant is ready; false otherwise
+	 * Sets the indicator of combatant readiness.
+	 * 
+	 * @param ready
+	 *            true if combatant is ready; false otherwise
 	 */
 	public void setReady(boolean ready) {
 		_ready = ready;
 	}
 
 	/**
-	 * Changes role for the Combatant, adjusting max HP if necessary.
+	 * Returns the reflex defense.
+	 * 
+	 * @return {@link Stats#getRef()}
+	 */
+	public Integer getRef() {
+		return getStats().getRef();
+	}
+
+	/**
+	 * Changes role for the combatant, adjusting max HP if necessary.
 	 * 
 	 * @param value
-	 *            The new role modifier.
+	 *            the new role modifier.
 	 */
 	public void setRoleMod(String value) {
 		String newMod = _mod;
-
+	
 		if (isMinion() || isPC()) {
 			newMod = "";
 		} else {
@@ -535,7 +706,7 @@ public class Combatant implements Comparable<Combatant> {
 			} else {
 				newMod = "";
 			}
-
+	
 			if (!newMod.contentEquals(_mod)) {
 				Integer oldMaxHP = getMaxHP();
 				_mod = newMod;
@@ -549,7 +720,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the current round of combat for this Combatant.
+	 * Returns the current round of combat for this combatant.
 	 * 
 	 * @return the combat round
 	 */
@@ -558,8 +729,10 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the Combatant's current round in the encounter.
-	 * @param round the round
+	 * Sets the combatant's current round in the encounter.
+	 * 
+	 * @param round
+	 *            the round
 	 */
 	public void setRound(Integer round) {
 		_round = round;
@@ -567,6 +740,7 @@ public class Combatant implements Comparable<Combatant> {
 
 	/**
 	 * Returns the round status string.
+	 * 
 	 * @return round status
 	 */
 	private String getRoundStatus() {
@@ -584,18 +758,19 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Indicates if the Combatant should be visible in the initiative display.
-	 * @return true if the Combatant should be visible
+	 * Indicates if the combatant should be visible in the initiative display.
+	 * 
+	 * @return true if the combatant should be visible
 	 */
 	public Boolean isShown() {
 		return _shown;
 	}
 
 	/**
-	 * Sets the visibility of this Combatant in the initiative display.
+	 * Sets the visibility of this combatant in the initiative display.
 	 * 
 	 * @param shown
-	 *            true if Combatant should be visible in the initiative display
+	 *            true if combatant should be visible in the initiative display
 	 *            (default)
 	 */
 	public void setShown(Boolean shown) {
@@ -603,16 +778,16 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the {@link Stats} object for this Combatant.
+	 * Returns the {@link Stats} object for this combatant.
 	 * 
-	 * @return this Combatant's {@link Stats}
+	 * @return this combatant's {@link Stats}
 	 */
 	public Stats getStats() {
 		return _stats;
 	}
 
 	/**
-	 * Sets the Combatants {@link Stats} the provided stats. HP is adjusted if
+	 * Sets the combatants {@link Stats} the provided stats. HP is adjusted if
 	 * necessary, and power usage is re-evaluated.
 	 * 
 	 * @param newStats
@@ -621,15 +796,15 @@ public class Combatant implements Comparable<Combatant> {
 	private void setStats(Stats newStats) {
 		Integer oldMaxHP = getMaxHP();
 		_stats = newStats;
-
+	
 		if (oldMaxHP > getMaxHP()) {
 			damage(oldMaxHP - getMaxHP());
 		} else if (oldMaxHP < getMaxHP()) {
 			heal(getMaxHP() - oldMaxHP);
 		}
-
+	
 		List<String> newPowersUsed = new ArrayList<String>();
-
+	
 		for (String powused : getPowersUsed()) {
 			for (Power pow : getStats().getPowerList()) {
 				if (pow.getName().contentEquals(powused)) {
@@ -638,6 +813,15 @@ public class Combatant implements Comparable<Combatant> {
 			}
 		}
 		setPowersUsed(newPowersUsed);
+	}
+
+	/**
+	 * Returns {@link Stats#getStatsHTML()}.
+	 * 
+	 * @return {@link Stats#getStatsHTML()}
+	 */
+	public String getStatsHTML() {
+		return getStats().getStatsHTML();
 	}
 
 	/**
@@ -671,20 +855,36 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the number of remaining healing surges for this Combatant.
+	 * Returns {@link Stats#getSurges()}.
 	 * 
-	 * @return surges remaining for this Combatant
+	 * @return {@link Stats#getSurges()}
+	 */
+	public Integer getSurges() {
+		return getStats().getSurges();
+	}
+
+	/**
+	 * Returns the number of remaining healing surges for this combatant.
+	 * 
+	 * @return surges remaining for this combatant
 	 */
 	public Integer getSurgesLeft() {
 		return _surgesRemaining;
 	}
 
+	/**
+	 * Sets the number of remaining surges for this combatant. During an
+	 * encounter, {@link #modSurges(Integer)} should be used instead.
+	 * 
+	 * @param surgesLeft
+	 *            the number of remaining surges
+	 */
 	private void setSurgesLeft(Integer surgesLeft) {
 		_surgesRemaining = surgesLeft;
 	}
 
 	/**
-	 * Returns the healing surge value for this Combatant.
+	 * Returns the healing surge value for this combatant.
 	 * 
 	 * @return {@link Stats#getSurgeValue()}
 	 */
@@ -702,7 +902,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Returns the temporary HP of the Combatant.
+	 * Returns the temporary HP of the combatant.
 	 * 
 	 * @return amount of temporary HP
 	 */
@@ -711,7 +911,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the temporary HP of the Combatant. During an encounter,
+	 * Sets the temporary HP of the combatant. During an encounter,
 	 * {@link #addTempHP(Integer)} should be used instead.
 	 * 
 	 * @param tempHP
@@ -722,17 +922,26 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Sets the temp HP to the amount specified, if greater than current.
+	 * Returns the will defense.
+	 * 
+	 * @return {@link Stats#getWill()}
+	 */
+	public Integer getWill() {
+		return getStats().getWill();
+	}
+
+	/**
+	 * Sets the temporary HP to the amount specified, if greater than current.
 	 * 
 	 * @param amt
-	 *            new temp HP amount
+	 *            new temporary HP amount
 	 */
 	public void addTempHP(Integer amt) {
 		if (amt <= 0 || !isAlive()) {
 			return;
 		}
-		if (_tempHP < amt) {
-			_tempHP = amt;
+		if (getTempHP() < amt) {
+			setTempHP(amt);
 		}
 	}
 
@@ -756,8 +965,16 @@ public class Combatant implements Comparable<Combatant> {
 		getPowersUsed().clear();
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Comparable#compareTo(java.lang.Object)
+	 */
+	@Override
+	public int compareTo(Combatant y) {
+		return getInitSequence().compareTo(y.getInitSequence());
+	}
+
 	/**
-	 * Apply damage to the Combatant.
+	 * Apply damage to the combatant.
 	 * 
 	 * @param amt
 	 *            damage amount as a positive integer
@@ -766,114 +983,39 @@ public class Combatant implements Comparable<Combatant> {
 		if (amt <= 0) {
 			return;
 		}
-
+	
 		setTempHP(getTempHP() - amt);
 		if (getTempHP() < 0) {
 			setCurrHP(getCurrHP() + getTempHP());
 			setTempHP(0);
 		}
-
+	
 		updateStatus();
 	}
 
 	/**
-	 * Heal the Combatant by the specified amount, to a maximum of {@link #getMaxHP()}.
-	 * @param amt the amount of healing as a postive integer
+	 * Heal the combatant by the specified amount, to a maximum of
+	 * {@link #getMaxHP()}.
+	 * 
+	 * @param amt
+	 *            the amount of healing as a positive integer
 	 */
 	public void heal(Integer amt) {
 		if (amt <= 0) {
 			return;
 		}
-	
+
 		if (getCurrHP() <= 0) {
 			setCurrHP(0);
 			setDeathSaveFailed(0);
 		}
-	
+
 		setCurrHP(getCurrHP() + amt);
 		if (getCurrHP() > getMaxHP()) {
 			setCurrHP(getMaxHP());
 		}
-	
+
 		updateStatus();
-	}
-
-	/**
-	 * Modify the amount of remaining healing surges by the specified amount.
-	 * No action is taken if the modification would result in a surge amount
-	 * outside the range 0 - {@link Stats#getSurges()}.
-	 * @param amt the amount to adjust the surge count by
-	 */
-	public void modSurges(Integer amt) {
-		if (amt + getSurgesLeft() <= getStats().getSurges()
-				&& amt + getSurgesLeft() >= 0) {
-			setSurgesLeft(getSurgesLeft() + amt);
-		}
-	}
-
-	/**
-	 * Restores the Combatant's health and healing surge count to full.
-	 */
-	public void resetHealth() {
-		setCurrHP(getMaxHP());
-		setDeathSaveFailed(0);
-		resetTempHP();
-		setSurgesLeft(getStats().getSurges());
-	}
-
-	/**
-	 * Calls {@link #setTempHP(Integer)} with a parameter of 0.
-	 */
-	public void resetTempHP() {
-		setTempHP(0);
-	}
-
-	/**
-	 * Kills the Combatant.
-	 */
-	private void slay() {
-		if (getCurrHP() > 0) {
-			setCurrHP(0);
-		}
-		setTempHP(0);
-		setDeathSaveFailed(3);
-		setReady(false);
-	}
-
-	/**
-	 * Kills dead combatants and inactive enemies. Sets readiness if inactive PCs to false.
-	 */
-	private void updateStatus() {
-		if (!isAlive()) {
-			slay();
-		} else if (!isActive()) {
-			if (!isPC()) {
-				slay();
-			} else {
-				setReady(false);
-			}
-		}
-	}
-
-	/**
-	 * Record a failed death save for the Combatant, to a maximum of 3.
-	 */
-	public void failDeathSave() {
-		if (getDeathSaveFailed() < 3) {
-			setDeathSaveFailed(getDeathSaveFailed() + 1);
-		} else {
-			setDeathSaveFailed(3);
-		}
-	}
-
-	/**
-	 * Reduces failed death save count by one, to a minimum of 0.
-	 */
-	public void unfailDeathSave() {
-		setDeathSaveFailed(getDeathSaveFailed() - 1);
-		if (getDeathSaveFailed() < 0) {
-			setDeathSaveFailed(0);
-		}
 	}
 
 	/**
@@ -884,6 +1026,20 @@ public class Combatant implements Comparable<Combatant> {
 		setInitRoll(0);
 		setRandom3(0);
 		setReady(false);
+	}
+
+	/**
+	 * Modify the amount of remaining healing surges by the specified amount. No
+	 * action is taken if the modification would result in a surge amount
+	 * outside the range 0 - {@link Stats#getSurges()}.
+	 * 
+	 * @param amt
+	 *            the amount to adjust the surge count by
+	 */
+	public void modSurges(Integer amt) {
+		if (amt + getSurgesLeft() <= getStats().getSurges() && amt + getSurgesLeft() >= 0) {
+			setSurgesLeft(getSurgesLeft() + amt);
+		}
 	}
 
 	/**
@@ -898,6 +1054,16 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
+	 * Restores the combatant's health and healing surge count to full.
+	 */
+	public void resetHealth() {
+		setCurrHP(getMaxHP());
+		setDeathSaveFailed(0);
+		resetTempHP();
+		setSurgesLeft(getStats().getSurges());
+	}
+
+	/**
 	 * Resets initiative.
 	 */
 	public void resetInit() {
@@ -907,36 +1073,13 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Roll initiative for this Combatant. Gets initiative modifier from
-	 * {@link Stats#getInit()} and calls
-	 * {@link #rollInitiative(Integer, DiceBag)}.
-	 * 
-	 * @return the rolled initiative
-	 */
-	public Integer rollInitiative() {
-		return rollInitiative(DiceBag.roll(20) + getStats().getInit());
-	}
-
-	/**
-	 * Sets Combatant's initiative roll to the value and generates a new random3
-	 * value with the provided die.
-	 * 
-	 * @param rollValue
-	 *            the Combatant's initiative result, probably from
-	 *            {@link #rollInitiative(DiceBag)}
-	 * @return the rolled initiative
-	 */
-	private Integer rollInitiative(Integer rollValue) {
-		setInitRoll(rollValue);
-		newInitMod();
-		setRoundStatus("Rolling");
-		return getInitRoll();
-	}
-
-	/**
 	 * Resets power usage for the Combatant.
-	 * @param resetDaily if true, marks all powers as unused and resets action points to 1
-	 * @param resetAction if true, only action points are handled
+	 * 
+	 * @param resetDaily
+	 *            if true, marks all powers as unused and resets action points
+	 *            to 1
+	 * @param resetAction
+	 *            if true, only action points are handled
 	 */
 	public void resetPowersUsage(Boolean resetDaily, Boolean resetAction) {
 		if (resetDaily) {
@@ -947,8 +1090,7 @@ public class Combatant implements Comparable<Combatant> {
 				if (isPowerUsed(pow.getName()) && pow.isActionPoint()) {
 					getStats().setActionPoints(getStats().getActionPoints() - 1);
 				}
-				if (isPowerUsed(pow.getName()) && !pow.isDaily()
-						&& !pow.isItem() && !resetAction) {
+				if (isPowerUsed(pow.getName()) && !pow.isDaily() && !pow.isItem() && !resetAction) {
 					setPowerUsed(pow.getName(), false);
 				}
 			}
@@ -956,9 +1098,69 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
+	 * Calls {@link #setTempHP(Integer)} with a parameter of 0.
+	 */
+	public void resetTempHP() {
+		setTempHP(0);
+	}
+
+	/**
+	 * Roll initiative for this combatant. Gets initiative modifier from
+	 * {@link Stats#getInit()} and calls
+	 * {@link #rollInitiative(Integer)}.
+	 * 
+	 * @return the rolled initiative
+	 */
+	public Integer rollInitiative() {
+		return rollInitiative(DiceBag.roll(20) + getStats().getInit());
+	}
+
+	/**
+	 * Sets combatant's initiative roll to the value and generates a new random3
+	 * value with the provided die.
+	 * 
+	 * @param rollValue
+	 *            the combatant's initiative result, probably from
+	 *            {@link #rollInitiative()}
+	 * @return the rolled initiative
+	 */
+	private Integer rollInitiative(Integer rollValue) {
+		setInitRoll(rollValue);
+		newInitMod();
+		setRoundStatus("Rolling");
+		return getInitRoll();
+	}
+
+	/**
+	 * Kills the combatant.
+	 */
+	private void slay() {
+		if (getCurrHP() > 0) {
+			setCurrHP(0);
+		}
+		setTempHP(0);
+		setDeathSaveFailed(3);
+		setReady(false);
+	}
+
+	/**
+	 * Reduces failed death save count by one, to a minimum of 0.
+	 */
+	public void unfailDeathSave() {
+		setDeathSaveFailed(getDeathSaveFailed() - 1);
+		if (getDeathSaveFailed() < 0) {
+			setDeathSaveFailed(0);
+		}
+	}
+
+	/**
 	 * Refreshes stats from/to library.
-	 * @param lib the stat library
-	 * @param updateFromLibrary if true, the stats are refreshed from the library; otherwise, the current stats are written to the library
+	 * 
+	 * @param lib
+	 *            the stat library
+	 * @param updateFromLibrary
+	 *            if true, the stats are refreshed from the library; otherwise,
+	 *            the current stats are written to the library
 	 */
 	public void updateLibrary(StatLibrary lib, Boolean updateFromLibrary) {
 		if (lib.contains(getStats().getHandle())) {
@@ -973,7 +1175,23 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Write Combatant details to the XML stream; calls
+	 * Kills dead combatants and inactive enemies. Sets readiness of inactive
+	 * PCs to false.
+	 */
+	private void updateStatus() {
+		if (!isAlive()) {
+			slay();
+		} else if (!isActive()) {
+			if (!isPC()) {
+				slay();
+			} else {
+				setReady(false);
+			}
+		}
+	}
+
+	/**
+	 * Write combatant details to the XML stream; calls
 	 * {@link Stats#exportXML(XMLStreamWriter)}.
 	 * 
 	 * @param writer
@@ -981,69 +1199,69 @@ public class Combatant implements Comparable<Combatant> {
 	 * @param ongoing
 	 *            indicates an ongoing encounter; writes additional information
 	 *            when true
-	 * @throws XMLStreamException from the writer
+	 * @throws XMLStreamException
+	 *             from the writer
 	 */
-	public void exportXML(XMLStreamWriter writer, Boolean ongoing)
-			throws XMLStreamException {
+	public void exportXML(XMLStreamWriter writer, Boolean ongoing) throws XMLStreamException {
 		writer.writeStartElement("combatant");
-
+	
 		writer.writeStartElement("customname");
 		writer.writeCharacters(getCustomName());
 		writer.writeEndElement();
-
+	
 		writer.writeStartElement("rolemod");
 		writer.writeCharacters(getMod());
 		writer.writeEndElement();
-
-		_stats.exportXML(writer);
-
+	
+		getStats().exportXML(writer);
+	
 		if (ongoing) {
 			writer.writeStartElement("nRound");
 			writer.writeCharacters(getRound().toString());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("nInitRoll");
 			writer.writeCharacters(getInitRoll().toString());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("nRandom3");
 			writer.writeCharacters(getRandom3().toString());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("nFighterNumber");
 			writer.writeCharacters(getFighterNumber().toString());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("sRoundStatus");
 			writer.writeCharacters(getRoundStatus());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("bReady");
 			writer.writeCharacters(isReady().toString());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("bShown");
 			writer.writeCharacters(isShown().toString());
 			writer.writeEndElement();
 		}
-
+	
 		if (isPC() || ongoing) {
 			writer.writeStartElement("nCurrHP");
 			writer.writeCharacters(getCurrHP().toString());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("nDeathSaveFailed");
 			writer.writeCharacters(getDeathSaveFailed().toString());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("nTempHP");
 			writer.writeCharacters(getTempHP().toString());
 			writer.writeEndElement();
-
+	
 			writer.writeStartElement("nSurgesRemaining");
 			writer.writeCharacters(getSurgesLeft().toString());
 			writer.writeEndElement();
-
+	
 			for (String pow : getPowersUsed()) {
 				writer.writeStartElement("PowerUsed");
 				writer.writeCharacters(pow);
@@ -1054,20 +1272,23 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
-	 * Imports from an XML stream into the class; calls {@link Stats#importXML(XMLStreamReader)}.
-	 * @param reader the XMLStreamReader from which to read the data
+	 * Imports from an XML stream into the class; calls
+	 * {@link Stats#importXML(XMLStreamReader)}.
+	 * 
+	 * @param reader
+	 *            the XMLStreamReader from which to read the data
 	 * @return true if successful, false on error
-	 * @throws NumberFormatException from {@link Integer#valueOf(String)}
-	 * @throws XMLStreamException from the reader
+	 * @throws NumberFormatException
+	 *             from {@link Integer#valueOf(String)}
+	 * @throws XMLStreamException
+	 *             from the reader
 	 */
-	public Boolean importXML(XMLStreamReader reader)
-			throws NumberFormatException, XMLStreamException {
+	public Boolean importXML(XMLStreamReader reader) throws NumberFormatException, XMLStreamException {
 		String elementName = "";
-
-		if (reader.isStartElement()
-				&& reader.getName().toString().contentEquals("combatant")) {
+	
+		if (reader.isStartElement() && reader.getName().toString().contentEquals("combatant")) {
 			clearAll();
-
+	
 			while (reader.hasNext()) {
 				reader.next();
 				if (reader.isStartElement()) {
@@ -1117,103 +1338,5 @@ public class Combatant implements Comparable<Combatant> {
 			}
 		}
 		return false;
-	}
-
-	/**
-	 * Returns the armor class defense.
-	 * @return {@link Stats#getAC()}
-	 */
-	public Integer getAC() {
-		return getStats().getAC();
-	}
-
-	/**
-	 * Returns the fortitude defense.
-	 * @return {@link Stats#getFort()}
-	 */
-	public Integer getFort() {
-		return getStats().getFort();
-	}
-
-	/**
-	 * Returns the reflex defense.
-	 * @return {@link Stats#getRef()}
-	 */
-	public Integer getRef() {
-		return getStats().getRef();
-	}
-
-	/**
-	 * Returns the will defense.
-	 * @return {@link Stats#getWill()}
-	 */
-	public Integer getWill() {
-		return getStats().getWill();
-	}
-	
-	/**
-	 * Returns {@link Color#WHITE}.
-	 * @return {@link Color#WHITE}
-	 */
-	public Color getDisplayForeColor() {
-		return Color.WHITE;
-	}
-	
-	/**
-	 * Returns a background color corresponding to the Combatant's state.
-	 * @return black, if dead; gray, if inactive; green, if PC; red, if enemy
-	 */
-	public Color getDisplayBackColor() {
-		if (!isAlive()) {
-			return Colors.DAILY;
-		}
-		if (!isActive()) {
-			return Color.GRAY;
-		}
-		if (isPC()) {
-			return Colors.ATWILL;
-		} else {
-			return Colors.ENCOUNTER;
-		}
-	}
-
-	/**
-	 * Returns {@link Stats#getStatsHTML()} 
-	 * @return {@link Stats#getStatsHTML()}
-	 */
-	public String getStatsHTML() {
-		return getStats().getStatsHTML();
-	}
-
-	/**
-	 * Returns {@link Stats#getPowerList()}.
-	 * @return {@link Stats#getPowerList()}
-	 */
-	public List<Power> getPowerList() {
-		return getStats().getPowerList();
-	}
-
-	/**
-	 * Returns {@link Stats#getSurges()}.
-	 * @return {@link Stats#getSurges()}
-	 */
-	public Integer getSurges() {
-		return getStats().getSurges();
-	}
-
-	/**
-	 * Returns a collection of preset {@link EffectBase}s for this fighter.
-	 * @return the collection
-	 */
-	public Collection<EffectBase> getPresetEffects() {
-		return getStats().getPresetEffects().values();
-	}
-
-	/**
-	 * @see java.lang.Comparable#compareTo(java.lang.Object)
-	 */
-	@Override
-	public int compareTo(Combatant y) {
-		return getInitSequence().compareTo(y.getInitSequence());
 	}
 }

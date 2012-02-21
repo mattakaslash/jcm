@@ -2351,7 +2351,7 @@ public class MainFrame extends JFrame {
 	private void menuOptionsRollsRechargesActionActionPerformed(ActionEvent event) {
 		Boolean value = getMenuOptionsRollsRecharges().isSelected();
 		getFight().setRollPowerRecharge(value);
-		Settings.setUsePowerRecharge(value);
+		Settings.setDoPowerRecharge(value);
 	}
 
 	/**
@@ -2361,7 +2361,7 @@ public class MainFrame extends JFrame {
 	private void menuOptionsRollsSavesActionActionPerformed(ActionEvent event) {
 		Boolean value = getMenuOptionsRollsSaves().isSelected();
 		getFight().setRollEffectSaves(value);
-		Settings.setUseSavingThrows(value);
+		Settings.setDoSavingThrows(value);
 	}
 
 	/**

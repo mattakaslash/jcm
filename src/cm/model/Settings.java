@@ -11,12 +11,25 @@ import java.util.Properties;
 
 /**
  * Application settings.
- * @author matthew.rinehart
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
  */
 public class Settings {
+	/**
+	 * The properties object which stores the application settings.
+	 */
 	private static Properties SETTINGS = new Properties();
+
+	/**
+	 * The file to write the properties to.
+	 */
 	private static String FILENAME = "cm.properties";
-	
+
+	/**
+	 * If no settings have been loaded, initializes settings from defaults and
+	 * the file.
+	 */
 	private static void init() {
 		if (SETTINGS.isEmpty()) {
 			loadDefaults();
@@ -36,6 +49,9 @@ public class Settings {
 		}
 	}
 
+	/**
+	 * Saves the settings to the settings file.
+	 */
 	public static void save() {
 		try {
 			OutputStream out = new FileOutputStream(new File(FILENAME));
@@ -45,9 +61,12 @@ public class Settings {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}		
+		}
 	}
 
+	/**
+	 * Loads default values for the application settings.
+	 */
 	private static void loadDefaults() {
 		SETTINGS.setProperty("doOngoingPopup", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
@@ -56,43 +75,104 @@ public class Settings {
 		SETTINGS.setProperty("workingDirectory", System.getProperty("user.dir"));
 	}
 
+	/**
+	 * Returns an indicator of whether rolls should be modified by role.
+	 * 
+	 * @return true, if rolls should be modified
+	 */
+	// TODO: determine if we even need this
 	public static Boolean useModRoles() {
 		init();
 		return Boolean.valueOf(SETTINGS.getProperty("useModRoles"));
 	}
-	
+
+	/**
+	 * Returns an indicator of whether the application should display a pop-up
+	 * reminder for ongoing damage effects.
+	 * 
+	 * @return true, if a pop-up should be displayed
+	 */
 	public static boolean doPopupForOngoingDamage() {
 		init();
 		return Boolean.valueOf(SETTINGS.getProperty("doOngoingPopup"));
 	}
 
+	/**
+	 * Sets an indicator of whether the application should display a pop-up
+	 * reminder for ongoing damage effects.
+	 * 
+	 * @param value
+	 *            true, if a pop-up should be displayed
+	 */
+	public static void setPopupForOngoingDamage(Boolean value) {
+		SETTINGS.setProperty("doOngoingPopup", value.toString());
+	}
+
+	/**
+	 * Returns an indicator of whether the application should roll power
+	 * recharges automatically.
+	 * 
+	 * @return true, if the application should roll to recharge powers
+	 *         automatically when a creature starts its turn
+	 */
 	public static boolean doPowerRecharge() {
 		init();
 		return Boolean.valueOf(SETTINGS.getProperty("doPowerRecharge"));
 	}
 
+	/**
+	 * Sets an indicator of whether the application should roll power recharges
+	 * automatically.
+	 * 
+	 * @param value
+	 *            true, if the application should roll to recharge powers
+	 *            automatically when a creature starts its turn
+	 */
+	public static void setDoPowerRecharge(Boolean value) {
+		SETTINGS.setProperty("doPowerRecharge", value.toString());
+	}
+
+	/**
+	 * Returns an indicator of whether the application should roll saving throws
+	 * automatically.
+	 * 
+	 * @return true, if the application should roll saving throws automatically
+	 *         at the end of a creature's turn
+	 */
 	public static boolean doSavingThrows() {
 		init();
 		return Boolean.valueOf(SETTINGS.getProperty("doSavingThrows"));
 	}
-	
+
+	/**
+	 * Sets an indicator of whether the application should roll saving throws
+	 * automatically.
+	 * 
+	 * @param value
+	 *            true, if the application should roll saving throws
+	 *            automatically at the end of a creature's turn
+	 */
+	public static void setDoSavingThrows(Boolean value) {
+		SETTINGS.setProperty("doSavingThrows", value.toString());
+	}
+
+	/**
+	 * Returns the last-remembered working directory for a file load/save
+	 * operation.
+	 * 
+	 * @return the working directory
+	 */
 	public static File getWorkingDirectory() {
 		init();
 		return new File(SETTINGS.getProperty("workingDirectory"));
 	}
 
-	public static void setPopupForOngoingDamage(Boolean value) {
-		SETTINGS.setProperty("doOngoingPopup", value.toString());
-	}
-
-	public static void setUsePowerRecharge(Boolean value) {
-		SETTINGS.setProperty("doPowerRecharge", value.toString());
-	}
-
-	public static void setUseSavingThrows(Boolean value) {
-		SETTINGS.setProperty("doSavingThrows", value.toString());
-	}
-	
+	/**
+	 * Store the last-used working directory from a file load/save operation.
+	 * 
+	 * @param directory
+	 *            the working directory
+	 */
 	public static void setWorkingDirectory(File directory) {
 		SETTINGS.setProperty("workingDirectory", directory.getAbsolutePath());
 	}
