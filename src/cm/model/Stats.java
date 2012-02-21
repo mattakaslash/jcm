@@ -236,6 +236,59 @@ public class Stats {
 	}
 
 	/**
+	 * Creates a copy of another statblock.
+	 * @param orig the original {@link Stats}
+	 */
+	public Stats(Stats orig) {
+		setName(orig.getName());
+		setType(orig.getType());
+		setRole(orig.getRole());
+		setRole2(orig.getRole2());
+		setSenses(orig.getSenses());
+		setSpeed(orig.getSpeed());
+		setResistance(orig.getResistance());
+		setImmunity(orig.getImmunity());
+		setVulnerability(orig.getVulnerability());
+		setRegen(orig.getRegen());
+		setAlignment(orig.getAlignment());
+		setSkills(orig.getSkills());
+		setLanguages(orig.getLanguages());
+		setEquipment(orig.getEquipment());
+		setSource(orig.getSource());
+		setFeats(orig.getFeats());
+		setLevel(orig.getLevel());
+		setXP(orig.getXP());
+		setInit(orig.getInit());
+		setMaxHP(orig.getMaxHP());
+		setSaveBonus(orig.getSaveBonus());
+		setActionPoints(orig.getActionPoints());
+		setPowerPoints(orig.getPowerPoints());
+		setSurges(orig.getSurges());
+		setAC(orig.getAC());
+		setFort(orig.getFort());
+		setRef(orig.getRef());
+		setWill(orig.getWill());
+		setStr(orig.getStr());
+		setCon(orig.getCon());
+		setDex(orig.getDex());
+		setInt(orig.getInt());
+		setWis(orig.getWis());
+		setCha(orig.getCha());
+		setLeader(orig.isLeader());
+		setNotesBase(orig.getNotesBase());
+		
+		for (Power p : orig.getPowerList()) {
+			Power pow = new Power(p);
+			getPowerList().add(pow);
+		}
+		
+		for (EffectBase e : orig.getPresetEffects().values()) {
+			EffectBase eff = new EffectBase(e);
+			getPresetEffects().put(eff.getEffectBaseID(), eff);
+		}
+	}
+
+	/**
 	 * Returns armor class.
 	 * 
 	 * @return armor class

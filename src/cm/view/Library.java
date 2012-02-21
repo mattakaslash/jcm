@@ -381,6 +381,12 @@ public class Library extends JDialog {
 			jButtonCopy.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
 			jButtonCopy.setEnabled(false);
 			jButtonCopy.setDefaultCapable(false);
+			jButtonCopy.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent event) {
+					jButtonCopyActionActionPerformed(event);
+				}
+			});
 		}
 		return jButtonCopy;
 	}
@@ -839,15 +845,50 @@ public class Library extends JDialog {
 					getStatLib().get(
 							(String) getJListEntries().getSelectedValue())
 							.getStatsHTML());
+			getJButtonCopy().setEnabled(true);
 			getJButtonEdit().setEnabled(true);
 			getJButtonDelete().setEnabled(true);
 			getJButtonAdd().setEnabled(true);
 		} else {
 			getJEditorPaneStatblock().setText("");
+			getJButtonCopy().setEnabled(false);
 			getJButtonEdit().setEnabled(false);
 			getJButtonDelete().setEnabled(false);
 			getJButtonAdd().setEnabled(false);
 		}
 		getJEditorPaneStatblock().setCaretPosition(0);
+	}
+	
+	/**
+	 * Event: Copy button pressed.
+	 * @param event
+	 */
+	private void jButtonCopyActionActionPerformed(ActionEvent event) {
+		if (getJListEntries().getSelectedIndex() >= 0) {
+			String handle = (String) getJListEntries().getSelectedValue();
+			
+			if (getStatLib().contains(handle)) {
+				Stats stat = new Stats(getStatLib().get(handle));
+				Statblock statblockWin = new Statblock(stat, this);
+				statblockWin.setVisible(true);
+				
+				if (statblockWin.getStat() != null) {
+					String newHandle = statblockWin.getStat().getHandle();
+					if (getStatLib().contains(newHandle)) {
+						int n = JOptionPane.showConfirmDialog(this, handle
+								+ " already exists in the library. Overwrite?");
+						if (n == JOptionPane.YES_OPTION) {
+							getStatLib().add(statblockWin.getStat(), true);
+						}
+					} else {
+						getStatLib().add(statblockWin.getStat());
+					}
+					getJTextFieldName().setText("");
+					resetListFromClass();
+				}
+			statblockWin.dispose();
+			getJListEntries().setSelectedIndex(-1);
+			}
+		}
 	}
 }
