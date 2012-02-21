@@ -1,5 +1,6 @@
 package cm.view.render;
 
+import java.awt.Color;
 import java.awt.Component;
 
 import javax.swing.JList;
@@ -40,6 +41,14 @@ public class PowerDetailsCellRenderer extends JTextArea implements ListCellRende
 		}
 		
 		setText(display);
+		
+		if (isSelected) {
+			setBackground(Color.DARK_GRAY);
+			setForeground(Color.WHITE);
+		} else {
+			setBackground(pow.getBackColor());
+			setForeground(pow.getForeColor());
+		}
 
 		return this;
 	}
