@@ -68,6 +68,7 @@ public class Settings {
 	 * Loads default values for the application settings.
 	 */
 	private static void loadDefaults() {
+		SETTINGS.setProperty("doGroupSimilar", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doOngoingPopup", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doSavingThrows", Boolean.TRUE.toString());
@@ -84,6 +85,28 @@ public class Settings {
 	public static Boolean useModRoles() {
 		init();
 		return Boolean.valueOf(SETTINGS.getProperty("useModRoles"));
+	}
+	
+	/**
+	 * Returns an indicator of whether the application should group similar
+	 * Combatants when rolling initiative.
+	 * 
+	 * @return true, if similar Combatants should be grouped
+	 */
+	public static Boolean doGroupSimilar() {
+		init();
+		return Boolean.valueOf(SETTINGS.getProperty("doGroupSimilar"));
+	}
+
+	/**
+	 * Sets an indicator of whether the application should group similar
+	 * Combatants when rolling initiative.
+	 * 
+	 * @param value
+	 *            true, if similar Combatants should be grouped
+	 */
+	public static void setGroupSimilar(Boolean value) {
+		SETTINGS.setProperty("doGroupSimilar", value.toString());
 	}
 
 	/**
