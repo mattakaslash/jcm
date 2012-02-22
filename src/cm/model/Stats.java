@@ -2457,53 +2457,121 @@ public class Stats {
 						pow.setKeywords(keywords.replaceAll(", $", ""));
 					}
 
-					// power description
+					/* power description */
+					// general description
+					String genDesc = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Description/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						genDesc = node.getNodeValue();
+					}
+					
+					// attack
+					String atkDesc = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/Defense/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						Node n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/@FinalValue", doc, XPathConstants.NODE);
+						atkDesc = node.getNodeValue().replace("Attack", "+" + n.getNodeValue());
+					}
+					
+					// range
+					String rangeDesc = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Range/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						rangeDesc = node.getNodeValue();
+					}
+					
+					// targets
+					String targetsDesc = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Targets/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						targetsDesc = node.getNodeValue();
+					}
+					
+					// hit
+					String hitDesc = "";
+					String hitDamage = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/Description/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						Node n;
+						hitDesc = node.getNodeValue();
+						
+						// damage expression
+						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/Damage/Expression/text()", doc, XPathConstants.NODE);
+						if (n != null) {
+							hitDamage = n.getNodeValue();
+						}
+					}
+					String hit = hitDamage + " " + hitDesc;
+					
+					// miss
+					String missDesc = "";
+					String missDamage = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Miss/Description/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						Node n;
+						missDesc = node.getNodeValue();
+						
+						// damage expression
+						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Miss/Damage/Expression/text()", doc, XPathConstants.NODE);
+						if (n != null) {
+							missDamage = n.getNodeValue();
+						}
+					}
+					String miss = missDamage + " " + missDesc;
+					
+					// effect
+					String effectDesc = "";
+					String effectDamage = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/Description/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						Node n;
+						effectDesc = node.getNodeValue();
+						
+						// damage expression
+						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/Damage/Expression/text()", doc, XPathConstants.NODE);
+						if (n != null) {
+							effectDamage = n.getNodeValue();
+						}
+					}
+					String effect = effectDamage + " " + effectDesc;
+					
+					// compile description
 					String desc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
-							+ "\"]/Attacks/MonsterAttack/Description/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						desc += node.getNodeValue() + "\n";
+					if (!genDesc.isEmpty()) {
+						desc += genDesc + "\n";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Trigger/text()", doc,
-							XPathConstants.NODE);
-					if (node != null) {
-						desc += "Trigger: " + node.getNodeValue() + "\n";
+					
+					String attackLine = "";
+					if (!atkDesc.isEmpty()) {
+						attackLine += "Attack: ";
 					}
-					node = (Node) xpath
-							.evaluate(
-									"/Monster/Powers/MonsterPower[Name=\""
-											+ name
-											+ "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/Defense/ReferencedObject/Name/text()",
-									doc, XPathConstants.NODE);
-					if (node != null) {
-						Node bonus = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
-								+ "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/@FinalValue", doc,
-								XPathConstants.NODE);
-						Node range = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
-								+ "\"]/Attacks/MonsterAttack/Range/text()", doc, XPathConstants.NODE);
-						desc += "Attack: "
-								+ node.getNodeValue().replace("Attack", (range == null ? "Melee 1" : range.getNodeValue()) + "; +" + bonus.getNodeValue()) + "\n";
+					if (!rangeDesc.isEmpty()) {
+						attackLine += rangeDesc;
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
-							+ "\"]/Attacks/MonsterAttack/Hit/Damage/Expression/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						desc += "Hit: " + node.getNodeValue() + " ";
+					if (!targetsDesc.isEmpty()) {
+						attackLine += "(" + targetsDesc + ")";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
-							+ "\"]/Attacks/MonsterAttack/Hit/Description/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						desc += node.getNodeValue() + "\n";
+					if (!attackLine.isEmpty() && !attackLine.contentEquals("Attack: ")) {
+						attackLine += "; " + atkDesc;	
+					} else {
+						attackLine = atkDesc;
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
-							+ "\"]/Attacks/MonsterAttack/Miss/Description/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						desc += "Miss: " + node.getNodeValue() + "\n";
+					if (!attackLine.contentEquals("; ")) {
+						desc += attackLine + "\n";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
-							+ "\"]/Attacks/MonsterAttack/Effect/Description/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						desc += "Effect: " + node.getNodeValue() + "\n";
+					
+					if (!hit.trim().isEmpty()) {
+						desc += "Hit: " + hit.trim() + "\n";
 					}
+					
+					if (!miss.trim().isEmpty()) {
+						desc += "Miss: " + miss.trim() + "\n";
+					}
+					
+					if (!effect.trim().isEmpty()) {
+						desc += "Effect: " + effect.trim() + "\n";
+					}
+					
 					pow.setDesc(desc);
 
 					// add to list
