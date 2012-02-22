@@ -95,6 +95,7 @@ import cm.model.Stats;
 import cm.util.ColumnsAutoSizer;
 import cm.util.DiceBag;
 import cm.util.StatLogger;
+import cm.util.music.Player;
 import cm.view.render.EffectDetailsCellRenderer;
 import cm.view.render.OffTurnPowerRenderer;
 import cm.view.render.PlaylistCellRenderer;
@@ -322,6 +323,13 @@ public class MainFrame extends JFrame {
 		if (jToggleButtonPlay == null) {
 			jToggleButtonPlay = new JToggleButton();
 			jToggleButtonPlay.setText("Play");
+			jToggleButtonPlay.addItemListener(new ItemListener() {
+				
+				@Override
+				public void itemStateChanged(ItemEvent event) {
+					jToggleButtonPlayItemItemStateChanged(event);
+				}
+			});
 		}
 		return jToggleButtonPlay;
 	}
@@ -2586,6 +2594,8 @@ public class MainFrame extends JFrame {
 	private JScrollPane jScrollPaneNowPlaying;
 	private JComboBox jComboBoxPlaylists;
 	private JSeparator jSeparator4;
+	private Player _player;
+	
 	/**
 	 * Returns the tracker's encounter.
 	 * @return the encounter
@@ -3365,5 +3375,26 @@ public class MainFrame extends JFrame {
 			model.addElement(f);
 			loadPlaylists(f);
 		}
+	}
+
+	/**
+	 * Toggles playback of the music player.
+	 * @param event
+	 */
+	private void jToggleButtonPlayItemItemStateChanged(ItemEvent event) {
+		if (event.getStateChange() == ItemEvent.SELECTED) {
+			setPlayer(new Player((File) getJComboBoxPlaylists().getSelectedItem()));
+			getPlayer().play();
+		} else {
+			getPlayer().pause();
+		}
+	}
+
+	private Player getPlayer() {
+		return _player;
+	}
+
+	private void setPlayer(Player player) {
+		_player = player;
 	}
 }
