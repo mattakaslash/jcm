@@ -68,9 +68,11 @@ public class Settings {
 	 * Loads default values for the application settings.
 	 */
 	private static void loadDefaults() {
+		SETTINGS.setProperty("doGroupSimilar", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doOngoingPopup", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doSavingThrows", Boolean.TRUE.toString());
+		SETTINGS.setProperty("musicDirectory", "");
 		SETTINGS.setProperty("useModRoles", Boolean.FALSE.toString());
 		SETTINGS.setProperty("workingDirectory", System.getProperty("user.dir"));
 	}
@@ -84,6 +86,53 @@ public class Settings {
 	public static Boolean useModRoles() {
 		init();
 		return Boolean.valueOf(SETTINGS.getProperty("useModRoles"));
+	}
+	
+	/**
+	 * Returns an indicator of whether the application should group similar
+	 * Combatants when rolling initiative.
+	 * 
+	 * @return true, if similar Combatants should be grouped
+	 */
+	public static Boolean doGroupSimilar() {
+		init();
+		return Boolean.valueOf(SETTINGS.getProperty("doGroupSimilar"));
+	}
+
+	/**
+	 * Sets an indicator of whether the application should group similar
+	 * Combatants when rolling initiative.
+	 * 
+	 * @param value
+	 *            true, if similar Combatants should be grouped
+	 */
+	public static void setGroupSimilar(Boolean value) {
+		SETTINGS.setProperty("doGroupSimilar", value.toString());
+	}
+
+	/**
+	 * Returns the root directory of the music for the music player.
+	 * 
+	 * @return the directory, or null if the setting is invalid
+	 */
+	public static File getMusicDirectory() {
+		init();
+		File f = new File(SETTINGS.getProperty("musicDirectory"));
+		if (f.exists() && f.isDirectory()) {
+			return f;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Sets the root directory of the music for the music player.
+	 * 
+	 * @param directory
+	 *            the directory
+	 */
+	public static void setMusicDirectory(File directory) {
+		SETTINGS.setProperty("musicDirectory", directory.getAbsolutePath());
 	}
 
 	/**

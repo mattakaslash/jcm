@@ -25,11 +25,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JComboBox;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -50,9 +54,9 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
@@ -93,6 +97,7 @@ import cm.util.DiceBag;
 import cm.util.StatLogger;
 import cm.view.render.EffectDetailsCellRenderer;
 import cm.view.render.OffTurnPowerRenderer;
+import cm.view.render.PlaylistCellRenderer;
 import cm.view.render.PowerCellRenderer;
 import cm.view.render.RosterRenderer;
 
@@ -116,12 +121,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuPartyShortRestMilestone;
 	private JMenuItem menuPartyExtendedRest;
 	private JMenuItem menuPartyRemove;
-	private JCheckBoxMenuItem menuOptionsGroup;
-	private JCheckBoxMenuItem menuOptionsRollsSaves;
-	private JCheckBoxMenuItem menuOptionsRollsRecharges;
-	private JMenu menuOptionsRolls;
-	private JCheckBoxMenuItem menuOptionsPopup;
-	private JMenu menuOptions;
+	private JMenu menuWindows;
 	private JMenuItem menuLibraryOpen;
 	private JMenu menuLibrary;
 	private JMenuItem menuHelpAbout;
@@ -188,10 +188,11 @@ public class MainFrame extends JFrame {
 	private JMenuItem jMenuItemLogOA;
 	private JMenuItem jMenuItemMarkUntilEONT;
 	private JMenuItem jMenuItemMarkUntilEOE;
-	private JCheckBoxMenuItem menuOptionsShowMinimalInitDisplay;
-	private JCheckBoxMenuItem menuOptionsShowFullInitDisplay;
+	private JCheckBoxMenuItem menuWindowsMinimalInitDisplay;
+	private JCheckBoxMenuItem menuWindowsFullInitDisplay;
 	private JMenuItem jMenuItemToggleVisibility;
 	private JSplitPane jSplitPaneLeft;
+	private JMenuItem menuWindowsOptions;
 	
 	public MainFrame() {
 		initComponents();
@@ -204,12 +205,12 @@ public class MainFrame extends JFrame {
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
 		addWindowListener(new WindowAdapter() {
 	
-			public void windowClosing(WindowEvent event) {
-				windowWindowClosing(event);
-			}
-	
 			public void windowOpened(WindowEvent event) {
 				windowWindowOpened(event);
+			}
+	
+			public void windowClosing(WindowEvent event) {
+				windowWindowClosing(event);
 			}
 		});
 		addComponentListener(new ComponentAdapter() {
@@ -219,7 +220,46 @@ public class MainFrame extends JFrame {
 			}
 		});
 		setJMenuBar(getMenuBarMain());
-		setSize(786, 605);
+		pack();
+	}
+
+	private JSeparator getJSeparator4() {
+		if (jSeparator4 == null) {
+			jSeparator4 = new JSeparator();
+		}
+		return jSeparator4;
+	}
+
+	private JComboBox getJComboBoxPlaylists() {
+		if (jComboBoxPlaylists == null) {
+			jComboBoxPlaylists = new JComboBox();
+			jComboBoxPlaylists.setDoubleBuffered(false);
+			jComboBoxPlaylists.setBorder(null);
+		}
+		return jComboBoxPlaylists;
+	}
+
+	private JScrollPane getJScrollPaneNowPlaying() {
+		if (jScrollPaneNowPlaying == null) {
+			jScrollPaneNowPlaying = new JScrollPane();
+			jScrollPaneNowPlaying.setBorder(BorderFactory.createTitledBorder(null, "Now Playing", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font(
+					"Dialog", Font.PLAIN, 10), new Color(51, 51, 51)));
+			jScrollPaneNowPlaying.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+			jScrollPaneNowPlaying.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+			jScrollPaneNowPlaying.setViewportView(getJTextAreaNowPlaying());
+		}
+		return jScrollPaneNowPlaying;
+	}
+
+	private JTextArea getJTextAreaNowPlaying() {
+		if (jTextAreaNowPlaying == null) {
+			jTextAreaNowPlaying = new JTextArea();
+			jTextAreaNowPlaying.setFont(new Font("Dialog", Font.BOLD, 12));
+			jTextAreaNowPlaying.setLineWrap(true);
+			jTextAreaNowPlaying.setText("(nothing)");
+			jTextAreaNowPlaying.setWrapStyleWord(true);
+		}
+		return jTextAreaNowPlaying;
 	}
 
 	private JButton getJButtonMiscDaily() {
@@ -276,13 +316,6 @@ public class MainFrame extends JFrame {
 			jPanelCrits.add(getJButtonCritMiss(), new Constraints(new Bilateral(0, 0, 61), new Leading(32, 12, 12)));
 		}
 		return jPanelCrits;
-	}
-
-	private JToolBar getJToolBarMusic() {
-		if (jToolBar0 == null) {
-			jToolBar0 = new JToolBar();
-		}
-		return jToolBar0;
 	}
 
 	private JToggleButton getJToggleButtonPlay() {
@@ -345,9 +378,10 @@ public class MainFrame extends JFrame {
 					Font.BOLD, 12), new Color(51, 51, 51)));
 			jPanelMusic.setLayout(new GroupLayout());
 			jPanelMusic.add(getJToggleButtonPlay(), new Constraints(new Leading(0, 165, 165), new Trailing(29, 84, 12, 12)));
-			jPanelMusic.add(getJToolBarMusic(), new Constraints(new Bilateral(0, 0, 18), new Trailing(0, 23, 144, 144)));
 			jPanelMusic.add(getJPanelCrits(), new Constraints(new Bilateral(64, 88, 71), new Trailing(29, 84, 12, 12)));
 			jPanelMusic.add(getJPanelMisc(), new Constraints(new Trailing(0, 10, 141), new Trailing(29, 84, 12, 12)));
+			jPanelMusic.add(getJScrollPaneNowPlaying(), new Constraints(new Bilateral(0, 0, 22), new Bilateral(0, 119, 22)));
+			jPanelMusic.add(getJComboBoxPlaylists(), new Constraints(new Bilateral(0, 0, 60), new Trailing(0, 170, 165)));
 		}
 		return jPanelMusic;
 	}
@@ -1210,7 +1244,7 @@ public class MainFrame extends JFrame {
 	private JSplitPane getJSplitPaneLeft() {
 		if (jSplitPaneLeft == null) {
 			jSplitPaneLeft = new JSplitPane();
-			jSplitPaneLeft.setDividerLocation(350);
+			jSplitPaneLeft.setDividerLocation(400);
 			jSplitPaneLeft.setDividerSize(0);
 			jSplitPaneLeft.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			jSplitPaneLeft.setResizeWeight(1.0);
@@ -1338,7 +1372,7 @@ public class MainFrame extends JFrame {
 			menuBarMain.add(getMenuFile());
 			menuBarMain.add(getMenuEncounter());
 			menuBarMain.add(getMenuParty());
-			menuBarMain.add(getMenuOptions());
+			menuBarMain.add(getMenuWindows());
 			menuBarMain.add(getMenuLibrary());
 			menuBarMain.add(getMenuHelp());
 		}
@@ -1550,114 +1584,73 @@ public class MainFrame extends JFrame {
 		return menuLibraryOpen;
 	}
 
-	private JMenu getMenuOptions() {
-		if (menuOptions == null) {
-			menuOptions = new JMenu();
-			menuOptions.setText("Options");
-			menuOptions.setMnemonic(KeyEvent.VK_O);
-			menuOptions.setOpaque(false);
-			menuOptions.add(getMenuOptionsGroup());
-			menuOptions.add(getMenuOptionsRolls());
-			menuOptions.add(getMenuOptionsPopup());
-			menuOptions.add(getMenuOptionsShowMinimalInitDisplay());
-			menuOptions.add(getMenuOptionsShowFullInitDisplay());
+	private JMenu getMenuWindows() {
+		if (menuWindows == null) {
+			menuWindows = new JMenu();
+			menuWindows.setMnemonic('W');
+			menuWindows.setText("Windows");
+			menuWindows.setOpaque(false);
+			menuWindows.add(getMenuWindowsMinimalInitDisplay());
+			menuWindows.add(getMenuWindowsFullInitDisplay());
+			menuWindows.add(getJSeparator4());
+			menuWindows.add(getMenuWindowsOptions());
 		}
-		return menuOptions;
+		return menuWindows;
 	}
 
-	private JCheckBoxMenuItem getMenuOptionsGroup() {
-		if (menuOptionsGroup == null) {
-			menuOptionsGroup = new JCheckBoxMenuItem();
-			menuOptionsGroup.setSelected(true);
-			menuOptionsGroup.setText("Group Similar when Rolling");
-		}
-		return menuOptionsGroup;
-	}
-
-	private JCheckBoxMenuItem getMenuOptionsPopup() {
-		if (menuOptionsPopup == null) {
-			menuOptionsPopup = new JCheckBoxMenuItem();
-			menuOptionsPopup.setSelected(true);
-			menuOptionsPopup.setText("Popup for Ongoing Damage");
-			menuOptionsPopup.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					menuOptionsPopupActionActionPerformed(event);
+	private JMenuItem getMenuWindowsOptions() {
+		if (menuWindowsOptions ==  null) {
+			menuWindowsOptions = new JMenuItem("Options");
+			menuWindowsOptions.setAccelerator(KeyStroke.getKeyStroke("alt pressed O"));
+			menuWindowsOptions.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					menuWindowsOptionsActionActionPerformed(e);
 				}
 			});
 		}
-		return menuOptionsPopup;
+		return menuWindowsOptions;
 	}
 
-	private JMenu getMenuOptionsRolls() {
-		if (menuOptionsRolls == null) {
-			menuOptionsRolls = new JMenu();
-			menuOptionsRolls.setText("Automatic Rolls");
-			menuOptionsRolls.setOpaque(false);
-			menuOptionsRolls.add(getMenuOptionsRollsSaves());
-			menuOptionsRolls.add(getMenuOptionsRollsRecharges());
-		}
-		return menuOptionsRolls;
+	private void menuWindowsOptionsActionActionPerformed(ActionEvent event) {
+		Options options = new Options();
+		options.setLocationRelativeTo(this);
+		options.setVisible(true);
+		options.dispose();
+		
+		((DefaultComboBoxModel) getJComboBoxPlaylists().getModel()).removeAllElements();
+		loadPlaylists(Settings.getMusicDirectory());
 	}
 
-	private JCheckBoxMenuItem getMenuOptionsRollsRecharges() {
-		if (menuOptionsRollsRecharges == null) {
-			menuOptionsRollsRecharges = new JCheckBoxMenuItem();
-			menuOptionsRollsRecharges.setSelected(true);
-			menuOptionsRollsRecharges.setText("Recharges");
-			menuOptionsRollsRecharges.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					menuOptionsRollsRechargesActionActionPerformed(event);
-				}
-			});
-		}
-		return menuOptionsRollsRecharges;
-	}
-
-	private JCheckBoxMenuItem getMenuOptionsRollsSaves() {
-		if (menuOptionsRollsSaves == null) {
-			menuOptionsRollsSaves = new JCheckBoxMenuItem();
-			menuOptionsRollsSaves.setSelected(true);
-			menuOptionsRollsSaves.setText("Saves");
-			menuOptionsRollsSaves.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					menuOptionsRollsSavesActionActionPerformed(event);
-				}
-			});
-		}
-		return menuOptionsRollsSaves;
-	}
-
-	private JCheckBoxMenuItem getMenuOptionsShowFullInitDisplay() {
-		if (menuOptionsShowFullInitDisplay == null) {
-			menuOptionsShowFullInitDisplay = new JCheckBoxMenuItem();
-			menuOptionsShowFullInitDisplay.setText("Show Full Init Display");
-			menuOptionsShowFullInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed F"));
-			menuOptionsShowFullInitDisplay.addItemListener(new ItemListener() {
+	private JCheckBoxMenuItem getMenuWindowsFullInitDisplay() {
+		if (menuWindowsFullInitDisplay == null) {
+			menuWindowsFullInitDisplay = new JCheckBoxMenuItem();
+			menuWindowsFullInitDisplay.setText("Show Full Init Display");
+			menuWindowsFullInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed F"));
+			menuWindowsFullInitDisplay.addItemListener(new ItemListener() {
 				
 				public void itemStateChanged(ItemEvent e) {
-					menuOptionsShowFullInitDisplayStateChanged(e);
+					menuWindowsFullInitDisplayStateChanged(e);
 				}
 			});
 		}
-		return menuOptionsShowFullInitDisplay;
+		return menuWindowsFullInitDisplay;
 	}
 
-	private JCheckBoxMenuItem getMenuOptionsShowMinimalInitDisplay() {
-		if (menuOptionsShowMinimalInitDisplay == null) {
-			menuOptionsShowMinimalInitDisplay = new JCheckBoxMenuItem();
-			menuOptionsShowMinimalInitDisplay.setText("Show Minimal Init Display");
-			menuOptionsShowMinimalInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed M"));
-			menuOptionsShowMinimalInitDisplay.addItemListener(new ItemListener() {
-
-				public void itemStateChanged(ItemEvent e) {
-					menuOptionsShowMinimalInitDisplayStateChanged(e);
+	private JCheckBoxMenuItem getMenuWindowsMinimalInitDisplay() {
+		if (menuWindowsMinimalInitDisplay == null) {
+			menuWindowsMinimalInitDisplay = new JCheckBoxMenuItem();
+			menuWindowsMinimalInitDisplay.setText("Minimal Init Display");
+			menuWindowsMinimalInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed M"));
+			menuWindowsMinimalInitDisplay.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					menuWindowsMinimalInitDisplayStateChanged(event);
 				}
 			});
 		}
-		return menuOptionsShowMinimalInitDisplay;
+		return menuWindowsMinimalInitDisplay;
 	}
 
 	private JMenu getMenuParty() {
@@ -2339,7 +2332,7 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void menuEncounterInitiativeActionActionPerformed(ActionEvent event) {
-		getFight().startFight(getMenuOptionsGroup().isSelected());
+		getFight().startFight(Settings.doGroupSimilar());
 		getJTabbedPaneUtils().setSelectedIndex(1);
 		updateFromClass();
 	}
@@ -2425,41 +2418,12 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Event: Menu, Options, Popup for Ongoing Damage clicked.
-	 * @param event
-	 */
-	private void menuOptionsPopupActionActionPerformed(ActionEvent event) {
-		getFight().setOngoingPopup(getMenuOptionsPopup().isSelected());
-		Settings.setPopupForOngoingDamage(getMenuOptionsPopup().isSelected());
-	}
-
-	/**
-	 * Event: Menu, Options, Automatic Rolls, Recharges.
-	 * @param event
-	 */
-	private void menuOptionsRollsRechargesActionActionPerformed(ActionEvent event) {
-		Boolean value = getMenuOptionsRollsRecharges().isSelected();
-		getFight().setRollPowerRecharge(value);
-		Settings.setDoPowerRecharge(value);
-	}
-
-	/**
-	 * Event: Menu, Options, Automatic Rolls, Saves.
-	 * @param event
-	 */
-	private void menuOptionsRollsSavesActionActionPerformed(ActionEvent event) {
-		Boolean value = getMenuOptionsRollsSaves().isSelected();
-		getFight().setRollEffectSaves(value);
-		Settings.setDoSavingThrows(value);
-	}
-
-	/**
 	 * Event: Menu, Options, Show Full Init Display (un)checked.
 	 * @param event
 	 */
-	private void menuOptionsShowFullInitDisplayStateChanged(ItemEvent event) {
+	private void menuWindowsFullInitDisplayStateChanged(ItemEvent event) {
 		if (event.getStateChange() == ItemEvent.SELECTED) {
-			getMenuOptionsShowMinimalInitDisplay().setSelected(false);
+			getMenuWindowsMinimalInitDisplay().setSelected(false);
 			getInitDisplay().dispose();
 			setFullInit(true);
 			GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -2481,9 +2445,9 @@ public class MainFrame extends JFrame {
 	 * Event: Menu, Options, Show Minimal Init Display clicked.
 	 * @param event
 	 */
-	private void menuOptionsShowMinimalInitDisplayStateChanged(ItemEvent event) {
+	private void menuWindowsMinimalInitDisplayStateChanged(ItemEvent event) {
 		if (event.getStateChange() == ItemEvent.SELECTED) {
-			getMenuOptionsShowFullInitDisplay().setSelected(false);
+			getMenuWindowsFullInitDisplay().setSelected(false);
 			getInitDisplay().dispose();
 			setFullInit(false);
 			GraphicsEnvironment gc = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -2588,13 +2552,12 @@ public class MainFrame extends JFrame {
 		}
 		
 		setFight(new Encounter(getStatlib(), Settings.useModRoles(), this));
-		
-		//statDataClear();
-		
-		getMenuOptionsRollsRecharges().setSelected(Settings.doPowerRecharge());
-		getMenuOptionsRollsSaves().setSelected(Settings.doSavingThrows());
 	
 	    updateEnabledControls();
+	    
+	    // populate music playlists
+		((DefaultComboBoxModel) getJComboBoxPlaylists().getModel()).removeAllElements();
+	    loadPlaylists(Settings.getMusicDirectory());
 	}
 
 	private Encounter _fight;
@@ -2613,13 +2576,16 @@ public class MainFrame extends JFrame {
 	private JPanel jPanelSurges;
 	private JPanel jPanelEffectButtons;
 	private JToggleButton jToggleButtonPlay;
-	private JToolBar jToolBar0;
 	private JPanel jPanelCrits;
 	private JButton jButtonCritMiss;
 	private JButton jButtonCritHit;
 	private JPanel jPanelMisc;
 	private JButton jButtonMiscVictory;
 	private JButton jButtonMiscDaily;
+	private JTextArea jTextAreaNowPlaying;
+	private JScrollPane jScrollPaneNowPlaying;
+	private JComboBox jComboBoxPlaylists;
+	private JSeparator jSeparator4;
 	/**
 	 * Returns the tracker's encounter.
 	 * @return the encounter
@@ -2646,8 +2612,8 @@ public class MainFrame extends JFrame {
 			_initDisplay.addWindowListener(new WindowAdapter() {
 
 				public void windowClosing(WindowEvent e) {
-					getMenuOptionsShowMinimalInitDisplay().setSelected(false);
-					getMenuOptionsShowFullInitDisplay().setSelected(false);
+					getMenuWindowsMinimalInitDisplay().setSelected(false);
+					getMenuWindowsFullInitDisplay().setSelected(false);
 				}
 			});
 		}
@@ -3141,8 +3107,8 @@ public class MainFrame extends JFrame {
 		getMenuEncounterEnd().setEnabled(false);
 		getMenuEncounterInitiative().setEnabled(false);
 		getMenuEncounterRemoveMonsters().setEnabled(false);
-		getMenuOptionsShowMinimalInitDisplay().setEnabled(false);
-		getMenuOptionsShowFullInitDisplay().setEnabled(false);
+		getMenuWindowsMinimalInitDisplay().setEnabled(false);
+		getMenuWindowsFullInitDisplay().setEnabled(false);
 		getMenuPartyShortRest().setEnabled(false);
 		getMenuPartyShortRestMilestone().setEnabled(false);
 		getMenuPartyExtendedRest().setEnabled(false);
@@ -3166,8 +3132,8 @@ public class MainFrame extends JFrame {
 			} else {
 				if (getFight().getRolledList().size() > 0) {
 					getMenuEncounterEnd().setEnabled(true);
-					getMenuOptionsShowMinimalInitDisplay().setEnabled(true);
-					getMenuOptionsShowFullInitDisplay().setEnabled(true);
+					getMenuWindowsMinimalInitDisplay().setEnabled(true);
+					getMenuWindowsFullInitDisplay().setEnabled(true);
 					getJButtonNextTurn().setEnabled(true);
 				}
 			}
@@ -3368,5 +3334,36 @@ public class MainFrame extends JFrame {
 	 */
 	private void componentComponentResized(ComponentEvent event) {
 		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
+	}
+
+	/**
+	 * Recursively populates the playlist combo box with available music
+	 * directories.
+	 * 
+	 * @param dir
+	 *            the directory to search
+	 */
+	private void loadPlaylists(File dir) {
+		if (dir == null || !dir.isDirectory()) {
+			return;
+		}
+		getJComboBoxPlaylists().setRenderer(new PlaylistCellRenderer());
+		DefaultComboBoxModel model = (DefaultComboBoxModel) getJComboBoxPlaylists().getModel();
+		java.io.FileFilter dirFilter = new java.io.FileFilter() {
+			public boolean accept(File f) {
+				return f.isDirectory();
+			}
+		};
+		
+		SortedSet<File> files = new TreeSet<File>();
+		
+		for (File f : dir.listFiles(dirFilter)) {
+			files.add(f);
+		}
+		
+		for (File f : files.toArray(new File[0])) {
+			model.addElement(f);
+			loadPlaylists(f);
+		}
 	}
 }
