@@ -68,12 +68,16 @@ public class Settings {
 	 * Loads default values for the application settings.
 	 */
 	private static void loadDefaults() {
+		SETTINGS.setProperty("criticalHitSong", "");
+		SETTINGS.setProperty("criticalMissSong", "");
+		SETTINGS.setProperty("dailySong", "");
 		SETTINGS.setProperty("doGroupSimilar", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doOngoingPopup", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doSavingThrows", Boolean.TRUE.toString());
 		SETTINGS.setProperty("musicDirectory", "");
 		SETTINGS.setProperty("useModRoles", Boolean.FALSE.toString());
+		SETTINGS.setProperty("victorySong", "");
 		SETTINGS.setProperty("workingDirectory", System.getProperty("user.dir"));
 	}
 
@@ -87,7 +91,94 @@ public class Settings {
 		init();
 		return Boolean.valueOf(SETTINGS.getProperty("useModRoles"));
 	}
-	
+
+	/**
+	 * Returns the critical hit song.
+	 * 
+	 * @return the critical hit song file
+	 */
+	public static File getCriticalHitSong() {
+		init();
+		File f = new File(SETTINGS.getProperty("criticalHitSong"));
+		if (f.exists() && f.canRead()) {
+			return f;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Sets the critical hit song.
+	 * 
+	 * @param file
+	 *            the critical hit song file
+	 */
+	public static void setCriticalHitSong(File file) {
+		if (file.getPath().isEmpty()) {
+			SETTINGS.setProperty("criticalHitSong", "");
+		} else {
+			SETTINGS.setProperty("criticalHitSong", file.getAbsolutePath());
+		}
+	}
+
+	/**
+	 * Returns the critical miss song.
+	 * 
+	 * @return the critical miss song file
+	 */
+	public static File getCriticalMissSong() {
+		init();
+		File f = new File(SETTINGS.getProperty("criticalMissSong"));
+		if (f.exists() && f.canRead()) {
+			return f;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Sets the critical miss song.
+	 * 
+	 * @param file
+	 *            the critical miss song file
+	 */
+	public static void setCriticalMissSong(File file) {
+		if (file.getPath().isEmpty()) {
+			SETTINGS.setProperty("criticalMissSong", "");
+		} else {
+			SETTINGS.setProperty("criticalMissSong", file.getAbsolutePath());
+		}
+	}
+
+	/**
+	 * Returns the daily song.
+	 * 
+	 * @return the daily song file
+	 */
+	public static File getDailySong() {
+		init();
+		File f = new File(SETTINGS.getProperty("dailySong"));
+		if (f.exists() && f.canRead()) {
+			return f;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Sets the daily song.
+	 * 
+	 * @param file
+	 *            the daily song file
+	 */
+	public static void setDailySong(File file) {
+		if (file.getPath().isEmpty()) {
+			SETTINGS.setProperty("dailySong", "");
+		} else {
+			SETTINGS.setProperty("dailySong", file.getAbsolutePath());
+		}
+	}
+
 	/**
 	 * Returns an indicator of whether the application should group similar
 	 * Combatants when rolling initiative.
@@ -132,7 +223,11 @@ public class Settings {
 	 *            the directory
 	 */
 	public static void setMusicDirectory(File directory) {
-		SETTINGS.setProperty("musicDirectory", directory.getAbsolutePath());
+		if (directory.getPath().isEmpty()) {
+			SETTINGS.setProperty("musicDirectory", "");
+		} else {
+			SETTINGS.setProperty("musicDirectory", directory.getAbsolutePath());
+		}
 	}
 
 	/**
@@ -203,6 +298,35 @@ public class Settings {
 	 */
 	public static void setDoSavingThrows(Boolean value) {
 		SETTINGS.setProperty("doSavingThrows", value.toString());
+	}
+
+	/**
+	 * Returns the victory song.
+	 * 
+	 * @return the victory song file
+	 */
+	public static File getVictorySong() {
+		init();
+		File f = new File(SETTINGS.getProperty("victorySong"));
+		if (f.exists() && f.canRead()) {
+			return f;
+		} else {
+			return null;
+		}
+	}
+
+	/**
+	 * Sets the victory song.
+	 * 
+	 * @param file
+	 *            the victory song file
+	 */
+	public static void setVictorySong(File file) {
+		if (file.getPath().isEmpty()) {
+			SETTINGS.setProperty("victorySong", "");
+		} else {
+			SETTINGS.setProperty("victorySong", file.getAbsolutePath());
+		}
 	}
 
 	/**
