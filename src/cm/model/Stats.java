@@ -2158,7 +2158,7 @@ public class Stats {
 
 				// role 2 (group role)
 				node = (Node) xpath.evaluate("/Monster/GroupRole/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
-				setRole2(node.getNodeValue());
+				setRole2(node.getNodeValue().replace("Standard", ""));
 
 				// leader
 				node = (Node) xpath.evaluate("/Monster/IsLeader/text()", doc, XPathConstants.NODE);
@@ -2452,7 +2452,7 @@ public class Stats {
 							+ "\"]/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
 					if (nl != null) {
 						for (int j = 0; j < nl.getLength(); j++) {
-							keywords += nl.item(j).getNodeValue().toLowerCase() + ", ";
+							keywords += nl.item(j).getNodeValue() + ", ";
 						}
 						pow.setKeywords(keywords.replaceAll(", $", ""));
 					}
@@ -2463,6 +2463,13 @@ public class Stats {
 					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Description/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						genDesc = node.getNodeValue();
+					}
+					
+					// trigger
+					String triggerDesc = "";
+					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Trigger/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						triggerDesc = node.getNodeValue().substring(0, 1).toUpperCase() + node.getNodeValue().substring(1);
 					}
 					
 					// attack
@@ -2490,6 +2497,7 @@ public class Stats {
 					// hit
 					String hitDesc = "";
 					String hitDamage = "";
+					String hitFailedSave = "";
 					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/Description/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						Node n;
@@ -2500,8 +2508,17 @@ public class Stats {
 						if (n != null) {
 							hitDamage = n.getNodeValue();
 						}
+						
+						// failed saving throws
+						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/FailedSavingThrows/MonsterAttackEntry/Description/text()", doc, XPathConstants.NODE);
+						if (n != null) {
+							hitFailedSave = n.getNodeValue();
+						}
 					}
 					String hit = hitDamage + " " + hitDesc;
+					if (!hitFailedSave.isEmpty()) {
+						hit += " Failed Saving Throw: " + hitFailedSave;
+					}
 					
 					// miss
 					String missDesc = "";
@@ -2522,6 +2539,7 @@ public class Stats {
 					// effect
 					String effectDesc = "";
 					String effectDamage = "";
+					String effectFailedSave = "";
 					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/Description/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						Node n;
@@ -2532,8 +2550,17 @@ public class Stats {
 						if (n != null) {
 							effectDamage = n.getNodeValue();
 						}
+						
+						// failed saving throws
+						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/FailedSavingThrows/MonsterAttackEntry/Description/text()", doc, XPathConstants.NODE);
+						if (n != null) {
+							hitFailedSave = n.getNodeValue();
+						}
 					}
 					String effect = effectDamage + " " + effectDesc;
+					if (!effectFailedSave.isEmpty()) {
+						effect += " Failed Saving Throw: " + effectFailedSave;
+					}
 					
 					// compile description
 					String desc = "";
@@ -2541,22 +2568,26 @@ public class Stats {
 						desc += genDesc + "\n";
 					}
 					
+					if (!triggerDesc.isEmpty()) {
+						desc += "Trigger: " + triggerDesc + "\n";
+					}
+					
 					String attackLine = "";
 					if (!atkDesc.isEmpty()) {
 						attackLine += "Attack: ";
 					}
-					if (!rangeDesc.isEmpty()) {
-						attackLine += rangeDesc;
-					}
 					if (!targetsDesc.isEmpty()) {
-						attackLine += "(" + targetsDesc + ")";
+						rangeDesc += " (" + targetsDesc + ")";
+					}
+					if (!attackLine.isEmpty()) {
+						attackLine += rangeDesc;
 					}
 					if (!attackLine.isEmpty() && !attackLine.contentEquals("Attack: ")) {
 						attackLine += "; " + atkDesc;	
 					} else {
-						attackLine = atkDesc;
+						attackLine += atkDesc;
 					}
-					if (!attackLine.contentEquals("; ")) {
+					if (!attackLine.contentEquals("; ") && !attackLine.isEmpty()) {
 						desc += attackLine + "\n";
 					}
 					
@@ -2569,7 +2600,11 @@ public class Stats {
 					}
 					
 					if (!effect.trim().isEmpty()) {
-						desc += "Effect: " + effect.trim() + "\n";
+						desc += "Effect: ";
+						if (attackLine.isEmpty() && !rangeDesc.isEmpty()) {
+							desc += rangeDesc.substring(0, 1).toUpperCase() + rangeDesc.substring(1) + ". ";
+						}
+						desc += effect.trim() + "\n";
 					}
 					
 					pow.setDesc(desc);
@@ -2612,7 +2647,7 @@ public class Stats {
 					if (node != null) {
 						desc += node.getNodeValue() + "\n";
 					}
-					pow.setDesc(desc);
+					pow.setDesc(desc.substring(0, 1).toUpperCase() + desc.substring(1));
 
 					// add to list
 					getPowerList().add(pow);
