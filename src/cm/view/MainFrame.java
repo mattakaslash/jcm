@@ -96,7 +96,6 @@ import cm.util.ColumnsAutoSizer;
 import cm.util.DiceBag;
 import cm.util.StatLogger;
 import cm.util.music.Player;
-import cm.util.music.PlayerListener;
 import cm.view.render.EffectDetailsCellRenderer;
 import cm.view.render.OffTurnPowerRenderer;
 import cm.view.render.PlaylistCellRenderer;
@@ -300,12 +299,7 @@ public class MainFrame extends JFrame {
 
 	private void jButtonMiscVictoryActionActionPerformed() {
 		if (Settings.getVictorySong() != null) {
-			getPlayer().setListener(new PlayerListener() {
-				
-				public void playerStopped() {
-					getJToggleButtonPlay().setSelected(false);
-				}
-			});
+			getJToggleButtonPlay().setSelected(false);
 			getPlayer().playOnce(Settings.getVictorySong(), false);
 		}
 	}
