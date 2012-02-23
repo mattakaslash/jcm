@@ -11,16 +11,28 @@ import cm.model.Combatant;
 import cm.model.Power;
 import cm.util.Colors;
 
+/**
+ * Defines a JList cell renderer for a {@link Power}.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
 public class PowerCellRenderer extends JLabel implements ListCellRenderer {
 	/**
-	 * 
+	 * Generated.
 	 */
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 13349837299893871L;
+
+	/**
+	 * The {@link Combatant} whose power is to be rendered.
+	 */
 	private Combatant _fighter;
 
 	/**
 	 * Creates a new cell renderer.
-	 * @param fighter the {@link Combatant} whose powers these are
+	 * 
+	 * @param fighter
+	 *            the {@link Combatant} whose powers these are
 	 */
 	public PowerCellRenderer(Combatant fighter) {
 		setFighter(fighter);
@@ -29,6 +41,7 @@ public class PowerCellRenderer extends JLabel implements ListCellRenderer {
 
 	/**
 	 * Returns the fighter.
+	 * 
 	 * @return the fighter
 	 */
 	private Combatant getFighter() {
@@ -37,18 +50,19 @@ public class PowerCellRenderer extends JLabel implements ListCellRenderer {
 
 	/**
 	 * Sets the fighter.
-	 * @param fighter the fighter to set
+	 * 
+	 * @param fighter
+	 *            the fighter to set
 	 */
 	private void setFighter(Combatant fighter) {
 		_fighter = fighter;
 	}
 
 	@Override
-	public Component getListCellRendererComponent(JList list, Object value,
-			int index, boolean isSelected, boolean cellHasValue) {
+	public Component getListCellRendererComponent(JList list, Object value, int index, boolean isSelected, boolean cellHasValue) {
 		Power pow = (Power) value;
 		setText(pow.getName() + pow.getActionLine());
-		
+
 		if (getFighter().isPowerUsed(pow.getName())) {
 			setForeground(Colors.DAILY);
 			setBackground(Color.WHITE);
@@ -57,12 +71,11 @@ public class PowerCellRenderer extends JLabel implements ListCellRenderer {
 			setForeground(pow.getForeColor());
 			setBackground(pow.getBackColor());
 		}
-		
+
 		if (isSelected) {
 			setBackground(Color.BLACK);
 		}
-		
+
 		return this;
 	}
-
 }
