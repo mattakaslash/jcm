@@ -2558,12 +2558,12 @@ public class Stats {
 	}
 
 	/**
-	 * Returns a parsed power description string.
+	 * Returns a parsed power attack.
 	 * @param xpath the XPath to use for queries
 	 * @param doc the document against which to query
 	 * @param base the base XML path queries are executed under
-	 * @return the parsed power description string
-	 * @throws XPathExpressionException from the xpath
+	 * @return the parsed power attack
+	 * @throws XPathExpressionException from the XPath
 	 */
 	private String parseMonsterAttack(XPath xpath, Document doc, String base) throws XPathExpressionException {
 		Node n;
@@ -2639,6 +2639,14 @@ public class Stats {
 		return desc.trim();
 	}
 	
+	/**
+	 * Returns a parsed power effect.
+	 * @param xpath the XPath to use for queries
+	 * @param doc the document against which to query
+	 * @param base the base XML path queries are executed under
+	 * @return the parsed power effect
+	 * @throws XPathExpressionException from the XPath
+	 */
 	private String parseMonsterEffect(XPath xpath, Document doc, String base) throws XPathExpressionException {
 		String aftereffect = "";
 		String sustain = "";
