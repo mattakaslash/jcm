@@ -61,7 +61,7 @@ import cm.model.EffectBase.Duration;
 import cm.model.Power;
 import cm.model.Settings;
 import cm.model.Stats;
-import cm.util.AutoCompletion;
+import cm.util.external.AutoCompletion;
 import cm.view.render.EffectBaseCellRenderer;
 import cm.view.render.PowerDetailsCellRenderer;
 

@@ -1,4 +1,4 @@
-package cm.util;
+package cm.util.external;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;

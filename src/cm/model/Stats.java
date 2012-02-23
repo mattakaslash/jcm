@@ -27,7 +27,7 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import cm.util.RTFManip;
+import cm.util.DnD4eRules;
 
 import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
 
@@ -1148,12 +1148,12 @@ public class Stats {
 		}
 
 		if (getStr() > 0) {
-			value += "<tr><td class='indmed'><b>Str</b> " + RTFManip.statBonus(getStr()) + "</td>";
-			value += "<td class='indmed'><b>Dex</b> " + RTFManip.statBonus(getDex()) + "</td>";
-			value += "<td class='indmed'><b>Wis</b> " + RTFManip.statBonus(getWis()) + "</td></tr>";
-			value += "<tr><td class='indmed'><b>Con</b> " + RTFManip.statBonus(getCon()) + "</td>";
-			value += "<td class='indmed'><b>Int</b> " + RTFManip.statBonus(getInt()) + "</td>";
-			value += "<td class='indmed'><b>Cha</b> " + RTFManip.statBonus(getCha()) + "</td></tr>";
+			value += "<tr><td class='indmed'><b>Str</b> " + DnD4eRules.statBonus(getStr()) + "</td>";
+			value += "<td class='indmed'><b>Dex</b> " + DnD4eRules.statBonus(getDex()) + "</td>";
+			value += "<td class='indmed'><b>Wis</b> " + DnD4eRules.statBonus(getWis()) + "</td></tr>";
+			value += "<tr><td class='indmed'><b>Con</b> " + DnD4eRules.statBonus(getCon()) + "</td>";
+			value += "<td class='indmed'><b>Int</b> " + DnD4eRules.statBonus(getInt()) + "</td>";
+			value += "<td class='indmed'><b>Cha</b> " + DnD4eRules.statBonus(getCha()) + "</td></tr>";
 		}
 
 		value += "</table></div>";
@@ -1819,7 +1819,7 @@ public class Stats {
 								if (!skillTemp.isEmpty()) {
 									skillTemp += "; ";
 								}
-								skillTemp += skillName + " " + RTFManip.integerFormatForPlus(skillList.get(skillName));
+								skillTemp += skillName + " " + DnD4eRules.integerFormatForPlus(skillList.get(skillName));
 							}
 							setSkills(skillTemp);
 						}
