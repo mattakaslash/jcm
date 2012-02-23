@@ -12,6 +12,7 @@ public class Player {
 	private File _dir;
 	private File _file;
 	private SoundJLayer _player;
+	private PlayerListener _listener; 
 
 	public Player(File dir) {
 		setDir(dir);
@@ -31,6 +32,14 @@ public class Player {
 
 	private void setFile(File file) {
 		_file = file;
+	}
+
+	public PlayerListener getListener() {
+		return _listener;
+	}
+
+	public void setListener(PlayerListener listener) {
+		_listener = listener;
 	}
 
 	private SoundJLayer getPlayer() {
@@ -70,6 +79,8 @@ public class Player {
 			public void playbackFinished(PlaybackEvent event) {
 				if (resume) {
 					pause();
+				} else if (getListener() != null){
+					getListener().playerStopped();
 				}
 			}
 		});

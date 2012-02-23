@@ -96,6 +96,7 @@ import cm.util.ColumnsAutoSizer;
 import cm.util.DiceBag;
 import cm.util.StatLogger;
 import cm.util.music.Player;
+import cm.util.music.PlayerListener;
 import cm.view.render.EffectDetailsCellRenderer;
 import cm.view.render.OffTurnPowerRenderer;
 import cm.view.render.PlaylistCellRenderer;
@@ -267,16 +268,46 @@ public class MainFrame extends JFrame {
 		if (jButtonMiscDaily == null) {
 			jButtonMiscDaily = new JButton();
 			jButtonMiscDaily.setText("Daily");
+			jButtonCritHit.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent event) {
+					jButtonMiscDailyActionActionPerformed();
+				}
+			});
 		}
 		return jButtonMiscDaily;
+	}
+
+	private void jButtonMiscDailyActionActionPerformed() {
+		if (Settings.getDailySong() != null) {
+			getPlayer().playOnce(Settings.getDailySong(), true);
+		}
 	}
 
 	private JButton getJButtonMiscVictory() {
 		if (jButtonMiscVictory == null) {
 			jButtonMiscVictory = new JButton();
 			jButtonMiscVictory.setText("Victory");
+			jButtonCritHit.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent event) {
+					jButtonMiscVictoryActionActionPerformed();
+				}
+			});
 		}
 		return jButtonMiscVictory;
+	}
+
+	private void jButtonMiscVictoryActionActionPerformed() {
+		if (Settings.getVictorySong() != null) {
+			getPlayer().setListener(new PlayerListener() {
+				
+				public void playerStopped() {
+					getJToggleButtonPlay().setSelected(false);
+				}
+			});
+			getPlayer().playOnce(Settings.getVictorySong(), false);
+		}
 	}
 
 	private JPanel getJPanelMisc() {
@@ -295,16 +326,40 @@ public class MainFrame extends JFrame {
 		if (jButtonCritHit == null) {
 			jButtonCritHit = new JButton();
 			jButtonCritHit.setText("Hit");
+			jButtonCritHit.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent event) {
+					jButtonCritHitActionActionPerformed();
+				}
+			});
 		}
 		return jButtonCritHit;
+	}
+
+	private void jButtonCritHitActionActionPerformed() {
+		if (Settings.getCriticalHitSong() != null) {
+			getPlayer().playOnce(Settings.getCriticalHitSong(), true);
+		}
 	}
 
 	private JButton getJButtonCritMiss() {
 		if (jButtonCritMiss == null) {
 			jButtonCritMiss = new JButton();
 			jButtonCritMiss.setText("Miss");
+			jButtonCritHit.addActionListener(new ActionListener() {
+				
+				public void actionPerformed(ActionEvent event) {
+					jButtonCritMissActionActionPerformed();
+				}
+			});
 		}
 		return jButtonCritMiss;
+	}
+
+	private void jButtonCritMissActionActionPerformed() {
+		if (Settings.getCriticalMissSong() != null) {
+			getPlayer().playOnce(Settings.getCriticalMissSong(), true);
+		}
 	}
 
 	private JPanel getJPanelCrits() {
