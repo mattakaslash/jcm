@@ -1591,8 +1591,6 @@ public class Encounter {
 	 * @param filename
 	 *            the filename to save to
 	 * @return true on success
-	 * @throws IOException
-	 *             from the file channels
 	 */
 	public Boolean saveToFile(String filename) {
 		String tmpFilename = filename + ".tmp";
