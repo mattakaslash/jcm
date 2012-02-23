@@ -11,7 +11,6 @@ import cm.model.Combatant;
 import cm.model.Encounter;
 import cm.model.FighterPower;
 import cm.model.Power;
-import cm.util.Colors;
 
 /**
  * Defines a JList cell renderer for a {@link Power}. It's used to format the
