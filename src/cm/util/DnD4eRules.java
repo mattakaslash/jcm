@@ -1,31 +1,38 @@
 package cm.util;
 
 /**
- * Codifies several rules of Dungeons & Dragons 4th Edition
- * @author matthew.rinehart
+ * Codifies several rules of Dungeons & Dragons 4th Edition.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
  */
 public class DnD4eRules {
 	/**
-	 * Calculates the stat bonus from a given stat
-	 * @param input the ability score
+	 * Calculates the stat bonus from a given stat.
+	 * 
+	 * @param input
+	 *            the ability score
 	 * @return the stat bonus
 	 */
 	public static Integer calcStatBonus(Integer input) {
 		Integer output = input - 10;
-		
+
 		if (output < 0) {
 			output = (output - 1) / 2;
 		} else {
 			output = output / 2;
 		}
-		
+
 		return output;
 	}
-	
+
 	/**
-	 * Calculates the encounter level based on party size and experience value
-	 * @param partySize party size
-	 * @param xpBudget experience value
+	 * Calculates the encounter level based on party size and experience value.
+	 * 
+	 * @param partySize
+	 *            party size
+	 * @param xpBudget
+	 *            experience value
 	 * @return encounter level
 	 */
 	public static Integer encounterLevel(Integer partySize, Integer xpBudget) {
@@ -129,5 +136,43 @@ public class DnD4eRules {
 		} else {
 			return 40;
 		}
+	}
+
+	/**
+	 * Formats the provided integer to include sign, regardless of value.
+	 * 
+	 * @param input
+	 *            the integer
+	 * @return the signed-integer
+	 */
+	private static String integerFormatForPlus(Integer input) {
+		if (input < 0) {
+			return input.toString();
+		}
+		return "+" + input;
+	}
+
+	/**
+	 * Formats the integer in the provided string to include sign, regardless of
+	 * value.
+	 * 
+	 * @param input
+	 *            the string
+	 * @return the signed-integer
+	 */
+	public static String integerFormatForPlus(String input) {
+		return integerFormatForPlus(Integer.valueOf(input));
+	}
+
+	/**
+	 * Formats the provided integer as a DnD 4e stat with bonus.
+	 * 
+	 * @param input
+	 *            the stat
+	 * @return the stat with stat bonus included
+	 */
+	public static String statBonus(Integer input) {
+		Integer num = calcStatBonus(input);
+		return input + " (" + integerFormatForPlus(num) + ")";
 	}
 }

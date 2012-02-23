@@ -37,7 +37,7 @@ import cm.model.Effect;
 import cm.model.EffectBase;
 import cm.model.EffectBase.Duration;
 import cm.model.Encounter;
-import cm.util.AutoCompletion;
+import cm.util.external.AutoCompletion;
 import cm.view.render.DurationCellRenderer;
 import cm.view.render.EffectBaseCellRenderer;
 

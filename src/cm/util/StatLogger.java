@@ -5,6 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+/**
+ * Provides statistics logging capabilities.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
 public class StatLogger {
 	/**
 	 * Output log.
@@ -42,11 +48,9 @@ public class StatLogger {
 	 * @param amount
 	 *            amount of damage (negative values indicate healing)
 	 */
-	public static void logDamage(Integer round, String source, String target,
-			Integer amount) {
+	public static void logDamage(Integer round, String source, String target, Integer amount) {
 		init();
-		String message = round + "," + source + "," + target + "," + amount
-				+ "\r\n";
+		String message = round + "," + source + "," + target + "," + amount + "\r\n";
 		try {
 			LOG.write(message.getBytes());
 		} catch (IOException e) {
