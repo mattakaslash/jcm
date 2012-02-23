@@ -1392,6 +1392,10 @@ public class Encounter {
 		}
 	}
 
+	/**
+	 * Returns the size of the encounter roster.
+	 * @return {@link #getRoster()}.size()
+	 */
 	public Integer size() {
 		return getRoster().size();
 	}

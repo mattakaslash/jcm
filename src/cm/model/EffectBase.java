@@ -34,10 +34,46 @@ public class EffectBase implements Comparable<EffectBase> {
 	 * @since 1.0
 	 */
 	public enum Duration {
-		None("None", "None"), SaveEnds("Save Ends", "SE"), TargetStart("Start of Target's Next Turn", "SOT Target"), TargetEnd(
-				"End of Target's Next Turn", "EOT Target"), SourceStart("Start of Source's Next Turn", "SOT Source"), SourceEnd(
-				"End of Source's Next Turn", "EOT Source"), TurnEnd("End of the Current Turn", "EOT"), Encounter(
-				"End of the Encounter", "EOE"), Sustained("Sustained", "Sus"), Special("Special", "Spec");
+		/**
+		 * No duration.
+		 */
+		None("None", "None"),
+		/**
+		 * Ends with a successful saving throw.
+		 */
+		SaveEnds("Save Ends", "SE"),
+		/**
+		 * Ends at the start of the recipient's next turn.
+		 */
+		TargetStart("Start of Target's Next Turn", "SOT Target"),
+		/**
+		 * Ends at the end of the recipient's next turn.
+		 */
+		TargetEnd("End of Target's Next Turn", "EOT Target"),
+		/**
+		 * Ends at the start of the originator's next turn.
+		 */
+		SourceStart("Start of Source's Next Turn", "SOT Source"),
+		/**
+		 * Ends at the end of the originator's next turn.
+		 */
+		SourceEnd("End of Source's Next Turn", "EOT Source"),
+		/**
+		 * Ends at the end of the current turn.
+		 */
+		TurnEnd("End of the Current Turn", "EOT"),
+		/**
+		 * Ends at the end of the encounter.
+		 */
+		Encounter("End of the Encounter", "EOE"),
+		/**
+		 * The source uses an action to sustain this power.
+		 */
+		Sustained("Sustained", "Sus"),
+		/**
+		 * A catch-all for any not-covered duration.
+		 */
+		Special("Special", "Spec");
 
 		private final String _abbr;
 		private final String _desc;
