@@ -2175,7 +2175,7 @@ public class Stats {
 					typeKeywords += " (";
 				}
 				for (int i = 0; i < nodelist.getLength(); i++) {
-					typeKeywords += nodelist.item(i).getNodeValue() + ", ";
+					typeKeywords += nodelist.item(i).getNodeValue().toLowerCase() + ", ";
 				}
 				setType(typeKeywords.replaceAll(", $", ")"));
 
@@ -2184,7 +2184,13 @@ public class Stats {
 						XPathConstants.NODESET);
 				String senses = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
-					senses += nodelist.item(i).getNodeValue() + ", ";
+					String sense = nodelist.item(i).getNodeValue();
+					node = (Node) xpath.evaluate("/Monster/Senses/SenseReference/ReferencedObject[Name=\"" + sense + "\"]/DefaultRange/text()", doc, XPathConstants.NODE);
+					senses += sense;
+					if (node != null && !node.getNodeValue().contentEquals("0")) {
+						senses += " " + node.getNodeValue();
+					}
+					senses += ", ";
 				}
 				setSenses(senses.replaceAll(", $", ""));
 
@@ -2251,6 +2257,10 @@ public class Stats {
 				// speeds
 				node = (Node) xpath.evaluate("/Monster/LandSpeed/Speed/@FinalValue", doc, XPathConstants.NODE);
 				String speeds = node.getNodeValue();
+				node = (Node) xpath.evaluate("/Monster/LandSpeed/Details/text()", doc, XPathConstants.NODE);
+				if (node != null) {
+					speeds += " " + node.getNodeValue();
+				}
 				nodelist = (NodeList) xpath.evaluate("/Monster/Speeds/CreatureSpeed/ReferencedObject/Name/text()", doc,
 						XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
@@ -2260,20 +2270,28 @@ public class Stats {
 					if (amount != null) {
 						speed += " " + amount.getNodeValue();
 					}
+					
+					Node details = (Node) xpath.evaluate("/Monster/Speeds/CreatureSpeed[ReferencedObject/Name=\"" + speed
+							+ "\"]/Details/text()", doc, XPathConstants.NODE);
+					if (details != null) {
+						speed += " " + details.getNodeValue();
+					}
+					
 					speeds += ", " + speed;
 				}
 				setSpeed(speeds);
 
-				// TODO: regeneration
-				node = (Node) xpath.evaluate("/Monster/Regeneration", doc, XPathConstants.NODE);
-				String regen = node.getAttributes().getNamedItem("FinalValue").getNodeValue();
-				if (regen != null && Integer.valueOf(regen) > 0) {
-					setRegen(regen);
+				// regeneration
+				node = (Node) xpath.evaluate("/Monster/Regeneration/Details/text()", doc, XPathConstants.NODE);
+				if (node != null) {
+					setRegen(node.getNodeValue());
 				}
 
 				// alignment
 				node = (Node) xpath.evaluate("/Monster/Alignment/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
-				setAlignment(node.getNodeValue());
+				if (node != null) {
+					setAlignment(node.getNodeValue());
+				}
 
 				// skills
 				nodelist = (NodeList) xpath.evaluate("/Monster/Skills/Values/SkillNumber/Name/text()", doc, XPathConstants.NODESET);
@@ -2409,13 +2427,14 @@ public class Stats {
 					// power name
 					String name = nodelist.item(i).getNodeValue();
 					pow.setName(name);
+					String base = "/Monster/Powers/MonsterPower[Name=\"" + name + "\"]";
 
 					// power type
 					Boolean basic = false;
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/IsBasic/text()", doc,
+					node = (Node) xpath.evaluate(base + "/IsBasic/text()", doc,
 							XPathConstants.NODE);
 					basic = Boolean.valueOf(node.getNodeValue());
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Type/text()", doc,
+					node = (Node) xpath.evaluate(base + "/Type/text()", doc,
 							XPathConstants.NODE);
 					if (node != null) {
 						if (basic) {
@@ -2427,186 +2446,48 @@ public class Stats {
 
 					// power action
 					String action = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Action/text()", doc,
+					node = (Node) xpath.evaluate(base + "/Action/text()", doc,
 							XPathConstants.NODE);
 					if (node != null) {
 						action += node.getNodeValue().toLowerCase() + "; ";
 					}
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Usage/text()", doc,
+					node = (Node) xpath.evaluate(base + "/Usage/text()", doc,
 							XPathConstants.NODE);
 					if (node != null) {
 						action += node.getNodeValue().toLowerCase();
 					}
-					if (action.toLowerCase().contains("recharge")) {
-						node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/UsageDetails/text()",
-								doc, XPathConstants.NODE);
-						if (node != null) {
-							action += " " + node.getNodeValue();
-						}
+					node = (Node) xpath.evaluate(base + "/UsageDetails/text()",
+							doc, XPathConstants.NODE);
+					if (node != null) {
+						action += " " + node.getNodeValue();
 					}
 					pow.setAction(action);
 
 					// power keywords
 					String keywords = "";
-					NodeList nl = (NodeList) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name
-							+ "\"]/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+					NodeList nl = (NodeList) xpath.evaluate(base + "/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
 					if (nl != null) {
 						for (int j = 0; j < nl.getLength(); j++) {
 							keywords += nl.item(j).getNodeValue() + ", ";
 						}
 						pow.setKeywords(keywords.replaceAll(", $", ""));
 					}
-
-					/* power description */
-					// general description
-					String genDesc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Description/text()", doc, XPathConstants.NODE);
+					
+					// power description
+					String desc = "";
+					
+					// requirements
+					node = (Node) xpath.evaluate(base + "/Requirements/text()", doc, XPathConstants.NODE);
 					if (node != null) {
-						genDesc = node.getNodeValue();
+						desc += "Requirements: " + node.getNodeValue() + "\n";
 					}
 					
 					// trigger
-					String triggerDesc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Trigger/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate(base + "/Trigger/text()", doc, XPathConstants.NODE);
 					if (node != null) {
-						triggerDesc = node.getNodeValue().substring(0, 1).toUpperCase() + node.getNodeValue().substring(1);
+						desc += "Trigger: " + node.getNodeValue() + "\n";
 					}
-					
-					// attack
-					String atkDesc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/Defense/ReferencedObject/Name/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						Node n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/AttackBonuses/MonsterPowerAttackNumber/@FinalValue", doc, XPathConstants.NODE);
-						atkDesc = node.getNodeValue().replace("Attack", "+" + n.getNodeValue());
-					}
-					
-					// range
-					String rangeDesc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Range/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						rangeDesc = node.getNodeValue();
-					}
-					
-					// targets
-					String targetsDesc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Targets/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						targetsDesc = node.getNodeValue();
-					}
-					
-					// hit
-					String hitDesc = "";
-					String hitDamage = "";
-					String hitFailedSave = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/Description/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						Node n;
-						hitDesc = node.getNodeValue();
-						
-						// damage expression
-						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/Damage/Expression/text()", doc, XPathConstants.NODE);
-						if (n != null) {
-							hitDamage = n.getNodeValue();
-						}
-						
-						// failed saving throws
-						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Hit/FailedSavingThrows/MonsterAttackEntry/Description/text()", doc, XPathConstants.NODE);
-						if (n != null) {
-							hitFailedSave = n.getNodeValue();
-						}
-					}
-					String hit = hitDamage + " " + hitDesc;
-					if (!hitFailedSave.isEmpty()) {
-						hit += " Failed Saving Throw: " + hitFailedSave;
-					}
-					
-					// miss
-					String missDesc = "";
-					String missDamage = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Miss/Description/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						Node n;
-						missDesc = node.getNodeValue();
-						
-						// damage expression
-						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Miss/Damage/Expression/text()", doc, XPathConstants.NODE);
-						if (n != null) {
-							missDamage = n.getNodeValue();
-						}
-					}
-					String miss = missDamage + " " + missDesc;
-					
-					// effect
-					String effectDesc = "";
-					String effectDamage = "";
-					String effectFailedSave = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/Description/text()", doc, XPathConstants.NODE);
-					if (node != null) {
-						Node n;
-						effectDesc = node.getNodeValue();
-						
-						// damage expression
-						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/Damage/Expression/text()", doc, XPathConstants.NODE);
-						if (n != null) {
-							effectDamage = n.getNodeValue();
-						}
-						
-						// failed saving throws
-						n = (Node) xpath.evaluate("/Monster/Powers/MonsterPower[Name=\"" + name + "\"]/Attacks/MonsterAttack/Effect/FailedSavingThrows/MonsterAttackEntry/Description/text()", doc, XPathConstants.NODE);
-						if (n != null) {
-							hitFailedSave = n.getNodeValue();
-						}
-					}
-					String effect = effectDamage + " " + effectDesc;
-					if (!effectFailedSave.isEmpty()) {
-						effect += " Failed Saving Throw: " + effectFailedSave;
-					}
-					
-					// compile description
-					String desc = "";
-					if (!genDesc.isEmpty()) {
-						desc += genDesc + "\n";
-					}
-					
-					if (!triggerDesc.isEmpty()) {
-						desc += "Trigger: " + triggerDesc + "\n";
-					}
-					
-					String attackLine = "";
-					if (!atkDesc.isEmpty()) {
-						attackLine += "Attack: ";
-					}
-					if (!targetsDesc.isEmpty()) {
-						rangeDesc += " (" + targetsDesc + ")";
-					}
-					if (!attackLine.isEmpty()) {
-						attackLine += rangeDesc;
-					}
-					if (!attackLine.isEmpty() && !attackLine.contentEquals("Attack: ")) {
-						attackLine += "; " + atkDesc;	
-					} else {
-						attackLine += atkDesc;
-					}
-					if (!attackLine.contentEquals("; ") && !attackLine.isEmpty()) {
-						desc += attackLine + "\n";
-					}
-					
-					if (!hit.trim().isEmpty()) {
-						desc += "Hit: " + hit.trim() + "\n";
-					}
-					
-					if (!miss.trim().isEmpty()) {
-						desc += "Miss: " + miss.trim() + "\n";
-					}
-					
-					if (!effect.trim().isEmpty()) {
-						desc += "Effect: ";
-						if (attackLine.isEmpty() && !rangeDesc.isEmpty()) {
-							desc += rangeDesc.substring(0, 1).toUpperCase() + rangeDesc.substring(1) + ". ";
-						}
-						desc += effect.trim() + "\n";
-					}
-					
+					desc += parseMonsterAttack(xpath, doc, base + "/Attacks/MonsterAttack");
 					pow.setDesc(desc);
 
 					// add to list
@@ -2621,18 +2502,18 @@ public class Stats {
 					// trait name
 					String name = nodelist.item(i).getNodeValue();
 					pow.setName(name);
+					String base = "/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]";
 
 					// trait range (aura)
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Range/@FinalValue", doc,
-							XPathConstants.NODE);
+					node = (Node) xpath.evaluate(base + "/Range/@FinalValue", doc, XPathConstants.NODE);
 					if (node != null) {
 						pow.setAura(Integer.valueOf(node.getNodeValue()));
 					}
 
 					// trait keywords
 					String keywords = "";
-					NodeList nl = (NodeList) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name
-							+ "\"]/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+					NodeList nl = (NodeList) xpath.evaluate(base + "/Keywords/ObjectReference/ReferencedObject/Name/text()", doc,
+							XPathConstants.NODESET);
 					if (nl != null) {
 						for (int j = 0; j < nl.getLength(); j++) {
 							keywords += nl.item(j).getNodeValue().toLowerCase() + ", ";
@@ -2642,8 +2523,11 @@ public class Stats {
 
 					// trait description
 					String desc = "";
-					node = (Node) xpath.evaluate("/Monster/Powers/MonsterTrait[Name=\"" + name + "\"]/Details/text()", doc,
-							XPathConstants.NODE);
+					node = (Node) xpath.evaluate(base + "/Range/Details/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						desc += "Aura: " + node.getNodeValue() + "\n";
+					}
+					node = (Node) xpath.evaluate(base + "/Details/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += node.getNodeValue() + "\n";
 					}
@@ -2671,5 +2555,171 @@ public class Stats {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * Returns a parsed power description string.
+	 * @param xpath the XPath to use for queries
+	 * @param doc the document against which to query
+	 * @param base the base XML path queries are executed under
+	 * @return the parsed power description string
+	 * @throws XPathExpressionException from the xpath
+	 */
+	private String parseMonsterAttack(XPath xpath, Document doc, String base) throws XPathExpressionException {
+		Node n;
+		
+		// general attack description
+		String genDesc = "";
+		n = (Node) xpath.evaluate(base + "/Description/text()", doc, XPathConstants.NODE);
+		if (n != null) {
+			genDesc = n.getNodeValue();
+		}
+		
+		// range
+		String range = "";
+		n = (Node) xpath.evaluate(base + "/Range/text()", doc, XPathConstants.NODE);
+		if (n != null) {
+			range = n.getNodeValue();
+		}
+		
+		// targets
+		String targets = "";
+		n = (Node) xpath.evaluate(base + "/Targets/text()", doc, XPathConstants.NODE);
+		if (n != null) {
+			targets = n.getNodeValue();
+		}
+		
+		// hit/miss/effect
+		String hit = parseMonsterEffect(xpath, doc, base + "/Hit");
+		String miss = parseMonsterEffect(xpath, doc, base + "/Miss");
+		String effect = parseMonsterEffect(xpath, doc, base + "/Effect");
+		
+		String atkDesc = "";
+		n = (Node) xpath.evaluate(base + "/AttackBonuses/MonsterPowerAttackNumber/Defense/ReferencedObject/DefenseName/text()",
+				doc, XPathConstants.NODE);
+		if (n != null) {
+			Node bonus = (Node) xpath.evaluate(base + "/AttackBonuses/MonsterPowerAttackNumber/@FinalValue", doc,
+					XPathConstants.NODE);
+			if (bonus != null) {
+				atkDesc += "+" + bonus.getNodeValue() + " vs. " + n.getNodeValue();
+			}
+		}
+		
+		String desc = "";
+
+		if (!genDesc.isEmpty()) {
+			desc += genDesc + "\n";
+		}
+		
+		if (!atkDesc.isEmpty()) {
+			desc += "Attack: " + range;
+			if (!targets.isEmpty()) {
+				desc += " (" + targets + "); ";
+			}
+			desc += atkDesc + "\n";
+		}
+		
+		if (!hit.trim().isEmpty()) {
+			desc += "Hit: " + hit;
+		}
+		if (!miss.trim().isEmpty()) {
+			desc += "Miss: " + miss;
+		}
+		if (!effect.trim().isEmpty()) {
+			desc += "Effect: ";
+			if (atkDesc.isEmpty()) {
+				desc += range;
+				if (!targets.isEmpty()) {
+					desc += " (" + targets + "); ";
+				}
+			}
+			desc += effect;
+		}
+		
+		return desc.trim();
+	}
+	
+	private String parseMonsterEffect(XPath xpath, Document doc, String base) throws XPathExpressionException {
+		String aftereffect = "";
+		String sustain = "";
+		String damage = "";
+		String subattack = "";
+		String failedsaves = "";
+		String special = "";
+		
+		Node n;
+		NodeList nl;
+
+		// aftereffect
+		n = (Node) xpath.evaluate(base + "/Aftereffects/MonsterAttackEntry", doc, XPathConstants.NODE);
+		if (n != null) {
+			aftereffect += "Aftereffect: \n";
+			aftereffect += "\t" + parseMonsterEffect(xpath, doc, base + "/Aftereffects/MonsterAttackEntry").replaceAll("\n", "\n\t");
+		}
+		
+		// sustain
+		n = (Node) xpath.evaluate(base + "/Aftereffects/MonsterSustainEffect/Action/text()", doc, XPathConstants.NODE);
+		if (n != null) {
+			sustain += "Sustain " + n.getNodeValue() + ": ";
+			sustain += parseMonsterAttack(xpath, doc, base + "/Aftereffects/MonsterSustainEffect");
+		}
+		
+		// damage
+		n = (Node) xpath.evaluate(base + "/Description/text()", doc, XPathConstants.NODE);
+		if (n != null) {
+			Node dmg = (Node) xpath.evaluate(base + "/Damage/Expression/text()", doc, XPathConstants.NODE);
+			if (dmg != null) {
+				damage += dmg.getNodeValue();
+			}
+			damage += " " + n.getNodeValue();
+		}
+		
+		// sub-attack
+		n = (Node) xpath.evaluate(base + "/Attacks/MonsterAttack", doc, XPathConstants.NODE);
+		if (n != null) {
+			subattack += "\t" + parseMonsterAttack(xpath, doc, base + "/Attacks/MonsterAttack").replaceAll("\n", "\n\t");
+			subattack.trim();
+		}
+		
+		// failed saving throws
+		nl = (NodeList) xpath.evaluate(base + "/FailedSavingThrows/MonsterAttackEntry/Name/text()", doc,
+				XPathConstants.NODESET);
+		for (int i = 0; i < nl.getLength(); i++) {
+			String name = nl.item(i).getNodeValue();
+			failedsaves += name
+					+ ": "
+					+ parseMonsterEffect(xpath, doc, base + "/FailedSavingThrows/MonsterAttackEntry[Name=\"" + name
+							+ "\"]").trim() + ". ";
+		}
+		
+		// special
+		n = (Node) xpath.evaluate(base + "/Special/text()", doc, XPathConstants.NODE);
+		if (n != null) {
+			special += "Special: " + n.getNodeValue();
+		}
+		
+		// compile information
+		String desc = "";
+		if (!damage.trim().isEmpty()) {
+			desc += damage.trim();
+		}
+		if (!failedsaves.trim().isEmpty()) {
+			desc += "; " + failedsaves.trim();
+		}
+		desc += "\n";
+		if (!aftereffect.trim().isEmpty()) {
+			desc += aftereffect.trim() + "\n";
+		}
+		if (!subattack.trim().isEmpty()) {
+			desc += subattack + "\n";
+		}
+		if (!sustain.trim().isEmpty()) {
+			desc += sustain.trim() + "\n";
+		}
+		if (!special.trim().isEmpty()) {
+			desc += special.trim() + "\n";
+		}
+		
+		return desc;
 	}
 }

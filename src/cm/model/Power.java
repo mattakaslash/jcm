@@ -145,7 +145,8 @@ public class Power {
 			line += "recharge *";
 		} else if (_action.toLowerCase().contains("recharge ")) {
 			line += "recharge ";
-			if (Integer.valueOf(getAction().substring(getAction().indexOf("recharge") + 9)) > 0) {
+			String recharge = getAction().substring(getAction().indexOf("recharge") + 9).replaceAll("[^0-9]*", "");
+			if (!recharge.isEmpty() && Integer.valueOf(recharge) > 0) {
 				line += getAction().substring(getAction().indexOf("recharge") + 9);
 			} else {
 				line += "*";
@@ -390,7 +391,7 @@ public class Power {
 				out += "</div></div>";
 			}
 		}
-		return out;
+		return out.replaceAll("\t", "&nbsp;&nbsp;&nbsp;");
 	}
 
 	/**
