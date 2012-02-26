@@ -41,75 +41,128 @@ import cm.util.external.AutoCompletion;
 import cm.view.render.DurationCellRenderer;
 import cm.view.render.EffectBaseCellRenderer;
 
-//VS4E -- DO NOT REMOVE THIS LINE!
+/**
+ * Displays a list of prior/preset effects and provides an interface to add new
+ * ones.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
+// VS4E -- DO NOT REMOVE THIS LINE!
 public class EffectWin extends JDialog {
+	/**
+	 * Generated.
+	 */
+	private static final long serialVersionUID = 2486886460442963333L;
 
-	private static final long serialVersionUID = 1L;
-	private JPanel jPanelEffect;
-	private JLabel jLabelName;
-	private JComboBox jComboBoxName;
-	private JLabel jLabelDuration;
+	/**
+	 * The {@link Encounter} the effects are occurring in.
+	 */
+	private Encounter _fight;
+
+	/**
+	 * The modified/added {@link Effect}.
+	 */
+	private Effect _modEffect;
+
+	/**
+	 * The modified {@link Effect}'s original identifier.
+	 */
+	private Integer _origID = 0;
+
+	/**
+	 * The modified {@link Effect}'s original end round.
+	 */
+	private Integer _origRound = 0;
+
+	/**
+	 * A table of prior/preset {@link EffectBase}s for the selected source
+	 * {@link Combatant}.
+	 */
+	private Hashtable<String, EffectBase> _presetEffects = new Hashtable<String, EffectBase>();
+
+	private JButton jButtonCancel;
+	private JButton jButtonOK;
 	private JCheckBox jCheckBoxBeneficial;
 	private JCheckBox jCheckBoxHidden;
 	private JComboBox jComboBoxDuration;
+	private JComboBox jComboBoxName;
 	private JComboBox jComboBoxSource;
 	private JComboBox jComboBoxTarget;
+	private JLabel jLabelDuration;
+	private JLabel jLabelName;
 	private JLabel jLabelSource;
 	private JLabel jLabelTarget;
-	private JButton jButtonCancel;
-	private JButton jButtonOK;
 	private JList jListPresets;
+	private JPanel jPanelEffect;
 	private JScrollPane jScrollPanePresets;
+
+	/**
+	 * Creates a default effect window.
+	 */
 	public EffectWin() {
 		initComponents();
 	}
 
 	/**
-	 * Creates a new effect window for the given encounter.
-	 * @param fight the encounter
-	 * @param c the parent component
-	 */
-	public EffectWin(Encounter fight, Frame c) {
-		super(c);
-		initComponents();
-		
-		setFight(fight);
-		setModEffect(new Effect());
-		loadCombos();
-		setDefaults();
-	}
-	/**
-	 * Creates a new effect window for the given encounter, with an effect to modify.
-	 * @param fight the encounter
-	 * @param eff the effect to modify
-	 * @param c the parent component
+	 * Creates a new effect window for the given encounter, with an effect to
+	 * modify.
+	 * 
+	 * @param fight
+	 *            the encounter
+	 * @param eff
+	 *            the effect to modify
+	 * @param c
+	 *            the parent component
 	 */
 	public EffectWin(Encounter fight, Effect eff, Frame c) {
 		super(c);
 		initComponents();
-		
+
 		setFight(fight);
 		setModEffect(eff);
 		setOrigID(eff.getEffectID());
 		setOrigRound(eff.getRoundTill());
 		loadCombos();
 		setDefaults();
-		//loadHistory();
+		// loadHistory();
 		moveClassToFields(eff);
 	}
 
-	private void initComponents() {
-		setTitle("Effect");
-		setFont(new Font("Dialog", Font.PLAIN, 12));
-		setBackground(Color.white);
-		setModal(true);
-		setForeground(Color.black);
-		setLayout(new GroupLayout());
-		add(getJPanelEffect(), new Constraints(new Bilateral(12, 12, 0), new Leading(12, 136, 10, 10)));
-		add(getJButtonCancel(), new Constraints(new Trailing(12, 12, 12), new Leading(154, 12, 12)));
-		add(getJButtonOK(), new Constraints(new Trailing(91, 12, 12), new Leading(154, 12, 12)));
-		add(getJScrollPanePresets(), new Constraints(new Leading(12, 379, 12, 12), new Bilateral(185, 12, 22)));
-		pack();
+	/**
+	 * Creates a new effect window for the given encounter.
+	 * 
+	 * @param fight
+	 *            the encounter
+	 * @param c
+	 *            the parent component
+	 */
+	public EffectWin(Encounter fight, Frame c) {
+		super(c);
+		initComponents();
+
+		setFight(fight);
+		setModEffect(new Effect());
+		loadCombos();
+		setDefaults();
+	}
+
+	/**
+	 * Returns the modified/new effect.
+	 * 
+	 * @return the effect
+	 */
+	public Effect getEffect() {
+		return getModEffect();
+	}
+
+	/**
+	 * Returns the encounter.
+	 * 
+	 * @return the encounter
+	 */
+	private Encounter getFight() {
+		return _fight;
 	}
 
 	private JButton getJButtonCancel() {
@@ -117,7 +170,8 @@ public class EffectWin extends JDialog {
 			jButtonCancel = new JButton();
 			jButtonCancel.setText("Cancel");
 			jButtonCancel.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonCancelActionActionPerformed(event);
 				}
@@ -131,7 +185,8 @@ public class EffectWin extends JDialog {
 			jButtonOK = new JButton();
 			jButtonOK.setText("OK");
 			jButtonOK.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonOKActionActionPerformed(event);
 				}
@@ -162,7 +217,9 @@ public class EffectWin extends JDialog {
 		if (jComboBoxDuration == null) {
 			jComboBoxDuration = new JComboBox();
 			jComboBoxDuration.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxDuration.setModel(new DefaultComboBoxModel(new Object[] { Duration.None, Duration.SourceEnd, Duration.TargetEnd, Duration.TurnEnd, Duration.Encounter, Duration.SaveEnds, Duration.Special, Duration.SourceStart, Duration.TargetStart, Duration.Sustained }));
+			jComboBoxDuration.setModel(new DefaultComboBoxModel(new Object[] { Duration.None, Duration.SourceEnd,
+					Duration.TargetEnd, Duration.TurnEnd, Duration.Encounter, Duration.SaveEnds, Duration.Special,
+					Duration.SourceStart, Duration.TargetStart, Duration.Sustained }));
 			jComboBoxDuration.setRenderer(new DurationCellRenderer());
 			jComboBoxDuration.setDoubleBuffered(false);
 			jComboBoxDuration.setBorder(null);
@@ -176,9 +233,10 @@ public class EffectWin extends JDialog {
 			jComboBoxName = new JComboBox();
 			jComboBoxName.setEditable(true);
 			jComboBoxName.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxName.setModel(new DefaultComboBoxModel(new Object[] { "", "Attack Penalty", "Blinded", "Dazed", "Deafened", "Defense Penalty", "Dominated",
-					"Full Defense (+2 all def)", "Granting Combat Advantage", "Immobilized", "Marked", "Ongoing Damage", "Petrified", "Prone", "Regeneration",
-					"Resist", "Restrained", "Second Wind (+2 all def)", "Slowed", "Stunned", "Surprised", "Unconscious", "Vulnerability", "Weakened" }));
+			jComboBoxName.setModel(new DefaultComboBoxModel(new Object[] { "", "Attack Penalty", "Blinded", "Dazed", "Deafened",
+					"Defense Penalty", "Dominated", "Full Defense (+2 all def)", "Granting Combat Advantage", "Immobilized",
+					"Marked", "Ongoing Damage", "Petrified", "Prone", "Regeneration", "Resist", "Restrained",
+					"Second Wind (+2 all def)", "Slowed", "Stunned", "Surprised", "Unconscious", "Vulnerability", "Weakened" }));
 			jComboBoxName.setDoubleBuffered(false);
 			jComboBoxName.setBorder(null);
 			jComboBoxName.setRequestFocusEnabled(false);
@@ -196,7 +254,8 @@ public class EffectWin extends JDialog {
 			jComboBoxSource.setBorder(null);
 			jComboBoxSource.setRequestFocusEnabled(false);
 			jComboBoxSource.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jComboBoxSourceActionActionPerformed(event);
 				}
@@ -214,7 +273,8 @@ public class EffectWin extends JDialog {
 			jComboBoxTarget.setBorder(null);
 			jComboBoxTarget.setRequestFocusEnabled(false);
 			jComboBoxTarget.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jComboBoxTargetActionActionPerformed(event);
 				}
@@ -270,13 +330,15 @@ public class EffectWin extends JDialog {
 			jListPresets.setModel(listModel);
 			jListPresets.setCellRenderer(new EffectBaseCellRenderer());
 			jListPresets.addMouseListener(new MouseAdapter() {
-	
+
+				@Override
 				public void mouseClicked(MouseEvent event) {
 					jListPresetsMouseMouseClicked(event);
 				}
 			});
 			jListPresets.addListSelectionListener(new ListSelectionListener() {
-	
+
+				@Override
 				public void valueChanged(ListSelectionEvent event) {
 					jListPresetsListSelectionValueChanged(event);
 				}
@@ -288,8 +350,8 @@ public class EffectWin extends JDialog {
 	private JPanel getJPanelEffect() {
 		if (jPanelEffect == null) {
 			jPanelEffect = new JPanel();
-			jPanelEffect.setBorder(BorderFactory.createTitledBorder(null, "Effect", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
-					Font.PLAIN, 12), new Color(51, 51, 51)));
+			jPanelEffect.setBorder(BorderFactory.createTitledBorder(null, "Effect", TitledBorder.LEADING,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
 			jPanelEffect.setLayout(new GroupLayout());
 			jPanelEffect.add(getJLabelName(), new Constraints(new Leading(12, 57, 10, 10), new Leading(0, 12, 12)));
 			jPanelEffect.add(getJLabelDuration(), new Constraints(new Leading(12, 57, 12, 12), new Leading(27, 12, 12)));
@@ -308,15 +370,67 @@ public class EffectWin extends JDialog {
 	private JScrollPane getJScrollPanePresets() {
 		if (jScrollPanePresets == null) {
 			jScrollPanePresets = new JScrollPane();
-			jScrollPanePresets.setBorder(BorderFactory.createTitledBorder(null, "Prior/Preset Effects from Source", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
+			jScrollPanePresets
+					.setBorder(BorderFactory.createTitledBorder(null, "Prior/Preset Effects from Source", TitledBorder.LEADING,
+							TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
 			jScrollPanePresets.setViewportView(getJListPresets());
 		}
 		return jScrollPanePresets;
 	}
 
 	/**
+	 * Returns the effect that being created/modified.
+	 * 
+	 * @return the effect
+	 */
+	private Effect getModEffect() {
+		return _modEffect;
+	}
+
+	/**
+	 * Returns the original effect ID.
+	 * 
+	 * @return the effect ID
+	 */
+	private Integer getOrigID() {
+		return _origID;
+	}
+
+	/**
+	 * Returns the original round of combat.
+	 * 
+	 * @return the round
+	 */
+	private Integer getOrigRound() {
+		return _origRound;
+	}
+
+	/**
+	 * Returns the set of preset effects.
+	 * 
+	 * @return the preset effects
+	 */
+	private Hashtable<String, EffectBase> getPresetEffects() {
+		return _presetEffects;
+	}
+
+	private void initComponents() {
+		setTitle("Effect");
+		setFont(new Font("Dialog", Font.PLAIN, 12));
+		setBackground(Color.white);
+		setModal(true);
+		setForeground(Color.black);
+		setLayout(new GroupLayout());
+		add(getJPanelEffect(), new Constraints(new Bilateral(12, 12, 0), new Leading(12, 136, 10, 10)));
+		add(getJButtonCancel(), new Constraints(new Trailing(12, 12, 12), new Leading(154, 12, 12)));
+		add(getJButtonOK(), new Constraints(new Trailing(91, 12, 12), new Leading(154, 12, 12)));
+		add(getJScrollPanePresets(), new Constraints(new Leading(12, 379, 12, 12), new Bilateral(185, 12, 22)));
+		pack();
+	}
+
+	/**
 	 * Event: Cancel clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonCancelActionActionPerformed(ActionEvent event) {
@@ -326,6 +440,7 @@ public class EffectWin extends JDialog {
 
 	/**
 	 * Event: OK clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonOKActionActionPerformed(ActionEvent event) {
@@ -333,11 +448,12 @@ public class EffectWin extends JDialog {
 		String source = (String) getJComboBoxSource().getSelectedItem();
 		String target = (String) getJComboBoxTarget().getSelectedItem();
 		Duration duration = (Duration) getJComboBoxDuration().getSelectedItem();
-		
-		if (name == null || name.isEmpty() || source == null
-				|| source.isEmpty() || target == null || target.isEmpty()
+
+		if (name == null || name.isEmpty() || source == null || source.isEmpty() || target == null || target.isEmpty()
 				|| duration == null || duration.toString().contentEquals("None")) {
-			JOptionPane.showMessageDialog(this, "Please assign a Name, Source, Target, and Duration to this Effect.  It cannot be added until these values are assigned.");
+			JOptionPane
+					.showMessageDialog(this,
+							"Please assign a Name, Source, Target, and Duration to this Effect.  It cannot be added until these values are assigned.");
 		} else {
 			setModEffect(new Effect());
 			moveFieldsToClass(getModEffect());
@@ -347,6 +463,7 @@ public class EffectWin extends JDialog {
 
 	/**
 	 * Event: Source combo box changed.
+	 * 
 	 * @param event
 	 */
 	private void jComboBoxSourceActionActionPerformed(ActionEvent event) {
@@ -355,6 +472,7 @@ public class EffectWin extends JDialog {
 
 	/**
 	 * Event: Target combo box changed.
+	 * 
 	 * @param event
 	 */
 	private void jComboBoxTargetActionActionPerformed(ActionEvent event) {
@@ -362,99 +480,30 @@ public class EffectWin extends JDialog {
 	}
 
 	/**
+	 * Event: Prior/preset effects list selection changed.
+	 * 
+	 * @param event
+	 */
+	private void jListPresetsListSelectionValueChanged(ListSelectionEvent event) {
+		if (getJListPresets().getSelectedIndex() >= 0) {
+			EffectBase eff = (EffectBase) getJListPresets().getSelectedValue();
+			if (eff != null) {
+				getJComboBoxName().setSelectedItem(eff.getName());
+				getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
+				getJCheckBoxBeneficial().setSelected(eff.isBeneficial());
+			}
+		}
+	}
+
+	/**
 	 * Event: Effect list clicked.
+	 * 
 	 * @param event
 	 */
 	private void jListPresetsMouseMouseClicked(MouseEvent event) {
 		if (event.getClickCount() == 2) {
 			getJButtonOK().doClick();
 		}
-	}
-
-	private Encounter _fight;
-	private Effect _modEffect;
-	private Integer _origID = 0;
-	private Integer _origRound = 0;
-	private Hashtable<String, EffectBase> _presetEffects = new Hashtable<String, EffectBase>();
-	
-	/**
-	 * Returns the modified/new effect.
-	 * @return the effect
-	 */
-	public Effect getEffect() {
-		return getModEffect();
-	}
-
-	/**
-	 * Returns the encounter.
-	 * @return the encounter
-	 */
-	private Encounter getFight() {
-		return _fight;
-	}
-
-	/**
-	 * Sets the reference encounter.
-	 * @param fight the encounter
-	 */
-	private void setFight(Encounter fight) {
-		_fight = fight;
-	}
-
-	/**
-	 * Returns the effect that being created/modified.
-	 * @return the effect
-	 */
-	private Effect getModEffect() {
-		return _modEffect;
-	}
-
-	/**
-	 * Sets the effect to be modified.
-	 * @param modEffect the effect
-	 */
-	private void setModEffect(Effect modEffect) {
-		_modEffect = modEffect;
-	}
-
-	/**
-	 * Returns the original effect ID.
-	 * @return the effect ID
-	 */
-	private Integer getOrigID() {
-		return _origID;
-	}
-	
-	/**
-	 * Sets the original effect ID.
-	 * @param id the effect ID
-	 */
-	private void setOrigID(Integer id) {
-		_origID = id;
-	}
-
-	/**
-	 * Returns the original round of combat.
-	 * @return the round
-	 */
-	private Integer getOrigRound() {
-		return _origRound;
-	}
-	
-	/**
-	 * Sets the original round of combat.
-	 * @param origRound the round
-	 */
-	private void setOrigRound(Integer origRound) {
-		_origRound = origRound;
-	}
-
-	/**
-	 * Returns the set of preset effects.
-	 * @return the preset effects
-	 */
-	private Hashtable<String, EffectBase> getPresetEffects() {
-		return _presetEffects;
 	}
 
 	/**
@@ -466,6 +515,84 @@ public class EffectWin extends JDialog {
 				getJComboBoxSource().addItem(fighter.getCombatHandle());
 				getJComboBoxTarget().addItem(fighter.getCombatHandle());
 			}
+		}
+	}
+
+	/**
+	 * Loads effect history into the effect list.
+	 */
+	private void loadHistory() {
+		if (!((String) getJComboBoxSource().getSelectedItem()).isEmpty()) {
+			((DefaultListModel) getJListPresets().getModel()).clear();
+			getPresetEffects().clear();
+
+			String sourceHandle = (String) getJComboBoxSource().getSelectedItem();
+			String targetHandle = (String) getJComboBoxTarget().getSelectedItem();
+			Combatant fighter = getFight().getFighterByHandle(sourceHandle);
+			if (fighter != null && sourceHandle != null) {
+				for (EffectBase eff : fighter.getPresetEffects()) {
+					presetEffectAdd(eff);
+				}
+
+				for (EffectBase eff : getFight().getEffectsUniqueHistoryBySource(sourceHandle)) {
+					presetEffectAdd(eff);
+				}
+			}
+
+			if (sourceHandle != null && targetHandle != null && sourceHandle.contentEquals(targetHandle)) {
+				presetEffectAdd(new EffectBase("Full Defense (+2 all Def)", Duration.SourceStart, true));
+				if (fighter != null && fighter.isPC()) {
+					presetEffectAdd(new EffectBase("Second Wind (+2 all Def)", Duration.SourceStart, true));
+				}
+			}
+
+			DefaultListModel model = (DefaultListModel) getJListPresets().getModel();
+			for (EffectBase eff : getPresetEffects().values()) {
+				model.addElement(eff);
+			}
+		}
+	}
+
+	/**
+	 * Loads data from the effect into the form fields.
+	 * 
+	 * @param eff
+	 */
+	private void moveClassToFields(Effect eff) {
+		getJComboBoxName().setSelectedItem(eff.getName());
+		getJComboBoxSource().setSelectedItem(eff.getSourceHandle());
+		getJComboBoxTarget().setSelectedItem(eff.getTargetHandle());
+		getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
+		getJCheckBoxBeneficial().setSelected(eff.isBeneficial());
+		getJCheckBoxHidden().setSelected(eff.isHidden());
+	}
+
+	/**
+	 * Writes field values to the effect.
+	 * 
+	 * @param eff
+	 *            the effect
+	 */
+	private void moveFieldsToClass(Effect eff) {
+		eff.setName((String) getJComboBoxName().getSelectedItem());
+		eff.setSourceHandle((String) getJComboBoxSource().getSelectedItem());
+		eff.setTargetHandle((String) getJComboBoxTarget().getSelectedItem());
+		eff.setDurationCode((Duration) getJComboBoxDuration().getSelectedItem());
+		eff.setBeneficial(getJCheckBoxBeneficial().isSelected());
+		eff.setHidden(getJCheckBoxHidden().isSelected());
+		eff.setEffectID(getOrigID());
+		eff.setRoundTill(getOrigRound());
+	}
+
+	/**
+	 * Adds the given effect to the preset effects list.
+	 * 
+	 * @param eff
+	 *            the effect
+	 */
+	private void presetEffectAdd(EffectBase eff) {
+		if (eff.isValid() && !getPresetEffects().contains(eff.getEffectBaseID())) {
+			getPresetEffects().put(eff.getEffectBaseID(), eff);
 		}
 	}
 
@@ -484,97 +611,42 @@ public class EffectWin extends JDialog {
 	}
 
 	/**
-	 * Loads effect history into the effect list.
+	 * Sets the reference encounter.
+	 * 
+	 * @param fight
+	 *            the encounter
 	 */
-	private void loadHistory() {
-		if (!((String) getJComboBoxSource().getSelectedItem()).isEmpty()) {
-			((DefaultListModel)getJListPresets().getModel()).clear();
-			getPresetEffects().clear();
-
-			String sourceHandle = (String) getJComboBoxSource()
-					.getSelectedItem();
-			String targetHandle = (String) getJComboBoxTarget()
-					.getSelectedItem();
-			Combatant fighter = getFight().getFighterByHandle(sourceHandle);
-			if (fighter != null && sourceHandle != null) {
-				for (EffectBase eff : fighter.getPresetEffects()) {
-					presetEffectAdd(eff);
-				}
-
-				for (EffectBase eff : getFight()
-						.getEffectsUniqueHistoryBySource(sourceHandle)) {
-					presetEffectAdd(eff);
-				}
-			}
-
-			if (sourceHandle != null && targetHandle != null
-					&& sourceHandle.contentEquals(targetHandle)) {
-				presetEffectAdd(new EffectBase("Full Defense (+2 all Def)",
-						Duration.SourceStart, true));
-				if (fighter != null && fighter.isPC()) {
-					presetEffectAdd(new EffectBase("Second Wind (+2 all Def)",
-							Duration.SourceStart, true));
-				}
-			}
-
-			DefaultListModel model = (DefaultListModel) getJListPresets()
-					.getModel();
-			for (EffectBase eff : getPresetEffects().values()) {
-				model.addElement(eff);
-			}
-		}
-	}
-	
-	/**
-	 * Loads data from the effect into the form fields.
-	 * @param eff
-	 */
-	private void moveClassToFields(Effect eff) {
-		getJComboBoxName().setSelectedItem(eff.getName());
-		getJComboBoxSource().setSelectedItem(eff.getSourceHandle());
-		getJComboBoxTarget().setSelectedItem(eff.getTargetHandle());
-		getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
-		getJCheckBoxBeneficial().setSelected(eff.isBeneficial());
-		getJCheckBoxHidden().setSelected(eff.isHidden());
+	private void setFight(Encounter fight) {
+		_fight = fight;
 	}
 
 	/**
-	 * Writes field values to the effect.
-	 * @param eff the effect
+	 * Sets the effect to be modified.
+	 * 
+	 * @param modEffect
+	 *            the effect
 	 */
-	private void moveFieldsToClass(Effect eff) {
-		eff.setName((String)getJComboBoxName().getSelectedItem());
-		eff.setSourceHandle((String)getJComboBoxSource().getSelectedItem());
-		eff.setTargetHandle((String)getJComboBoxTarget().getSelectedItem());
-		eff.setDurationCode((Duration)getJComboBoxDuration().getSelectedItem());
-		eff.setBeneficial(getJCheckBoxBeneficial().isSelected());
-		eff.setHidden(getJCheckBoxHidden().isSelected());
-		eff.setEffectID(getOrigID());
-		eff.setRoundTill(getOrigRound());
+	private void setModEffect(Effect modEffect) {
+		_modEffect = modEffect;
 	}
 
 	/**
-	 * Adds the given effect to the preset effects list.
-	 * @param eff the effect
+	 * Sets the original effect ID.
+	 * 
+	 * @param id
+	 *            the effect ID
 	 */
-	private void presetEffectAdd(EffectBase eff) {
-		if (eff.isValid() && !getPresetEffects().contains(eff.getEffectBaseID())) {
-			getPresetEffects().put(eff.getEffectBaseID(), eff);
-		}
+	private void setOrigID(Integer id) {
+		_origID = id;
 	}
 
 	/**
-	 * Event: Prior/preset effects list selection changed. 
-	 * @param event
+	 * Sets the original round of combat.
+	 * 
+	 * @param origRound
+	 *            the round
 	 */
-	private void jListPresetsListSelectionValueChanged(ListSelectionEvent event) {
-		if (getJListPresets().getSelectedIndex() >= 0) {
-			EffectBase eff = (EffectBase) getJListPresets().getSelectedValue();
-			if (eff != null) {
-				getJComboBoxName().setSelectedItem(eff.getName());
-				getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
-				getJCheckBoxBeneficial().setSelected(eff.isBeneficial());
-			}
-		}
+	private void setOrigRound(Integer origRound) {
+		_origRound = origRound;
 	}
 }

@@ -93,103 +93,154 @@ import cm.view.render.OffTurnPowerRenderer;
 import cm.view.render.PowerCellRenderer;
 import cm.view.render.RosterRenderer;
 
-//VS4E -- DO NOT REMOVE THIS LINE!
+/**
+ * Displays the main interface for the application.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
+// VS4E -- DO NOT REMOVE THIS LINE!
 public class MainFrame extends JFrame {
+	/**
+	 * Generated.
+	 */
+	private static final long serialVersionUID = -5968785836556756134L;
 
-	private static final long serialVersionUID = 1L;
-	private JMenuItem menuFileNew;
+	/**
+	 * The active encounter.
+	 */
+	private Encounter _fight;
+
+	/**
+	 * If true, full information is displayed on the initiative display.
+	 */
+	private Boolean _fullInit = false;
+
+	/**
+	 * The initiative display.
+	 */
+	private InitDisplay _initDisplay;
+
+	/**
+	 * The table renderer.
+	 */
+	private RosterRenderer _rosterRenderer = new RosterRenderer();
+
+	/**
+	 * The statistics library.
+	 */
+	private StatLibrary _statlib;
+
+	/**
+	 * The filename to save the statistics library to.
+	 */
+	private String _statlibFilename = "statlibrary.dnd4";
+
+	private JButton jButtonAdd;
+	private JButton jButtonAddTemp;
+	private JButton jButtonBackUp;
+	private JButton jButtonChange;
+	private JButton jButtonDamage;
+	private JButton jButtonDelay;
+	private JButton jButtonFailDeath;
+	private JButton jButtonFive;
+	private JButton jButtonHalve;
+	private JButton jButtonHeal;
+	private JButton jButtonMax;
+	private JButton jButtonMinusOne;
+	private JButton jButtonMoveToTop;
+	private JButton jButtonNextTurn;
+	private JButton jButtonPlusFive;
+	private JButton jButtonPlusOne;
+	private JButton jButtonReady;
+	private JButton jButtonRegainAll;
+	private JButton jButtonRemove;
+	private JButton jButtonRemoveFighter;
+	private JButton jButtonReserve;
+	private JButton jButtonRollInitiative;
+	private JButton jButtonSurge;
+	private JButton jButtonUndoDeath;
+	private JEditorPane jEditorPaneCompendium;
+	private JEditorPane jEditorPaneStatblock;
+	private JLabel jLabelInitRoll;
+	private JLabel jLabelName;
+	private JList jListEffects;
+	private JList jListOffTurnPowers;
+	private JList jListPowerList;
+	private JMenuItem jMenuItemDelay;
+	private JMenuItem jMenuItemLogOA;
+	private JMenuItem jMenuItemMarkUntilEOE;
+	private JMenuItem jMenuItemMarkUntilEONT;
+	private JMenuItem jMenuItemMoveToTop;
+	private JMenuItem jMenuItemReady;
+	private JMenuItem jMenuItemToggleVisibility;
+	private JPanel jPanelBottomCenter;
+	private JPanel jPanelDamageHealing;
+	private JPanel jPanelEffectButtons;
+	private JPanel jPanelEffects;
+	private JPanel jPanelHealth;
+	private JPanel jPanelInitiative;
+	private JPanel jPanelMusic;
+	private JPanel jPanelSurges;
+	private JPanel jPanelTopCenter;
+	private JPopupMenu jPopupMenuRoster;
+	private JScrollPane jScrollPaneCompendium;
+	private JScrollPane jScrollPaneEffects;
+	private JScrollPane jScrollPaneNotes;
+	private JScrollPane jScrollPaneOffTurnPowers;
+	private JScrollPane jScrollPanePowerList;
+	private JScrollPane jScrollPaneRoster;
+	private JScrollPane jScrollPaneStatblock;
+	private JSeparator jSeparator0;
+	private JSeparator jSeparator1;
+	private JSeparator jSeparator2;
+	private JSeparator jSeparator3;
+	private JSpinner jSpinnerDamageHealAmount;
+	private JSpinner jSpinnerInitRoll;
+	private JSplitPane jSplitPaneCenter;
+	private JSplitPane jSplitPaneLeft;
+	private JSplitPane jSplitPaneMain;
+	private JSplitPane jSplitPaneRight;
+	private JSplitPane jSplitPaneSub;
+	private JTabbedPane jTabbedPaneControls;
+	private JTabbedPane jTabbedPaneUtils;
+	private JTable jTableRoster;
+	private JTextArea jTextAreaNotes;
+	private JTextField jTextFieldName;
+	private JTextField jTextFieldNumber;
+	private JTextField jTextFieldSurges;
+	private JMenuBar menuBarMain;
+	private JMenu menuEncounter;
+	private JMenuItem menuEncounterEnd;
+	private JMenuItem menuEncounterInitiative;
+	private JMenuItem menuEncounterRemoveMonsters;
+	private JMenu menuFile;
+	private JMenuItem menuFileExit;
 	private JMenuItem menuFileImport;
+	private JMenuItem menuFileNew;
 	private JMenuItem menuFileOpen;
 	private JMenuItem menuFileSave;
-	private JMenuItem menuFileExit;
-	private JMenu menuFile;
-	private JMenuItem menuEncounterInitiative;
-	private JMenu menuEncounter;
-	private JMenuItem menuPartyShortRest;
+	private JMenu menuHelp;
+	private JMenuItem menuHelpAbout;
+	private JMenu menuLibrary;
+	private JMenuItem menuLibraryOpen;
+	private JMenu menuOptions;
+	private JCheckBoxMenuItem menuOptionsGroup;
+	private JCheckBoxMenuItem menuOptionsPopup;
+	private JMenu menuOptionsRolls;
+	private JCheckBoxMenuItem menuOptionsRollsRecharges;
+	private JCheckBoxMenuItem menuOptionsRollsSaves;
+	private JCheckBoxMenuItem menuOptionsShowFullInitDisplay;
+	private JCheckBoxMenuItem menuOptionsShowMinimalInitDisplay;
 	private JMenu menuParty;
-	private JMenuBar menuBarMain;
-	private JMenuItem menuEncounterEnd;
-	private JMenuItem menuEncounterRemoveMonsters;
-	private JMenuItem menuPartyShortRestMilestone;
 	private JMenuItem menuPartyExtendedRest;
 	private JMenuItem menuPartyRemove;
-	private JCheckBoxMenuItem menuOptionsGroup;
-	private JCheckBoxMenuItem menuOptionsRollsSaves;
-	private JCheckBoxMenuItem menuOptionsRollsRecharges;
-	private JMenu menuOptionsRolls;
-	private JCheckBoxMenuItem menuOptionsPopup;
-	private JMenu menuOptions;
-	private JMenuItem menuLibraryOpen;
-	private JMenu menuLibrary;
-	private JMenuItem menuHelpAbout;
-	private JMenu menuHelp;
-	private JSeparator jSeparator2;
-	private JSeparator jSeparator1;
-	private JSeparator jSeparator0;
-	private JSeparator jSeparator3;
-	private JSplitPane jSplitPaneMain;
-	private JSplitPane jSplitPaneSub;
-	private JSplitPane jSplitPaneRight;
-	private JSplitPane jSplitPaneCenter;
-	private JPanel jPanelTopCenter;
-	private JLabel jLabelName;
-	private JTextField jTextFieldName;
-	private JButton jButtonBackUp;
-	private JButton jButtonNextTurn;
-	private JButton jButtonAdd;
-	private JButton jButtonRemove;
-	private JButton jButtonChange;
-	private JPanel jPanelEffects;
-	private JList jListEffects;
-	private JScrollPane jScrollPaneEffects;
-	private JTabbedPane jTabbedPaneControls;
-	private JPanel jPanelInitiative;
-	private JPanel jPanelDamageHealing;
-	private JButton jButtonRemoveFighter;
-	private JButton jButtonRollInitiative;
-	private JButton jButtonMoveToTop;
-	private JSpinner jSpinnerInitRoll;
-	private JLabel jLabelInitRoll;
-	private JButton jButtonReserve;
-	private JButton jButtonDelay;
-	private JButton jButtonReady;
-	private JSpinner jSpinnerDamageHealAmount;
-	private JButton jButtonFive;
-	private JButton jButtonPlusFive;
-	private JButton jButtonSurge;
-	private JButton jButtonHalve;
-	private JButton jButtonDamage;
-	private JButton jButtonHeal;
-	private JButton jButtonAddTemp;
-	private JButton jButtonMax;
-	private JButton jButtonFailDeath;
-	private JButton jButtonUndoDeath;
-	private JTextField jTextFieldSurges;
-	private JButton jButtonMinusOne;
-	private JButton jButtonPlusOne;
-	private JButton jButtonRegainAll;
-	private JTextField jTextFieldNumber;
-	private JEditorPane jEditorPaneStatblock;
-	private JScrollPane jScrollPaneStatblock;
-	private JEditorPane jEditorPaneCompendium;
-	private JScrollPane jScrollPaneCompendium;
-	private JPanel jPanelBottomCenter;
-	private JList jListPowerList;
-	private JScrollPane jScrollPanePowerList;
-	private JTable jTableRoster;
-	private JScrollPane jScrollPaneRoster;
-	private JMenuItem jMenuItemMoveToTop;
-	private JPopupMenu jPopupMenuRoster;
-	private JMenuItem jMenuItemDelay;
-	private JMenuItem jMenuItemReady;
-	private JMenuItem jMenuItemLogOA;
-	private JMenuItem jMenuItemMarkUntilEONT;
-	private JMenuItem jMenuItemMarkUntilEOE;
-	private JCheckBoxMenuItem menuOptionsShowMinimalInitDisplay;
-	private JCheckBoxMenuItem menuOptionsShowFullInitDisplay;
-	private JMenuItem jMenuItemToggleVisibility;
-	private JSplitPane jSplitPaneLeft;
-	
+	private JMenuItem menuPartyShortRest;
+	private JMenuItem menuPartyShortRestMilestone;
+
+	/**
+	 * Displays the interface.
+	 */
 	public MainFrame() {
 		initComponents();
 	}
@@ -200,141 +251,107 @@ public class MainFrame extends JFrame {
 		setForeground(Color.black);
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
 		addComponentListener(new ComponentAdapter() {
-	
+
+			@Override
 			public void componentResized(ComponentEvent event) {
 				componentComponentResized(event);
 			}
 		});
 		addWindowListener(new WindowAdapter() {
-	
-			public void windowOpened(WindowEvent event) {
-				windowWindowOpened(event);
-			}
-	
+
+			@Override
 			public void windowClosing(WindowEvent event) {
 				windowWindowClosing(event);
+			}
+
+			@Override
+			public void windowOpened(WindowEvent event) {
+				windowWindowOpened(event);
 			}
 		});
 		setJMenuBar(getMenuBarMain());
 		pack();
 	}
 
-	private JPanel getJPanelEffectButtons() {
-		if (jPanelEffectButtons == null) {
-			jPanelEffectButtons = new JPanel();
-			jPanelEffectButtons.add(getJButtonAdd());
-			jPanelEffectButtons.add(getJButtonChange());
-			jPanelEffectButtons.add(getJButtonRemove());
-		}
-		return jPanelEffectButtons;
+	/**
+	 * Event: Window resized.
+	 * 
+	 * @param event
+	 */
+	private void componentComponentResized(ComponentEvent event) {
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
 	}
 
-	private JPanel getJPanelSurges() {
-		if (jPanelSurges == null) {
-			jPanelSurges = new JPanel();
-			jPanelSurges.setBorder(BorderFactory.createTitledBorder(null, "Surges", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
-					Font.BOLD, 10), new Color(51, 51, 51)));
-			jPanelSurges.setLayout(new GroupLayout());
-			jPanelSurges.add(getJTextFieldSurges(), new Constraints(new Leading(0, 63, 12, 12), new Leading(-5, 24, 12, 12)));
-			jPanelSurges.add(getJButtonPlusOne(), new Constraints(new Leading(0, 26, 12, 12), new Leading(20, 22, 12, 12)));
-			jPanelSurges.add(getJButtonMinusOne(), new Constraints(new Leading(37, 26, 12, 12), new Leading(20, 22, 12, 12)));
-			jPanelSurges.add(getJButtonRegainAll(), new Constraints(new Leading(0, 63, 12, 12), new Leading(43, 45, 12, 12)));
+	/**
+	 * Enables/disables effect change and remove buttons based on list
+	 * selection.
+	 */
+	private void effectButtonUpdate() {
+		if (getJListEffects().getSelectedIndices().length > 0) {
+			getJButtonChange().setEnabled(true);
+			getJButtonRemove().setEnabled(true);
+		} else {
+			getJButtonChange().setEnabled(false);
+			getJButtonRemove().setEnabled(false);
 		}
-		return jPanelSurges;
 	}
 
-	private JPanel getJPanelHealth() {
-		if (jPanelHealth == null) {
-			jPanelHealth = new JPanel();
-			jPanelHealth.setBorder(BorderFactory.createTitledBorder(null, "Health", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
-					Font.BOLD, 10), new Color(51, 51, 51)));
-			jPanelHealth.setLayout(new GroupLayout());
-			jPanelHealth.add(getJSpinnerDamageHealAmount(), new Constraints(new Leading(0, 62, 12, 12), new Leading(-5, 10, 10)));
-			jPanelHealth.add(getJButtonFive(), new Constraints(new Leading(0, 26, 12, 12), new Leading(20, 22, 12, 12)));
-			jPanelHealth.add(getJButtonPlusFive(), new Constraints(new Leading(36, 26, 12, 12), new Leading(20, 22, 12, 12)));
-			jPanelHealth.add(getJButtonSurge(), new Constraints(new Leading(0, 62, 12, 12), new Leading(43, 22, 12, 12)));
-			jPanelHealth.add(getJButtonHalve(), new Constraints(new Leading(0, 62, 12, 12), new Leading(66, 22, 12, 12)));
-			jPanelHealth.add(getJButtonDamage(), new Constraints(new Leading(66, 57, 12, 12), new Leading(-5, 47, 12, 12)));
-			jPanelHealth.add(getJButtonHeal(), new Constraints(new Leading(66, 57, 12, 12), new Leading(43, 45, 12, 12)));
-			jPanelHealth.add(getJButtonAddTemp(), new Constraints(new Leading(127, 74, 12, 12), new Leading(-5, 24, 12, 12)));
-			jPanelHealth.add(getJButtonMax(), new Constraints(new Leading(127, 74, 12, 12), new Leading(20, 22, 12, 12)));
-			jPanelHealth.add(getJButtonFailDeath(), new Constraints(new Leading(127, 74, 12, 12), new Leading(43, 22, 12, 12)));
-			jPanelHealth.add(getJButtonUndoDeath(), new Constraints(new Leading(127, 74, 12, 12), new Leading(66, 22, 12, 12)));
+	/**
+	 * Loads active effects for the selected {@link Combatant}.
+	 */
+	private void effectLoad() {
+		Combatant fighter = getListSelectedFighter();
+
+		if (fighter != null) {
+			getJListEffects().setEnabled(true);
+
+			getJListEffects().setCellRenderer(new EffectDetailsCellRenderer());
+			DefaultListModel model = (DefaultListModel) getJListEffects().getModel();
+			model.clear();
+
+			for (Effect eff : getFight().getEffectsByTarget(fighter.getCombatHandle())) {
+				model.addElement(eff);
+			}
+			effectButtonUpdate();
 		}
-		return jPanelHealth;
 	}
 
-	private JPanel getJPanelMusic() {
-		if (jPanelMusic == null) {
-			jPanelMusic = new JPanel();
-			jPanelMusic.setLayout(new GroupLayout());
-		}
-		return jPanelMusic;
+	/**
+	 * Closes the application.
+	 */
+	private void exitEncounter() {
+		Settings.save();
+		getStatlib().saveToFile(getStatlibFilename());
+		this.dispose();
 	}
 
-	private JScrollPane getJScrollPaneOffTurnPowers() {
-		if (jScrollPaneOffTurnPowers == null) {
-			jScrollPaneOffTurnPowers = new JScrollPane();
-			jScrollPaneOffTurnPowers.setVisible(false);
-			jScrollPaneOffTurnPowers.setViewportView(getJListOffTurnPowers());
-		}
-		return jScrollPaneOffTurnPowers;
+	/**
+	 * Returns the tracker's encounter.
+	 * 
+	 * @return the encounter
+	 */
+	private Encounter getFight() {
+		return _fight;
 	}
 
-	private JList getJListOffTurnPowers() {
-		if (jListOffTurnPowers == null) {
-			jListOffTurnPowers = new JList();
-			DefaultListModel listModel = new DefaultListModel();
-			jListOffTurnPowers.setModel(listModel);
-			jListOffTurnPowers.addListSelectionListener(new ListSelectionListener() {
-				
-				public void valueChanged(ListSelectionEvent e) {
-					jListOffTurnPowersListSelectionValueChanged(e);
+	/**
+	 * Returns the {@link InitDisplay}.
+	 * 
+	 * @return the {@link InitDisplay}
+	 */
+	private InitDisplay getInitDisplay() {
+		if (_initDisplay == null) {
+			_initDisplay = new InitDisplay();
+			_initDisplay.addWindowListener(new WindowAdapter() {
+
+				@Override
+				public void windowClosing(WindowEvent e) {
+					getMenuOptionsShowMinimalInitDisplay().setSelected(false);
+					getMenuOptionsShowFullInitDisplay().setSelected(false);
 				}
 			});
 		}
-		return jListOffTurnPowers;
-	}
-
-	private JScrollPane getJScrollPaneNotes() {
-		if (jScrollPaneNotes == null) {
-			jScrollPaneNotes = new JScrollPane();
-			jScrollPaneNotes.setViewportView(getJTextAreaNotes());
-		}
-		return jScrollPaneNotes;
-	}
-
-	private JTextArea getJTextAreaNotes() {
-		if (jTextAreaNotes == null) {
-			jTextAreaNotes = new JTextArea();
-			jTextAreaNotes.setLineWrap(true);
-			jTextAreaNotes.setWrapStyleWord(true);
-			jTextAreaNotes.getDocument().addDocumentListener(new DocumentListener() {
-				
-				public void removeUpdate(DocumentEvent arg0) {
-					saveGlobalNotes();
-				}
-				
-				public void insertUpdate(DocumentEvent arg0) {
-					saveGlobalNotes();
-				}
-				
-				public void changedUpdate(DocumentEvent arg0) {
-					saveGlobalNotes();					
-				}
-			});
-		}
-		return jTextAreaNotes;
-	}
-
-	private JTabbedPane getJTabbedPaneUtils() {
-		if (jTabbedPaneUtils == null) {
-			jTabbedPaneUtils = new JTabbedPane();
-			jTabbedPaneUtils.addTab("Notes", getJScrollPaneNotes());
-			jTabbedPaneUtils.addTab("Off-Turn Powers", getJScrollPaneOffTurnPowers());
-			jTabbedPaneUtils.addTab("Music", getJPanelMusic());
-		}
-		return jTabbedPaneUtils;
+		return _initDisplay;
 	}
 
 	private JButton getJButtonAdd() {
@@ -344,7 +361,8 @@ public class MainFrame extends JFrame {
 			jButtonAdd.setMargin(new Insets(0, 0, 0, 0));
 			jButtonAdd.setEnabled(false);
 			jButtonAdd.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonAddActionActionPerformed(event);
 				}
@@ -360,7 +378,8 @@ public class MainFrame extends JFrame {
 			jButtonAddTemp.setMargin(new Insets(0, 0, 0, 0));
 			jButtonAddTemp.setEnabled(false);
 			jButtonAddTemp.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonAddTempActionActionPerformed(event);
 				}
@@ -376,7 +395,8 @@ public class MainFrame extends JFrame {
 			jButtonBackUp.setMargin(new Insets(0, 0, 0, 0));
 			jButtonBackUp.setEnabled(false);
 			jButtonBackUp.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonBackUpActionActionPerformed(event);
 				}
@@ -392,7 +412,8 @@ public class MainFrame extends JFrame {
 			jButtonChange.setMargin(new Insets(0, 0, 0, 0));
 			jButtonChange.setEnabled(false);
 			jButtonChange.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonChangeActionActionPerformed(event);
 				}
@@ -408,7 +429,8 @@ public class MainFrame extends JFrame {
 			jButtonDamage.setMargin(new Insets(0, 0, 0, 0));
 			jButtonDamage.setEnabled(false);
 			jButtonDamage.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonDamageActionActionPerformed(event);
 				}
@@ -424,7 +446,8 @@ public class MainFrame extends JFrame {
 			jButtonDelay.setMargin(new Insets(0, 0, 0, 0));
 			jButtonDelay.setEnabled(false);
 			jButtonDelay.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonDelayActionActionPerformed(event);
 				}
@@ -440,7 +463,8 @@ public class MainFrame extends JFrame {
 			jButtonFailDeath.setMargin(new Insets(0, 0, 0, 0));
 			jButtonFailDeath.setEnabled(false);
 			jButtonFailDeath.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonFailDeathActionActionPerformed(event);
 				}
@@ -456,7 +480,8 @@ public class MainFrame extends JFrame {
 			jButtonFive.setMargin(new Insets(0, 0, 0, 0));
 			jButtonFive.setEnabled(false);
 			jButtonFive.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonFiveActionActionPerformed(event);
 				}
@@ -472,7 +497,8 @@ public class MainFrame extends JFrame {
 			jButtonHalve.setMargin(new Insets(0, 0, 0, 0));
 			jButtonHalve.setEnabled(false);
 			jButtonHalve.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonHalveActionActionPerformed(event);
 				}
@@ -488,7 +514,8 @@ public class MainFrame extends JFrame {
 			jButtonHeal.setMargin(new Insets(0, 0, 0, 0));
 			jButtonHeal.setEnabled(false);
 			jButtonHeal.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonHealActionActionPerformed(event);
 				}
@@ -503,7 +530,8 @@ public class MainFrame extends JFrame {
 			jButtonMax.setText("<html>Max</html>");
 			jButtonMax.setEnabled(false);
 			jButtonMax.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonMaxActionActionPerformed(event);
 				}
@@ -519,7 +547,8 @@ public class MainFrame extends JFrame {
 			jButtonMinusOne.setMargin(new Insets(0, 0, 0, 0));
 			jButtonMinusOne.setEnabled(false);
 			jButtonMinusOne.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonMinusOneActionActionPerformed(event);
 				}
@@ -535,7 +564,8 @@ public class MainFrame extends JFrame {
 			jButtonMoveToTop.setMargin(new Insets(0, 0, 0, 0));
 			jButtonMoveToTop.setEnabled(false);
 			jButtonMoveToTop.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonMoveToTopActionActionPerformed(event);
 				}
@@ -551,29 +581,14 @@ public class MainFrame extends JFrame {
 			jButtonNextTurn.setMargin(new Insets(0, 0, 0, 0));
 			jButtonNextTurn.setEnabled(false);
 			jButtonNextTurn.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonNextTurnActionActionPerformed(event);
 				}
 			});
 		}
 		return jButtonNextTurn;
-	}
-
-	private JButton getJButtonPlusOne() {
-		if (jButtonPlusOne == null) {
-			jButtonPlusOne = new JButton();
-			jButtonPlusOne.setText("<html>+1</html>");
-			jButtonPlusOne.setMargin(new Insets(0, 0, 0, 0));
-			jButtonPlusOne.setEnabled(false);
-			jButtonPlusOne.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonPlusOneActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonPlusOne;
 	}
 
 	private JButton getJButtonPlusFive() {
@@ -583,13 +598,31 @@ public class MainFrame extends JFrame {
 			jButtonPlusFive.setMargin(new Insets(0, 0, 0, 0));
 			jButtonPlusFive.setEnabled(false);
 			jButtonPlusFive.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonPlusFiveActionActionPerformed(event);
 				}
 			});
 		}
 		return jButtonPlusFive;
+	}
+
+	private JButton getJButtonPlusOne() {
+		if (jButtonPlusOne == null) {
+			jButtonPlusOne = new JButton();
+			jButtonPlusOne.setText("<html>+1</html>");
+			jButtonPlusOne.setMargin(new Insets(0, 0, 0, 0));
+			jButtonPlusOne.setEnabled(false);
+			jButtonPlusOne.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					jButtonPlusOneActionActionPerformed(event);
+				}
+			});
+		}
+		return jButtonPlusOne;
 	}
 
 	private JButton getJButtonReady() {
@@ -599,7 +632,8 @@ public class MainFrame extends JFrame {
 			jButtonReady.setMargin(new Insets(0, 0, 0, 0));
 			jButtonReady.setEnabled(false);
 			jButtonReady.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonReadyActionActionPerformed(event);
 				}
@@ -615,7 +649,8 @@ public class MainFrame extends JFrame {
 			jButtonRegainAll.setMargin(new Insets(0, 0, 0, 0));
 			jButtonRegainAll.setEnabled(false);
 			jButtonRegainAll.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonRegainAllActionActionPerformed(event);
 				}
@@ -631,7 +666,8 @@ public class MainFrame extends JFrame {
 			jButtonRemove.setMargin(new Insets(0, 0, 0, 0));
 			jButtonRemove.setEnabled(false);
 			jButtonRemove.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonRemoveActionActionPerformed(event);
 				}
@@ -647,7 +683,8 @@ public class MainFrame extends JFrame {
 			jButtonRemoveFighter.setMargin(new Insets(0, 0, 0, 0));
 			jButtonRemoveFighter.setEnabled(false);
 			jButtonRemoveFighter.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonRemoveFighterActionActionPerformed(event);
 				}
@@ -663,7 +700,8 @@ public class MainFrame extends JFrame {
 			jButtonReserve.setMargin(new Insets(0, 0, 0, 0));
 			jButtonReserve.setEnabled(false);
 			jButtonReserve.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonReserveActionActionPerformed(event);
 				}
@@ -679,7 +717,8 @@ public class MainFrame extends JFrame {
 			jButtonRollInitiative.setMargin(new Insets(0, 0, 0, 0));
 			jButtonRollInitiative.setEnabled(false);
 			jButtonRollInitiative.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonRollInitiativeActionActionPerformed(event);
 				}
@@ -695,7 +734,8 @@ public class MainFrame extends JFrame {
 			jButtonSurge.setMargin(new Insets(0, 0, 0, 0));
 			jButtonSurge.setEnabled(false);
 			jButtonSurge.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonSurgeActionActionPerformed(event);
 				}
@@ -711,7 +751,8 @@ public class MainFrame extends JFrame {
 			jButtonUndoDeath.setMargin(new Insets(0, 0, 0, 0));
 			jButtonUndoDeath.setEnabled(false);
 			jButtonUndoDeath.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonUndoDeathActionActionPerformed(event);
 				}
@@ -743,6 +784,7 @@ public class MainFrame extends JFrame {
 			jEditorPaneStatblock.setEditable(false);
 			jEditorPaneStatblock.addHyperlinkListener(new HyperlinkListener() {
 
+				@Override
 				public void hyperlinkUpdate(HyperlinkEvent event) {
 					jEditorPaneStatblockHyperlinkHyperlinkUpdate(event);
 				}
@@ -775,13 +817,15 @@ public class MainFrame extends JFrame {
 			jListEffects.setModel(listModel);
 			jListEffects.setEnabled(false);
 			jListEffects.addMouseListener(new MouseAdapter() {
-	
+
+				@Override
 				public void mouseClicked(MouseEvent event) {
 					jListEffectsMouseMouseClicked(event);
 				}
 			});
 			jListEffects.addListSelectionListener(new ListSelectionListener() {
-	
+
+				@Override
 				public void valueChanged(ListSelectionEvent event) {
 					jListEffectsListSelectionValueChanged(event);
 				}
@@ -790,19 +834,37 @@ public class MainFrame extends JFrame {
 		return jListEffects;
 	}
 
+	private JList getJListOffTurnPowers() {
+		if (jListOffTurnPowers == null) {
+			jListOffTurnPowers = new JList();
+			DefaultListModel listModel = new DefaultListModel();
+			jListOffTurnPowers.setModel(listModel);
+			jListOffTurnPowers.addListSelectionListener(new ListSelectionListener() {
+
+				@Override
+				public void valueChanged(ListSelectionEvent e) {
+					jListOffTurnPowersListSelectionValueChanged(e);
+				}
+			});
+		}
+		return jListOffTurnPowers;
+	}
+
 	private JList getJListPowerList() {
 		if (jListPowerList == null) {
 			jListPowerList = new JList();
 			DefaultListModel listModel = new DefaultListModel();
 			jListPowerList.setModel(listModel);
 			jListPowerList.addMouseListener(new MouseAdapter() {
-	
+
+				@Override
 				public void mouseClicked(MouseEvent event) {
 					jListPowerListMouseMouseClicked(event);
 				}
 			});
 			jListPowerList.addListSelectionListener(new ListSelectionListener() {
-	
+
+				@Override
 				public void valueChanged(ListSelectionEvent event) {
 					jListPowerListListSelectionValueChanged(event);
 				}
@@ -816,7 +878,8 @@ public class MainFrame extends JFrame {
 			jMenuItemDelay = new JMenuItem();
 			jMenuItemDelay.setText("Delay");
 			jMenuItemDelay.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jMenuItemDelayActionActionPerformed(event);
 				}
@@ -830,7 +893,8 @@ public class MainFrame extends JFrame {
 			jMenuItemLogOA = new JMenuItem();
 			jMenuItemLogOA.setText("Log OA");
 			jMenuItemLogOA.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jMenuItemLogOAActionActionPerformed(event);
 				}
@@ -844,7 +908,8 @@ public class MainFrame extends JFrame {
 			jMenuItemMarkUntilEOE = new JMenuItem();
 			jMenuItemMarkUntilEOE.setText("Mark until EOE");
 			jMenuItemMarkUntilEOE.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jMenuItemMarkUntilEOEActionActionPerformed(event);
 				}
@@ -858,7 +923,8 @@ public class MainFrame extends JFrame {
 			jMenuItemMarkUntilEONT = new JMenuItem();
 			jMenuItemMarkUntilEONT.setText("Mark until EONT");
 			jMenuItemMarkUntilEONT.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jMenuItemMarkUntilEONTActionActionPerformed(event);
 				}
@@ -872,7 +938,8 @@ public class MainFrame extends JFrame {
 			jMenuItemMoveToTop = new JMenuItem();
 			jMenuItemMoveToTop.setText("Move to Top");
 			jMenuItemMoveToTop.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jMenuItemMoveToStopActionActionPerformed(event);
 				}
@@ -886,7 +953,8 @@ public class MainFrame extends JFrame {
 			jMenuItemReady = new JMenuItem();
 			jMenuItemReady.setText("Ready");
 			jMenuItemReady.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jMenuItemReadyActionActionPerformed(event);
 				}
@@ -900,7 +968,8 @@ public class MainFrame extends JFrame {
 			jMenuItemToggleVisibility = new JMenuItem();
 			jMenuItemToggleVisibility.setText("Toggle Visibility");
 			jMenuItemToggleVisibility.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jMenuItemToggleVisibilityActionActionPerformed(event);
 				}
@@ -912,8 +981,8 @@ public class MainFrame extends JFrame {
 	private JPanel getJPanelBottomCenter() {
 		if (jPanelBottomCenter == null) {
 			jPanelBottomCenter = new JPanel();
-			jPanelBottomCenter.setBorder(BorderFactory.createTitledBorder(null, "Powers", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font(
-					"Dialog", Font.BOLD, 10), new Color(51, 51, 51)));
+			jPanelBottomCenter.setBorder(BorderFactory.createTitledBorder(null, "Powers", TitledBorder.LEADING,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 10), new Color(51, 51, 51)));
 			jPanelBottomCenter.setLayout(new BorderLayout());
 			jPanelBottomCenter.add(getJScrollPanePowerList(), BorderLayout.CENTER);
 		}
@@ -930,16 +999,47 @@ public class MainFrame extends JFrame {
 		return jPanelDamageHealing;
 	}
 
+	private JPanel getJPanelEffectButtons() {
+		if (jPanelEffectButtons == null) {
+			jPanelEffectButtons = new JPanel();
+			jPanelEffectButtons.add(getJButtonAdd());
+			jPanelEffectButtons.add(getJButtonChange());
+			jPanelEffectButtons.add(getJButtonRemove());
+		}
+		return jPanelEffectButtons;
+	}
+
 	private JPanel getJPanelEffects() {
 		if (jPanelEffects == null) {
 			jPanelEffects = new JPanel();
-			jPanelEffects.setBorder(BorderFactory.createTitledBorder(null, "Effects", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
-					Font.BOLD, 10), new Color(51, 51, 51)));
+			jPanelEffects.setBorder(BorderFactory.createTitledBorder(null, "Effects", TitledBorder.LEADING,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 10), new Color(51, 51, 51)));
 			jPanelEffects.setLayout(new BorderLayout());
 			jPanelEffects.add(getJScrollPaneEffects(), BorderLayout.CENTER);
 			jPanelEffects.add(getJPanelEffectButtons(), BorderLayout.SOUTH);
 		}
 		return jPanelEffects;
+	}
+
+	private JPanel getJPanelHealth() {
+		if (jPanelHealth == null) {
+			jPanelHealth = new JPanel();
+			jPanelHealth.setBorder(BorderFactory.createTitledBorder(null, "Health", TitledBorder.LEADING,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 10), new Color(51, 51, 51)));
+			jPanelHealth.setLayout(new GroupLayout());
+			jPanelHealth.add(getJSpinnerDamageHealAmount(), new Constraints(new Leading(0, 62, 12, 12), new Leading(-5, 10, 10)));
+			jPanelHealth.add(getJButtonFive(), new Constraints(new Leading(0, 26, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelHealth.add(getJButtonPlusFive(), new Constraints(new Leading(36, 26, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelHealth.add(getJButtonSurge(), new Constraints(new Leading(0, 62, 12, 12), new Leading(43, 22, 12, 12)));
+			jPanelHealth.add(getJButtonHalve(), new Constraints(new Leading(0, 62, 12, 12), new Leading(66, 22, 12, 12)));
+			jPanelHealth.add(getJButtonDamage(), new Constraints(new Leading(66, 57, 12, 12), new Leading(-5, 47, 12, 12)));
+			jPanelHealth.add(getJButtonHeal(), new Constraints(new Leading(66, 57, 12, 12), new Leading(43, 45, 12, 12)));
+			jPanelHealth.add(getJButtonAddTemp(), new Constraints(new Leading(127, 74, 12, 12), new Leading(-5, 24, 12, 12)));
+			jPanelHealth.add(getJButtonMax(), new Constraints(new Leading(127, 74, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelHealth.add(getJButtonFailDeath(), new Constraints(new Leading(127, 74, 12, 12), new Leading(43, 22, 12, 12)));
+			jPanelHealth.add(getJButtonUndoDeath(), new Constraints(new Leading(127, 74, 12, 12), new Leading(66, 22, 12, 12)));
+		}
+		return jPanelHealth;
 	}
 
 	private JPanel getJPanelInitiative() {
@@ -948,8 +1048,10 @@ public class MainFrame extends JFrame {
 			jPanelInitiative.setLayout(new GroupLayout());
 			jPanelInitiative.add(getJLabelInitRoll(), new Constraints(new Leading(227, 50, 12, 12), new Leading(12, 12, 12)));
 			jPanelInitiative.add(getJSpinnerInitRoll(), new Constraints(new Leading(230, 47, 12, 12), new Leading(32, 41, 12, 12)));
-			jPanelInitiative.add(getJButtonRemoveFighter(), new Constraints(new Leading(3, 72, 12, 12), new Leading(5, 38, 12, 12)));
-			jPanelInitiative.add(getJButtonRollInitiative(), new Constraints(new Leading(76, 72, 12, 12), new Leading(5, 38, 12, 12)));
+			jPanelInitiative
+					.add(getJButtonRemoveFighter(), new Constraints(new Leading(3, 72, 12, 12), new Leading(5, 38, 12, 12)));
+			jPanelInitiative.add(getJButtonRollInitiative(), new Constraints(new Leading(76, 72, 12, 12),
+					new Leading(5, 38, 12, 12)));
 			jPanelInitiative.add(getJButtonMoveToTop(), new Constraints(new Leading(150, 72, 12, 12), new Leading(5, 38, 12, 12)));
 			jPanelInitiative.add(getJButtonReserve(), new Constraints(new Leading(3, 72, 12, 12), new Leading(44, 38, 12, 12)));
 			jPanelInitiative.add(getJButtonDelay(), new Constraints(new Leading(76, 72, 12, 12), new Leading(44, 38, 12, 12)));
@@ -958,12 +1060,35 @@ public class MainFrame extends JFrame {
 		return jPanelInitiative;
 	}
 
+	private JPanel getJPanelMusic() {
+		if (jPanelMusic == null) {
+			jPanelMusic = new JPanel();
+			jPanelMusic.setLayout(new GroupLayout());
+		}
+		return jPanelMusic;
+	}
+
+	private JPanel getJPanelSurges() {
+		if (jPanelSurges == null) {
+			jPanelSurges = new JPanel();
+			jPanelSurges.setBorder(BorderFactory.createTitledBorder(null, "Surges", TitledBorder.LEADING,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 10), new Color(51, 51, 51)));
+			jPanelSurges.setLayout(new GroupLayout());
+			jPanelSurges.add(getJTextFieldSurges(), new Constraints(new Leading(0, 63, 12, 12), new Leading(-5, 24, 12, 12)));
+			jPanelSurges.add(getJButtonPlusOne(), new Constraints(new Leading(0, 26, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelSurges.add(getJButtonMinusOne(), new Constraints(new Leading(37, 26, 12, 12), new Leading(20, 22, 12, 12)));
+			jPanelSurges.add(getJButtonRegainAll(), new Constraints(new Leading(0, 63, 12, 12), new Leading(43, 45, 12, 12)));
+		}
+		return jPanelSurges;
+	}
+
 	private JPanel getJPanelTopCenter() {
 		if (jPanelTopCenter == null) {
 			jPanelTopCenter = new JPanel();
 			jPanelTopCenter.setLayout(new GroupLayout());
 			jPanelTopCenter.add(getJLabelName(), new Constraints(new Leading(4, 10, 10), new Leading(6, 12, 12)));
-			jPanelTopCenter.add(getJTabbedPaneControls(), new Constraints(new Leading(4, 288, 12, 12), new Leading(26, 139, 12, 12)));
+			jPanelTopCenter.add(getJTabbedPaneControls(),
+					new Constraints(new Leading(4, 288, 12, 12), new Leading(26, 139, 12, 12)));
 			jPanelTopCenter.add(getJButtonNextTurn(), new Constraints(new Leading(4, 211, 12, 12), new Leading(171, 12, 12)));
 			jPanelTopCenter.add(getJTextFieldNumber(), new Constraints(new Leading(254, 38, 12, 12), new Leading(3, 12, 12)));
 			jPanelTopCenter.add(getJTextFieldName(), new Constraints(new Leading(43, 205, 10, 10), new Leading(3, 12, 12)));
@@ -987,20 +1112,20 @@ public class MainFrame extends JFrame {
 			jPopupMenuRoster.addSeparator();
 			jPopupMenuRoster.add(getJMenuItemToggleVisibility());
 			jPopupMenuRoster.addPopupMenuListener(new PopupMenuListener() {
-				
+
 				@Override
-				public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-					jPopupMenuRosterWillBecomeVisible(e);
+				public void popupMenuCanceled(PopupMenuEvent e) {
+					// do nothing
 				}
-				
+
 				@Override
 				public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
 					// do nothing
 				}
-				
+
 				@Override
-				public void popupMenuCanceled(PopupMenuEvent e) {
-					// do nothing
+				public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+					jPopupMenuRosterWillBecomeVisible(e);
 				}
 			});
 		}
@@ -1021,6 +1146,23 @@ public class MainFrame extends JFrame {
 			jScrollPaneEffects.setViewportView(getJListEffects());
 		}
 		return jScrollPaneEffects;
+	}
+
+	private JScrollPane getJScrollPaneNotes() {
+		if (jScrollPaneNotes == null) {
+			jScrollPaneNotes = new JScrollPane();
+			jScrollPaneNotes.setViewportView(getJTextAreaNotes());
+		}
+		return jScrollPaneNotes;
+	}
+
+	private JScrollPane getJScrollPaneOffTurnPowers() {
+		if (jScrollPaneOffTurnPowers == null) {
+			jScrollPaneOffTurnPowers = new JScrollPane();
+			jScrollPaneOffTurnPowers.setVisible(false);
+			jScrollPaneOffTurnPowers.setViewportView(getJListOffTurnPowers());
+		}
+		return jScrollPaneOffTurnPowers;
 	}
 
 	private JScrollPane getJScrollPanePowerList() {
@@ -1083,7 +1225,8 @@ public class MainFrame extends JFrame {
 			jSpinnerDamageHealAmount.setEditor(new JSpinner.NumberEditor(jSpinnerDamageHealAmount));
 			jSpinnerDamageHealAmount.setEnabled(false);
 			jSpinnerDamageHealAmount.addChangeListener(new ChangeListener() {
-	
+
+				@Override
 				public void stateChanged(ChangeEvent event) {
 					jSpinnerDamageHealAmountChangeStateChanged(event);
 				}
@@ -1100,13 +1243,15 @@ public class MainFrame extends JFrame {
 			jSpinnerInitRoll.setEditor(new JSpinner.NumberEditor(jSpinnerInitRoll));
 			jSpinnerInitRoll.setEnabled(false);
 			jSpinnerInitRoll.addChangeListener(new ChangeListener() {
-				
+
+				@Override
 				public void stateChanged(ChangeEvent e) {
 					jSpinnerInitRollChangeStateChanged(e);
 				}
 			});
 			jSpinnerInitRoll.addKeyListener(new KeyAdapter() {
-	
+
+				@Override
 				public void keyPressed(KeyEvent event) {
 					jSpinnerInitRollKeyKeyPressed(event);
 				}
@@ -1183,6 +1328,16 @@ public class MainFrame extends JFrame {
 		return jTabbedPaneControls;
 	}
 
+	private JTabbedPane getJTabbedPaneUtils() {
+		if (jTabbedPaneUtils == null) {
+			jTabbedPaneUtils = new JTabbedPane();
+			jTabbedPaneUtils.addTab("Notes", getJScrollPaneNotes());
+			jTabbedPaneUtils.addTab("Off-Turn Powers", getJScrollPaneOffTurnPowers());
+			jTabbedPaneUtils.addTab("Music", getJPanelMusic());
+		}
+		return jTabbedPaneUtils;
+	}
+
 	private JTable getJTableRoster() {
 		if (jTableRoster == null) {
 			jTableRoster = new JTable();
@@ -1209,7 +1364,8 @@ public class MainFrame extends JFrame {
 			jTableRoster.getTableHeader().getColumnModel().getColumn(7).setResizable(false);
 			jTableRoster.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 			jTableRoster.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-				
+
+				@Override
 				public void valueChanged(ListSelectionEvent event) {
 					jTableRosterSelectionValueChanged(event);
 				}
@@ -1218,12 +1374,39 @@ public class MainFrame extends JFrame {
 		return jTableRoster;
 	}
 
+	private JTextArea getJTextAreaNotes() {
+		if (jTextAreaNotes == null) {
+			jTextAreaNotes = new JTextArea();
+			jTextAreaNotes.setLineWrap(true);
+			jTextAreaNotes.setWrapStyleWord(true);
+			jTextAreaNotes.getDocument().addDocumentListener(new DocumentListener() {
+
+				@Override
+				public void changedUpdate(DocumentEvent arg0) {
+					saveGlobalNotes();
+				}
+
+				@Override
+				public void insertUpdate(DocumentEvent arg0) {
+					saveGlobalNotes();
+				}
+
+				@Override
+				public void removeUpdate(DocumentEvent arg0) {
+					saveGlobalNotes();
+				}
+			});
+		}
+		return jTextAreaNotes;
+	}
+
 	private JTextField getJTextFieldName() {
 		if (jTextFieldName == null) {
 			jTextFieldName = new JTextField();
 			jTextFieldName.setEnabled(false);
 			jTextFieldName.addVetoableChangeListener(new VetoableChangeListener() {
-	
+
+				@Override
 				public void vetoableChange(PropertyChangeEvent event) {
 					jTextFieldNameVetoableChangeVetoableChange(event);
 				}
@@ -1250,6 +1433,15 @@ public class MainFrame extends JFrame {
 			jTextFieldSurges.setEnabled(false);
 		}
 		return jTextFieldSurges;
+	}
+
+	/**
+	 * Returns the selected {@link Combatant}.
+	 * 
+	 * @return the Combatant
+	 */
+	private Combatant getListSelectedFighter() {
+		return getFight().getSelectedFighter();
 	}
 
 	private JMenuBar getMenuBarMain() {
@@ -1284,7 +1476,8 @@ public class MainFrame extends JFrame {
 			menuEncounterEnd.setText("End Encounter");
 			menuEncounterEnd.setAccelerator(KeyStroke.getKeyStroke("control shift pressed I"));
 			menuEncounterEnd.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuEncounterEndActionActionPerformed(event);
 				}
@@ -1299,7 +1492,8 @@ public class MainFrame extends JFrame {
 			menuEncounterInitiative.setText("Roll Initiative");
 			menuEncounterInitiative.setAccelerator(KeyStroke.getKeyStroke("control pressed I"));
 			menuEncounterInitiative.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuEncounterInitiativeActionActionPerformed(event);
 				}
@@ -1313,7 +1507,8 @@ public class MainFrame extends JFrame {
 			menuEncounterRemoveMonsters = new JMenuItem();
 			menuEncounterRemoveMonsters.setText("Remove All Monsters");
 			menuEncounterRemoveMonsters.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuEncounterRemoveMonstersActionActionPerformed(event);
 				}
@@ -1346,7 +1541,8 @@ public class MainFrame extends JFrame {
 			menuFileExit.setText("Exit");
 			menuFileExit.setAccelerator(KeyStroke.getKeyStroke("alt pressed F4"));
 			menuFileExit.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuFileExitActionActionPerformed(event);
 				}
@@ -1361,7 +1557,8 @@ public class MainFrame extends JFrame {
 			menuFileImport.setText("Import");
 			menuFileImport.setAccelerator(KeyStroke.getKeyStroke("control shift pressed O"));
 			menuFileImport.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuFileImportActionActionPerformed(event);
 				}
@@ -1370,28 +1567,14 @@ public class MainFrame extends JFrame {
 		return menuFileImport;
 	}
 
-	private JMenuItem getMenuFileOpen() {
-		if (menuFileOpen == null) {
-			menuFileOpen = new JMenuItem();
-			menuFileOpen.setText("Open Encounter");
-			menuFileOpen.setAccelerator(KeyStroke.getKeyStroke("control pressed O"));
-			menuFileOpen.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					menuFileOpenActionActionPerformed(event);
-				}
-			});
-		}
-		return menuFileOpen;
-	}
-
 	private JMenuItem getMenuFileNew() {
 		if (menuFileNew == null) {
 			menuFileNew = new JMenuItem();
 			menuFileNew.setText("New Encounter");
 			menuFileNew.setAccelerator(KeyStroke.getKeyStroke("control pressed N"));
 			menuFileNew.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuFileNewActionActionPerformed(event);
 				}
@@ -1400,13 +1583,30 @@ public class MainFrame extends JFrame {
 		return menuFileNew;
 	}
 
+	private JMenuItem getMenuFileOpen() {
+		if (menuFileOpen == null) {
+			menuFileOpen = new JMenuItem();
+			menuFileOpen.setText("Open Encounter");
+			menuFileOpen.setAccelerator(KeyStroke.getKeyStroke("control pressed O"));
+			menuFileOpen.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					menuFileOpenActionActionPerformed(event);
+				}
+			});
+		}
+		return menuFileOpen;
+	}
+
 	private JMenuItem getMenuFileSave() {
 		if (menuFileSave == null) {
 			menuFileSave = new JMenuItem();
 			menuFileSave.setText("Save Encounter");
 			menuFileSave.setAccelerator(KeyStroke.getKeyStroke("control pressed S"));
 			menuFileSave.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuFileSaveActionActionPerformed(event);
 				}
@@ -1434,7 +1634,7 @@ public class MainFrame extends JFrame {
 			menuHelpAbout.setText("About");
 			menuHelpAbout.setAccelerator(KeyStroke.getKeyStroke("pressed F1"));
 			menuHelpAbout.addActionListener(new ActionListener() {
-				
+
 				@Override
 				public void actionPerformed(ActionEvent e) {
 					menuHelpAboutActionActionPerformed(e);
@@ -1461,7 +1661,8 @@ public class MainFrame extends JFrame {
 			menuLibraryOpen.setText("Open");
 			menuLibraryOpen.setAccelerator(KeyStroke.getKeyStroke("control pressed L"));
 			menuLibraryOpen.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuLibraryOpenActionActionPerformed(event);
 				}
@@ -1500,7 +1701,8 @@ public class MainFrame extends JFrame {
 			menuOptionsPopup.setSelected(true);
 			menuOptionsPopup.setText("Popup for Ongoing Damage");
 			menuOptionsPopup.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuOptionsPopupActionActionPerformed(event);
 				}
@@ -1526,7 +1728,8 @@ public class MainFrame extends JFrame {
 			menuOptionsRollsRecharges.setSelected(true);
 			menuOptionsRollsRecharges.setText("Recharges");
 			menuOptionsRollsRecharges.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuOptionsRollsRechargesActionActionPerformed(event);
 				}
@@ -1541,7 +1744,8 @@ public class MainFrame extends JFrame {
 			menuOptionsRollsSaves.setSelected(true);
 			menuOptionsRollsSaves.setText("Saves");
 			menuOptionsRollsSaves.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuOptionsRollsSavesActionActionPerformed(event);
 				}
@@ -1556,7 +1760,8 @@ public class MainFrame extends JFrame {
 			menuOptionsShowFullInitDisplay.setText("Show Full Init Display");
 			menuOptionsShowFullInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed F"));
 			menuOptionsShowFullInitDisplay.addItemListener(new ItemListener() {
-				
+
+				@Override
 				public void itemStateChanged(ItemEvent e) {
 					menuOptionsShowFullInitDisplayStateChanged(e);
 				}
@@ -1572,6 +1777,7 @@ public class MainFrame extends JFrame {
 			menuOptionsShowMinimalInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control pressed M"));
 			menuOptionsShowMinimalInitDisplay.addItemListener(new ItemListener() {
 
+				@Override
 				public void itemStateChanged(ItemEvent e) {
 					menuOptionsShowMinimalInitDisplayStateChanged(e);
 				}
@@ -1600,7 +1806,8 @@ public class MainFrame extends JFrame {
 			menuPartyExtendedRest = new JMenuItem();
 			menuPartyExtendedRest.setText("Take Extended Rest");
 			menuPartyExtendedRest.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuPartyExtendedRestActionActionPerformed(event);
 				}
@@ -1614,7 +1821,8 @@ public class MainFrame extends JFrame {
 			menuPartyRemove = new JMenuItem();
 			menuPartyRemove.setText("Remove Party from Roster");
 			menuPartyRemove.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuPartyRemoveActionActionPerformed(event);
 				}
@@ -1628,7 +1836,8 @@ public class MainFrame extends JFrame {
 			menuPartyShortRest = new JMenuItem();
 			menuPartyShortRest.setText("Take Short Rest");
 			menuPartyShortRest.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuPartyShortRestActionActionPerformed(event);
 				}
@@ -1642,7 +1851,8 @@ public class MainFrame extends JFrame {
 			menuPartyShortRestMilestone = new JMenuItem();
 			menuPartyShortRestMilestone.setText("Take Short Rest with Milestone");
 			menuPartyShortRestMilestone.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					menuPartyShortRestMilestoneActionActionPerformed(event);
 				}
@@ -1653,6 +1863,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Returns the roster cell renderer.
+	 * 
 	 * @return the renderer
 	 */
 	private TableCellRenderer getRosterRenderer() {
@@ -1661,21 +1872,49 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Returns the stat library
+	 * 
+	 * @return the stat library
+	 */
+	private StatLibrary getStatlib() {
+		return _statlib;
+	}
+
+	/**
+	 * Returns the filename of the stat library.
+	 * 
+	 * @return the filename
+	 */
+	private String getStatlibFilename() {
+		return _statlibFilename;
+	}
+
+	/**
+	 * Indicates if full initiative information is to be displayed.
+	 * 
+	 * @return true, if full initiative information should be displayed
+	 */
+	private Boolean isFullInit() {
+		return _fullInit;
+	}
+
+	/**
 	 * Event: Add clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonAddActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			EffectWin effectWin = new EffectWin(getFight(), this);
 			effectWin.setVisible(true);
-			
+
 			if (effectWin.getEffect() != null) {
 				getFight().effectAdd(effectWin.getEffect());
 				effectLoad();
 			}
-			
+
 			effectWin.dispose();
 			updateInitDisplay();
 		}
@@ -1683,11 +1922,12 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Add Temp clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonAddTempActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			fighter.addTempHP((Integer) getJSpinnerDamageHealAmount().getValue());
 			updateFromClass();
@@ -1696,6 +1936,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Back Up clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonBackUpActionActionPerformed(ActionEvent event) {
@@ -1706,26 +1947,27 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Change clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonChangeActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			if (getJListEffects().getSelectedIndices().length > 0) {
 				for (int i : getJListEffects().getSelectedIndices()) {
 					Effect eff = (Effect) getJListEffects().getModel().getElementAt(i);
 					EffectWin effectWin = new EffectWin(getFight(), getFight().getActiveEffect(eff.getEffectID()), this);
 					effectWin.setVisible(true);
-					
+
 					if (effectWin.getEffect() != null) {
 						getFight().effectChange(effectWin.getEffect());
 					}
-					
+
 					effectWin.dispose();
 				}
 			}
-	
+
 			effectLoad();
 			updateInitDisplay();
 		}
@@ -1733,16 +1975,17 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Dmg, clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonDamageActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			fighter.damage((Integer) getJSpinnerDamageHealAmount().getValue());
 			updateFromClass();
 			getJSpinnerDamageHealAmount().requestFocusInWindow();
-			
+
 			if (!getFight().getCurrentFighterHandle().isEmpty()) {
 				StatLogger.logDamage(getFight().getCurrentRound(), getFight().getCurrentFighter().getCombatHandle(),
 						fighter.getCombatHandle(), (Integer) getJSpinnerDamageHealAmount().getValue());
@@ -1756,6 +1999,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Delay clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonDelayActionActionPerformed(ActionEvent event) {
@@ -1765,11 +2009,12 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Fail Death clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonFailDeathActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			fighter.failDeathSave();
 			updateFromClass();
@@ -1778,6 +2023,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: 5 clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonFiveActionActionPerformed(ActionEvent event) {
@@ -1787,24 +2033,26 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Halve clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonHalveActionActionPerformed(ActionEvent event) {
-		getJSpinnerDamageHealAmount().setValue((Integer)getJSpinnerDamageHealAmount().getValue() / 2);
+		getJSpinnerDamageHealAmount().setValue((Integer) getJSpinnerDamageHealAmount().getValue() / 2);
 	}
 
 	/**
 	 * Event: Heal clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonHealActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			fighter.heal((Integer) getJSpinnerDamageHealAmount().getValue());
 			updateFromClass();
 			getJSpinnerDamageHealAmount().requestFocusInWindow();
-			
+
 			if (!getFight().getCurrentFighterHandle().isEmpty()) {
 				StatLogger.logDamage(getFight().getCurrentRound(), getFight().getCurrentFighter().getCombatHandle(),
 						fighter.getCombatHandle(), -(Integer) getJSpinnerDamageHealAmount().getValue());
@@ -1814,11 +2062,12 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Max clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonMaxActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			getJSpinnerDamageHealAmount().setValue(fighter.getMaxHP());
 			getJSpinnerDamageHealAmount().requestFocusInWindow();
@@ -1827,6 +2076,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: -1 clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonMinusOneActionActionPerformed(ActionEvent event) {
@@ -1839,6 +2089,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Move to Top clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonMoveToTopActionActionPerformed(ActionEvent event) {
@@ -1848,6 +2099,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Next Turn clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonNextTurnActionActionPerformed(ActionEvent event) {
@@ -1857,7 +2109,18 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Event: +5 clicked.
+	 * 
+	 * @param event
+	 */
+	private void jButtonPlusFiveActionActionPerformed(ActionEvent event) {
+		getJSpinnerDamageHealAmount().setValue((Integer) getJSpinnerDamageHealAmount().getValue() + 5);
+		getJSpinnerDamageHealAmount().requestFocusInWindow();
+	}
+
+	/**
 	 * Event: +1 clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonPlusOneActionActionPerformed(ActionEvent event) {
@@ -1869,16 +2132,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Event: +5 clicked.
-	 * @param event
-	 */
-	private void jButtonPlusFiveActionActionPerformed(ActionEvent event) {
-		getJSpinnerDamageHealAmount().setValue((Integer)getJSpinnerDamageHealAmount().getValue() + 5);
-		getJSpinnerDamageHealAmount().requestFocusInWindow();
-	}
-
-	/**
 	 * Event: Ready clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonReadyActionActionPerformed(ActionEvent event) {
@@ -1888,6 +2143,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Regain All clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonRegainAllActionActionPerformed(ActionEvent event) {
@@ -1900,11 +2156,12 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Remove clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonRemoveActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			if (getJListEffects().getSelectedIndices().length > 0) {
 				for (int i : getJListEffects().getSelectedIndices()) {
@@ -1912,7 +2169,7 @@ public class MainFrame extends JFrame {
 					getFight().effectRemove(eff.getEffectID());
 				}
 			}
-			
+
 			effectLoad();
 			updateInitDisplay();
 		}
@@ -1920,18 +2177,16 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Remove Fighter clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonRemoveFighterActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
-			int n = JOptionPane.showOptionDialog(
-					this,
-					"Are you sure you want to remove\n"
-							+ fighter.getCombatHandle() + " from the battle?",
-					"Remove Fighter?", JOptionPane.YES_NO_OPTION,
-					JOptionPane.QUESTION_MESSAGE, null, null, null);
+			int n = JOptionPane.showOptionDialog(this, "Are you sure you want to remove\n" + fighter.getCombatHandle()
+					+ " from the battle?", "Remove Fighter?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null,
+					null);
 			if (n == JOptionPane.YES_OPTION) {
 				getFight().remove(fighter.getCombatHandle());
 				getFight().clearSelectedFighter();
@@ -1942,6 +2197,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Reserve clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonReserveActionActionPerformed(ActionEvent event) {
@@ -1951,6 +2207,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Roll Initiative clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonRollInitiativeActionActionPerformed(ActionEvent event) {
@@ -1960,11 +2217,12 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Surge clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonSurgeActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null && fighter.getSurgeValue() != 0) {
 			getJSpinnerDamageHealAmount().setValue(fighter.getSurgeValue());
 			getJSpinnerDamageHealAmount().requestFocusInWindow();
@@ -1973,11 +2231,12 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Unfail Death clicked.
+	 * 
 	 * @param event
 	 */
 	private void jButtonUndoDeathActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			fighter.unfailDeathSave();
 			updateFromClass();
@@ -1986,6 +2245,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Statblock display, hyperlink updated.
+	 * 
 	 * @param event
 	 */
 	private void jEditorPaneStatblockHyperlinkHyperlinkUpdate(HyperlinkEvent event) {
@@ -2003,6 +2263,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Effects, selection changed.
+	 * 
 	 * @param event
 	 */
 	private void jListEffectsListSelectionValueChanged(ListSelectionEvent event) {
@@ -2011,6 +2272,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Effects, mouse clicked.
+	 * 
 	 * @param event
 	 */
 	private void jListEffectsMouseMouseClicked(MouseEvent event) {
@@ -2019,9 +2281,10 @@ public class MainFrame extends JFrame {
 			getJButtonChange().doClick();
 		}
 	}
-	
+
 	/**
-	 * Event: Off-turn powers list selection changed. 
+	 * Event: Off-turn powers list selection changed.
+	 * 
 	 * @param event
 	 */
 	private void jListOffTurnPowersListSelectionValueChanged(ListSelectionEvent event) {
@@ -2034,6 +2297,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Power List selection changed.
+	 * 
 	 * @param event
 	 */
 	private void jListPowerListListSelectionValueChanged(ListSelectionEvent event) {
@@ -2042,6 +2306,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Power List clicked.
+	 * 
 	 * @param event
 	 */
 	private void jListPowerListMouseMouseClicked(MouseEvent event) {
@@ -2059,6 +2324,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Roster, popup menu, Delay clicked.
+	 * 
 	 * @param event
 	 */
 	private void jMenuItemDelayActionActionPerformed(ActionEvent event) {
@@ -2067,11 +2333,12 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Roster, popup menu, Log OA clicked.
+	 * 
 	 * @param event
 	 */
 	private void jMenuItemLogOAActionActionPerformed(ActionEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			StatLogger.logOA(fighter.getCombatHandle());
 		}
@@ -2079,32 +2346,31 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Roster popup, Mark until EOE clicked.
+	 * 
 	 * @param event
 	 */
 	private void jMenuItemMarkUntilEOEActionActionPerformed(ActionEvent event) {
 		getFight().effectAdd("Marked (" + getFight().getCurrentFighter().getCombatHandle() + ")",
-				getFight().getCurrentFighter().getCombatHandle(),
-				getFight().getSelectedFighter().getCombatHandle(),
-				EffectBase.Duration.Encounter,
-				false);
+				getFight().getCurrentFighter().getCombatHandle(), getFight().getSelectedFighter().getCombatHandle(),
+				EffectBase.Duration.Encounter, false);
 		updateInitDisplay();
 	}
 
 	/**
 	 * Event: Roster popup, Mark until EONT clicked.
+	 * 
 	 * @param event
 	 */
 	private void jMenuItemMarkUntilEONTActionActionPerformed(ActionEvent event) {
 		getFight().effectAdd("Marked (" + getFight().getCurrentFighter().getCombatHandle() + ")",
-				getFight().getCurrentFighter().getCombatHandle(),
-				getFight().getSelectedFighter().getCombatHandle(),
-				EffectBase.Duration.SourceEnd,
-				false);
+				getFight().getCurrentFighter().getCombatHandle(), getFight().getSelectedFighter().getCombatHandle(),
+				EffectBase.Duration.SourceEnd, false);
 		updateInitDisplay();
 	}
 
 	/**
 	 * Event: Roster, popup menu, Move to Top clicked.
+	 * 
 	 * @param event
 	 */
 	private void jMenuItemMoveToStopActionActionPerformed(ActionEvent event) {
@@ -2113,6 +2379,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Roster, popup menu, Ready clicked.
+	 * 
 	 * @param event
 	 */
 	private void jMenuItemReadyActionActionPerformed(ActionEvent event) {
@@ -2121,6 +2388,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Roster popup, Toggle Visibility clicked.
+	 * 
 	 * @param event
 	 */
 	private void jMenuItemToggleVisibilityActionActionPerformed(ActionEvent event) {
@@ -2130,9 +2398,10 @@ public class MainFrame extends JFrame {
 			reloadListFromClass();
 		}
 	}
-	
+
 	/**
 	 * Event: Roster popup will become visible.
+	 * 
 	 * @param event
 	 */
 	private void jPopupMenuRosterWillBecomeVisible(PopupMenuEvent event) {
@@ -2143,10 +2412,11 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Damage/heal state changed.
+	 * 
 	 * @param event
 	 */
 	private void jSpinnerDamageHealAmountChangeStateChanged(ChangeEvent event) {
-		if ((Integer)getJSpinnerDamageHealAmount().getValue() > 0) {
+		if ((Integer) getJSpinnerDamageHealAmount().getValue() > 0) {
 			getJButtonDamage().setEnabled(true);
 			getJButtonHeal().setEnabled(true);
 			getJButtonAddTemp().setEnabled(true);
@@ -2162,13 +2432,14 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Init roll, value changed.
+	 * 
 	 * @param event
 	 */
 	private void jSpinnerInitRollChangeStateChanged(ChangeEvent event) {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
-			if ((Integer)getJSpinnerInitRoll().getValue() != fighter.getInitRoll()) {
+			if ((Integer) getJSpinnerInitRoll().getValue() != fighter.getInitRoll()) {
 				if (fighter.getInitStatus().contentEquals("Reserve")) {
 					getFight().rollOneInit(fighter);
 				}
@@ -2180,6 +2451,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Init roll, key pressed.
+	 * 
 	 * @param event
 	 */
 	private void jSpinnerInitRollKeyKeyPressed(KeyEvent event) {
@@ -2191,18 +2463,16 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Roster, selection changed.
+	 * 
 	 * @param event
 	 */
 	private void jTableRosterSelectionValueChanged(ListSelectionEvent event) {
 		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 15);
 		if (getJTableRoster().getSelectedRow() >= 0) {
 			Combatant fighterSelected = getFight().getSelectedFighter();
-			String tableSelected = (String) getJTableRoster().getValueAt(
-					getJTableRoster().getSelectedRow(), 2);
+			String tableSelected = (String) getJTableRoster().getValueAt(getJTableRoster().getSelectedRow(), 2);
 
-			if (fighterSelected == null
-					|| !fighterSelected.getCombatHandle().contentEquals(
-							tableSelected)) {
+			if (fighterSelected == null || !fighterSelected.getCombatHandle().contentEquals(tableSelected)) {
 				getFight().setSelectedFighterHandle(tableSelected);
 				statDataLoad();
 			}
@@ -2214,14 +2484,15 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Name, changed.
+	 * 
 	 * @param event
 	 */
 	private void jTextFieldNameVetoableChangeVetoableChange(PropertyChangeEvent event) {
 		String newValue = getJTextFieldName().getText().trim();
-		
+
 		if (!newValue.isEmpty()) {
 			Combatant fighter = getListSelectedFighter();
-			
+
 			if (fighter != null) {
 				if (!newValue.contentEquals(fighter.getName())) {
 					getFight().remove(fighter.getCombatHandle());
@@ -2235,18 +2506,52 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Loads or imports an encounter.
+	 * 
+	 * @param clearFirst
+	 *            if true, the encounter is cleared first
+	 */
+	private void loadEncounter(Boolean clearFirst) {
+		JFileChooser fc = new JFileChooser();
+		fc.setDialogTitle("Load Encounter File(s)");
+		fc.setMultiSelectionEnabled(true);
+		fc.setCurrentDirectory(Settings.getWorkingDirectory());
+		fc.setFileFilter(new FileFilter() {
+
+			@Override
+			public boolean accept(File f) {
+				return (f.isDirectory() || f.getName().endsWith(".xml"));
+			}
+
+			@Override
+			public String getDescription() {
+				return "Encounter files (*.xml)";
+			}
+		});
+
+		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			Settings.setWorkingDirectory(fc.getCurrentDirectory());
+			if (clearFirst) {
+				getFight().clearAll();
+			}
+			for (File f : fc.getSelectedFiles()) {
+				getFight().loadFromFile(f.getAbsolutePath(), false);
+			}
+			getFight().clearSelectedFighter();
+			updateFromClass();
+		}
+	}
+
+	/**
 	 * Event: Menu, Encounter, End Encounter.
+	 * 
 	 * @param event
 	 */
 	private void menuEncounterEndActionActionPerformed(ActionEvent event) {
-		int n = JOptionPane.showOptionDialog(this,
-				"Are you sure you want to end the battle?\n"
-						+ "This will:\n"
-						+ "    -Reset monster health and powers\n"
-						+ "    -End all ongoing effects", "Are you sure?",
-				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null,
-				null, null);
-	
+		int n = JOptionPane.showOptionDialog(this, "Are you sure you want to end the battle?\n" + "This will:\n"
+				+ "    -Reset monster health and powers\n" + "    -End all ongoing effects", "Are you sure?",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
+
 		if (n == JOptionPane.YES_OPTION) {
 			getFight().resetEncounter(false);
 			getJTabbedPaneUtils().setSelectedIndex(0);
@@ -2256,6 +2561,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Encounter, Roll Initiative.
+	 * 
 	 * @param event
 	 */
 	private void menuEncounterInitiativeActionActionPerformed(ActionEvent event) {
@@ -2266,6 +2572,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Encounter, Remove Monsters
+	 * 
 	 * @param event
 	 */
 	private void menuEncounterRemoveMonstersActionActionPerformed(ActionEvent event) {
@@ -2274,15 +2581,8 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Event: Menu, File, New Encounter.
-	 * @param event
-	 */
-	private void menuFileNewActionActionPerformed(ActionEvent event) {
-		newEncounter();
-	}
-
-	/**
 	 * Event: Menu, File, Exit.
+	 * 
 	 * @param event
 	 */
 	private void menuFileExitActionActionPerformed(ActionEvent event) {
@@ -2291,6 +2591,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, File, Import.
+	 * 
 	 * @param event
 	 */
 	private void menuFileImportActionActionPerformed(ActionEvent event) {
@@ -2298,7 +2599,17 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Event: Menu, File, New Encounter.
+	 * 
+	 * @param event
+	 */
+	private void menuFileNewActionActionPerformed(ActionEvent event) {
+		newEncounter();
+	}
+
+	/**
 	 * Event: Menu, File, Open Encounter.
+	 * 
 	 * @param event
 	 */
 	private void menuFileOpenActionActionPerformed(ActionEvent event) {
@@ -2307,14 +2618,16 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, File, Save Encounter.
+	 * 
 	 * @param event
 	 */
 	private void menuFileSaveActionActionPerformed(ActionEvent event) {
 		saveEncounter();
 	}
-	
+
 	/**
 	 * Event: Menu, Help, About.
+	 * 
 	 * @param event
 	 */
 	private void menuHelpAboutActionActionPerformed(ActionEvent event) {
@@ -2326,19 +2639,20 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Library, Open.
+	 * 
 	 * @param event
 	 */
 	private void menuLibraryOpenActionActionPerformed(ActionEvent event) {
 		Library statlibWin = new Library(getStatlib(), this);
 		statlibWin.setVisible(true);
 		getStatlib().saveToFile(getStatlibFilename());
-		
+
 		if (statlibWin.getStatsToAdd().size() > 0) {
 			for (Stats fighter : statlibWin.getStatsToAdd()) {
 				getFight().add(fighter, false);
 			}
 		}
-		
+
 		statlibWin.dispose();
 		getFight().updateAllStats(!getFight().isOngoingFight());
 		updateFromClass();
@@ -2346,6 +2660,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Options, Popup for Ongoing Damage clicked.
+	 * 
 	 * @param event
 	 */
 	private void menuOptionsPopupActionActionPerformed(ActionEvent event) {
@@ -2355,6 +2670,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Options, Automatic Rolls, Recharges.
+	 * 
 	 * @param event
 	 */
 	private void menuOptionsRollsRechargesActionActionPerformed(ActionEvent event) {
@@ -2365,6 +2681,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Options, Automatic Rolls, Saves.
+	 * 
 	 * @param event
 	 */
 	private void menuOptionsRollsSavesActionActionPerformed(ActionEvent event) {
@@ -2375,6 +2692,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Options, Show Full Init Display (un)checked.
+	 * 
 	 * @param event
 	 */
 	private void menuOptionsShowFullInitDisplayStateChanged(ItemEvent event) {
@@ -2399,6 +2717,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Options, Show Minimal Init Display clicked.
+	 * 
 	 * @param event
 	 */
 	private void menuOptionsShowMinimalInitDisplayStateChanged(ItemEvent event) {
@@ -2423,16 +2742,13 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Party, Take Extended Rest.
+	 * 
 	 * @param event
 	 */
-	private void menuPartyExtendedRestActionActionPerformed(ActionEvent event) {		
-		int n = JOptionPane.showOptionDialog(this,
-				"Are you sure you want to take an extended rest?\n"
-						+ "This will:\n"
-						+ "    -Clear all monsters from the encounter\n"
-						+ "    -Refresh all PC powers\n"
-						+ "    -Restore the party to full health",
-				"Take Extended Rest?", JOptionPane.YES_NO_OPTION,
+	private void menuPartyExtendedRestActionActionPerformed(ActionEvent event) {
+		int n = JOptionPane.showOptionDialog(this, "Are you sure you want to take an extended rest?\n" + "This will:\n"
+				+ "    -Clear all monsters from the encounter\n" + "    -Refresh all PC powers\n"
+				+ "    -Restore the party to full health", "Take Extended Rest?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
 			getFight().takeExtendedRest();
@@ -2442,6 +2758,7 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Party, Remove Party from Roster.
+	 * 
 	 * @param event
 	 */
 	private void menuPartyRemoveActionActionPerformed(ActionEvent event) {
@@ -2451,16 +2768,13 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Party, Take Short Rest.
+	 * 
 	 * @param event
 	 */
 	private void menuPartyShortRestActionActionPerformed(ActionEvent event) {
-		int n = JOptionPane.showOptionDialog(this,
-				"Are you sure you want to take a short rest?\n"
-						+ "This will:\n"
-						+ "    -Clear all monsters from the encounter\n"
-						+ "    -Refresh all non-daily PC powers\n"
-						+ "    -Clear all temporary hit points",
-				"Take Short Rest?", JOptionPane.YES_NO_OPTION,
+		int n = JOptionPane.showOptionDialog(this, "Are you sure you want to take a short rest?\n" + "This will:\n"
+				+ "    -Clear all monsters from the encounter\n" + "    -Refresh all non-daily PC powers\n"
+				+ "    -Clear all temporary hit points", "Take Short Rest?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
 			getFight().takeShortRest();
@@ -2470,223 +2784,16 @@ public class MainFrame extends JFrame {
 
 	/**
 	 * Event: Menu, Party, Take Short Rest with Milestone clicked.
+	 * 
 	 * @param event
 	 */
 	private void menuPartyShortRestMilestoneActionActionPerformed(ActionEvent event) {
-		int n = JOptionPane.showOptionDialog(this,
-				"Are you sure you want to take a short rest with milestone?\n"
-						+ "This will:\n"
-						+ "    -Clear all monsters from the encounter\n"
-						+ "    -Refresh all non-daily PC powers\n"
-						+ "    -Clear all temporary hit points\n"
-						+ "    -Refresh PC action points",
-				"Take Short Rest with Milestone?", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE, null, null, null);
+		int n = JOptionPane.showOptionDialog(this, "Are you sure you want to take a short rest with milestone?\n" + "This will:\n"
+				+ "    -Clear all monsters from the encounter\n" + "    -Refresh all non-daily PC powers\n"
+				+ "    -Clear all temporary hit points\n" + "    -Refresh PC action points", "Take Short Rest with Milestone?",
+				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
 			getFight().takeShortRestWithMilestone();
-			updateFromClass();
-		}
-	}
-	
-	/**
-	 * Event: window closing.
-	 * @param event 
-	 */
-	private void windowWindowClosing(WindowEvent event) {
-		exitEncounter();
-	}
-
-	/**
-	 * Event: window open.
-	 * @param event
-	 */
-	private void windowWindowOpened(WindowEvent event) {
-		setStatlib(new StatLibrary());
-		File stats = new File(getStatlibFilename());
-		if (stats.exists()) {
-			getStatlib().loadFromFile(getStatlibFilename(), true);
-		}
-		
-		setFight(new Encounter(getStatlib(), Settings.useModRoles(), this));
-		
-		//statDataClear();
-		
-		getMenuOptionsRollsRecharges().setSelected(Settings.doPowerRecharge());
-		getMenuOptionsRollsSaves().setSelected(Settings.doSavingThrows());
-	
-	    updateEnabledControls();
-	}
-
-	private Encounter _fight;
-	private StatLibrary _statlib;
-	private String _statlibFilename = "statlibrary.dnd4";
-	private InitDisplay _initDisplay;
-	private Boolean _fullInit = false;
-	private RosterRenderer _rosterRenderer = new RosterRenderer();
-	private JTabbedPane jTabbedPaneUtils;
-	private JTextArea jTextAreaNotes;
-	private JScrollPane jScrollPaneNotes;
-	private JList jListOffTurnPowers;
-	private JScrollPane jScrollPaneOffTurnPowers;
-	private JPanel jPanelMusic;
-	private JPanel jPanelHealth;
-	private JPanel jPanelSurges;
-	private JPanel jPanelEffectButtons;
-	/**
-	 * Returns the tracker's encounter.
-	 * @return the encounter
-	 */
-	private Encounter getFight() {
-		return _fight;
-	}
-
-	/**
-	 * Sets the encounter used by the tracker.
-	 * @param fight the encounter
-	 */
-	private void setFight(Encounter fight) {
-		_fight = fight;
-	}
-
-	/**
-	 * Returns the {@link InitDisplay}.
-	 * @return the {@link InitDisplay}
-	 */
-	private InitDisplay getInitDisplay() {
-		if (_initDisplay == null) {
-			_initDisplay = new InitDisplay();
-			_initDisplay.addWindowListener(new WindowAdapter() {
-
-				public void windowClosing(WindowEvent e) {
-					getMenuOptionsShowMinimalInitDisplay().setSelected(false);
-					getMenuOptionsShowFullInitDisplay().setSelected(false);
-				}
-			});
-		}
-		return _initDisplay;
-	}
-
-	/**
-	 * Returns the selected {@link Combatant}.
-	 * @return the Combatant
-	 */
-	private Combatant getListSelectedFighter() {
-		return getFight().getSelectedFighter();
-	}
-
-	/**
-	 * Indicates if full initiative information is to be displayed.
-	 * @return true, if full initiative information should be displayed
-	 */
-	private Boolean isFullInit() {
-		return _fullInit;
-	}
-
-	/**
-	 * Sets an indicator of full initiative information display.
-	 * @param fullInit true, if full initiative information should be displayed
-	 */
-	private void setFullInit(Boolean fullInit) {
-		_fullInit = fullInit;
-	}
-
-	/**
-	 * Returns the stat library
-	 * @return the stat library
-	 */
-	private StatLibrary getStatlib() {
-		return _statlib;
-	}
-
-	/**
-	 * Sets the stat library.
-	 * @param statlib the stat library
-	 */
-	private void setStatlib(StatLibrary statlib) {
-		_statlib = statlib;
-	}
-
-	/**
-	 * Returns the filename of the stat library. 
-	 * @return the filename
-	 */
-	private String getStatlibFilename() {
-		return _statlibFilename;
-	}
-
-	/**
-	 * Enables/disables effect change and remove buttons based on list selection.
-	 */
-	private void effectButtonUpdate() {
-		if (getJListEffects().getSelectedIndices().length > 0) {
-			getJButtonChange().setEnabled(true);
-			getJButtonRemove().setEnabled(true);
-		} else {
-			getJButtonChange().setEnabled(false);
-			getJButtonRemove().setEnabled(false);
-		}
-	}
-
-	/**
-	 * Loads active effects for the selected {@link Combatant}.
-	 */
-	private void effectLoad() {
-		Combatant fighter = getListSelectedFighter();
-		
-		if (fighter != null) {
-			getJListEffects().setEnabled(true);
-			
-			getJListEffects().setCellRenderer(new EffectDetailsCellRenderer());
-			DefaultListModel model = (DefaultListModel) getJListEffects().getModel();
-			model.clear();
-			
-			for (Effect eff : getFight().getEffectsByTarget(fighter.getCombatHandle())) {
-				model.addElement(eff);
-			}
-			effectButtonUpdate();
-		}
-	}
-
-	/**
-	 * Closes the application.
-	 */
-	private void exitEncounter() {
-		Settings.save();
-		getStatlib().saveToFile(getStatlibFilename());
-		this.dispose();
-	}
-
-	/**
-	 * Loads or imports an encounter.
-	 * @param clearFirst if true, the encounter is cleared first
-	 */
-	private void loadEncounter(Boolean clearFirst) {
-		JFileChooser fc = new JFileChooser();
-		fc.setDialogTitle("Load Encounter File(s)");
-		fc.setMultiSelectionEnabled(true);
-		fc.setCurrentDirectory(Settings.getWorkingDirectory());
-		fc.setFileFilter(new FileFilter() {
-			
-			@Override
-			public String getDescription() {
-				return "Encounter files (*.xml)";
-			}
-			
-			@Override
-			public boolean accept(File f) {
-				return (f.isDirectory() || f.getName().endsWith(".xml"));
-			}
-		});
-		
-		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			Settings.setWorkingDirectory(fc.getCurrentDirectory());
-			if (clearFirst) {
-				getFight().clearAll();
-			}
-			for (File f : fc.getSelectedFiles()) {
-				getFight().loadFromFile(f.getAbsolutePath(), false);
-			}
-			getFight().clearSelectedFighter();
 			updateFromClass();
 		}
 	}
@@ -2715,23 +2822,21 @@ public class MainFrame extends JFrame {
 								BufferedReader reader = new BufferedReader(new InputStreamReader(url.openStream()));
 								String inputLine;
 								String content = "";
-								
+
 								while ((inputLine = reader.readLine()) != null) {
 									if (!inputLine.matches(".*<link.*")) {
-										content += inputLine.replaceAll("<img[^>]*>", "")
-												.replaceAll("<span class=\"level\">([^<]*)</span>", "$0: ");
+										content += inputLine.replaceAll("<img[^>]*>", "").replaceAll(
+												"<span class=\"level\">([^<]*)</span>", "$0: ");
 									}
 								}
 								getJEditorPaneCompendium().setText(content);
 								getJEditorPaneCompendium().setCaretPosition(0);
 							} catch (MalformedURLException e) {
 								getJEditorPaneCompendium().setText(
-										"<html><body><h1>Failed to load URL</h1><pre>"
-										+ e + "</pre></body></html>");
+										"<html><body><h1>Failed to load URL</h1><pre>" + e + "</pre></body></html>");
 							} catch (IOException e) {
 								getJEditorPaneCompendium().setText(
-										"<html><body><h1>Failed to load URL</h1><pre>"
-										+ e + "</pre></body></html>");
+										"<html><body><h1>Failed to load URL</h1><pre>" + e + "</pre></body></html>");
 							}
 						}
 					}
@@ -2745,12 +2850,12 @@ public class MainFrame extends JFrame {
 	 */
 	private void powerLoad() {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			getJListPowerList().setCellRenderer(new PowerCellRenderer(fighter));
 			DefaultListModel model = (DefaultListModel) getJListPowerList().getModel();
 			model.clear();
-			
+
 			for (Power pow : fighter.getPowerList()) {
 				model.addElement(pow);
 			}
@@ -2767,15 +2872,15 @@ public class MainFrame extends JFrame {
 		while (getFight().size() < getJTableRoster().getRowCount()) {
 			model.removeRow(getJTableRoster().getRowCount() - 1);
 		}
-		
+
 		Integer index = 0;
 		while (index < getFight().size()) {
 			Combatant fighter = getFight().getFighterByIndex(index);
-			
+
 			if (fighter == null) {
 				break;
 			}
-			
+
 			if (index < getJTableRoster().getRowCount()) {
 				getJTableRoster().setValueAt(fighter.isShown().toString().substring(0, 1).toUpperCase(), index, 0);
 				getJTableRoster().setValueAt(fighter.getRound(), index, 1);
@@ -2786,17 +2891,11 @@ public class MainFrame extends JFrame {
 				getJTableRoster().setValueAt(fighter.getRef(), index, 6);
 				getJTableRoster().setValueAt(fighter.getWill(), index, 7);
 			} else {
-				model.addRow(new Object[] {
-						fighter.isShown().toString().substring(0, 1).toUpperCase(),
-						fighter.getRound(),
-						fighter.getCombatHandle(),
-						fighter.getStatusLine(),
-						fighter.getAC(),
-						fighter.getFort(),
-						fighter.getRef(),
+				model.addRow(new Object[] { fighter.isShown().toString().substring(0, 1).toUpperCase(), fighter.getRound(),
+						fighter.getCombatHandle(), fighter.getStatusLine(), fighter.getAC(), fighter.getFort(), fighter.getRef(),
 						fighter.getWill() });
 			}
-			
+
 			if (fighter.getInitStatus().contentEquals("Rolled")) {
 				// set group to 0
 				if (fighter.getRound() == 0) {
@@ -2820,11 +2919,11 @@ public class MainFrame extends JFrame {
 				// set group to 5
 				getJTableRoster().setValueAt("", index, 1);
 			}
-			
+
 			index++;
 		}
 		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 15);
-		
+
 		updateOffTurnPowers();
 		updateInitDisplay();
 		updateEnabledControls();
@@ -2838,18 +2937,18 @@ public class MainFrame extends JFrame {
 		fc.setDialogTitle("Save Encounter File");
 		fc.setCurrentDirectory(Settings.getWorkingDirectory());
 		fc.setFileFilter(new FileFilter() {
-			
-			@Override
-			public String getDescription() {
-				return "Encounter files (*.xml)";
-			}
-			
+
 			@Override
 			public boolean accept(File f) {
 				return f.getName().endsWith(".xml");
 			}
+
+			@Override
+			public String getDescription() {
+				return "Encounter files (*.xml)";
+			}
 		});
-		
+
 		if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
 			Settings.setWorkingDirectory(fc.getCurrentDirectory());
 			File f = fc.getSelectedFile();
@@ -2862,12 +2961,42 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Saves the text in the global notes text area to the class. 
+	 * Saves the text in the global notes text area to the class.
 	 */
 	private void saveGlobalNotes() {
 		if (getFight() != null) {
 			getFight().setGlobalNotes(getJTextAreaNotes().getText());
 		}
+	}
+
+	/**
+	 * Sets the encounter used by the tracker.
+	 * 
+	 * @param fight
+	 *            the encounter
+	 */
+	private void setFight(Encounter fight) {
+		_fight = fight;
+	}
+
+	/**
+	 * Sets an indicator of full initiative information display.
+	 * 
+	 * @param fullInit
+	 *            true, if full initiative information should be displayed
+	 */
+	private void setFullInit(Boolean fullInit) {
+		_fullInit = fullInit;
+	}
+
+	/**
+	 * Sets the stat library.
+	 * 
+	 * @param statlib
+	 *            the stat library
+	 */
+	private void setStatlib(StatLibrary statlib) {
+		_statlib = statlib;
 	}
 
 	/**
@@ -2943,7 +3072,7 @@ public class MainFrame extends JFrame {
 			getJButtonPlusOne().setEnabled(false);
 			getJButtonMinusOne().setEnabled(false);
 			getJButtonRemoveFighter().setEnabled(true);
-			
+
 			if (fighter.getInitStatus().contentEquals("Rolled")) {
 				getJButtonBackUp().setEnabled(true);
 				getJButtonDelay().setEnabled(true);
@@ -2963,14 +3092,12 @@ public class MainFrame extends JFrame {
 			} else {
 				getJButtonReserve().setEnabled(true);
 			}
-			
-			if (getFight().getCurrentFighter() != null
-					&& getJButtonMoveToTop().isEnabled()
-					&& getFight().getCurrentFighter().getCombatHandle()
-							.contentEquals(fighter.getCombatHandle())) {
+
+			if (getFight().getCurrentFighter() != null && getJButtonMoveToTop().isEnabled()
+					&& getFight().getCurrentFighter().getCombatHandle().contentEquals(fighter.getCombatHandle())) {
 				getJButtonMoveToTop().setEnabled(false);
 			}
-			
+
 			if (!fighter.getInitStatus().contentEquals("Reserve") || fighter.isPC()) {
 				getJSpinnerInitRoll().setEnabled(true);
 				getJSpinnerDamageHealAmount().setEnabled(true);
@@ -3024,7 +3151,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void statDataLoad() {
 		Combatant fighter = getListSelectedFighter();
-		
+
 		if (fighter != null) {
 			getJTextFieldName().setText(fighter.getName());
 			if (fighter.getFighterNumber() > 0) {
@@ -3033,14 +3160,14 @@ public class MainFrame extends JFrame {
 				getJTextFieldNumber().setText("PC");
 			}
 			getJSpinnerInitRoll().setValue(fighter.getInitRoll());
-			
+
 			getJEditorPaneStatblock().setText(fighter.getStatsHTML());
 			getJEditorPaneStatblock().setCaretPosition(0);
 			getJTextFieldSurges().setText(fighter.getSurgeView());
-			
+
 			powerLoad();
 			effectLoad();
-			
+
 			statDataEnable(fighter);
 		}
 	}
@@ -3059,16 +3186,16 @@ public class MainFrame extends JFrame {
 		getMenuPartyShortRestMilestone().setEnabled(false);
 		getMenuPartyExtendedRest().setEnabled(false);
 		getMenuPartyRemove().setEnabled(false);
-		
+
 		getJButtonNextTurn().setEnabled(false);
-		
-		if(getFight().size() > 0) {
+
+		if (getFight().size() > 0) {
 			getMenuFileSave().setEnabled(true);
-			
+
 			if (getFight().getReserveList().size() > 0) {
 				getMenuEncounterInitiative().setEnabled(true);
 			}
-			
+
 			if (!getFight().isOngoingFight()) {
 				getMenuEncounterRemoveMonsters().setEnabled(true);
 				getMenuPartyRemove().setEnabled(true);
@@ -3092,7 +3219,7 @@ public class MainFrame extends JFrame {
 	private void updateFromClass() {
 		getJTextAreaNotes().setText(getFight().getGlobalNotes());
 		reloadListFromClass();
-		
+
 		if (getFight().hasSelectedFighter()) {
 			Combatant fighter = getFight().getSelectedFighter();
 			for (int i = 0; i < getJTableRoster().getRowCount(); i++) {
@@ -3106,30 +3233,6 @@ public class MainFrame extends JFrame {
 			statDataClear();
 		}
 	}
-	
-	/**
-	 * Updates the list of off-turn powers.
-	 */
-	private void updateOffTurnPowers() {
-		getJListOffTurnPowers().setCellRenderer(new OffTurnPowerRenderer(getFight()));
-		DefaultListModel model = (DefaultListModel) getJListOffTurnPowers().getModel();
-		model.clear();
-		for (String handle : getFight().getRolledList().values()) {
-			Combatant fighter = getFight().getFighterByHandle(handle);
-			for (Power pow : fighter.getPowerList()) {
-				if (!fighter.isPowerUsed(pow.getName())
-						&& !fighter.isPC()
-						&& (pow.getAction().contains("immediate")
-								|| pow.getAction().contains("opportunity;")
-								|| pow.getAction().contains("triggered;")
-								|| pow.getAction().contains("free;")
-								|| pow.getAction().contains("no;")
-								|| pow.isAura())) {
-					model.addElement(new FighterPower(fighter, pow));
-				}
-			}
-		}
-	}
 
 	/**
 	 * Regenerates the initiative display from current information.
@@ -3141,9 +3244,8 @@ public class MainFrame extends JFrame {
 		Integer currentRound = -1;
 		Integer round = -1;
 		String text;
-		
-		text = "<html><head><style type='text/css'>\n"
-				+ "body { margin: 0ex; }\n"
+
+		text = "<html><head><style type='text/css'>\n" + "body { margin: 0ex; }\n"
 				+ "table { width: 100%; border-width: 1px; border-style: solid; border-color: black }\n"
 				+ "th { font-size: x-large; border-width: 1px; border-style: solid; border-color: black }\n"
 				+ "td { font-size: x-large; border-width: 1px; border-style: solid; border-color: gray }\n"
@@ -3151,29 +3253,29 @@ public class MainFrame extends JFrame {
 				+ "<th style='width: 105px'>HP</th><th style='width: 3ex'>A</th>\n"
 				+ "<th style='width: 3ex'>F</th><th style='width: 3ex'>R</th>\n"
 				+ "<th style='width: 3ex'>W</th><th>Status Effects</th></tr>\n";
-	
+
 		while (index < getFight().size()) {
 			Combatant fighter = getFight().getFighterByIndex(index);
-			
+
 			if (!fighter.isShown()) {
 				index++;
 				continue;
 			}
-			
+
 			String name = fighter.getName();
 			String hpBarColor;
-			
+
 			if (!fighter.isPC()) {
 				name += " " + fighter.getFighterNumber();
 			}
-			
+
 			if (!name.isEmpty() && !fighter.isDyingOrDead() || fighter.isPC()) {
 				if (fighter.isBloody() && (isFullInit() || fighter.isPC())) {
 					hpBarColor = "#aa0000";
 				} else {
 					hpBarColor = "#00aa00";
 				}
-				
+
 				if (currentRound < 0) {
 					currentRound = fighter.getRound();
 				}
@@ -3184,7 +3286,7 @@ public class MainFrame extends JFrame {
 					round = fighter.getRound();
 					text += "<tr><th colspan='7'>Round " + round + "</th></tr>";
 				}
-				
+
 				text += "<tr><th style='text-align: left; color: ";
 				if (fighter.isPC()) {
 					text += "#00aa00";
@@ -3216,51 +3318,45 @@ public class MainFrame extends JFrame {
 					}
 				}
 				text += "'>" + name + "</th>";
-				
+
 				if (fighter.isPC() && fighter.getCurrHP() <= 0) {
 					text += "<td>Dying: " + fighter.getDeathStatus() + "</td>";
 				} else if ((fighter.isPC() || isFullInit()) && fighter.getMaxHP() > 0) {
-					int healthPercent = (int) (((double)fighter.getCurrHP() / (double)fighter.getMaxHP()) * 100);
-					text += "<td style='width: 105px'><div style='height: 1em; border-width: 1px; border-style: solid; border-color: white; " +
-							"width: 100px'><div style='border-width: 0px; width: " + healthPercent + "px; background-color: " + hpBarColor	+ 
-							"'></div></div></td>";
+					int healthPercent = (int) (((double) fighter.getCurrHP() / (double) fighter.getMaxHP()) * 100);
+					text += "<td style='width: 105px'><div style='height: 1em; border-width: 1px; border-style: solid; border-color: white; "
+							+ "width: 100px'><div style='border-width: 0px; width: "
+							+ healthPercent
+							+ "px; background-color: "
+							+ hpBarColor + "'></div></div></td>";
 				} else if (fighter.isBloody()) {
 					text += "<td><span style='color: red'>bloody</span></td>";
 				} else {
 					text += "<td>&nbsp;</td>";
 				}
-				
+
 				if (isFullInit() || fighter.isPC()) {
-					text += "<td style='text-align: center'>" + fighter.getAC() + "</td>" 
-							+ "<td style='text-align: center'>" + fighter.getFort() + "</td>" 
-							+ "<td style='text-align: center'>" + fighter.getRef() + "</td>" 
+					text += "<td style='text-align: center'>" + fighter.getAC() + "</td>" + "<td style='text-align: center'>"
+							+ fighter.getFort() + "</td>" + "<td style='text-align: center'>" + fighter.getRef() + "</td>"
 							+ "<td style='text-align: center'>" + fighter.getWill() + "</td>";
 				} else {
 					text += "<td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>";
 				}
-	
+
 				text += "<td>";
 				for (Effect eff : getFight().getEffectsByTarget(fighter.getCombatHandle())) {
 					if (eff.isBeneficial()) {
-	                    text += "<span style='color: #00aa00'>";
+						text += "<span style='color: #00aa00'>";
 					} else {
-	                    text += "<span style='color: #aa0000'>";
+						text += "<span style='color: #aa0000'>";
 					}
-					
+
 					String dur = eff.getDurationCode().getDesc();
-					dur = dur.replace("Start of Source's Next Turn",
-									"SOT " + eff.getSourceHandle())
-							.replace("Start of Target's Next Turn",
-									"SOT " + eff.getTargetHandle())
-							.replace("End of Source's Next Turn",
-									"EOT " + eff.getSourceHandle())
-							.replace("End of Target's Next Turn",
-									"EOT " + eff.getTargetHandle())
-							.replace("End of the Encounter",
-									"EOE")
-							.replace("Save Ends",
-									"SE");
-					
+					dur = dur.replace("Start of Source's Next Turn", "SOT " + eff.getSourceHandle())
+							.replace("Start of Target's Next Turn", "SOT " + eff.getTargetHandle())
+							.replace("End of Source's Next Turn", "EOT " + eff.getSourceHandle())
+							.replace("End of Target's Next Turn", "EOT " + eff.getTargetHandle())
+							.replace("End of the Encounter", "EOE").replace("Save Ends", "SE");
+
 					text += eff.getName().replaceFirst("[(].*?[)] ", "");
 					text += " (" + dur + ")</span><br>";
 				}
@@ -3268,17 +3364,61 @@ public class MainFrame extends JFrame {
 			}
 			index++;
 		}
-		
+
 		text = "<h1>Round " + currentRound + ". Defenses: " + min + "-" + max + "</h1><br>" + text + "</table></body></html>";
-		
+
 		getInitDisplay().setHTML(text);
 	}
 
 	/**
-	 * Event: Window resized.
+	 * Updates the list of off-turn powers.
+	 */
+	private void updateOffTurnPowers() {
+		getJListOffTurnPowers().setCellRenderer(new OffTurnPowerRenderer(getFight()));
+		DefaultListModel model = (DefaultListModel) getJListOffTurnPowers().getModel();
+		model.clear();
+		for (String handle : getFight().getRolledList().values()) {
+			Combatant fighter = getFight().getFighterByHandle(handle);
+			for (Power pow : fighter.getPowerList()) {
+				if (!fighter.isPowerUsed(pow.getName())
+						&& !fighter.isPC()
+						&& (pow.getAction().contains("immediate") || pow.getAction().contains("opportunity;")
+								|| pow.getAction().contains("triggered;") || pow.getAction().contains("free;")
+								|| pow.getAction().contains("no;") || pow.isAura())) {
+					model.addElement(new FighterPower(fighter, pow));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Event: window closing.
+	 * 
 	 * @param event
 	 */
-	private void componentComponentResized(ComponentEvent event) {
-		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
+	private void windowWindowClosing(WindowEvent event) {
+		exitEncounter();
+	}
+
+	/**
+	 * Event: window open.
+	 * 
+	 * @param event
+	 */
+	private void windowWindowOpened(WindowEvent event) {
+		setStatlib(new StatLibrary());
+		File stats = new File(getStatlibFilename());
+		if (stats.exists()) {
+			getStatlib().loadFromFile(getStatlibFilename(), true);
+		}
+
+		setFight(new Encounter(getStatlib(), Settings.useModRoles(), this));
+
+		// statDataClear();
+
+		getMenuOptionsRollsRecharges().setSelected(Settings.doPowerRecharge());
+		getMenuOptionsRollsSaves().setSelected(Settings.doSavingThrows());
+
+		updateEnabledControls();
 	}
 }
