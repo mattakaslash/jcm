@@ -1392,6 +1392,10 @@ public class Encounter {
 		}
 	}
 
+	/**
+	 * Returns the size of the encounter roster.
+	 * @return {@link #getRoster()}.size()
+	 */
 	public Integer size() {
 		return getRoster().size();
 	}
@@ -1591,8 +1595,6 @@ public class Encounter {
 	 * @param filename
 	 *            the filename to save to
 	 * @return true on success
-	 * @throws IOException
-	 *             from the file channels
 	 */
 	public Boolean saveToFile(String filename) {
 		String tmpFilename = filename + ".tmp";

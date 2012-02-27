@@ -35,51 +35,95 @@ import cm.model.Effect;
 import cm.util.DiceBag;
 import cm.view.render.CheckListRenderer;
 
-//VS4E -- DO NOT REMOVE THIS LINE!
+/**
+ * Displays a window listing effects that require a save.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
+// VS4E -- DO NOT REMOVE THIS LINE!
 public class SavingThrows extends JDialog {
+	/**
+	 * Generated.
+	 */
+	private static final long serialVersionUID = -3276944884619671356L;
 
-	private static final long serialVersionUID = 1L;
-	private JPanel jPanelBottom;
-	private JLabel jLabelSaveBonus;
-	private JFormattedTextField jFormattedTextFieldBonus;
-	private JList jListEffects;
-	private JScrollPane jScrollPaneList;
+	/**
+	 * A table of effects.
+	 */
+	private Hashtable<Integer, Effect> _effects = new Hashtable<Integer, Effect>();
+
+	/**
+	 * A list of effects that have been saved against.
+	 */
+	private List<Integer> _successfulSaves = new ArrayList<Integer>();
+
 	private JButton jButtonRerollAll;
 	private JButton jButtonSave;
-	
+	private JFormattedTextField jFormattedTextFieldBonus;
+	private JLabel jLabelSaveBonus;
+	private JList jListEffects;
+	private JPanel jPanelBottom;
+	private JScrollPane jScrollPaneList;
+
+	/**
+	 * Displays a default (empty) saving throw window.
+	 */
 	public SavingThrows() {
 		initComponents();
 	}
 
-	private void initComponents() {
-		setTitle("Saving Throws");
-		setFont(new Font("Dialog", Font.PLAIN, 12));
-		setBackground(Color.white);
-		setModal(true);
-		setForeground(Color.black);
-		add(getJPanelBottom(), BorderLayout.SOUTH);
-		add(getJScrollPaneList(), BorderLayout.CENTER);
-		addWindowListener(new WindowAdapter() {
-	
-			public void windowOpened(WindowEvent event) {
-				windowWindowOpened(event);
-			}
-		});
-		pack();
+	/**
+	 * Creates a new Saving Throws window for the given effects.
+	 * 
+	 * @param effectList
+	 *            a list of effects to roll saves for
+	 * @param bonus
+	 *            the save bonus
+	 * @param parent
+	 *            the parent frame
+	 */
+	public SavingThrows(List<Effect> effectList, Integer bonus, Frame parent) {
+		super(parent);
+		initComponents();
+
+		getJFormattedTextFieldBonus().setText(bonus.toString());
+
+		for (Effect eff : effectList) {
+			eff.setActive();
+			addEffect(eff.getEffectID(), eff);
+		}
 	}
 
-	private JButton getJButtonSave() {
-		if (jButtonSave == null) {
-			jButtonSave = new JButton();
-			jButtonSave.setText("Save");
-			jButtonSave.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonSaveActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonSave;
+	/**
+	 * Adds an effect to the list of effects.
+	 * 
+	 * @param effectID
+	 *            the effect ID
+	 * @param eff
+	 *            the effect
+	 */
+	private void addEffect(Integer effectID, Effect eff) {
+		getEffects().put(effectID, eff);
+	}
+
+	/**
+	 * Adds a successful save to the list.
+	 * 
+	 * @param effectID
+	 *            the effect ID of the saved effect
+	 */
+	private void addSuccessfulSave(Integer effectID) {
+		getSuccessfulSaves().add(effectID);
+	}
+
+	/**
+	 * Returns the list of effects.
+	 * 
+	 * @return the effects
+	 */
+	private Hashtable<Integer, Effect> getEffects() {
+		return _effects;
 	}
 
 	private JButton getJButtonRerollAll() {
@@ -87,7 +131,7 @@ public class SavingThrows extends JDialog {
 			jButtonRerollAll = new JButton();
 			jButtonRerollAll.setText("Reroll All");
 			jButtonRerollAll.addActionListener(new ActionListener() {
-	
+
 				public void actionPerformed(ActionEvent event) {
 					jButtonRerollAllActionActionPerformed(event);
 				}
@@ -96,29 +140,18 @@ public class SavingThrows extends JDialog {
 		return jButtonRerollAll;
 	}
 
-	private JScrollPane getJScrollPaneList() {
-		if (jScrollPaneList == null) {
-			jScrollPaneList = new JScrollPane();
-			jScrollPaneList.setViewportView(getJListEffects());
-		}
-		return jScrollPaneList;
-	}
+	private JButton getJButtonSave() {
+		if (jButtonSave == null) {
+			jButtonSave = new JButton();
+			jButtonSave.setText("Save");
+			jButtonSave.addActionListener(new ActionListener() {
 
-	private JList getJListEffects() {
-		if (jListEffects == null) {
-			jListEffects = new JList();
-			jListEffects.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			DefaultListModel listModel = new DefaultListModel();
-			jListEffects.setModel(listModel);
-			jListEffects.setCellRenderer(new CheckListRenderer(CheckListRenderer.EFFECT_TYPE));
-			jListEffects.addMouseListener(new MouseAdapter() {
-	
-				public void mouseClicked(MouseEvent event) {
-					jListEffectsMouseMouseClicked(event);
+				public void actionPerformed(ActionEvent event) {
+					jButtonSaveActionActionPerformed(event);
 				}
 			});
 		}
-		return jListEffects;
+		return jButtonSave;
 	}
 
 	private JFormattedTextField getJFormattedTextFieldBonus() {
@@ -137,6 +170,23 @@ public class SavingThrows extends JDialog {
 		return jLabelSaveBonus;
 	}
 
+	private JList getJListEffects() {
+		if (jListEffects == null) {
+			jListEffects = new JList();
+			jListEffects.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+			DefaultListModel listModel = new DefaultListModel();
+			jListEffects.setModel(listModel);
+			jListEffects.setCellRenderer(new CheckListRenderer(CheckListRenderer.EFFECT_TYPE));
+			jListEffects.addMouseListener(new MouseAdapter() {
+
+				public void mouseClicked(MouseEvent event) {
+					jListEffectsMouseMouseClicked(event);
+				}
+			});
+		}
+		return jListEffects;
+	}
+
 	private JPanel getJPanelBottom() {
 		if (jPanelBottom == null) {
 			jPanelBottom = new JPanel();
@@ -150,69 +200,43 @@ public class SavingThrows extends JDialog {
 		return jPanelBottom;
 	}
 
-	private Hashtable<Integer, Effect> _effects = new Hashtable<Integer, Effect>();
-	private List<Integer> _successfulSaves = new ArrayList<Integer>();
-	/**
-	 * Creates a new Saving Throws window for the given effects.
-	 * @param effectList a list of effects to roll saves for
-	 * @param bonus the save bonus
-	 * @param parent the parent frame
-	 */
-	public SavingThrows(List<Effect> effectList, Integer bonus, Frame parent) {
-		super(parent);
-		initComponents();
-		
-		getJFormattedTextFieldBonus().setText(bonus.toString());
-		
-		for (Effect eff : effectList) {
-			eff.setActive();
-			addEffect(eff.getEffectID(), eff);
+	private JScrollPane getJScrollPaneList() {
+		if (jScrollPaneList == null) {
+			jScrollPaneList = new JScrollPane();
+			jScrollPaneList.setViewportView(getJListEffects());
 		}
-	}
-
-	/**
-	 * Adds an effect to the list of effects.
-	 * @param effectID the effect ID
-	 * @param eff the effect
-	 */
-	private void addEffect(Integer effectID, Effect eff) {
-		getEffects().put(effectID, eff);		
-	}
-
-	/**
-	 * Returns the list of effects.
-	 * @return the effects
-	 */
-	private Hashtable<Integer, Effect> getEffects() {
-		return _effects;
-	}
-
-	/**
-	 * Event: Window opened.
-	 * @param event
-	 */
-	private void windowWindowOpened(WindowEvent event) {
-		loadEffectsToList();
-	}
-
-	/**
-	 * Adds a successful save to the list.
-	 * @param effectID the effect ID of the saved effect
-	 */
-	private void addSuccessfulSave(Integer effectID) {
-		getSuccessfulSaves().add(effectID);
+		return jScrollPaneList;
 	}
 
 	/**
 	 * Returns the list of successful saves.
+	 * 
 	 * @return the list
 	 */
 	public List<Integer> getSuccessfulSaves() {
 		return _successfulSaves;
 	}
 
+	private void initComponents() {
+		setTitle("Saving Throws");
+		setFont(new Font("Dialog", Font.PLAIN, 12));
+		setBackground(Color.white);
+		setModal(true);
+		setForeground(Color.black);
+		add(getJPanelBottom(), BorderLayout.SOUTH);
+		add(getJScrollPaneList(), BorderLayout.CENTER);
+		addWindowListener(new WindowAdapter() {
+
+			public void windowOpened(WindowEvent event) {
+				windowWindowOpened(event);
+			}
+		});
+		pack();
+	}
+
 	/**
 	 * Event: Reroll All pressed.
+	 * 
 	 * @param event
 	 */
 	private void jButtonRerollAllActionActionPerformed(ActionEvent event) {
@@ -221,14 +245,15 @@ public class SavingThrows extends JDialog {
 
 	/**
 	 * Event: Save pressed.
+	 * 
 	 * @param event
 	 */
 	private void jButtonSaveActionActionPerformed(ActionEvent event) {
 		DefaultListModel model = (DefaultListModel) getJListEffects().getModel();
-		
+
 		for (int i = 0; i < model.getSize(); i++) {
 			CheckableItem item = (CheckableItem) model.getElementAt(i);
-			
+
 			if (item.isSelected()) {
 				addSuccessfulSave(((Effect) item.getObject()).getEffectID());
 			}
@@ -236,39 +261,10 @@ public class SavingThrows extends JDialog {
 
 		this.setVisible(false);
 	}
-	
-	/**
-	 * Loads the list of effects to the UI.
-	 */
-	private void loadEffectsToList() {
-		DefaultListModel model = ((DefaultListModel) getJListEffects().getModel());
-		model.clear();
-		
-		for (Effect eff : getEffects().values()) {
-			model.addElement(new CheckableItem(eff));
-		}
-		
-		rerollAllSaves();
-	}
-
-	/**
-	 * Re-rolls all saving throws in the list.
-	 */
-	private void rerollAllSaves() {
-		DefaultListModel model = ((DefaultListModel) getJListEffects().getModel());
-		
-		for (int i = 0; i < model.getSize(); i++) {
-			CheckableItem item = (CheckableItem) model.getElementAt(i);
-			Integer roll = DiceBag.roll(20) + Integer.valueOf(getJFormattedTextFieldBonus().getText());
-			item.setSelected(roll >= 10);
-			item.setText("(roll=" + roll + ")");
-		}
-		
-		getJListEffects().repaint();
-	}
 
 	/**
 	 * Event: Effect list, mouse clicked.
+	 * 
 	 * @param event
 	 */
 	private void jListEffectsMouseMouseClicked(MouseEvent event) {
@@ -277,5 +273,44 @@ public class SavingThrows extends JDialog {
 		item.setSelected(!item.isSelected());
 		item.setText(null);
 		list.repaint();
+	}
+
+	/**
+	 * Loads the list of effects to the UI.
+	 */
+	private void loadEffectsToList() {
+		DefaultListModel model = ((DefaultListModel) getJListEffects().getModel());
+		model.clear();
+
+		for (Effect eff : getEffects().values()) {
+			model.addElement(new CheckableItem(eff));
+		}
+
+		rerollAllSaves();
+	}
+
+	/**
+	 * Re-rolls all saving throws in the list.
+	 */
+	private void rerollAllSaves() {
+		DefaultListModel model = ((DefaultListModel) getJListEffects().getModel());
+
+		for (int i = 0; i < model.getSize(); i++) {
+			CheckableItem item = (CheckableItem) model.getElementAt(i);
+			Integer roll = DiceBag.roll(20) + Integer.valueOf(getJFormattedTextFieldBonus().getText());
+			item.setSelected(roll >= 10);
+			item.setText("(roll=" + roll + ")");
+		}
+
+		getJListEffects().repaint();
+	}
+
+	/**
+	 * Event: Window opened.
+	 * 
+	 * @param event
+	 */
+	private void windowWindowOpened(WindowEvent event) {
+		loadEffectsToList();
 	}
 }

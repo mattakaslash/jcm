@@ -8,6 +8,7 @@ import javax.swing.table.TableColumn;
 import java.awt.Component;
 import java.awt.FontMetrics;
 
+@SuppressWarnings("javadoc")
 public class ColumnsAutoSizer {
 
     public static void sizeColumnsToFit(JTable table) {

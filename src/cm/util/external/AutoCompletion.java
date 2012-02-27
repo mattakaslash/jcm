@@ -10,6 +10,7 @@ import javax.swing.text.*;
  * To view a copy of the public domain dedication, visit
  * http://creativecommons.org/licenses/publicdomain/
  */
+@SuppressWarnings("javadoc")
 public class AutoCompletion extends PlainDocument {
     /**
 	 * 

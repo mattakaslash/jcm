@@ -27,17 +27,61 @@ import cm.model.Power;
 import cm.util.DiceBag;
 import cm.view.render.CheckListRenderer;
 
-//VS4E -- DO NOT REMOVE THIS LINE!
+/**
+ * Displays a window listing powers up for recharging.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
+// VS4E -- DO NOT REMOVE THIS LINE!
 public class RechargeWin extends JDialog {
+	/**
+	 * Generated.
+	 */
+	private static final long serialVersionUID = -6686134276284813896L;
 
-	private static final long serialVersionUID = 1L;
-	private JPanel jPanelBottom;
+	/**
+	 * A table of powers up for recharging.
+	 */
+	private Hashtable<String, Power> _powers = new Hashtable<String, Power>();
+
+	/**
+	 * A list of power names that have been recharged.
+	 */
+	private List<String> _recharged = new ArrayList<String>();
+
 	private JButton jButtonRerollAll;
 	private JButton jButtonSave;
 	private JList jListPowers;
+	private JPanel jPanelBottom;
 	private JScrollPane jScrollPanePowers;
+
+	/**
+	 * Creates a default (empty) recharge window.
+	 */
 	public RechargeWin() {
 		initComponents();
+	}
+
+	/**
+	 * Creates a new power recharge window for the provided combatant.
+	 * 
+	 * @param combatHandle
+	 *            fighter's combat handle
+	 * @param powerList
+	 *            list of used powers
+	 * @param parent
+	 *            the parent frame
+	 */
+	public RechargeWin(String combatHandle, List<Power> powerList, Frame parent) {
+		super(parent);
+		initComponents();
+
+		setTitle("Power Recharge for " + combatHandle);
+
+		for (Power pow : powerList) {
+			getPowers().put(pow.getName(), pow);
+		}
 	}
 
 	private void initComponents() {
@@ -49,7 +93,8 @@ public class RechargeWin extends JDialog {
 		add(getJPanelBottom(), BorderLayout.SOUTH);
 		add(getJScrollPanePowers(), BorderLayout.CENTER);
 		addWindowListener(new WindowAdapter() {
-	
+
+			@Override
 			public void windowOpened(WindowEvent event) {
 				windowWindowOpened(event);
 			}
@@ -57,12 +102,34 @@ public class RechargeWin extends JDialog {
 		pack();
 	}
 
-	private JScrollPane getJScrollPanePowers() {
-		if (jScrollPanePowers == null) {
-			jScrollPanePowers = new JScrollPane();
-			jScrollPanePowers.setViewportView(getJListPowers());
+	private JButton getJButtonRerollAll() {
+		if (jButtonRerollAll == null) {
+			jButtonRerollAll = new JButton();
+			jButtonRerollAll.setText("Reroll All");
+			jButtonRerollAll.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					jButtonRerollAllActionActionPerformed(event);
+				}
+			});
 		}
-		return jScrollPanePowers;
+		return jButtonRerollAll;
+	}
+
+	private JButton getJButtonSave() {
+		if (jButtonSave == null) {
+			jButtonSave = new JButton();
+			jButtonSave.setText("Save");
+			jButtonSave.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					jButtonSaveActionActionPerformed(event);
+				}
+			});
+		}
+		return jButtonSave;
 	}
 
 	private JList getJListPowers() {
@@ -72,41 +139,14 @@ public class RechargeWin extends JDialog {
 			jListPowers.setModel(listModel);
 			jListPowers.setCellRenderer(new CheckListRenderer(CheckListRenderer.POWER_TYPE));
 			jListPowers.addMouseListener(new MouseAdapter() {
-	
+
+				@Override
 				public void mouseClicked(MouseEvent event) {
 					jListPowersMouseMouseClicked(event);
 				}
 			});
 		}
 		return jListPowers;
-	}
-
-	private JButton getJButtonSave() {
-		if (jButtonSave == null) {
-			jButtonSave = new JButton();
-			jButtonSave.setText("Save");
-			jButtonSave.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonSaveActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonSave;
-	}
-
-	private JButton getJButtonRerollAll() {
-		if (jButtonRerollAll == null) {
-			jButtonRerollAll = new JButton();
-			jButtonRerollAll.setText("Reroll All");
-			jButtonRerollAll.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonRerollAllActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonRerollAll;
 	}
 
 	private JPanel getJPanelBottom() {
@@ -119,36 +159,17 @@ public class RechargeWin extends JDialog {
 		return jPanelBottom;
 	}
 
-	/**
-	 * Returns the list of recharged powers, by name.
-	 * @return the list
-	 */
-	public List<String> getRecharged() {
-		return _recharged;
-	}
-	
-	private Hashtable<String, Power> _powers = new Hashtable<String, Power>();
-	private List<String> _recharged = new ArrayList<String>();
-
-	/**
-	 * Creates a new power recharge window for the provided combatant.
-	 * @param combatHandle fighter's combat handle
-	 * @param powerList list of used powers
-	 * @param parent the parent frame
-	 */
-	public RechargeWin(String combatHandle, List<Power> powerList, Frame parent) {
-		super(parent);
-		initComponents();
-		
-		setTitle("Power Recharge for " + combatHandle);
-		
-		for (Power pow : powerList) {
-			getPowers().put(pow.getName(), pow);
+	private JScrollPane getJScrollPanePowers() {
+		if (jScrollPanePowers == null) {
+			jScrollPanePowers = new JScrollPane();
+			jScrollPanePowers.setViewportView(getJListPowers());
 		}
+		return jScrollPanePowers;
 	}
 
 	/**
 	 * Returns the table of used powers.
+	 * 
 	 * @return the table
 	 */
 	private Hashtable<String, Power> getPowers() {
@@ -156,20 +177,31 @@ public class RechargeWin extends JDialog {
 	}
 
 	/**
-	 * Event: Window opened.
+	 * Returns the list of recharged powers, by name.
+	 * 
+	 * @return the list
+	 */
+	public List<String> getRecharged() {
+		return _recharged;
+	}
+
+	/**
+	 * Event: Reroll All pressed.
+	 * 
 	 * @param event
 	 */
-	private void windowWindowOpened(WindowEvent event) {
-		loadPowersToList();
+	private void jButtonRerollAllActionActionPerformed(ActionEvent event) {
+		rerollAllRecharge();
 	}
 
 	/**
 	 * Event: Save pressed.
+	 * 
 	 * @param event
 	 */
 	private void jButtonSaveActionActionPerformed(ActionEvent event) {
 		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
-		
+
 		for (int i = 0; i < model.getSize(); i++) {
 			CheckableItem item = (CheckableItem) model.get(i);
 			if (item.isSelected()) {
@@ -177,53 +209,13 @@ public class RechargeWin extends JDialog {
 				getRecharged().add(pow.getName());
 			}
 		}
-		
+
 		this.setVisible(false);
 	}
 
 	/**
-	 * Event: Reroll All pressed.
-	 * @param event
-	 */
-	private void jButtonRerollAllActionActionPerformed(ActionEvent event) {
-		rerollAllRecharge();
-	}
-	
-	/**
-	 * Loads powers from the table into the UI.
-	 */
-	private void loadPowersToList() {
-		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
-		model.clear();
-		
-		for (Power pow : getPowers().values()) {
-			CheckableItem item = new CheckableItem(pow);
-			item.setText("(recharge " + pow.getRechargeVal() + ")");
-			model.addElement(new CheckableItem(pow));
-		}
-		
-		rerollAllRecharge();
-	}
-	
-	/**
-	 * Rerolls all recharge powers in the list.
-	 */
-	private void rerollAllRecharge() {
-		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
-		
-		for (int i = 0; i < model.getSize(); i++) {
-			CheckableItem item = (CheckableItem) model.get(i);
-			Power pow = (Power) item.getObject();
-			Integer roll = DiceBag.roll(6);
-			item.setSelected(roll >= pow.getRechargeVal());
-			item.setText("(recharge=" + pow.getRechargeVal() + ") (roll=" + roll + ")");
-		}
-		
-		getJListPowers().repaint();
-	}
-
-	/**
 	 * Event: Power list, mouse clicked.
+	 * 
 	 * @param event
 	 */
 	private void jListPowersMouseMouseClicked(MouseEvent event) {
@@ -233,5 +225,47 @@ public class RechargeWin extends JDialog {
 		item.setSelected(!item.isSelected());
 		item.setText("(recharge=" + pow.getRechargeVal() + ")");
 		list.repaint();
+	}
+
+	/**
+	 * Loads powers from the table into the UI.
+	 */
+	private void loadPowersToList() {
+		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+		model.clear();
+
+		for (Power pow : getPowers().values()) {
+			CheckableItem item = new CheckableItem(pow);
+			item.setText("(recharge " + pow.getRechargeVal() + ")");
+			model.addElement(new CheckableItem(pow));
+		}
+
+		rerollAllRecharge();
+	}
+
+	/**
+	 * Rerolls all recharge powers in the list.
+	 */
+	private void rerollAllRecharge() {
+		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+
+		for (int i = 0; i < model.getSize(); i++) {
+			CheckableItem item = (CheckableItem) model.get(i);
+			Power pow = (Power) item.getObject();
+			Integer roll = DiceBag.roll(6);
+			item.setSelected(roll >= pow.getRechargeVal());
+			item.setText("(recharge=" + pow.getRechargeVal() + ") (roll=" + roll + ")");
+		}
+
+		getJListPowers().repaint();
+	}
+
+	/**
+	 * Event: Window opened.
+	 * 
+	 * @param event
+	 */
+	private void windowWindowOpened(WindowEvent event) {
+		loadPowersToList();
 	}
 }

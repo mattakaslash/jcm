@@ -22,14 +22,23 @@ import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
 
-//VS4E -- DO NOT REMOVE THIS LINE!
+/**
+ * Help -> About.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 1.0
+ */
+// VS4E -- DO NOT REMOVE THIS LINE!
 public class About extends JDialog {
-
 	private static final long serialVersionUID = 1L;
+	private JButton jButtonOK;
 	private JLabel jLabelTitle;
 	private JLabel jLabelVersion;
 	private JTextPane jTextPaneDescription;
-	private JButton jButtonOK;
+
+	/**
+	 * Creates an About window.
+	 */
 	public About() {
 		initComponents();
 	}
@@ -53,45 +62,14 @@ public class About extends JDialog {
 			jButtonOK = new JButton();
 			jButtonOK.setText("OK");
 			jButtonOK.addActionListener(new ActionListener() {
-	
+
+				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonOKActionActionPerformed(event);
 				}
 			});
 		}
 		return jButtonOK;
-	}
-
-	private JTextPane getJTextPaneDescription() {
-		if (jTextPaneDescription == null) {
-			jTextPaneDescription = new JTextPane();
-			jTextPaneDescription.setContentType("text/html");
-			jTextPaneDescription.setBackground(this.getBackground());
-			jTextPaneDescription.setEditable(false);
-			jTextPaneDescription.setText("<html>DnD 4e Combat Manager is based on the program of the same name hosted at<br>" +
-					"<a href=\"http://www.dragonpro.com/index.php?option=com_jdownloads&view=viewcategory&catid=2&Itemid=53\">" +
-					"http://www.dragonpro.com/index.php?option=com_jdownloads&view=viewcategory&catid=2&Itemid=53</a>.<br>" +
-					"This is a Java port of an early source release, with some features from the original added and<br>" +
-					"other unique features implemented also.");
-			jTextPaneDescription.addHyperlinkListener(new HyperlinkListener() {
-				
-				@Override
-				public void hyperlinkUpdate(HyperlinkEvent event) {
-					jTextPaneDescriptionHyperlinkHyperlinkUpdate(event);
-				}
-			});
-		}
-		return jTextPaneDescription;
-	}
-
-	private JLabel getJLabelVersion() {
-		if (jLabelVersion == null) {
-			jLabelVersion = new JLabel();
-			jLabelVersion.setFont(new Font("Dialog", Font.BOLD, 24));
-			jLabelVersion.setHorizontalAlignment(SwingConstants.CENTER);
-			jLabelVersion.setText(cm.DnD4eCombatManager.VERSION);
-		}
-		return jLabelVersion;
 	}
 
 	private JLabel getJLabelTitle() {
@@ -104,10 +82,42 @@ public class About extends JDialog {
 		return jLabelTitle;
 	}
 
+	private JLabel getJLabelVersion() {
+		if (jLabelVersion == null) {
+			jLabelVersion = new JLabel();
+			jLabelVersion.setFont(new Font("Dialog", Font.BOLD, 24));
+			jLabelVersion.setHorizontalAlignment(SwingConstants.CENTER);
+			jLabelVersion.setText(cm.DnD4eCombatManager.VERSION);
+		}
+		return jLabelVersion;
+	}
+
+	private JTextPane getJTextPaneDescription() {
+		if (jTextPaneDescription == null) {
+			jTextPaneDescription = new JTextPane();
+			jTextPaneDescription.setContentType("text/html");
+			jTextPaneDescription.setBackground(this.getBackground());
+			jTextPaneDescription.setEditable(false);
+			jTextPaneDescription.setText("<html>DnD 4e Combat Manager is based on the program of the same name hosted at<br>"
+					+ "<a href=\"http://www.dragonpro.com/index.php?option=com_jdownloads&view=viewcategory&catid=2&Itemid=53\">"
+					+ "http://www.dragonpro.com/index.php?option=com_jdownloads&view=viewcategory&catid=2&Itemid=53</a>.<br>"
+					+ "This is a Java port of an early source release, with some features from the original added and<br>"
+					+ "other unique features implemented also.");
+			jTextPaneDescription.addHyperlinkListener(new HyperlinkListener() {
+
+				@Override
+				public void hyperlinkUpdate(HyperlinkEvent event) {
+					jTextPaneDescriptionHyperlinkHyperlinkUpdate(event);
+				}
+			});
+		}
+		return jTextPaneDescription;
+	}
+
 	private void jButtonOKActionActionPerformed(ActionEvent event) {
 		this.setVisible(false);
 	}
-	
+
 	private void jTextPaneDescriptionHyperlinkHyperlinkUpdate(HyperlinkEvent event) {
 		if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			try {
@@ -116,11 +126,8 @@ public class About extends JDialog {
 					Desktop.getDesktop().browse(uri);
 				}
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(null,
-						"Unable to launch your default browser: "
-								+ e.getLocalizedMessage(),
-						"Error Launching Browser",
-						JOptionPane.ERROR_MESSAGE);
+				JOptionPane.showMessageDialog(null, "Unable to launch your default browser: " + e.getLocalizedMessage(),
+						"Error Launching Browser", JOptionPane.ERROR_MESSAGE);
 				e.printStackTrace();
 			} catch (URISyntaxException e) {
 				e.printStackTrace();

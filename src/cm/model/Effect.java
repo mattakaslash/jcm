@@ -63,7 +63,7 @@ public class Effect extends EffectBase {
 	 * @param roundTill
 	 *            the round the effect expires
 	 * @param dur
-	 *            the {@link Duration} of the effect
+	 *            the {@link cm.model.EffectBase.Duration} of the effect
 	 * @param beneficial
 	 *            true if the effect is beneficial to its target
 	 */
