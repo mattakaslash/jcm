@@ -32,15 +32,13 @@ import cm.model.Settings;
 
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class Options extends JDialog {
-
-	private static final long serialVersionUID = 1L;
 	private JButton jButtonBrowseRoot;
 	private JButton jButtonCancel;
-	private JButton jButtonCriticalHitBrowse;
-	private JButton jButtonCriticalMissBrowse;
-	private JButton jButtonDailyBrowse;
+	private JButton jButtonBrowseCriticalHit;
+	private JButton jButtonBrowseCriticalMiss;
+	private JButton jButtonBrowseDaily;
 	private JButton jButtonOK;
-	private JButton jButtonVictoryBrowse;
+	private JButton jButtonBrowseVictory;
 	private JCheckBox jCheckBoxGroupSimilar;
 	private JCheckBox jCheckBoxOngoingPopup;
 	private JCheckBox jCheckBoxPowerRecharges;
@@ -105,28 +103,46 @@ public class Options extends JDialog {
 		return jButtonCancel;
 	}
 
-	private JButton getJButtonCriticalHitBrowse() {
-		if (jButtonCriticalHitBrowse == null) {
-			jButtonCriticalHitBrowse = new JButton();
-			jButtonCriticalHitBrowse.setText("Browse...");
+	private JButton getJButtonBrowseCriticalHit() {
+		if (jButtonBrowseCriticalHit == null) {
+			jButtonBrowseCriticalHit = new JButton();
+			jButtonBrowseCriticalHit.setText("Browse...");
+			jButtonBrowseCriticalHit.addActionListener(new ActionListener() {
+	
+				public void actionPerformed(ActionEvent event) {
+					jButtonBrowseCriticalHitActionActionPerformed(event);
+				}
+			});
 		}
-		return jButtonCriticalHitBrowse;
+		return jButtonBrowseCriticalHit;
 	}
 
-	private JButton getJButtonCriticalMissBrowse() {
-		if (jButtonCriticalMissBrowse == null) {
-			jButtonCriticalMissBrowse = new JButton();
-			jButtonCriticalMissBrowse.setText("Browse...");
+	private JButton getJButtonBrowseCriticalMiss() {
+		if (jButtonBrowseCriticalMiss == null) {
+			jButtonBrowseCriticalMiss = new JButton();
+			jButtonBrowseCriticalMiss.setText("Browse...");
+			jButtonBrowseCriticalMiss.addActionListener(new ActionListener() {
+	
+				public void actionPerformed(ActionEvent event) {
+					jButtonBrowseCriticalMissActionActionPerformed(event);
+				}
+			});
 		}
-		return jButtonCriticalMissBrowse;
+		return jButtonBrowseCriticalMiss;
 	}
 
-	private JButton getJButtonDailyBrowse() {
-		if (jButtonDailyBrowse == null) {
-			jButtonDailyBrowse = new JButton();
-			jButtonDailyBrowse.setText("Browse...");
+	private JButton getJButtonBrowseDaily() {
+		if (jButtonBrowseDaily == null) {
+			jButtonBrowseDaily = new JButton();
+			jButtonBrowseDaily.setText("Browse...");
+			jButtonBrowseDaily.addActionListener(new ActionListener() {
+	
+				public void actionPerformed(ActionEvent event) {
+					jButtonBrowseDailyActionActionPerformed(event);
+				}
+			});
 		}
-		return jButtonDailyBrowse;
+		return jButtonBrowseDaily;
 	}
 
 	private JButton getJButtonOK() {
@@ -143,12 +159,18 @@ public class Options extends JDialog {
 		return jButtonOK;
 	}
 
-	private JButton getJButtonVictoryBrowse() {
-		if (jButtonVictoryBrowse == null) {
-			jButtonVictoryBrowse = new JButton();
-			jButtonVictoryBrowse.setText("Browse...");
+	private JButton getJButtonBrowseVictory() {
+		if (jButtonBrowseVictory == null) {
+			jButtonBrowseVictory = new JButton();
+			jButtonBrowseVictory.setText("Browse...");
+			jButtonBrowseVictory.addActionListener(new ActionListener() {
+	
+				public void actionPerformed(ActionEvent event) {
+					jButtonBrowseVictoryActionActionPerformed(event);
+				}
+			});
 		}
-		return jButtonVictoryBrowse;
+		return jButtonBrowseVictory;
 	}
 
 	private JCheckBox getJCheckBoxGroupSimilar() {
@@ -251,10 +273,10 @@ public class Options extends JDialog {
 					"Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			jPanelMusicLocation.setLayout(new GroupLayout());
 			jPanelMusicLocation.add(getJButtonBrowseRoot(), new Constraints(new Trailing(0, 93, 109, 168), new Leading(-3, 12, 12)));
-			jPanelMusicLocation.add(getJButtonCriticalHitBrowse(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(26, 12, 12)));
-			jPanelMusicLocation.add(getJButtonCriticalMissBrowse(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(55, 12, 12)));
-			jPanelMusicLocation.add(getJButtonVictoryBrowse(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(84, 12, 12)));
-			jPanelMusicLocation.add(getJButtonDailyBrowse(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(113, 12, 12)));
+			jPanelMusicLocation.add(getJButtonBrowseCriticalHit(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(26, 12, 12)));
+			jPanelMusicLocation.add(getJButtonBrowseCriticalMiss(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(55, 12, 12)));
+			jPanelMusicLocation.add(getJButtonBrowseVictory(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(84, 12, 12)));
+			jPanelMusicLocation.add(getJButtonBrowseDaily(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(113, 12, 12)));
 			jPanelMusicLocation.add(getJLabelRootDirectory(), new Constraints(new Leading(0, 102, 10, 10), new Leading(1, 12, 12)));
 			jPanelMusicLocation.add(getJLabelCriticalHit(), new Constraints(new Leading(0, 102, 10, 10), new Leading(30, 12, 12)));
 			jPanelMusicLocation.add(getJLabelCriticalMiss(), new Constraints(new Leading(0, 102, 10, 10), new Leading(59, 12, 12)));
@@ -320,12 +342,108 @@ public class Options extends JDialog {
 		pack();
 	}
 
+	private void jButtonBrowseCriticalHitActionActionPerformed(ActionEvent event) {
+		JFileChooser jc = new JFileChooser();
+		jc.setDialogTitle("Select Critical Hit Song");
+		if (Settings.getCriticalHitSong() != null && Settings.getCriticalHitSong().canRead()) {
+			jc.setCurrentDirectory(Settings.getCriticalHitSong());
+		}
+		jc.setFileFilter(new FileFilter() {
+			
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || f.getName().toLowerCase().endsWith(".mp3");
+			}
+			
+			@Override
+			public String getDescription() {
+				return "MP3s";
+			}
+		});
+		
+		if (jc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			getJTextFieldCriticalHit().setText(jc.getSelectedFile().getAbsolutePath());
+		}
+	}
+
+	private void jButtonBrowseCriticalMissActionActionPerformed(ActionEvent event) {
+		JFileChooser jc = new JFileChooser();
+		jc.setDialogTitle("Select Critical Miss Song");
+		if (Settings.getCriticalMissSong() != null && Settings.getCriticalMissSong().canRead()) {
+			jc.setCurrentDirectory(Settings.getCriticalMissSong());
+		}
+		jc.setFileFilter(new FileFilter() {
+			
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || f.getName().toLowerCase().endsWith(".mp3");
+			}
+			
+			@Override
+			public String getDescription() {
+				return "MP3s";
+			}
+		});
+		
+		if (jc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			getJTextFieldCriticalMiss().setText(jc.getSelectedFile().getAbsolutePath());
+		}
+	}
+
+	private void jButtonBrowseDailyActionActionPerformed(ActionEvent event) {
+		JFileChooser jc = new JFileChooser();
+		jc.setDialogTitle("Select Daily Song");
+		if (Settings.getDailySong() != null && Settings.getDailySong().canRead()) {
+			jc.setCurrentDirectory(Settings.getDailySong());
+		}
+		jc.setFileFilter(new FileFilter() {
+			
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || f.getName().toLowerCase().endsWith(".mp3");
+			}
+			
+			@Override
+			public String getDescription() {
+				return "MP3s";
+			}
+		});
+		
+		if (jc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			getJTextFieldDaily().setText(jc.getSelectedFile().getAbsolutePath());
+		}
+	}
+
+	private void jButtonBrowseVictoryActionActionPerformed(ActionEvent event) {
+		JFileChooser jc = new JFileChooser();
+		jc.setDialogTitle("Select Victory Song");
+		if (Settings.getVictorySong() != null && Settings.getVictorySong().canRead()) {
+			jc.setCurrentDirectory(Settings.getVictorySong());
+		}
+		jc.setFileFilter(new FileFilter() {
+			
+			@Override
+			public boolean accept(File f) {
+				return f.isDirectory() || f.getName().toLowerCase().endsWith(".mp3");
+			}
+			
+			@Override
+			public String getDescription() {
+				return "MP3s";
+			}
+		});
+		
+		if (jc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+			getJTextFieldVictory().setText(jc.getSelectedFile().getAbsolutePath());
+		}
+	}
+
 	private void jButtonBrowseRootActionActionPerformed(ActionEvent event) {
 		JFileChooser jc = new JFileChooser();
 		jc.setDialogTitle("Select Music Root");
 		jc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		jc.setAcceptAllFileFilterUsed(false);
-		if (Settings.getMusicDirectory().exists()) {
+		if (Settings.getMusicDirectory() != null && Settings.getMusicDirectory().exists()) {
 			jc.setCurrentDirectory(Settings.getMusicDirectory());
 		}
 		jc.setFileFilter(new FileFilter() {

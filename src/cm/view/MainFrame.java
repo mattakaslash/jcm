@@ -21,6 +21,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.VetoableChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
@@ -76,6 +77,9 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
+import javazoom.jl.player.advanced.PlaybackEvent;
+import javazoom.jl.player.advanced.PlaybackListener;
+
 import org.dyno.visual.swing.layouts.Bilateral;
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
@@ -129,11 +133,6 @@ public class MainFrame extends JFrame {
 	 * The initiative display.
 	 */
 	private InitDisplay _initDisplay;
-
-	/**
-	 * The music player.
-	 */
-	private Player _player;
 
 	/**
 	 * The table renderer.
@@ -462,7 +461,7 @@ public class MainFrame extends JFrame {
 		if (jButtonCritMiss == null) {
 			jButtonCritMiss = new JButton();
 			jButtonCritMiss.setText("Miss");
-			jButtonCritHit.addActionListener(new ActionListener() {
+			jButtonCritMiss.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent event) {
@@ -612,7 +611,7 @@ public class MainFrame extends JFrame {
 		if (jButtonMiscDaily == null) {
 			jButtonMiscDaily = new JButton();
 			jButtonMiscDaily.setText("Daily");
-			jButtonCritHit.addActionListener(new ActionListener() {
+			jButtonMiscDaily.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent event) {
@@ -627,7 +626,7 @@ public class MainFrame extends JFrame {
 		if (jButtonMiscVictory == null) {
 			jButtonMiscVictory = new JButton();
 			jButtonMiscVictory.setText("Victory");
-			jButtonCritHit.addActionListener(new ActionListener() {
+			jButtonMiscVictory.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent event) {
@@ -1973,10 +1972,6 @@ public class MainFrame extends JFrame {
 		return menuWindowsOptions;
 	}
 
-	private Player getPlayer() {
-		return _player;
-	}
-
 	/**
 	 * Returns the roster cell renderer.
 	 * 
@@ -2091,13 +2086,23 @@ public class MainFrame extends JFrame {
 
 	private void jButtonCritHitActionActionPerformed() {
 		if (Settings.getCriticalHitSong() != null) {
-			getPlayer().playOnce(Settings.getCriticalHitSong(), true);
+			getJToggleButtonPlay().setSelected(false);
+			Player.playOnce(Settings.getCriticalHitSong(), new PlaybackListener() {
+				public void playbackFinished(PlaybackEvent event) {
+					getJToggleButtonPlay().setSelected(true);
+				}
+			});
 		}
 	}
 
 	private void jButtonCritMissActionActionPerformed() {
 		if (Settings.getCriticalMissSong() != null) {
-			getPlayer().playOnce(Settings.getCriticalMissSong(), true);
+			getJToggleButtonPlay().setSelected(false);
+			Player.playOnce(Settings.getCriticalMissSong(), new PlaybackListener() {
+				public void playbackFinished(PlaybackEvent event) {
+					getJToggleButtonPlay().setSelected(true);
+				}
+			});
 		}
 	}
 
@@ -2217,14 +2222,19 @@ public class MainFrame extends JFrame {
 
 	private void jButtonMiscDailyActionActionPerformed() {
 		if (Settings.getDailySong() != null) {
-			getPlayer().playOnce(Settings.getDailySong(), true);
+			getJToggleButtonPlay().setSelected(false);
+			Player.playOnce(Settings.getDailySong(), new PlaybackListener() {
+				public void playbackFinished(PlaybackEvent event) {
+					getJToggleButtonPlay().setSelected(true);
+				}
+			});
 		}
 	}
 
 	private void jButtonMiscVictoryActionActionPerformed() {
 		if (Settings.getVictorySong() != null) {
 			getJToggleButtonPlay().setSelected(false);
-			getPlayer().playOnce(Settings.getVictorySong(), false);
+			Player.playOnce(Settings.getVictorySong(), null);
 		}
 	}
 
@@ -2653,10 +2663,10 @@ public class MainFrame extends JFrame {
 	 */
 	private void jToggleButtonPlayItemItemStateChanged(ItemEvent event) {
 		if (event.getStateChange() == ItemEvent.SELECTED) {
-			setPlayer(new Player((File) getJComboBoxPlaylists().getSelectedItem()));
-			getPlayer().play();
+			Player.setDir((File) getJComboBoxPlaylists().getSelectedItem());
+			Player.play();
 		} else {
-			getPlayer().pause();
+			Player.stop();
 		}
 	}
 
@@ -2724,7 +2734,17 @@ public class MainFrame extends JFrame {
 		}
 
 		for (File f : files.toArray(new File[0])) {
-			model.addElement(f);
+			String[] mp3s = f.list(new FilenameFilter() {
+				
+				@Override
+				public boolean accept(File dir, String name) {
+					return name.toLowerCase().endsWith(".mp3");
+				}
+			});
+			
+			if (mp3s.length > 0) {
+				model.addElement(f);
+			}
 			loadPlaylists(f);
 		}
 	}
@@ -3152,10 +3172,6 @@ public class MainFrame extends JFrame {
 	 */
 	private void setFullInit(Boolean fullInit) {
 		_fullInit = fullInit;
-	}
-
-	private void setPlayer(Player player) {
-		_player = player;
 	}
 
 	/**
