@@ -22,9 +22,19 @@ public class Player {
 	private static Random RAND = new Random();
 	private static File DIR = null;
 	private static File FILE = null;
+	private static AdvancedPlayer ONCE = null;
 	private static AdvancedPlayer PLAYER = null;
 	private static PlayerListener LISTENER = null;
+	private static Boolean COMPLETED = false;
 	private static Boolean STOPPED = false;
+
+	public static boolean isCompletedOnce() {
+		return COMPLETED;
+	}
+
+	public static void setCompletedOnce(Boolean completed) {
+		COMPLETED = completed;
+	}
 
 	public static void setDir(File dir) {
 		DIR = dir;
@@ -91,15 +101,16 @@ public class Player {
 
 	public static void playOnce(File song, PlaybackListener listener) {
 		FILE = song;
+		COMPLETED = false;
 		try {
-			final AdvancedPlayer once = new AdvancedPlayer(new FileInputStream(song));
+			ONCE = new AdvancedPlayer(new FileInputStream(song));
 			if (listener != null) {
-				once.setPlayBackListener(listener);
+				ONCE.setPlayBackListener(listener);
 			}
 			new Thread() {
 				public void run() {
 					try {
-						once.play();
+						ONCE.play();
 					} catch (JavaLayerException e) {
 						e.printStackTrace();
 					}
@@ -123,5 +134,10 @@ public class Player {
 		if (LISTENER != null) {
 			LISTENER.playbackStopped();
 		}
+	}
+
+	public static void stopOnce() {
+		ONCE.stop();
+		COMPLETED = true;
 	}
 }

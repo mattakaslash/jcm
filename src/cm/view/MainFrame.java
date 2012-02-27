@@ -154,8 +154,8 @@ public class MainFrame extends JFrame {
 	private JButton jButtonAddTemp;
 	private JButton jButtonBackUp;
 	private JButton jButtonChange;
-	private JButton jButtonCritHit;
-	private JButton jButtonCritMiss;
+	private JToggleButton jToggleButtonCritHit;
+	private JToggleButton jToggleButtonCritMiss;
 	private JButton jButtonDamage;
 	private JButton jButtonDelay;
 	private JButton jButtonFailDeath;
@@ -164,8 +164,8 @@ public class MainFrame extends JFrame {
 	private JButton jButtonHeal;
 	private JButton jButtonMax;
 	private JButton jButtonMinusOne;
-	private JButton jButtonMiscDaily;
-	private JButton jButtonMiscVictory;
+	private JToggleButton jToggleButtonMiscDaily;
+	private JToggleButton jToggleButtonMiscVictory;
 	private JButton jButtonMoveToTop;
 	private JButton jButtonNextTurn;
 	private JButton jButtonPlusFive;
@@ -457,36 +457,6 @@ public class MainFrame extends JFrame {
 		return jButtonChange;
 	}
 
-	private JButton getJButtonCritHit() {
-		if (jButtonCritHit == null) {
-			jButtonCritHit = new JButton();
-			jButtonCritHit.setText("Hit");
-			jButtonCritHit.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonCritHitActionActionPerformed();
-				}
-			});
-		}
-		return jButtonCritHit;
-	}
-
-	private JButton getJButtonCritMiss() {
-		if (jButtonCritMiss == null) {
-			jButtonCritMiss = new JButton();
-			jButtonCritMiss.setText("Miss");
-			jButtonCritMiss.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonCritMissActionActionPerformed();
-				}
-			});
-		}
-		return jButtonCritMiss;
-	}
-
 	private JButton getJButtonDamage() {
 		if (jButtonDamage == null) {
 			jButtonDamage = new JButton();
@@ -620,36 +590,6 @@ public class MainFrame extends JFrame {
 			});
 		}
 		return jButtonMinusOne;
-	}
-
-	private JButton getJButtonMiscDaily() {
-		if (jButtonMiscDaily == null) {
-			jButtonMiscDaily = new JButton();
-			jButtonMiscDaily.setText("Daily");
-			jButtonMiscDaily.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonMiscDailyActionActionPerformed();
-				}
-			});
-		}
-		return jButtonMiscDaily;
-	}
-
-	private JButton getJButtonMiscVictory() {
-		if (jButtonMiscVictory == null) {
-			jButtonMiscVictory = new JButton();
-			jButtonMiscVictory.setText("Victory");
-			jButtonMiscVictory.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonMiscVictoryActionActionPerformed();
-				}
-			});
-		}
-		return jButtonMiscVictory;
 	}
 
 	private JButton getJButtonMoveToTop() {
@@ -1099,8 +1039,8 @@ public class MainFrame extends JFrame {
 			jPanelCrits.setBorder(BorderFactory.createTitledBorder(null, "Crits", TitledBorder.LEADING,
 					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			jPanelCrits.setLayout(new GroupLayout());
-			jPanelCrits.add(getJButtonCritHit(), new Constraints(new Bilateral(0, 0, 49), new Leading(0, 12, 12)));
-			jPanelCrits.add(getJButtonCritMiss(), new Constraints(new Bilateral(0, 0, 61), new Leading(32, 12, 12)));
+			jPanelCrits.add(getJToggleButtonCritHit(), new Constraints(new Bilateral(0, 0, 49), new Leading(0, 12, 12)));
+			jPanelCrits.add(getJToggleButtonCritMiss(), new Constraints(new Bilateral(0, 0, 61), new Leading(32, 12, 12)));
 		}
 		return jPanelCrits;
 	}
@@ -1182,8 +1122,8 @@ public class MainFrame extends JFrame {
 			jPanelMisc.setBorder(BorderFactory.createTitledBorder(null, "Misc", TitledBorder.LEADING,
 					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			jPanelMisc.setLayout(new GroupLayout());
-			jPanelMisc.add(getJButtonMiscVictory(), new Constraints(new Bilateral(0, 0, 61), new Leading(0, 12, 12)));
-			jPanelMisc.add(getJButtonMiscDaily(), new Constraints(new Bilateral(0, 0, 61), new Leading(32, 12, 12)));
+			jPanelMisc.add(getJToggleButtonMiscVictory(), new Constraints(new Bilateral(0, 0, 61), new Leading(0, 12, 12)));
+			jPanelMisc.add(getJToggleButtonMiscDaily(), new Constraints(new Bilateral(0, 0, 61), new Leading(32, 12, 12)));
 		}
 		return jPanelMisc;
 	}
@@ -1598,6 +1538,67 @@ public class MainFrame extends JFrame {
 			jTextFieldSurges.setEnabled(false);
 		}
 		return jTextFieldSurges;
+	}
+
+	private JToggleButton getJToggleButtonCritHit() {
+		if (jToggleButtonCritHit == null) {
+			jToggleButtonCritHit = new JToggleButton();
+			jToggleButtonCritHit.setText("Hit");
+			jToggleButtonCritHit.addItemListener(new ItemListener() {
+
+				@Override
+				public void itemStateChanged(ItemEvent event) {
+					jToggleButtonCritHitItemItemStateChanged(event);
+				}
+			});
+		}
+		return jToggleButtonCritHit;
+	}
+
+	private JToggleButton getJToggleButtonCritMiss() {
+		if (jToggleButtonCritMiss == null) {
+			jToggleButtonCritMiss = new JToggleButton();
+			jToggleButtonCritMiss.setText("Miss");
+			jToggleButtonCritMiss.addItemListener(new ItemListener() {
+	
+				@Override
+				public void itemStateChanged(ItemEvent event) {
+					jToggleButtonCritMissItemItemStateChanged(event);
+				}
+			});
+		}
+		return jToggleButtonCritMiss;
+	}
+
+	private JToggleButton getJToggleButtonMiscDaily() {
+		if (jToggleButtonMiscDaily == null) {
+			jToggleButtonMiscDaily = new JToggleButton();
+			jToggleButtonMiscDaily.setText("Daily");
+			jToggleButtonMiscDaily.addItemListener(new ItemListener() {
+
+				@Override
+				public void itemStateChanged(ItemEvent event) {
+					jToggleButtonMiscDailyItemItemStateChanged(event);
+					
+				}
+			});
+		}
+		return jToggleButtonMiscDaily;
+	}
+
+	private JToggleButton getJToggleButtonMiscVictory() {
+		if (jToggleButtonMiscVictory == null) {
+			jToggleButtonMiscVictory = new JToggleButton();
+			jToggleButtonMiscVictory.setText("Victory");
+			jToggleButtonMiscVictory.addItemListener(new ItemListener() {
+	
+				@Override
+				public void itemStateChanged(ItemEvent event) {
+					jToggleButtonMiscVictoryItemItemStateChanged(event);
+				}
+			});
+		}
+		return jToggleButtonMiscVictory;
 	}
 
 	private JToggleButton getJToggleButtonPlay() {
@@ -2099,28 +2100,6 @@ public class MainFrame extends JFrame {
 		}
 	}
 
-	private void jButtonCritHitActionActionPerformed() {
-		if (Settings.getCriticalHitSong() != null) {
-			getJToggleButtonPlay().setSelected(false);
-			Player.playOnce(Settings.getCriticalHitSong(), new PlaybackListener() {
-				public void playbackFinished(PlaybackEvent event) {
-					getJToggleButtonPlay().setSelected(true);
-				}
-			});
-		}
-	}
-
-	private void jButtonCritMissActionActionPerformed() {
-		if (Settings.getCriticalMissSong() != null) {
-			getJToggleButtonPlay().setSelected(false);
-			Player.playOnce(Settings.getCriticalMissSong(), new PlaybackListener() {
-				public void playbackFinished(PlaybackEvent event) {
-					getJToggleButtonPlay().setSelected(true);
-				}
-			});
-		}
-	}
-
 	/**
 	 * Event: Dmg, clicked.
 	 * 
@@ -2232,24 +2211,6 @@ public class MainFrame extends JFrame {
 		if (fighter != null) {
 			fighter.modSurges(-1);
 			getJTextFieldSurges().setText(fighter.getSurgeView());
-		}
-	}
-
-	private void jButtonMiscDailyActionActionPerformed() {
-		if (Settings.getDailySong() != null) {
-			getJToggleButtonPlay().setSelected(false);
-			Player.playOnce(Settings.getDailySong(), new PlaybackListener() {
-				public void playbackFinished(PlaybackEvent event) {
-					getJToggleButtonPlay().setSelected(true);
-				}
-			});
-		}
-	}
-
-	private void jButtonMiscVictoryActionActionPerformed() {
-		if (Settings.getVictorySong() != null) {
-			getJToggleButtonPlay().setSelected(false);
-			Player.playOnce(Settings.getVictorySong(), null);
 		}
 	}
 
@@ -2668,6 +2629,85 @@ public class MainFrame extends JFrame {
 					updateFromClass();
 				}
 			}
+		}
+	}
+
+	private void jToggleButtonCritHitItemItemStateChanged(ItemEvent event) {
+		if (event.getStateChange() == ItemEvent.SELECTED) {
+			if (Settings.getCriticalHitSong() != null) {
+				getJToggleButtonCritMiss().setSelected(false);
+				getJToggleButtonMiscDaily().setSelected(false);
+				getJToggleButtonMiscVictory().setSelected(false);
+				getJToggleButtonPlay().setSelected(false);
+				Player.playOnce(Settings.getCriticalHitSong(), new PlaybackListener() {
+					public void playbackFinished(PlaybackEvent event) {
+						Player.setCompletedOnce(true);
+						getJToggleButtonCritHit().setSelected(false);
+						getJToggleButtonPlay().setSelected(true);
+					}
+				});
+			}
+		} else if (!Player.isCompletedOnce()) {
+			Player.stopOnce();
+		}
+	}
+
+	private void jToggleButtonCritMissItemItemStateChanged(ItemEvent event) {
+		if (event.getStateChange() == ItemEvent.SELECTED) {
+			if (Settings.getCriticalMissSong() != null) {
+				getJToggleButtonCritHit().setSelected(false);
+				getJToggleButtonMiscDaily().setSelected(false);
+				getJToggleButtonMiscVictory().setSelected(false);
+				getJToggleButtonPlay().setSelected(false);
+				Player.playOnce(Settings.getCriticalMissSong(), new PlaybackListener() {
+					public void playbackFinished(PlaybackEvent event) {
+						Player.setCompletedOnce(true);
+						getJToggleButtonCritMiss().setSelected(false);
+						getJToggleButtonPlay().setSelected(true);
+					}
+				});
+			}
+		} else if (!Player.isCompletedOnce()) {
+			Player.stopOnce();
+		}
+	}
+
+	private void jToggleButtonMiscDailyItemItemStateChanged(ItemEvent event) {
+		if (event.getStateChange() == ItemEvent.SELECTED) {
+			if (Settings.getDailySong() != null) {
+				getJToggleButtonCritHit().setSelected(false);
+				getJToggleButtonCritMiss().setSelected(false);
+				getJToggleButtonMiscVictory().setSelected(false);
+				getJToggleButtonPlay().setSelected(false);
+				Player.playOnce(Settings.getDailySong(), new PlaybackListener() {
+					public void playbackFinished(PlaybackEvent event) {
+						Player.setCompletedOnce(true);
+						getJToggleButtonMiscDaily().setSelected(false);
+						getJToggleButtonPlay().setSelected(true);
+					}
+				});
+			}
+		} else if (!Player.isCompletedOnce()) {
+			Player.stopOnce();
+		}
+	}
+
+	private void jToggleButtonMiscVictoryItemItemStateChanged(ItemEvent event) {
+		if (event.getStateChange() == ItemEvent.SELECTED) {
+			if (Settings.getVictorySong() != null) {
+				getJToggleButtonCritHit().setSelected(false);
+				getJToggleButtonCritMiss().setSelected(false);
+				getJToggleButtonMiscDaily().setSelected(false);
+				getJToggleButtonPlay().setSelected(false);
+				Player.playOnce(Settings.getVictorySong(), new PlaybackListener() {
+					public void playbackFinished(PlaybackEvent event) {
+						Player.setCompletedOnce(true);
+						getJToggleButtonMiscVictory().setSelected(false);
+					}
+				});
+			}
+		} else if (!Player.isCompletedOnce()) {
+			Player.stopOnce();
 		}
 	}
 
