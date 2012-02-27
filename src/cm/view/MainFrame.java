@@ -100,6 +100,7 @@ import cm.util.DiceBag;
 import cm.util.StatLogger;
 import cm.util.external.ColumnsAutoSizer;
 import cm.util.music.Player;
+import cm.util.music.PlayerListener;
 import cm.view.render.EffectDetailsCellRenderer;
 import cm.view.render.OffTurnPowerRenderer;
 import cm.view.render.PlaylistCellRenderer;
@@ -263,6 +264,20 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		initComponents();
+		Player.setListener(new PlayerListener() {
+			
+			@Override
+			public void playbackStarted() {
+				if (Player.getFile() != null) {
+					getJTextAreaNowPlaying().setText(Player.getFile().getName());
+				}
+			}
+
+			@Override
+			public void playbackStopped() {
+				getJTextAreaNowPlaying().setText("(nothing)");
+			}
+		});
 	}
 
 	private void initComponents() {

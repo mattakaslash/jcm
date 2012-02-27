@@ -1,5 +1,6 @@
 package cm.util.music;
 
+import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -27,6 +28,14 @@ public class Player {
 
 	public static void setDir(File dir) {
 		DIR = dir;
+	}
+
+	public static File getFile() {
+		return FILE;
+	}
+
+	public static void setListener(PlayerListener playerListener) {
+		LISTENER = playerListener;
 	}
 
 	public static void play() {
@@ -81,6 +90,7 @@ public class Player {
 	}
 
 	public static void playOnce(File song, PlaybackListener listener) {
+		FILE = song;
 		try {
 			final AdvancedPlayer once = new AdvancedPlayer(new FileInputStream(song));
 			if (listener != null) {
@@ -95,6 +105,10 @@ public class Player {
 					}
 				}
 			}.start();
+			
+			if (LISTENER != null) {
+				LISTENER.playbackStarted();
+			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JavaLayerException e) {
@@ -105,5 +119,9 @@ public class Player {
 	public static void stop() {
 		STOPPED = true;
 		PLAYER.stop();
+		
+		if (LISTENER != null) {
+			LISTENER.playbackStopped();
+		}
 	}
 }
