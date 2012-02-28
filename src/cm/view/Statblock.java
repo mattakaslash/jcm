@@ -1695,12 +1695,11 @@ public class Statblock extends JDialog {
 
 		if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			Settings.setWorkingDirectory(fc.getCurrentDirectory());
-			for (File f : fc.getSelectedFiles()) {
-				setStat(new Stats());
-				if (getStat().loadFromMonsterFile(f.getAbsolutePath())) {
-					if (getStat().isValid()) {
-						moveClassToFields(getStat());
-					}
+			File f = fc.getSelectedFile();
+			setStat(new Stats());
+			if (getStat().loadFromMonsterFile(f.getAbsolutePath())) {
+				if (getStat().isValid()) {
+					moveClassToFields(getStat());
 				}
 			}
 		}
