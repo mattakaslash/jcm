@@ -291,45 +291,7 @@ public class EffectBase implements Comparable<EffectBase> {
 					} else if (elementName.contentEquals("beni")) {
 						setBeneficial(Boolean.valueOf(reader.getText()));
 					} else if (elementName.contentEquals("durcode")) {
-						if (reader.getText().length() == 1) {
-							// TODO: supports original; remove when no longer
-							// needed
-							switch (Integer.valueOf(reader.getText())) {
-							default:
-							case 0:
-								setDurationCode(Duration.None);
-								break;
-							case 1:
-								setDurationCode(Duration.SaveEnds);
-								break;
-							case 2:
-								setDurationCode(Duration.TargetStart);
-								break;
-							case 3:
-								setDurationCode(Duration.TargetEnd);
-								break;
-							case 4:
-								setDurationCode(Duration.SourceStart);
-								break;
-							case 5:
-								setDurationCode(Duration.SourceEnd);
-								break;
-							case 6:
-								setDurationCode(Duration.TurnEnd);
-								break;
-							case 7:
-								setDurationCode(Duration.Encounter);
-								break;
-							case 8:
-								setDurationCode(Duration.Sustained);
-								break;
-							case 9:
-								setDurationCode(Duration.Special);
-								break;
-							}
-						} else {
-							setDurationCode(Duration.valueOf(reader.getText()));
-						}
+						setDurationCode(Duration.valueOf(reader.getText()));
 					}
 				} else if (reader.isEndElement()) {
 					elementName = "";
