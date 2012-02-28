@@ -30,8 +30,18 @@ import org.dyno.visual.swing.layouts.Trailing;
 
 import cm.model.Settings;
 
+/**
+ * Defines a program options window.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 2.0
+ */
 //VS4E -- DO NOT REMOVE THIS LINE!
 public class Options extends JDialog {
+	/**
+	 * Generated.
+	 */
+	private static final long serialVersionUID = 1948071096317227461L;
 	private JButton jButtonBrowseRoot;
 	private JButton jButtonCancel;
 	private JButton jButtonBrowseCriticalHit;
@@ -56,8 +66,15 @@ public class Options extends JDialog {
 	private JTextField jTextFieldRootDirectory;
 	private JTextField jTextFieldVictory;
 
+	/**
+	 * Defines the options window and loads settings into their respective controls.
+	 */
 	public Options() {
 		initComponents();
+		getJCheckBoxGroupSimilar().setSelected(Settings.doGroupSimilar());
+		getJCheckBoxOngoingPopup().setSelected(Settings.doPopupForOngoingDamage());
+		getJCheckBoxPowerRecharges().setSelected(Settings.doPowerRecharge());
+		getJCheckBoxSavingThrows().setSelected(Settings.doSavingThrows());
 		if (Settings.getMusicDirectory() != null) {
 			getJTextFieldRootDirectory().setText(Settings.getMusicDirectory().getAbsolutePath());
 		}

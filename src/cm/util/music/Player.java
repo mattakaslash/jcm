@@ -1,6 +1,5 @@
 package cm.util.music;
 
-import java.awt.Font;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,35 +18,34 @@ import javazoom.jl.player.advanced.PlaybackListener;
  * @since 2.0
  */
 public class Player {
-	private static Random RAND = new Random();
+	private static Boolean COMPLETED = false;
 	private static File DIR = null;
 	private static File FILE = null;
+	private static PlayerListener LISTENER = null;
 	private static AdvancedPlayer ONCE = null;
 	private static AdvancedPlayer PLAYER = null;
-	private static PlayerListener LISTENER = null;
-	private static Boolean COMPLETED = false;
+	private static Random RAND = new Random();
 	private static Boolean STOPPED = false;
 
-	public static boolean isCompletedOnce() {
-		return COMPLETED;
-	}
-
-	public static void setCompletedOnce(Boolean completed) {
-		COMPLETED = completed;
-	}
-
-	public static void setDir(File dir) {
-		DIR = dir;
-	}
-
+	/**
+	 * Returns the File currently being played.
+	 * @return the file
+	 */
 	public static File getFile() {
 		return FILE;
 	}
 
-	public static void setListener(PlayerListener playerListener) {
-		LISTENER = playerListener;
+	/**
+	 * Returns an indicator of if the one-off song has finished playing.
+	 * @return true, if the song has finished playing
+	 */
+	public static boolean isCompletedOnce() {
+		return COMPLETED;
 	}
 
+	/**
+	 * Selects a random file from the current directory and plays it.
+	 */
 	public static void play() {
 		if (STOPPED) {
 			STOPPED = false;
@@ -75,11 +73,13 @@ public class Player {
 		try {
 			PLAYER = new AdvancedPlayer(new FileInputStream(FILE));
 			PLAYER.setPlayBackListener(new PlaybackListener() {
+				@Override
 				public void playbackFinished(PlaybackEvent event) {
 					play();
 				}
 			});
 			new Thread() {
+				@Override
 				public void run() {
 					try {
 						PLAYER.play();
@@ -99,6 +99,11 @@ public class Player {
 		}
 	}
 
+	/**
+	 * Plays the provided song once.
+	 * @param song the song
+	 * @param listener a {@link PlaybackListener} for callbacks
+	 */
 	public static void playOnce(File song, PlaybackListener listener) {
 		FILE = song;
 		COMPLETED = false;
@@ -108,6 +113,7 @@ public class Player {
 				ONCE.setPlayBackListener(listener);
 			}
 			new Thread() {
+				@Override
 				public void run() {
 					try {
 						ONCE.play();
@@ -127,6 +133,33 @@ public class Player {
 		}
 	}
 
+	/**
+	 * Sets the completed flag.
+	 * @param completed true, if the one-off song finished playing
+	 */
+	public static void setCompletedOnce(Boolean completed) {
+		COMPLETED = completed;
+	}
+
+	/**
+	 * Sets the directory from which to retreive a list of MP3s.
+	 * @param dir the directory
+	 */
+	public static void setDir(File dir) {
+		DIR = dir;
+	}
+
+	/**
+	 * Sets the {@link PlayerListener} to use for callbacks.
+	 * @param playerListener the listener
+	 */
+	public static void setListener(PlayerListener playerListener) {
+		LISTENER = playerListener;
+	}
+
+	/**
+	 * Stops playback of the loop.
+	 */
 	public static void stop() {
 		STOPPED = true;
 		PLAYER.stop();
@@ -136,6 +169,9 @@ public class Player {
 		}
 	}
 
+	/**
+	 * Stops playback of the one-off song.
+	 */
 	public static void stopOnce() {
 		ONCE.stop();
 		COMPLETED = true;

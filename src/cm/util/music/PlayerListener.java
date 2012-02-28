@@ -7,9 +7,13 @@ package cm.util.music;
  * @since 2.0
  */
 public abstract class PlayerListener {
-
+	/**
+	 * Called when playback begins.
+	 */
 	public abstract void playbackStarted();
 
+	/**
+	 * Called when playback finishes.
+	 */
 	public abstract void playbackStopped();
-
 }

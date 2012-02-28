@@ -9,6 +9,12 @@ import javax.swing.ListCellRenderer;
 
 import cm.model.Settings;
 
+/**
+ * Renders a cell of the playlist dropdown.
+ * 
+ * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
+ * @since 2.0
+ */
 public class PlaylistCellRenderer implements ListCellRenderer {
 
 	@Override
