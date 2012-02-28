@@ -1942,17 +1942,19 @@ public class Statblock extends JDialog {
 	 */
 	private void jCheckBoxPCChangeStateChanged(ChangeEvent event) {
 		if (getJCheckBoxPC().isSelected()) {
-			getJComboBoxRole2().setSelectedItem("Hero");
-			getJComboBoxRole().setSelectedItem("");
+			getJComboBoxRole().setSelectedItem("Hero");
+			getJComboBoxRole2().setSelectedItem("");
 			getJCheckBoxLeader().setSelected(false);
 
 			getJComboBoxRole().setEnabled(false);
+			getJComboBoxRole2().setEnabled(false);
 			getJCheckBoxLeader().setEnabled(false);
 		} else {
 			getJComboBoxRole().setEnabled(true);
+			getJComboBoxRole2().setEnabled(true);
 			getJCheckBoxLeader().setEnabled(true);
-			if (((String) getJComboBoxRole2().getSelectedItem()).contentEquals("Hero")) {
-				getJComboBoxRole2().setSelectedItem("");
+			if (((String) getJComboBoxRole().getSelectedItem()).contentEquals("Hero")) {
+				getJComboBoxRole().setSelectedItem("");
 			}
 		}
 	}

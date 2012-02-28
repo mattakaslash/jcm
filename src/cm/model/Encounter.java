@@ -1307,7 +1307,6 @@ public class Encounter {
 			if (fighter.isPC()) {
 				fighter.resetTempHP();
 				fighter.resetPowersUsage(false, true);
-				fighter.getStats().setActionPoints(fighter.getStats().getActionPoints() + 1);
 			}
 		}
 	}
