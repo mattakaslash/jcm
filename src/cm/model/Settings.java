@@ -76,20 +76,8 @@ public class Settings {
 		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doSavingThrows", Boolean.TRUE.toString());
 		SETTINGS.setProperty("musicDirectory", "");
-		SETTINGS.setProperty("useModRoles", Boolean.FALSE.toString());
 		SETTINGS.setProperty("victorySong", "");
 		SETTINGS.setProperty("workingDirectory", System.getProperty("user.dir"));
-	}
-
-	/**
-	 * Returns an indicator of whether rolls should be modified by role.
-	 * 
-	 * @return true, if rolls should be modified
-	 */
-	// TODO: determine if we even need this
-	public static Boolean useModRoles() {
-		init();
-		return Boolean.valueOf(SETTINGS.getProperty("useModRoles"));
 	}
 
 	/**

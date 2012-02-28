@@ -45,12 +45,6 @@ public class Combatant implements Comparable<Combatant> {
 	 * This combatant's initiative roll result.
 	 */
 	private Integer _initRoll = 0;
-
-	/**
-	 * A modifier for the combatant.
-	 */
-	// TODO: determine if this is even needed
-	private String _mod = "";
 	
 	/**
 	 * A list of power names for powers that are no longer available for the combatant's use. 
@@ -103,7 +97,6 @@ public class Combatant implements Comparable<Combatant> {
 	public Combatant() {
 		clearAll();
 		setStats(new Stats());
-		setRoleMod("");
 	}
 
 	/**
@@ -115,23 +108,6 @@ public class Combatant implements Comparable<Combatant> {
 	public Combatant(Stats stats) {
 		clearAll();
 		setStats(stats);
-		setRoleMod("");
-		resetInit();
-		resetHealth();
-	}
-
-	/**
-	 * Initializes a combatant with provided {@link Stats} and role modifier.
-	 * 
-	 * @param stats
-	 *            a {@link Stats} object for the combatant
-	 * @param roleMod
-	 *            the role mod for the combatant
-	 */
-	public Combatant(Stats stats, String roleMod) {
-		clearAll();
-		setStats(stats);
-		setRoleMod(roleMod);
 		resetInit();
 		resetHealth();
 	}
@@ -191,9 +167,8 @@ public class Combatant implements Comparable<Combatant> {
 	 * 
 	 * @return true if combatant is bloody, but conscious
 	 */
-	// TODO: add getMaxHP() != 1
 	public Boolean isBloody() {
-		return (getCurrHP() <= getBloodyHP() && isAlive());
+		return (getMaxHP() > 0 && getCurrHP() <= getBloodyHP() && isAlive());
 	}
 
 	/**
@@ -494,11 +469,7 @@ public class Combatant implements Comparable<Combatant> {
 	 * @return max HP
 	 */
 	public Integer getMaxHP() {
-		if (getMod().contentEquals("Demi")) {
-			return getStats().getMaxHP() / 2;
-		} else if (getMod().contentEquals("Semi")) {
-			return getStats().getMaxHP() / 4;
-		} else if (getMod().contentEquals("Minion")) {
+		if (isMinion()) {
 			return 1;
 		} else {
 			return getStats().getMaxHP();
@@ -512,25 +483,6 @@ public class Combatant implements Comparable<Combatant> {
 	 */
 	private Boolean isMinion() {
 		return getStats().isMinion();
-	}
-
-	/**
-	 * Returns the bare modifier for the combatant.
-	 * 
-	 * @return mod, e.g., "Demi", "Semi", "Minion", etc.
-	 */
-	private String getMod() {
-		return _mod;
-	}
-
-	/**
-	 * Sets the modifier (demi, semi, minion, etc.) for this combatant.
-	 * 
-	 * @param mod
-	 *            the new modifier
-	 */
-	private void setMod(String mod) {
-		_mod = mod;
 	}
 
 	/**
@@ -683,40 +635,6 @@ public class Combatant implements Comparable<Combatant> {
 	 */
 	public Integer getRef() {
 		return getStats().getRef();
-	}
-
-	/**
-	 * Changes role for the combatant, adjusting max HP if necessary.
-	 * 
-	 * @param value
-	 *            the new role modifier.
-	 */
-	public void setRoleMod(String value) {
-		String newMod = _mod;
-	
-		if (isMinion() || isPC()) {
-			newMod = "";
-		} else {
-			if (value.toLowerCase().contentEquals("demi")) {
-				newMod = "Demi";
-			} else if (value.toLowerCase().contentEquals("semi")) {
-				newMod = "Semi";
-			} else if (value.toLowerCase().contentEquals("minion")) {
-				newMod = "Minion";
-			} else {
-				newMod = "";
-			}
-	
-			if (!newMod.contentEquals(_mod)) {
-				Integer oldMaxHP = getMaxHP();
-				_mod = newMod;
-				if (oldMaxHP > getMaxHP()) {
-					damage(oldMaxHP - getMaxHP());
-				} else if (oldMaxHP < getMaxHP()) {
-					heal(getMaxHP() - oldMaxHP);
-				}
-			}
-		}
 	}
 
 	/**
@@ -951,7 +869,6 @@ public class Combatant implements Comparable<Combatant> {
 	private void clearAll() {
 		setStats(new Stats());
 		setCustomName("");
-		setMod("");
 		setFighterNumber(0);
 		setRoundStatus("");
 		setCurrHP(0);
@@ -1209,10 +1126,6 @@ public class Combatant implements Comparable<Combatant> {
 		writer.writeCharacters(getCustomName());
 		writer.writeEndElement();
 	
-		writer.writeStartElement("rolemod");
-		writer.writeCharacters(getMod());
-		writer.writeEndElement();
-	
 		getStats().exportXML(writer);
 	
 		if (ongoing) {
@@ -1302,8 +1215,6 @@ public class Combatant implements Comparable<Combatant> {
 				} else if (reader.isCharacters()) {
 					if (elementName.contentEquals("customname")) {
 						setCustomName(reader.getText());
-					} else if (elementName.contentEquals("rolemod")) {
-						setMod(reader.getText());
 					} else if (elementName.contentEquals("nRound")) {
 						setRound(Integer.valueOf(reader.getText()));
 					} else if (elementName.contentEquals("nInitRoll")) {

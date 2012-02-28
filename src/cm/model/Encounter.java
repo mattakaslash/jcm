@@ -49,20 +49,6 @@ public class Encounter {
 	private SortedMap<String, Combatant> _roster = new TreeMap<String, Combatant>();
 
 	/**
-	 * If true, rolls are modified by role modifier.
-	 */
-	// TODO: determine if this is even used
-	private Boolean _useRollMod = false;
-
-	/**
-	 * If true, a popup is displayed when a creature starts its turn and has an
-	 * effect dealing ongoing damage.
-	 */
-	// TODO: determine if this can be replaced by
-	// Settings.doPopupForOngoingDamage()
-	private Boolean _ongoingPopup = true;
-
-	/**
 	 * A coded form of the encounter notes.
 	 */
 	private String _globalNotesCoded = "";
@@ -83,20 +69,6 @@ public class Encounter {
 	private Integer _nextEffectID = 1;
 
 	/**
-	 * If true, the program will automatically roll saving throws for effects
-	 * that have Duration.SaveEnds.
-	 */
-	// TODO: determine if this can be replaced by Settings.doSavingThrows()
-	private Boolean _rollEffectSaves = true;
-
-	/**
-	 * If true, the program will automatically roll to recharge powers at the
-	 * start of the creature's turn.
-	 */
-	// TODO: determine if this can be replaced by Settings.doPowerRecharge()
-	private Boolean _rollPowerRecharge = true;
-
-	/**
 	 * A pointer to the parent frame for dialog box purposes.
 	 */
 	private JFrame _parent = null;
@@ -106,18 +78,12 @@ public class Encounter {
 	 * 
 	 * @param statLibrary
 	 *            the {@link StatLibrary}
-	 * @param useRoleMod
-	 *            if true, rolls will be modified according to fighter role
 	 * @param parent
 	 *            the parent frame for dialog boxes
 	 */
-	public Encounter(StatLibrary statLibrary, Boolean useRoleMod, JFrame parent) {
+	public Encounter(StatLibrary statLibrary, JFrame parent) {
 		clearAll();
 		setStatLib(statLibrary);
-		setUseRollMod(useRoleMod);
-		setOngoingPopup(Settings.doPopupForOngoingDamage());
-		setRollPowerRecharge(Settings.doPowerRecharge());
-		setRollEffectSaves(Settings.doSavingThrows());
 		setParent(parent);
 	}
 
@@ -430,27 +396,6 @@ public class Encounter {
 	}
 
 	/**
-	 * Indicates if a popup should be displayed reminding the user of ongoing
-	 * damage in effect on the current fighter.
-	 * 
-	 * @return true if the popup is desired in the application configuration
-	 */
-	private boolean doOngoingPopup() {
-		return _ongoingPopup;
-	}
-
-	/**
-	 * Sets the indicator of ongoing effect popups.
-	 * 
-	 * @param ongoingPopup
-	 *            true if the application should remind the user of ongoing
-	 *            effects at the start of the fighter's turn.
-	 */
-	public void setOngoingPopup(Boolean ongoingPopup) {
-		_ongoingPopup = ongoingPopup;
-	}
-
-	/**
 	 * Sets the parent frame for the encounter.
 	 * 
 	 * @param parent
@@ -507,47 +452,6 @@ public class Encounter {
 		}
 
 		return list;
-	}
-
-	/**
-	 * Indicates if the application should roll saving throws for fighters.
-	 * 
-	 * @return true if the application has been configured to roll saving throws
-	 */
-	private boolean doRollEffectSaves() {
-		return _rollEffectSaves;
-	}
-
-	/**
-	 * Sets the indicator of rolling saving throws.
-	 * 
-	 * @param rollEffectSaves
-	 *            true if the application should automatically roll saving
-	 *            throws
-	 */
-	public void setRollEffectSaves(Boolean rollEffectSaves) {
-		_rollEffectSaves = rollEffectSaves;
-	}
-
-	/**
-	 * Indicates if the application should roll to recharge fighter powers.
-	 * 
-	 * @return true if the application has been configured to roll recharges for
-	 *         fighter powers
-	 */
-	private boolean doRollPowerRecharge() {
-		return _rollPowerRecharge;
-	}
-
-	/**
-	 * Sets the indicator of rolling power recharges.
-	 * 
-	 * @param rollPowerRecharge
-	 *            true if the application should roll power recharges
-	 *            automatically
-	 */
-	public void setRollPowerRecharge(Boolean rollPowerRecharge) {
-		_rollPowerRecharge = rollPowerRecharge;
 	}
 
 	/**
@@ -636,25 +540,6 @@ public class Encounter {
 	}
 
 	/**
-	 * Indicates if the role modifier should be used.
-	 * 
-	 * @return true if the role modifier should be used
-	 */
-	private Boolean getUseRollMod() {
-		return _useRollMod;
-	}
-
-	/**
-	 * Sets the indicator of using the role modifier to effect dice rolls.
-	 * 
-	 * @param useRollMod
-	 *            true if the role modifier should modify dice rolls
-	 */
-	private void setUseRollMod(Boolean useRollMod) {
-		_useRollMod = useRollMod;
-	}
-
-	/**
 	 * Adds a new {@link Combatant} with the supplied stats to the encounter.
 	 * Calls {@link #add(Combatant, Boolean, Boolean)} with a final parameter of
 	 * 'true'.
@@ -695,9 +580,6 @@ public class Encounter {
 		getRoster().put(combatant.getCombatHandle(), combatant);
 		if (libUpdate) {
 			combatant.updateLibrary(getStatLib(), configEntry);
-		}
-		if (!getUseRollMod()) {
-			combatant.setRoleMod("");
 		}
 	}
 
@@ -841,11 +723,11 @@ public class Encounter {
 		Combatant fighter = getRoster().get(combatHandle);
 		effectRemoveStart(fighter);
 		fighter.setReady(false);
-		if (doRollPowerRecharge()) {
+		if (Settings.doPowerRecharge()) {
 			powerCheckRecharge(fighter);
 		}
 
-		if (doOngoingPopup()) {
+		if (Settings.doPopupForOngoingDamage()) {
 			String text = new String("");
 
 			for (Effect eff : getActiveEffects().values()) {
@@ -873,7 +755,7 @@ public class Encounter {
 	private void fighterEndTurn(String combatHandle) {
 		Combatant fighter = getRoster().get(combatHandle);
 		effectRemoveEnd(fighter);
-		if (doRollEffectSaves()) {
+		if (Settings.doSavingThrows()) {
 			effectMakeSaves(fighter);
 		}
 		fighterInitUpdate(fighter.getCombatHandle(), fighter.getRound() + 1, fighter.getInitRoll(), fighter.getRandom3(), true);

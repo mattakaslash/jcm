@@ -3652,7 +3652,7 @@ public class MainFrame extends JFrame {
 			getStatlib().loadFromFile(getStatlibFilename(), true);
 		}
 
-		setFight(new Encounter(getStatlib(), Settings.useModRoles(), this));
+		setFight(new Encounter(getStatlib(), this));
 
 		updateEnabledControls();
 
