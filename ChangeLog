@@ -1,0 +1,7 @@
+Version 2.0
+ - Added a music player
+ - Moved configuration options to a dialog window
+ - Removed support for reading VB.NET application's EffectBase Durations.
+
+Version 1.0 (28 February 2012)
+ - Initial release
