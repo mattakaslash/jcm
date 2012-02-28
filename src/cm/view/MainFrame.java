@@ -29,6 +29,7 @@ import java.net.URL;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JEditorPane;
 import javax.swing.JFileChooser;
@@ -74,6 +75,7 @@ import org.dyno.visual.swing.layouts.Bilateral;
 import org.dyno.visual.swing.layouts.Constraints;
 import org.dyno.visual.swing.layouts.GroupLayout;
 import org.dyno.visual.swing.layouts.Leading;
+import org.dyno.visual.swing.layouts.Trailing;
 
 import cm.model.Combatant;
 import cm.model.Effect;
@@ -152,6 +154,9 @@ public class MainFrame extends JFrame {
 	private JButton jButtonNextTurn;
 	private JButton jButtonPlusFive;
 	private JButton jButtonPlusOne;
+	private JButton jButtonPowerPointsMinusFour;
+	private JButton jButtonPowerPointsMinusOne;
+	private JButton jButtonPowerPointsMinusTwo;
 	private JButton jButtonReady;
 	private JButton jButtonRegainAll;
 	private JButton jButtonRemove;
@@ -160,6 +165,7 @@ public class MainFrame extends JFrame {
 	private JButton jButtonRollInitiative;
 	private JButton jButtonSurge;
 	private JButton jButtonUndoDeath;
+	private JCheckBox jCheckBoxSpent;
 	private JEditorPane jEditorPaneCompendium;
 	private JEditorPane jEditorPaneStatblock;
 	private JLabel jLabelInitRoll;
@@ -174,6 +180,7 @@ public class MainFrame extends JFrame {
 	private JMenuItem jMenuItemMoveToTop;
 	private JMenuItem jMenuItemReady;
 	private JMenuItem jMenuItemToggleVisibility;
+	private JPanel jPanelActionPoints;
 	private JPanel jPanelBottomCenter;
 	private JPanel jPanelDamageHealing;
 	private JPanel jPanelEffectButtons;
@@ -181,6 +188,8 @@ public class MainFrame extends JFrame {
 	private JPanel jPanelHealth;
 	private JPanel jPanelInitiative;
 	private JPanel jPanelMusic;
+	private JPanel jPanelPoints;
+	private JPanel jPanelPowerPoints;
 	private JPanel jPanelSurges;
 	private JPanel jPanelTopCenter;
 	private JPopupMenu jPopupMenuRoster;
@@ -195,8 +204,10 @@ public class MainFrame extends JFrame {
 	private JSeparator jSeparator1;
 	private JSeparator jSeparator2;
 	private JSeparator jSeparator3;
+	private JSpinner jSpinnerActionPoints;
 	private JSpinner jSpinnerDamageHealAmount;
 	private JSpinner jSpinnerInitRoll;
+	private JSpinner jSpinnerPowerPoints;
 	private JSplitPane jSplitPaneCenter;
 	private JSplitPane jSplitPaneLeft;
 	private JSplitPane jSplitPaneMain;
@@ -243,34 +254,6 @@ public class MainFrame extends JFrame {
 	 */
 	public MainFrame() {
 		initComponents();
-	}
-
-	private void initComponents() {
-		setTitle("DnD 4e Combat Manager");
-		setFont(new Font("Dialog", Font.PLAIN, 12));
-		setForeground(Color.black);
-		add(getJSplitPaneMain(), BorderLayout.CENTER);
-		addComponentListener(new ComponentAdapter() {
-
-			@Override
-			public void componentResized(ComponentEvent event) {
-				componentComponentResized(event);
-			}
-		});
-		addWindowListener(new WindowAdapter() {
-
-			@Override
-			public void windowClosing(WindowEvent event) {
-				windowWindowClosing(event);
-			}
-
-			@Override
-			public void windowOpened(WindowEvent event) {
-				windowWindowOpened(event);
-			}
-		});
-		setJMenuBar(getMenuBarMain());
-		pack();
 	}
 
 	/**
@@ -625,6 +608,54 @@ public class MainFrame extends JFrame {
 		return jButtonPlusOne;
 	}
 
+	private JButton getJButtonPowerPointsMinusFour() {
+		if (jButtonPowerPointsMinusFour == null) {
+			jButtonPowerPointsMinusFour = new JButton();
+			jButtonPowerPointsMinusFour.setText("-4");
+			jButtonPowerPointsMinusFour.setMargin(new Insets(0, 0, 0, 0));
+			jButtonPowerPointsMinusFour.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					jButtonPowerPointsMinusFourActionActionPerformed(event);
+				}
+			});
+		}
+		return jButtonPowerPointsMinusFour;
+	}
+
+	private JButton getJButtonPowerPointsMinusOne() {
+		if (jButtonPowerPointsMinusOne == null) {
+			jButtonPowerPointsMinusOne = new JButton();
+			jButtonPowerPointsMinusOne.setText("-1");
+			jButtonPowerPointsMinusOne.setMargin(new Insets(0, 0, 0, 0));
+			jButtonPowerPointsMinusOne.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					jButtonPowerPointsMinusOneActionActionPerformed(event);
+				}
+			});
+		}
+		return jButtonPowerPointsMinusOne;
+	}
+
+	private JButton getJButtonPowerPointsMinusTwo() {
+		if (jButtonPowerPointsMinusTwo == null) {
+			jButtonPowerPointsMinusTwo = new JButton();
+			jButtonPowerPointsMinusTwo.setText("-2");
+			jButtonPowerPointsMinusTwo.setMargin(new Insets(0, 0, 0, 0));
+			jButtonPowerPointsMinusTwo.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					jButtonPowerPointsMinusTwoActionActionPerformed(event);
+				}
+			});
+		}
+		return jButtonPowerPointsMinusTwo;
+	}
+
 	private JButton getJButtonReady() {
 		if (jButtonReady == null) {
 			jButtonReady = new JButton();
@@ -759,6 +790,24 @@ public class MainFrame extends JFrame {
 			});
 		}
 		return jButtonUndoDeath;
+	}
+
+	private JCheckBox getJCheckBoxSpent() {
+		if (jCheckBoxSpent == null) {
+			jCheckBoxSpent = new JCheckBox();
+			jCheckBoxSpent.setText("Spent");
+			jCheckBoxSpent.setHorizontalAlignment(SwingConstants.CENTER);
+			jCheckBoxSpent.setFocusPainted(false);
+			jCheckBoxSpent.setEnabled(false);
+			jCheckBoxSpent.addChangeListener(new ChangeListener() {
+
+				@Override
+				public void stateChanged(ChangeEvent event) {
+					jCheckBoxSpentChangeStateChanged(event);
+				}
+			});
+		}
+		return jCheckBoxSpent;
 	}
 
 	private JEditorPane getJEditorPaneCompendium() {
@@ -978,6 +1027,19 @@ public class MainFrame extends JFrame {
 		return jMenuItemToggleVisibility;
 	}
 
+	private JPanel getJPanelActionPoints() {
+		if (jPanelActionPoints == null) {
+			jPanelActionPoints = new JPanel();
+			jPanelActionPoints.setBorder(BorderFactory.createTitledBorder(null, "Action Points", TitledBorder.LEADING,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
+			jPanelActionPoints.setLayout(new GroupLayout());
+			jPanelActionPoints.add(getJSpinnerActionPoints(),
+					new Constraints(new Bilateral(12, 12, 27), new Leading(0, 41, 10, 10)));
+			jPanelActionPoints.add(getJCheckBoxSpent(), new Constraints(new Bilateral(8, 12, 58), new Trailing(0, 34, 45)));
+		}
+		return jPanelActionPoints;
+	}
+
 	private JPanel getJPanelBottomCenter() {
 		if (jPanelBottomCenter == null) {
 			jPanelBottomCenter = new JPanel();
@@ -1066,6 +1128,33 @@ public class MainFrame extends JFrame {
 			jPanelMusic.setLayout(new GroupLayout());
 		}
 		return jPanelMusic;
+	}
+
+	private JPanel getJPanelPoints() {
+		if (jPanelPoints == null) {
+			jPanelPoints = new JPanel();
+			jPanelPoints.setLayout(new GroupLayout());
+			jPanelPoints.add(getJPanelActionPoints(), new Constraints(new Leading(12, 130, 10, 10), new Bilateral(0, 12, 0)));
+			jPanelPoints.add(getJPanelPowerPoints(), new Constraints(new Bilateral(160, 12, 0), new Bilateral(-1, 12, 0)));
+		}
+		return jPanelPoints;
+	}
+
+	private JPanel getJPanelPowerPoints() {
+		if (jPanelPowerPoints == null) {
+			jPanelPowerPoints = new JPanel();
+			jPanelPowerPoints.setBorder(BorderFactory.createTitledBorder(null, "Power Points", TitledBorder.LEADING,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
+			jPanelPowerPoints.setLayout(new GroupLayout());
+			jPanelPowerPoints.add(getJSpinnerPowerPoints(), new Constraints(new Bilateral(12, 12, 27), new Leading(0, 41, 10, 10)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusFour(), new Constraints(new Trailing(12, 53, 53), new Leading(47, 12,
+					12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusTwo(), new Constraints(new Bilateral(42, 42, 17), new Leading(47, 12,
+					12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusOne(),
+					new Constraints(new Leading(12, 65, 65), new Leading(47, 12, 12)));
+		}
+		return jPanelPowerPoints;
 	}
 
 	private JPanel getJPanelSurges() {
@@ -1217,6 +1306,29 @@ public class MainFrame extends JFrame {
 		return jSeparator3;
 	}
 
+	private JSpinner getJSpinnerActionPoints() {
+		if (jSpinnerActionPoints == null) {
+			jSpinnerActionPoints = new JSpinner();
+			jSpinnerActionPoints.setFont(new Font("Dialog", Font.BOLD, 20));
+			jSpinnerActionPoints.setModel(new SpinnerNumberModel(0, 0, null, 1));
+			jSpinnerActionPoints.addKeyListener(new KeyAdapter() {
+
+				@Override
+				public void keyPressed(KeyEvent event) {
+					jSpinnerActionPointsKeyKeyPressed(event);
+				}
+			});
+			jSpinnerActionPoints.addChangeListener(new ChangeListener() {
+
+				@Override
+				public void stateChanged(ChangeEvent event) {
+					jSpinnerActionPointsChangeStateChanged(event);
+				}
+			});
+		}
+		return jSpinnerActionPoints;
+	}
+
 	private JSpinner getJSpinnerDamageHealAmount() {
 		if (jSpinnerDamageHealAmount == null) {
 			jSpinnerDamageHealAmount = new JSpinner();
@@ -1260,12 +1372,35 @@ public class MainFrame extends JFrame {
 		return jSpinnerInitRoll;
 	}
 
+	private JSpinner getJSpinnerPowerPoints() {
+		if (jSpinnerPowerPoints == null) {
+			jSpinnerPowerPoints = new JSpinner();
+			jSpinnerPowerPoints.setFont(new Font("Dialog", Font.BOLD, 20));
+			jSpinnerPowerPoints.setModel(new SpinnerNumberModel(0, 0, null, 1));
+			jSpinnerPowerPoints.addKeyListener(new KeyAdapter() {
+
+				@Override
+				public void keyPressed(KeyEvent event) {
+					jSpinnerPowerPointsKeyKeyPressed(event);
+				}
+			});
+			jSpinnerPowerPoints.addChangeListener(new ChangeListener() {
+
+				@Override
+				public void stateChanged(ChangeEvent event) {
+					jSpinnerPowerPointsChangeStateChanged(event);
+				}
+			});
+		}
+		return jSpinnerPowerPoints;
+	}
+
 	private JSplitPane getJSplitPaneCenter() {
 		if (jSplitPaneCenter == null) {
 			jSplitPaneCenter = new JSplitPane();
 			jSplitPaneCenter.setDividerLocation(325);
-			jSplitPaneCenter.setResizeWeight(0.25);
 			jSplitPaneCenter.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			jSplitPaneCenter.setResizeWeight(0.25);
 			jSplitPaneCenter.setTopComponent(getJPanelTopCenter());
 			jSplitPaneCenter.setBottomComponent(getJPanelBottomCenter());
 		}
@@ -1324,6 +1459,7 @@ public class MainFrame extends JFrame {
 			jTabbedPaneControls = new JTabbedPane();
 			jTabbedPaneControls.addTab("Initiative", getJPanelInitiative());
 			jTabbedPaneControls.addTab("Damage/Healing", getJPanelDamageHealing());
+			jTabbedPaneControls.addTab("Points", getJPanelPoints());
 		}
 		return jTabbedPaneControls;
 	}
@@ -1889,6 +2025,34 @@ public class MainFrame extends JFrame {
 		return _statlibFilename;
 	}
 
+	private void initComponents() {
+		setTitle("DnD 4e Combat Manager");
+		setFont(new Font("Dialog", Font.PLAIN, 12));
+		setForeground(Color.black);
+		add(getJSplitPaneMain(), BorderLayout.CENTER);
+		addComponentListener(new ComponentAdapter() {
+
+			@Override
+			public void componentResized(ComponentEvent event) {
+				componentComponentResized(event);
+			}
+		});
+		addWindowListener(new WindowAdapter() {
+
+			@Override
+			public void windowClosing(WindowEvent event) {
+				windowWindowClosing(event);
+			}
+
+			@Override
+			public void windowOpened(WindowEvent event) {
+				windowWindowOpened(event);
+			}
+		});
+		setJMenuBar(getMenuBarMain());
+		pack();
+	}
+
 	/**
 	 * Indicates if full initiative information is to be displayed.
 	 * 
@@ -2132,6 +2296,36 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Event: Power Points -4 pressed.
+	 * 
+	 * @param event
+	 */
+	private void jButtonPowerPointsMinusFourActionActionPerformed(ActionEvent event) {
+		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
+		getJSpinnerPowerPoints().setValue(old - 4);
+	}
+
+	/**
+	 * Event: Power Points -1 pressed.
+	 * 
+	 * @param event
+	 */
+	private void jButtonPowerPointsMinusOneActionActionPerformed(ActionEvent event) {
+		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
+		getJSpinnerPowerPoints().setValue(old - 1);
+	}
+
+	/**
+	 * Event: Power Points -2 pressed.
+	 * 
+	 * @param event
+	 */
+	private void jButtonPowerPointsMinusTwoActionActionPerformed(ActionEvent event) {
+		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
+		getJSpinnerPowerPoints().setValue(old - 2);
+	}
+
+	/**
 	 * Event: Ready clicked.
 	 * 
 	 * @param event
@@ -2239,6 +2433,20 @@ public class MainFrame extends JFrame {
 
 		if (fighter != null) {
 			fighter.unfailDeathSave();
+			updateFromClass();
+		}
+	}
+
+	/**
+	 * Event: Action Points spent changed.
+	 * 
+	 * @param event
+	 */
+	private void jCheckBoxSpentChangeStateChanged(ChangeEvent event) {
+		Combatant fighter = getListSelectedFighter();
+
+		if (fighter != null) {
+			fighter.setActionPointSpent(getJCheckBoxSpent().isSelected());
 			updateFromClass();
 		}
 	}
@@ -2411,6 +2619,31 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
+	 * Event: Action Points spinner changed.
+	 * 
+	 * @param event
+	 */
+	private void jSpinnerActionPointsChangeStateChanged(ChangeEvent event) {
+		Combatant fighter = getListSelectedFighter();
+
+		if (fighter != null) {
+			fighter.setActionPointsRemaining((Integer) getJSpinnerActionPoints().getValue());
+			updateFromClass();
+		}
+	}
+
+	/**
+	 * Event: Action Points key pressed.
+	 * 
+	 * @param event
+	 */
+	private void jSpinnerActionPointsKeyKeyPressed(KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+			jSpinnerActionPointsChangeStateChanged(null);
+		}
+	}
+
+	/**
 	 * Event: Damage/heal state changed.
 	 * 
 	 * @param event
@@ -2458,6 +2691,31 @@ public class MainFrame extends JFrame {
 		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
 			jSpinnerInitRollChangeStateChanged(null);
 			event.consume();
+		}
+	}
+
+	/**
+	 * Event: Power Points spinner changed.
+	 * 
+	 * @param event
+	 */
+	private void jSpinnerPowerPointsChangeStateChanged(ChangeEvent event) {
+		Combatant fighter = getListSelectedFighter();
+
+		if (fighter != null) {
+			fighter.setPowerPointsRemaining((Integer) getJSpinnerPowerPoints().getValue());
+			updateFromClass();
+		}
+	}
+
+	/**
+	 * Event: Power Points spinner key pressed.
+	 * 
+	 * @param event
+	 */
+	private void jSpinnerPowerPointsKeyKeyPressed(KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+			jSpinnerPowerPointsChangeStateChanged(null);
 		}
 	}
 
@@ -3009,6 +3267,9 @@ public class MainFrame extends JFrame {
 		getJTextFieldName().setText("");
 		getJTextFieldNumber().setText("");
 		getJSpinnerInitRoll().setValue(0);
+		getJSpinnerActionPoints().setValue(0);
+		getJSpinnerPowerPoints().setValue(0);
+		getJCheckBoxSpent().setSelected(false);
 		getJTextFieldSurges().setText("");
 		getFight().clearSelectedFighter();
 		statDataDisable();
@@ -3017,6 +3278,7 @@ public class MainFrame extends JFrame {
 	private void statDataDisable() {
 		getJTextFieldName().setEnabled(false);
 		getJSpinnerInitRoll().setEnabled(false);
+		getJCheckBoxSpent().setEnabled(false);
 		getJButtonBackUp().setEnabled(false);
 		getJButtonDelay().setEnabled(false);
 		getJButtonMoveToTop().setEnabled(false);
@@ -3072,6 +3334,7 @@ public class MainFrame extends JFrame {
 			getJButtonPlusOne().setEnabled(false);
 			getJButtonMinusOne().setEnabled(false);
 			getJButtonRemoveFighter().setEnabled(true);
+			getJCheckBoxSpent().setEnabled(true);
 
 			if (fighter.getInitStatus().contentEquals("Rolled")) {
 				getJButtonBackUp().setEnabled(true);
@@ -3160,6 +3423,9 @@ public class MainFrame extends JFrame {
 				getJTextFieldNumber().setText("PC");
 			}
 			getJSpinnerInitRoll().setValue(fighter.getInitRoll());
+			getJSpinnerActionPoints().setValue(fighter.getActionPointsRemaining());
+			getJSpinnerPowerPoints().setValue(fighter.getPowerPointsRemaining());
+			getJCheckBoxSpent().setSelected(fighter.isActionPointSpent());
 
 			getJEditorPaneStatblock().setText(fighter.getStatsHTML());
 			getJEditorPaneStatblock().setCaretPosition(0);
