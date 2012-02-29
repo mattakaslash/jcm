@@ -155,7 +155,7 @@ public class MainFrame extends JFrame {
 	private JButton jButtonPlusFive;
 	private JButton jButtonPlusOne;
 	private JButton jButtonPowerPointsMinusFour;
-	private JButton jButtonPowerPointsMinusOne;
+	private JButton jButtonPowerPointsMinusSix;
 	private JButton jButtonPowerPointsMinusTwo;
 	private JButton jButtonReady;
 	private JButton jButtonRegainAll;
@@ -624,20 +624,20 @@ public class MainFrame extends JFrame {
 		return jButtonPowerPointsMinusFour;
 	}
 
-	private JButton getJButtonPowerPointsMinusOne() {
-		if (jButtonPowerPointsMinusOne == null) {
-			jButtonPowerPointsMinusOne = new JButton();
-			jButtonPowerPointsMinusOne.setText("-1");
-			jButtonPowerPointsMinusOne.setMargin(new Insets(0, 0, 0, 0));
-			jButtonPowerPointsMinusOne.addActionListener(new ActionListener() {
+	private JButton getJButtonPowerPointsMinusSix() {
+		if (jButtonPowerPointsMinusSix == null) {
+			jButtonPowerPointsMinusSix = new JButton();
+			jButtonPowerPointsMinusSix.setText("-6");
+			jButtonPowerPointsMinusSix.setMargin(new Insets(0, 0, 0, 0));
+			jButtonPowerPointsMinusSix.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent event) {
-					jButtonPowerPointsMinusOneActionActionPerformed(event);
+					jButtonPowerPointsMinusSixActionActionPerformed(event);
 				}
 			});
 		}
-		return jButtonPowerPointsMinusOne;
+		return jButtonPowerPointsMinusSix;
 	}
 
 	private JButton getJButtonPowerPointsMinusTwo() {
@@ -1147,9 +1147,9 @@ public class MainFrame extends JFrame {
 					"Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
 			jPanelPowerPoints.setLayout(new GroupLayout());
 			jPanelPowerPoints.add(getJSpinnerPowerPoints(), new Constraints(new Bilateral(12, 12, 27), new Leading(0, 41, 10, 10)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusFour(), new Constraints(new Trailing(12, 53, 53), new Leading(47, 12, 12)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusOne(), new Constraints(new Leading(12, 65, 65), new Leading(47, 12, 12)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusTwo(), new Constraints(new Bilateral(38, 39, 22), new Leading(47, 12, 12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusSix(), new Constraints(new Trailing(12, 53, 53), new Leading(47, 12, 12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusTwo(), new Constraints(new Leading(12, 65, 65), new Leading(47, 12, 12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusFour(), new Constraints(new Bilateral(38, 39, 22), new Leading(47, 12, 12)));
 		}
 		return jPanelPowerPoints;
 	}
@@ -2300,13 +2300,13 @@ public class MainFrame extends JFrame {
 	}
 
 	/**
-	 * Event: Power Points -1 pressed.
+	 * Event: Power Points -6 pressed.
 	 * 
 	 * @param event
 	 */
-	private void jButtonPowerPointsMinusOneActionActionPerformed(ActionEvent event) {
+	private void jButtonPowerPointsMinusSixActionActionPerformed(ActionEvent event) {
 		Integer oldVal = (Integer) getJSpinnerPowerPoints().getValue();
-		Integer newVal = oldVal - 1;
+		Integer newVal = oldVal - 6;
 		getJSpinnerPowerPoints().setValue((newVal < 0 ? 0 : newVal));
 	}
 
@@ -2807,6 +2807,7 @@ public class MainFrame extends JFrame {
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 		if (n == JOptionPane.YES_OPTION) {
+			getJTableRoster().clearSelection();
 			getFight().resetEncounter(false);
 			getJTabbedPaneUtils().setSelectedIndex(0);
 			updateFromClass();
@@ -3005,6 +3006,7 @@ public class MainFrame extends JFrame {
 				+ "    -Restore the party to full health", "Take Extended Rest?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			getJTableRoster().clearSelection();
 			getFight().takeExtendedRest();
 			updateFromClass();
 		}
@@ -3031,6 +3033,7 @@ public class MainFrame extends JFrame {
 				+ "    -Clear all temporary hit points", "Take Short Rest?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			getJTableRoster().clearSelection();
 			getFight().takeShortRest();
 			updateFromClass();
 		}
@@ -3047,6 +3050,7 @@ public class MainFrame extends JFrame {
 				+ "    -Clear all temporary hit points\n" + "    -Refresh PC action points", "Take Short Rest with Milestone?",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			getJTableRoster().clearSelection();
 			getFight().takeShortRestWithMilestone();
 			updateFromClass();
 		}
