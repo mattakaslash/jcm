@@ -87,7 +87,7 @@ public class About extends JDialog {
 			jLabelVersion = new JLabel();
 			jLabelVersion.setFont(new Font("Dialog", Font.BOLD, 24));
 			jLabelVersion.setHorizontalAlignment(SwingConstants.CENTER);
-			jLabelVersion.setText(cm.DnD4eCombatManager.VERSION);
+			jLabelVersion.setText("Version " + cm.DnD4eCombatManager.VERSION);
 		}
 		return jLabelVersion;
 	}
