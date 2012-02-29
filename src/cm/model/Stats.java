@@ -2619,7 +2619,7 @@ public class Stats {
 			desc += atkDesc + "\n";
 		}
 		
-		if (!hit.trim().isEmpty()) {
+		if (!atkDesc.isEmpty() && !hit.trim().isEmpty()) {
 			desc += "Hit: " + hit;
 		}
 		if (!miss.trim().isEmpty()) {

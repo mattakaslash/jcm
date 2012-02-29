@@ -1,4 +1,7 @@
-Version 1.1
+Version 1.1.1 (29 February 2012)
+ - .monster import does not show "Hit" line unless there is an "Attack" line
+
+Version 1.1 (28 February 2012)
  - Statblock form fixes
  - Action and power point tracking
 
