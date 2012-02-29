@@ -262,7 +262,7 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void componentComponentResized(ComponentEvent event) {
-		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 15);
 	}
 
 	/**
@@ -1143,16 +1143,13 @@ public class MainFrame extends JFrame {
 	private JPanel getJPanelPowerPoints() {
 		if (jPanelPowerPoints == null) {
 			jPanelPowerPoints = new JPanel();
-			jPanelPowerPoints.setBorder(BorderFactory.createTitledBorder(null, "Power Points", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
+			jPanelPowerPoints.setBorder(BorderFactory.createTitledBorder(null, "Power Points", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font(
+					"Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
 			jPanelPowerPoints.setLayout(new GroupLayout());
 			jPanelPowerPoints.add(getJSpinnerPowerPoints(), new Constraints(new Bilateral(12, 12, 27), new Leading(0, 41, 10, 10)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusFour(), new Constraints(new Trailing(12, 53, 53), new Leading(47, 12,
-					12)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusTwo(), new Constraints(new Bilateral(42, 42, 17), new Leading(47, 12,
-					12)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusOne(),
-					new Constraints(new Leading(12, 65, 65), new Leading(47, 12, 12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusFour(), new Constraints(new Trailing(12, 53, 53), new Leading(47, 12, 12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusOne(), new Constraints(new Leading(12, 65, 65), new Leading(47, 12, 12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusTwo(), new Constraints(new Bilateral(38, 39, 22), new Leading(47, 12, 12)));
 		}
 		return jPanelPowerPoints;
 	}
@@ -1176,8 +1173,7 @@ public class MainFrame extends JFrame {
 			jPanelTopCenter = new JPanel();
 			jPanelTopCenter.setLayout(new GroupLayout());
 			jPanelTopCenter.add(getJLabelName(), new Constraints(new Leading(4, 10, 10), new Leading(6, 12, 12)));
-			jPanelTopCenter.add(getJTabbedPaneControls(),
-					new Constraints(new Leading(4, 288, 12, 12), new Leading(26, 139, 12, 12)));
+			jPanelTopCenter.add(getJTabbedPaneControls(), new Constraints(new Leading(4, 288, 12, 12), new Leading(26, 139, 12, 12)));
 			jPanelTopCenter.add(getJButtonNextTurn(), new Constraints(new Leading(4, 211, 12, 12), new Leading(171, 12, 12)));
 			jPanelTopCenter.add(getJTextFieldNumber(), new Constraints(new Leading(254, 38, 12, 12), new Leading(3, 12, 12)));
 			jPanelTopCenter.add(getJTextFieldName(), new Constraints(new Leading(43, 205, 10, 10), new Leading(3, 12, 12)));
@@ -2030,23 +2026,20 @@ public class MainFrame extends JFrame {
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		setForeground(Color.black);
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
-		addComponentListener(new ComponentAdapter() {
-
-			@Override
-			public void componentResized(ComponentEvent event) {
-				componentComponentResized(event);
-			}
-		});
 		addWindowListener(new WindowAdapter() {
-
-			@Override
+	
 			public void windowClosing(WindowEvent event) {
 				windowWindowClosing(event);
 			}
-
-			@Override
+	
 			public void windowOpened(WindowEvent event) {
 				windowWindowOpened(event);
+			}
+		});
+		addComponentListener(new ComponentAdapter() {
+	
+			public void componentResized(ComponentEvent event) {
+				componentComponentResized(event);
 			}
 		});
 		setJMenuBar(getMenuBarMain());
@@ -2301,8 +2294,9 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jButtonPowerPointsMinusFourActionActionPerformed(ActionEvent event) {
-		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
-		getJSpinnerPowerPoints().setValue(old - 4);
+		Integer oldVal = (Integer) getJSpinnerPowerPoints().getValue();
+		Integer newVal = oldVal - 4;
+		getJSpinnerPowerPoints().setValue((newVal < 0 ? 0 : newVal));
 	}
 
 	/**
@@ -2311,8 +2305,9 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jButtonPowerPointsMinusOneActionActionPerformed(ActionEvent event) {
-		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
-		getJSpinnerPowerPoints().setValue(old - 1);
+		Integer oldVal = (Integer) getJSpinnerPowerPoints().getValue();
+		Integer newVal = oldVal - 1;
+		getJSpinnerPowerPoints().setValue((newVal < 0 ? 0 : newVal));
 	}
 
 	/**
@@ -2321,8 +2316,9 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jButtonPowerPointsMinusTwoActionActionPerformed(ActionEvent event) {
-		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
-		getJSpinnerPowerPoints().setValue(old - 2);
+		Integer oldVal = (Integer) getJSpinnerPowerPoints().getValue();
+		Integer newVal = oldVal - 2;
+		getJSpinnerPowerPoints().setValue((newVal < 0 ? 0 : newVal));
 	}
 
 	/**
