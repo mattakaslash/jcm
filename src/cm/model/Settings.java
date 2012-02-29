@@ -72,6 +72,7 @@ public class Settings {
 		SETTINGS.setProperty("doOngoingPopup", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doSavingThrows", Boolean.TRUE.toString());
+		SETTINGS.setProperty("fontSize", "x-large");
 		SETTINGS.setProperty("useModRoles", Boolean.FALSE.toString());
 		SETTINGS.setProperty("workingDirectory", System.getProperty("user.dir"));
 	}
@@ -87,6 +88,23 @@ public class Settings {
 		return Boolean.valueOf(SETTINGS.getProperty("useModRoles"));
 	}
 	
+	/**
+	 * Returns the font size for the initiative display.
+	 * @return the font size for the initiative display
+	 */
+	public static String getFontSize() {
+		init();
+		return SETTINGS.getProperty("fontSize");
+	}
+
+	/**
+	 * Sets the font size for the initiative display
+	 * @param fontSize the font size
+	 */
+	public static void setFontSize(String fontSize) {
+		SETTINGS.setProperty("fontSize", fontSize);
+	}
+
 	/**
 	 * Returns an indicator of whether the application should group similar
 	 * Combatants when rolling initiative.

@@ -25,8 +25,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -42,6 +45,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
@@ -248,12 +252,30 @@ public class MainFrame extends JFrame {
 	private JMenuItem menuPartyRemove;
 	private JMenuItem menuPartyShortRest;
 	private JMenuItem menuPartyShortRestMilestone;
+	private JRadioButtonMenuItem jRadioButtonMenuItemSmall;
+	private JRadioButtonMenuItem jRadioButtonMenuItemMedium;
+	private JRadioButtonMenuItem jRadioButtonMenuItemLarge;
+	private JRadioButtonMenuItem jRadioButtonMenuItemExtraLarge;
+	private JRadioButtonMenuItem jRadioButtonMenuItemExtraExtraLarge;
+	private JMenu menuOptionsFontSize;
+	private ButtonGroup fontSizeButtonGroup;
 
 	/**
 	 * Displays the interface.
 	 */
 	public MainFrame() {
 		initComponents();
+		if (Settings.getFontSize().contentEquals("small")) {
+			getJRadioButtonMenuItemSmall().setSelected(true);
+		} else if (Settings.getFontSize().contentEquals("medium")) {
+			getJRadioButtonMenuItemMedium().setSelected(true);
+		} else if (Settings.getFontSize().contentEquals("large")) {
+			getJRadioButtonMenuItemLarge().setSelected(true);
+		} else if (Settings.getFontSize().contentEquals("x-large")) {
+			getJRadioButtonMenuItemExtraLarge().setSelected(true);
+		} else if (Settings.getFontSize().contentEquals("xx-large")) {
+			getJRadioButtonMenuItemExtraExtraLarge().setSelected(true);
+		}
 	}
 
 	/**
@@ -1806,14 +1828,15 @@ public class MainFrame extends JFrame {
 	private JMenu getMenuOptions() {
 		if (menuOptions == null) {
 			menuOptions = new JMenu();
+			menuOptions.setMnemonic('O');
 			menuOptions.setText("Options");
-			menuOptions.setMnemonic(KeyEvent.VK_O);
 			menuOptions.setOpaque(false);
 			menuOptions.add(getMenuOptionsGroup());
 			menuOptions.add(getMenuOptionsRolls());
 			menuOptions.add(getMenuOptionsPopup());
 			menuOptions.add(getMenuOptionsShowMinimalInitDisplay());
 			menuOptions.add(getMenuOptionsShowFullInitDisplay());
+			menuOptions.add(getMenuOptionsFontSize());
 		}
 		return menuOptions;
 	}
@@ -2026,24 +2049,124 @@ public class MainFrame extends JFrame {
 		setFont(new Font("Dialog", Font.PLAIN, 12));
 		setForeground(Color.black);
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
-		addWindowListener(new WindowAdapter() {
-	
-			public void windowClosing(WindowEvent event) {
-				windowWindowClosing(event);
-			}
-	
-			public void windowOpened(WindowEvent event) {
-				windowWindowOpened(event);
-			}
-		});
 		addComponentListener(new ComponentAdapter() {
 	
 			public void componentResized(ComponentEvent event) {
 				componentComponentResized(event);
 			}
 		});
+		addWindowListener(new WindowAdapter() {
+	
+			public void windowOpened(WindowEvent event) {
+				windowWindowOpened(event);
+			}
+	
+			public void windowClosing(WindowEvent event) {
+				windowWindowClosing(event);
+			}
+		});
 		setJMenuBar(getMenuBarMain());
+		initFontSizeButtonGroup();
 		pack();
+	}
+
+	private void initFontSizeButtonGroup() {
+		fontSizeButtonGroup = new ButtonGroup();
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemSmall());
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemMedium());
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemLarge());
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemExtraLarge());
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemExtraExtraLarge());
+	}
+
+	private JMenu getMenuOptionsFontSize() {
+		if (menuOptionsFontSize == null) {
+			menuOptionsFontSize = new JMenu();
+			menuOptionsFontSize.setText("Init Display Font Size");
+			menuOptionsFontSize.setOpaque(false);
+			menuOptionsFontSize.add(getJRadioButtonMenuItemSmall());
+			menuOptionsFontSize.add(getJRadioButtonMenuItemMedium());
+			menuOptionsFontSize.add(getJRadioButtonMenuItemLarge());
+			menuOptionsFontSize.add(getJRadioButtonMenuItemExtraLarge());
+			menuOptionsFontSize.add(getJRadioButtonMenuItemExtraExtraLarge());
+		}
+		return menuOptionsFontSize;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemExtraExtraLarge() {
+		if (jRadioButtonMenuItemExtraExtraLarge == null) {
+			jRadioButtonMenuItemExtraExtraLarge = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemExtraExtraLarge.setText("Extra Extra Large");
+			jRadioButtonMenuItemExtraExtraLarge.setActionCommand("xx-large");
+			jRadioButtonMenuItemExtraExtraLarge.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemExtraExtraLarge;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemExtraLarge() {
+		if (jRadioButtonMenuItemExtraLarge == null) {
+			jRadioButtonMenuItemExtraLarge = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemExtraLarge.setText("Extra Large");
+			jRadioButtonMenuItemExtraLarge.setActionCommand("x-large");
+			jRadioButtonMenuItemExtraLarge.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemExtraLarge;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemLarge() {
+		if (jRadioButtonMenuItemLarge == null) {
+			jRadioButtonMenuItemLarge = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemLarge.setText("Large");
+			jRadioButtonMenuItemLarge.setActionCommand("large");
+			jRadioButtonMenuItemLarge.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemLarge;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemMedium() {
+		if (jRadioButtonMenuItemMedium == null) {
+			jRadioButtonMenuItemMedium = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemMedium.setText("Medium");
+			jRadioButtonMenuItemMedium.setActionCommand("medium");
+			jRadioButtonMenuItemMedium.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemMedium;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemSmall() {
+		if (jRadioButtonMenuItemSmall == null) {
+			jRadioButtonMenuItemSmall = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemSmall.setSelected(true);
+			jRadioButtonMenuItemSmall.setText("Small");
+			jRadioButtonMenuItemSmall.setActionCommand("small");
+			jRadioButtonMenuItemSmall.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemSmall;
 	}
 
 	/**
@@ -3513,8 +3636,8 @@ public class MainFrame extends JFrame {
 
 		text = "<html><head><style type='text/css'>\n" + "body { margin: 0ex; }\n"
 				+ "table { width: 100%; border-width: 1px; border-style: solid; border-color: black }\n"
-				+ "th { font-size: x-large; border-width: 1px; border-style: solid; border-color: black }\n"
-				+ "td { font-size: x-large; border-width: 1px; border-style: solid; border-color: gray }\n"
+				+ "th { font-size: " + Settings.getFontSize() + "; border-width: 1px; border-style: solid; border-color: black }\n"
+				+ "td { font-size: " + Settings.getFontSize() + "; border-width: 1px; border-style: solid; border-color: gray }\n"
 				+ "</style></head><body><table><tr><th style='width: 12ex'>Combatant</th>"
 				+ "<th style='width: 105px'>HP</th><th style='width: 3ex'>A</th>\n"
 				+ "<th style='width: 3ex'>F</th><th style='width: 3ex'>R</th>\n"
@@ -3686,5 +3809,20 @@ public class MainFrame extends JFrame {
 		getMenuOptionsRollsSaves().setSelected(Settings.doSavingThrows());
 
 		updateEnabledControls();
+	}
+
+	/**
+	 * Event: Font Size selection changed.
+	 * 
+	 * @param event
+	 */
+	private void fontSizeSelectionChanged(ItemEvent event) {
+		JRadioButtonMenuItem source = (JRadioButtonMenuItem) event.getSource();
+		if (event.getStateChange() == ItemEvent.SELECTED) {
+			Settings.setFontSize(source.getActionCommand());
+			if (getFight() != null) {
+				updateInitDisplay();
+			}
+		}
 	}
 }
