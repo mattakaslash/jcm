@@ -258,6 +258,8 @@ public class MainFrame extends JFrame {
 	private JMenu menuOptionsFontSize;
 	private ButtonGroup fontSizeButtonGroup;
 
+	private JLabel jLabelPreviousRest;
+
 	/**
 	 * Displays the interface.
 	 */
@@ -1130,14 +1132,13 @@ public class MainFrame extends JFrame {
 			jPanelInitiative.setLayout(new GroupLayout());
 			jPanelInitiative.add(getJLabelInitRoll(), new Constraints(new Leading(227, 50, 12, 12), new Leading(12, 12, 12)));
 			jPanelInitiative.add(getJSpinnerInitRoll(), new Constraints(new Leading(230, 47, 12, 12), new Leading(32, 41, 12, 12)));
-			jPanelInitiative
-					.add(getJButtonRemoveFighter(), new Constraints(new Leading(3, 72, 12, 12), new Leading(5, 38, 12, 12)));
-			jPanelInitiative.add(getJButtonRollInitiative(), new Constraints(new Leading(76, 72, 12, 12),
-					new Leading(5, 38, 12, 12)));
-			jPanelInitiative.add(getJButtonMoveToTop(), new Constraints(new Leading(150, 72, 12, 12), new Leading(5, 38, 12, 12)));
+			jPanelInitiative.add(getJButtonRemoveFighter(), new Constraints(new Leading(3, 72, 12, 12), new Leading(5, 12, 12)));
+			jPanelInitiative.add(getJButtonRollInitiative(), new Constraints(new Leading(76, 72, 12, 12), new Leading(5, 12, 12)));
+			jPanelInitiative.add(getJButtonMoveToTop(), new Constraints(new Leading(150, 72, 12, 12), new Leading(5, 12, 12)));
 			jPanelInitiative.add(getJButtonReserve(), new Constraints(new Leading(3, 72, 12, 12), new Leading(44, 38, 12, 12)));
 			jPanelInitiative.add(getJButtonDelay(), new Constraints(new Leading(76, 72, 12, 12), new Leading(44, 38, 12, 12)));
 			jPanelInitiative.add(getJButtonReady(), new Constraints(new Leading(150, 72, 12, 12), new Leading(44, 38, 12, 12)));
+			jPanelInitiative.add(getJLabelPreviousRest(), new Constraints(new Leading(3, 274, 12, 12), new Leading(88, 12, 12)));
 		}
 		return jPanelInitiative;
 	}
@@ -2065,7 +2066,15 @@ public class MainFrame extends JFrame {
 		});
 		setJMenuBar(getMenuBarMain());
 		initFontSizeButtonGroup();
-		pack();
+		setSize(786, 605);
+	}
+
+	private JLabel getJLabelPreviousRest() {
+		if (jLabelPreviousRest == null) {
+			jLabelPreviousRest = new JLabel();
+			jLabelPreviousRest.setText("Previous Rest: ");
+		}
+		return jLabelPreviousRest;
 	}
 
 	private void initFontSizeButtonGroup() {
@@ -3127,6 +3136,7 @@ public class MainFrame extends JFrame {
 				+ "    -Restore the party to full health", "Take Extended Rest?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			Settings.setRest("Extended Rest");
 			getJTableRoster().clearSelection();
 			getFight().takeExtendedRest();
 			updateFromClass();
@@ -3154,6 +3164,7 @@ public class MainFrame extends JFrame {
 				+ "    -Clear all temporary hit points", "Take Short Rest?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			Settings.setRest("Short Rest");
 			getJTableRoster().clearSelection();
 			getFight().takeShortRest();
 			updateFromClass();
@@ -3171,6 +3182,7 @@ public class MainFrame extends JFrame {
 				+ "    -Clear all temporary hit points\n" + "    -Refresh PC action points", "Take Short Rest with Milestone?",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			Settings.setRest("Short Rest with Milestone");
 			getJTableRoster().clearSelection();
 			getFight().takeShortRestWithMilestone();
 			updateFromClass();
@@ -3605,6 +3617,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void updateFromClass() {
 		getJTextAreaNotes().setText(getFight().getGlobalNotes());
+		getJLabelPreviousRest().setText("Previous Rest: " + Settings.getRest());
 		reloadListFromClass();
 
 		if (getFight().hasSelectedFighter()) {
