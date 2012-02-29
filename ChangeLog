@@ -1,6 +1,7 @@
 Version 1.2
  - Power point buttons now -2, -4, and -6. Use the spinner arrows for adjustments of +/- 1
  - Ending the encounter and taking rests clear the roster selection
+ - Initiative display has adjustable font size
 
 Version 1.1.1 (29 February 2012)
  - .monster import does not show "Hit" line unless there is an "Attack" line
