@@ -629,7 +629,7 @@ public class Library extends JDialog {
 					if (stat.isValid()) {
 						if (getStatLib().contains(stat.getHandle())) {
 							int n = JOptionPane.showConfirmDialog(this, stat.getHandle() + " already exists in the library.\n"
-									+ "Overwrite?", "Pre-existing Statblock Found", JOptionPane.QUESTION_MESSAGE);
+									+ "Overwrite?", "Pre-existing Statblock Found", JOptionPane.YES_NO_OPTION);
 							if (n == JOptionPane.CANCEL_OPTION) {
 								continue;
 							}
