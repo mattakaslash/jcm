@@ -4,18 +4,16 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -99,11 +97,6 @@ public class Statblock extends JDialog {
 	 * The statblock being created/edited.
 	 */
 	private Stats _stat = new Stats();
-
-	/**
-	 * Stores the list of powers.
-	 */
-	private List<Power> _statPowers = new ArrayList<Power>();
 
 	private JButton jButtonAdd;
 	private JButton jButtonATLoad;
@@ -569,11 +562,11 @@ public class Statblock extends JDialog {
 			jComboBoxPowerIcon.setDoubleBuffered(false);
 			jComboBoxPowerIcon.setBorder(null);
 			jComboBoxPowerIcon.setEnabled(false);
-			jComboBoxPowerIcon.addFocusListener(new FocusAdapter() {
-
+			jComboBoxPowerIcon.addItemListener(new ItemListener() {
+				
 				@Override
-				public void focusLost(FocusEvent event) {
-					jComboBoxPowerIconFocusFocusLost(event);
+				public void itemStateChanged(ItemEvent event) {
+					jComboBoxPowerIconItemItemStateChanged(event);					
 				}
 			});
 		}
@@ -629,11 +622,9 @@ public class Statblock extends JDialog {
 			jFormattedTextFieldAuraSize = new JFormattedTextField();
 			jFormattedTextFieldAuraSize.setText("0");
 			jFormattedTextFieldAuraSize.setEnabled(false);
-			jFormattedTextFieldAuraSize.addFocusListener(new FocusAdapter() {
-
-				@Override
-				public void focusLost(FocusEvent event) {
-					jFormattedTextFieldAuraSizeFocusFocusLost(event);
+			jFormattedTextFieldAuraSize.addKeyListener(new KeyAdapter() {
+				public void keyReleased(KeyEvent event) {
+					jFormattedTextFieldAuraSizeKeyKeyReleased(event);
 				}
 			});
 		}
@@ -1427,11 +1418,9 @@ public class Statblock extends JDialog {
 		if (jTextAreaPowerDescription == null) {
 			jTextAreaPowerDescription = new JTextArea();
 			jTextAreaPowerDescription.setEnabled(false);
-			jTextAreaPowerDescription.addFocusListener(new FocusAdapter() {
-
-				@Override
-				public void focusLost(FocusEvent event) {
-					jTextAreaPowerDescriptionFocusFocusLost(event);
+			jTextAreaPowerDescription.addKeyListener(new KeyAdapter() {
+				public void keyReleased(KeyEvent event) {
+					jTextAreaPowerDescriptionKeyKeyReleased(event);
 				}
 			});
 		}
@@ -1484,11 +1473,11 @@ public class Statblock extends JDialog {
 		if (jTextFieldPowerAction == null) {
 			jTextFieldPowerAction = new JTextField();
 			jTextFieldPowerAction.setEnabled(false);
-			jTextFieldPowerAction.addFocusListener(new FocusAdapter() {
-
+			jTextFieldPowerAction.addKeyListener(new KeyAdapter() {
+				
 				@Override
-				public void focusLost(FocusEvent event) {
-					jTextFieldPowerActionFocusFocusLost(event);
+				public void keyReleased(KeyEvent event) {
+					jTextFieldPowerActionKeyKeyReleased(event);
 				}
 			});
 		}
@@ -1499,11 +1488,9 @@ public class Statblock extends JDialog {
 		if (jTextFieldPowerKeywords == null) {
 			jTextFieldPowerKeywords = new JTextField();
 			jTextFieldPowerKeywords.setEnabled(false);
-			jTextFieldPowerKeywords.addFocusListener(new FocusAdapter() {
-
-				@Override
-				public void focusLost(FocusEvent event) {
-					jTextFieldPowerKeywordsFocusFocusLost(event);
+			jTextFieldPowerKeywords.addKeyListener(new KeyAdapter() {
+				public void keyReleased(KeyEvent event) {
+					jTextFieldPowerKeywordsKeyKeyReleased(event);
 				}
 			});
 		}
@@ -1514,11 +1501,11 @@ public class Statblock extends JDialog {
 		if (jTextFieldPowerName == null) {
 			jTextFieldPowerName = new JTextField();
 			jTextFieldPowerName.setEnabled(false);
-			jTextFieldPowerName.addFocusListener(new FocusAdapter() {
+			jTextFieldPowerName.addKeyListener(new KeyAdapter() {
 
 				@Override
-				public void focusLost(FocusEvent event) {
-					jTextFieldPowerNameFocusFocusLost(event);
+				public void keyReleased(KeyEvent event) {
+					jTextFieldPowerNameKeyKeyReleased(event);
 				}
 			});
 		}
@@ -1615,18 +1602,9 @@ public class Statblock extends JDialog {
 	}
 
 	/**
-	 * Returns a list of the statblock's {@link Power}s.
-	 * 
-	 * @return the list
-	 */
-	private List<Power> getStatPowers() {
-		return _statPowers;
-	}
-
-	/**
 	 * Returns an indicator of if the power information changed.
 	 * 
-	 * @return true, if the power informatin changed
+	 * @return true, if the power information changed
 	 */
 	private Boolean isPowerChanged() {
 		return _powerChanged;
@@ -1639,10 +1617,6 @@ public class Statblock extends JDialog {
 	 */
 	private Boolean isPowerDataValid() {
 		if (((DefaultListModel) getJListPowers().getModel()).size() < 1) {
-			powDataDisable();
-			powDataClear();
-			return false;
-		} else if (getJListPowers().getSelectedIndex() >= getStatPowers().size()) {
 			powDataDisable();
 			powDataClear();
 			return false;
@@ -1879,7 +1853,7 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonPowerDeleteActionActionPerformed(ActionEvent event) {
 		if (isPowerDataValid()) {
-			getStatPowers().remove(getJListPowers().getSelectedIndex());
+			((DefaultListModel)getJListPowers().getModel()).removeElementAt(getJListPowers().getSelectedIndex());
 			resetPowerListFromArray();
 			getJListPowers().setSelectedIndex(-1);
 		}
@@ -1893,14 +1867,13 @@ public class Statblock extends JDialog {
 	private void jButtonPowerDownActionActionPerformed(ActionEvent event) {
 		if (isPowerDataValid()) {
 			Integer index = getJListPowers().getSelectedIndex();
-			if (index < ((DefaultListModel) getJListPowers().getModel()).size() - 1) {
-				Power tempPow = getStatPowers().get(index);
-				getStatPowers().set(index, getStatPowers().get(index + 1));
-				index++;
-				getStatPowers().set(index, tempPow);
-				resetPowerListFromArray();
-				getJListPowers().setSelectedValue(tempPow, true);
-			}
+			DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+			Power tempPow = (Power) model.get(index);
+			model.set(index, model.get(index + 1));
+			index++;
+			model.set(index, tempPow);
+			resetPowerListFromArray();
+			getJListPowers().setSelectedValue(tempPow, true);
 		}
 	}
 
@@ -1911,7 +1884,7 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonPowerNewActionActionPerformed(ActionEvent event) {
 		Power pow = new Power();
-		getStatPowers().add(pow);
+		((DefaultListModel)getJListPowers().getModel()).addElement(pow);
 		resetPowerListFromArray();
 		getJListPowers().setSelectedValue(pow, true);
 	}
@@ -1924,11 +1897,12 @@ public class Statblock extends JDialog {
 	private void jButtonPowerUpActionActionPerformed(ActionEvent event) {
 		if (isPowerDataValid()) {
 			Integer index = getJListPowers().getSelectedIndex();
+			DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
 			if (index > 0) {
-				Power tempPow = getStatPowers().get(index);
-				getStatPowers().set(index, getStatPowers().get(index - 1));
+				Power tempPow = (Power) model.get(index);
+				model.set(index, model.get(index - 1));
 				index--;
-				getStatPowers().set(index, tempPow);
+				model.set(index, tempPow);
 				resetPowerListFromArray();
 				getJListPowers().setSelectedValue(tempPow, true);
 			}
@@ -1977,7 +1951,7 @@ public class Statblock extends JDialog {
 			getJFormattedTextFieldAuraSize().setEnabled(false);
 			getJFormattedTextFieldAuraSize().setText("0");
 			if (isPowerDataValid()) {
-				Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+				Power pow = (Power) getJListPowers().getSelectedValue();
 				pow.setAura(0);
 				getJListPowers().repaint();
 			}
@@ -1990,9 +1964,9 @@ public class Statblock extends JDialog {
 	 * 
 	 * @param event
 	 */
-	private void jComboBoxPowerIconFocusFocusLost(FocusEvent event) {
+	private void jComboBoxPowerIconItemItemStateChanged(ItemEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+			Power pow = (Power) getJListPowers().getSelectedValue();
 			pow.setType((String) getJComboBoxPowerIcon().getSelectedItem());
 			setPowerChanged(true);
 			getJListPowers().repaint();
@@ -2017,9 +1991,9 @@ public class Statblock extends JDialog {
 	 * 
 	 * @param event
 	 */
-	private void jFormattedTextFieldAuraSizeFocusFocusLost(FocusEvent event) {
+	private void jFormattedTextFieldAuraSizeKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+			Power pow = (Power) getJListPowers().getSelectedValue();
 			pow.setAura(Integer.valueOf(getJFormattedTextFieldAuraSize().getText()));
 			setPowerChanged(true);
 			getJListPowers().repaint();
@@ -2079,9 +2053,9 @@ public class Statblock extends JDialog {
 	 * 
 	 * @param event
 	 */
-	private void jTextAreaPowerDescriptionFocusFocusLost(FocusEvent event) {
+	private void jTextAreaPowerDescriptionKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+			Power pow = (Power) getJListPowers().getSelectedValue();
 			pow.setDesc(getJTextAreaPowerDescription().getText());
 			setPowerChanged(true);
 			getJListPowers().repaint();
@@ -2093,9 +2067,9 @@ public class Statblock extends JDialog {
 	 * 
 	 * @param event
 	 */
-	private void jTextFieldPowerActionFocusFocusLost(FocusEvent event) {
+	private void jTextFieldPowerActionKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+			Power pow = (Power) getJListPowers().getSelectedValue();
 			pow.setAction(getJTextFieldPowerAction().getText());
 			setPowerChanged(true);
 			getJListPowers().repaint();
@@ -2107,9 +2081,9 @@ public class Statblock extends JDialog {
 	 * 
 	 * @param event
 	 */
-	private void jTextFieldPowerKeywordsFocusFocusLost(FocusEvent event) {
+	private void jTextFieldPowerKeywordsKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+			Power pow = (Power) getJListPowers().getSelectedValue();
 			pow.setKeywords(getJTextFieldPowerKeywords().getText());
 			setPowerChanged(true);
 			getJListPowers().repaint();
@@ -2121,9 +2095,9 @@ public class Statblock extends JDialog {
 	 * 
 	 * @param event
 	 */
-	private void jTextFieldPowerNameFocusFocusLost(FocusEvent event) {
+	private void jTextFieldPowerNameKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = getStatPowers().get(getJListPowers().getSelectedIndex());
+			Power pow = (Power) getJListPowers().getSelectedValue();
 			if (getJTextFieldPowerName().getText().isEmpty()) {
 				getJTextFieldPowerName().setText("(no name)");
 			}
@@ -2184,9 +2158,10 @@ public class Statblock extends JDialog {
 		getJTextFieldSource().setText(stat.getSource());
 		getJTextPaneNotes().setText(stat.getNotes());
 
-		getStatPowers().clear();
+		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+		model.clear();
 		for (Power pow : stat.getPowerList()) {
-			getStatPowers().add(pow);
+			model.addElement(pow);
 		}
 		resetPowerListFromArray();
 
@@ -2247,7 +2222,9 @@ public class Statblock extends JDialog {
 		stat.setNotes(getJTextPaneNotes().getText());
 
 		stat.getPowerList().clear();
-		for (Power pow : getStatPowers()) {
+		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+		for (int i = 0; i < model.getSize(); i++) {
+			Power pow = (Power) model.get(i);
 			if (!pow.getName().isEmpty()) {
 				stat.getPowerList().add(new Power(pow));
 			}
@@ -2363,16 +2340,7 @@ public class Statblock extends JDialog {
 	 * Reloads the power list UI from the list of powers in the class.
 	 */
 	private void resetPowerListFromArray() {
-		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
-		model.clear();
-
-		if (model.isEmpty()) {
-			for (Power pow : getStatPowers()) {
-				model.addElement(pow);
-			}
-
-			setPowerChanged(false);
-		}
+		setPowerChanged(false);
 	}
 
 	/**
