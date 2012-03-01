@@ -3,6 +3,12 @@ Version 2.0
  - Moved configuration options to a dialog window
  - Removed support for reading VB.NET application's EffectBase Durations.
 
+Version 1.2.1 (1 March 2012)
+ - Fixed a runtime bug with the confirmation prompt when overwriting a stat library entry via
+   Character Builder load
+ - Fixed some issues with powers in the statblock power list
+ - Fixed an issue with toggling power aura
+
 Version 1.2 (1 March 2012)
  - Power point buttons now -2, -4, and -6. Use the spinner arrows for adjustments of +/- 1
  - Ending the encounter and taking rests clear the roster selection
