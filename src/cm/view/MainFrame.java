@@ -30,6 +30,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -47,6 +48,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
 import javax.swing.JSpinner;
@@ -168,7 +170,7 @@ public class MainFrame extends JFrame {
 	private JButton jButtonPlusFive;
 	private JButton jButtonPlusOne;
 	private JButton jButtonPowerPointsMinusFour;
-	private JButton jButtonPowerPointsMinusOne;
+	private JButton jButtonPowerPointsMinusSix;
 	private JButton jButtonPowerPointsMinusTwo;
 	private JButton jButtonReady;
 	private JButton jButtonRegainAll;
@@ -268,12 +270,32 @@ public class MainFrame extends JFrame {
 	private JCheckBoxMenuItem menuWindowsFullInitDisplay;
 	private JCheckBoxMenuItem menuWindowsMinimalInitDisplay;
 	private JMenuItem menuWindowsOptions;
+	private JRadioButtonMenuItem jRadioButtonMenuItemSmall;
+	private JRadioButtonMenuItem jRadioButtonMenuItemMedium;
+	private JRadioButtonMenuItem jRadioButtonMenuItemLarge;
+	private JRadioButtonMenuItem jRadioButtonMenuItemExtraLarge;
+	private JRadioButtonMenuItem jRadioButtonMenuItemExtraExtraLarge;
+	private JMenu menuWindowsFontSize;
+	private ButtonGroup fontSizeButtonGroup;
+	private JLabel jLabelPreviousRest;
 
 	/**
 	 * Displays the interface.
 	 */
 	public MainFrame() {
 		initComponents();
+		if (Settings.getFontSize().contentEquals("small")) {
+			getJRadioButtonMenuItemSmall().setSelected(true);
+		} else if (Settings.getFontSize().contentEquals("medium")) {
+			getJRadioButtonMenuItemMedium().setSelected(true);
+		} else if (Settings.getFontSize().contentEquals("large")) {
+			getJRadioButtonMenuItemLarge().setSelected(true);
+		} else if (Settings.getFontSize().contentEquals("x-large")) {
+			getJRadioButtonMenuItemExtraLarge().setSelected(true);
+		} else if (Settings.getFontSize().contentEquals("xx-large")) {
+			getJRadioButtonMenuItemExtraExtraLarge().setSelected(true);
+		}
+		
 		Player.setListener(new PlayerListener() {
 
 			@Override
@@ -296,7 +318,7 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void componentComponentResized(ComponentEvent event) {
-		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster());
+		ColumnsAutoSizer.sizeColumnsToFit(getJTableRoster(), 15);
 	}
 
 	/**
@@ -658,20 +680,20 @@ public class MainFrame extends JFrame {
 		return jButtonPowerPointsMinusFour;
 	}
 
-	private JButton getJButtonPowerPointsMinusOne() {
-		if (jButtonPowerPointsMinusOne == null) {
-			jButtonPowerPointsMinusOne = new JButton();
-			jButtonPowerPointsMinusOne.setText("-1");
-			jButtonPowerPointsMinusOne.setMargin(new Insets(0, 0, 0, 0));
-			jButtonPowerPointsMinusOne.addActionListener(new ActionListener() {
+	private JButton getJButtonPowerPointsMinusSix() {
+		if (jButtonPowerPointsMinusSix == null) {
+			jButtonPowerPointsMinusSix = new JButton();
+			jButtonPowerPointsMinusSix.setText("-6");
+			jButtonPowerPointsMinusSix.setMargin(new Insets(0, 0, 0, 0));
+			jButtonPowerPointsMinusSix.addActionListener(new ActionListener() {
 
 				@Override
 				public void actionPerformed(ActionEvent event) {
-					jButtonPowerPointsMinusOneActionActionPerformed(event);
+					jButtonPowerPointsMinusSixActionActionPerformed(event);
 				}
 			});
 		}
-		return jButtonPowerPointsMinusOne;
+		return jButtonPowerPointsMinusSix;
 	}
 
 	private JButton getJButtonPowerPointsMinusTwo() {
@@ -1173,6 +1195,7 @@ public class MainFrame extends JFrame {
 			jPanelInitiative.add(getJButtonReserve(), new Constraints(new Leading(3, 72, 12, 12), new Leading(44, 38, 12, 12)));
 			jPanelInitiative.add(getJButtonDelay(), new Constraints(new Leading(76, 72, 12, 12), new Leading(44, 38, 12, 12)));
 			jPanelInitiative.add(getJButtonReady(), new Constraints(new Leading(150, 72, 12, 12), new Leading(44, 38, 12, 12)));
+			jPanelInitiative.add(getJLabelPreviousRest(), new Constraints(new Leading(3, 274, 12, 12), new Leading(88, 12, 12)));
 		}
 		return jPanelInitiative;
 	}
@@ -1221,11 +1244,11 @@ public class MainFrame extends JFrame {
 					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
 			jPanelPowerPoints.setLayout(new GroupLayout());
 			jPanelPowerPoints.add(getJSpinnerPowerPoints(), new Constraints(new Bilateral(12, 12, 27), new Leading(0, 41, 10, 10)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusFour(), new Constraints(new Trailing(12, 53, 53), new Leading(47, 12,
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusSix(), new Constraints(new Trailing(12, 53, 53), new Leading(47, 12,
 					12)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusTwo(), new Constraints(new Bilateral(42, 42, 17), new Leading(47, 12,
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusFour(), new Constraints(new Bilateral(42, 42, 17), new Leading(47, 12,
 					12)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusOne(),
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusTwo(),
 					new Constraints(new Leading(12, 65, 65), new Leading(47, 12, 12)));
 		}
 		return jPanelPowerPoints;
@@ -2072,8 +2095,23 @@ public class MainFrame extends JFrame {
 			menuWindows.add(getMenuWindowsFullInitDisplay());
 			menuWindows.add(getJSeparator4());
 			menuWindows.add(getMenuWindowsOptions());
+			menuWindows.add(getMenuWindowsFontSize());
 		}
 		return menuWindows;
+	}
+
+	private JMenu getMenuWindowsFontSize() {
+		if (menuWindowsFontSize == null) {
+			menuWindowsFontSize = new JMenu();
+			menuWindowsFontSize.setText("Init Display Font Size");
+			menuWindowsFontSize.setOpaque(false);
+			menuWindowsFontSize.add(getJRadioButtonMenuItemSmall());
+			menuWindowsFontSize.add(getJRadioButtonMenuItemMedium());
+			menuWindowsFontSize.add(getJRadioButtonMenuItemLarge());
+			menuWindowsFontSize.add(getJRadioButtonMenuItemExtraLarge());
+			menuWindowsFontSize.add(getJRadioButtonMenuItemExtraExtraLarge());
+		}
+		return menuWindowsFontSize;
 	}
 
 	private JCheckBoxMenuItem getMenuWindowsFullInitDisplay() {
@@ -2176,7 +2214,101 @@ public class MainFrame extends JFrame {
 			}
 		});
 		setJMenuBar(getMenuBarMain());
+		initFontSizeButtonGroup();
 		pack();
+	}
+
+	private JLabel getJLabelPreviousRest() {
+		if (jLabelPreviousRest == null) {
+			jLabelPreviousRest = new JLabel();
+			jLabelPreviousRest.setText("Previous Rest: ");
+		}
+		return jLabelPreviousRest;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemExtraExtraLarge() {
+		if (jRadioButtonMenuItemExtraExtraLarge == null) {
+			jRadioButtonMenuItemExtraExtraLarge = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemExtraExtraLarge.setText("Extra Extra Large");
+			jRadioButtonMenuItemExtraExtraLarge.setActionCommand("xx-large");
+			jRadioButtonMenuItemExtraExtraLarge.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemExtraExtraLarge;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemExtraLarge() {
+		if (jRadioButtonMenuItemExtraLarge == null) {
+			jRadioButtonMenuItemExtraLarge = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemExtraLarge.setText("Extra Large");
+			jRadioButtonMenuItemExtraLarge.setActionCommand("x-large");
+			jRadioButtonMenuItemExtraLarge.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemExtraLarge;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemLarge() {
+		if (jRadioButtonMenuItemLarge == null) {
+			jRadioButtonMenuItemLarge = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemLarge.setText("Large");
+			jRadioButtonMenuItemLarge.setActionCommand("large");
+			jRadioButtonMenuItemLarge.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemLarge;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemMedium() {
+		if (jRadioButtonMenuItemMedium == null) {
+			jRadioButtonMenuItemMedium = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemMedium.setText("Medium");
+			jRadioButtonMenuItemMedium.setActionCommand("medium");
+			jRadioButtonMenuItemMedium.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemMedium;
+	}
+
+	private JRadioButtonMenuItem getJRadioButtonMenuItemSmall() {
+		if (jRadioButtonMenuItemSmall == null) {
+			jRadioButtonMenuItemSmall = new JRadioButtonMenuItem();
+			jRadioButtonMenuItemSmall.setSelected(true);
+			jRadioButtonMenuItemSmall.setText("Small");
+			jRadioButtonMenuItemSmall.setActionCommand("small");
+			jRadioButtonMenuItemSmall.addItemListener(new ItemListener() {
+	
+				public void itemStateChanged(ItemEvent event) {
+					fontSizeSelectionChanged(event);
+				}
+			});
+		}
+		return jRadioButtonMenuItemSmall;
+	}
+
+	private void initFontSizeButtonGroup() {
+		fontSizeButtonGroup = new ButtonGroup();
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemSmall());
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemMedium());
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemLarge());
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemExtraLarge());
+		fontSizeButtonGroup.add(getJRadioButtonMenuItemExtraExtraLarge());
 	}
 
 	/**
@@ -2427,18 +2559,20 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jButtonPowerPointsMinusFourActionActionPerformed(ActionEvent event) {
-		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
-		getJSpinnerPowerPoints().setValue(old - 4);
+		Integer oldVal = (Integer) getJSpinnerPowerPoints().getValue();
+		Integer newVal = oldVal - 4;
+		getJSpinnerPowerPoints().setValue((newVal < 0 ? 0 : newVal));
 	}
 
 	/**
-	 * Event: Power Points -1 pressed.
+	 * Event: Power Points -6 pressed.
 	 * 
 	 * @param event
 	 */
-	private void jButtonPowerPointsMinusOneActionActionPerformed(ActionEvent event) {
-		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
-		getJSpinnerPowerPoints().setValue(old - 1);
+	private void jButtonPowerPointsMinusSixActionActionPerformed(ActionEvent event) {
+		Integer oldVal = (Integer) getJSpinnerPowerPoints().getValue();
+		Integer newVal = oldVal - 6;
+		getJSpinnerPowerPoints().setValue((newVal < 0 ? 0 : newVal));
 	}
 
 	/**
@@ -2447,8 +2581,9 @@ public class MainFrame extends JFrame {
 	 * @param event
 	 */
 	private void jButtonPowerPointsMinusTwoActionActionPerformed(ActionEvent event) {
-		Integer old = (Integer) getJSpinnerPowerPoints().getValue();
-		getJSpinnerPowerPoints().setValue(old - 2);
+		Integer oldVal = (Integer) getJSpinnerPowerPoints().getValue();
+		Integer newVal = oldVal - 2;
+		getJSpinnerPowerPoints().setValue((newVal < 0 ? 0 : newVal));
 	}
 
 	/**
@@ -2897,6 +3032,7 @@ public class MainFrame extends JFrame {
 				getJToggleButtonMiscVictory().setSelected(false);
 				getJToggleButtonPlay().setSelected(false);
 				Player.playOnce(Settings.getCriticalHitSong(), new PlaybackListener() {
+					@Override
 					public void playbackFinished(PlaybackEvent event) {
 						Player.setCompletedOnce(true);
 						getJToggleButtonCritHit().setSelected(false);
@@ -2917,6 +3053,7 @@ public class MainFrame extends JFrame {
 				getJToggleButtonMiscVictory().setSelected(false);
 				getJToggleButtonPlay().setSelected(false);
 				Player.playOnce(Settings.getCriticalMissSong(), new PlaybackListener() {
+					@Override
 					public void playbackFinished(PlaybackEvent event) {
 						Player.setCompletedOnce(true);
 						getJToggleButtonCritMiss().setSelected(false);
@@ -2937,6 +3074,7 @@ public class MainFrame extends JFrame {
 				getJToggleButtonMiscVictory().setSelected(false);
 				getJToggleButtonPlay().setSelected(false);
 				Player.playOnce(Settings.getDailySong(), new PlaybackListener() {
+					@Override
 					public void playbackFinished(PlaybackEvent event) {
 						Player.setCompletedOnce(true);
 						getJToggleButtonMiscDaily().setSelected(false);
@@ -2957,6 +3095,7 @@ public class MainFrame extends JFrame {
 				getJToggleButtonMiscDaily().setSelected(false);
 				getJToggleButtonPlay().setSelected(false);
 				Player.playOnce(Settings.getVictorySong(), new PlaybackListener() {
+					@Override
 					public void playbackFinished(PlaybackEvent event) {
 						Player.setCompletedOnce(true);
 						getJToggleButtonMiscVictory().setSelected(false);
@@ -3072,6 +3211,7 @@ public class MainFrame extends JFrame {
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 		if (n == JOptionPane.YES_OPTION) {
+			getJTableRoster().clearSelection();
 			getFight().resetEncounter(false);
 			getJTabbedPaneUtils().setSelectedIndex(0);
 			updateFromClass();
@@ -3188,6 +3328,8 @@ public class MainFrame extends JFrame {
 				+ "    -Restore the party to full health", "Take Extended Rest?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			Settings.setRest("Extended Rest");
+			getJTableRoster().clearSelection();
 			getFight().takeExtendedRest();
 			updateFromClass();
 		}
@@ -3214,6 +3356,8 @@ public class MainFrame extends JFrame {
 				+ "    -Clear all temporary hit points", "Take Short Rest?", JOptionPane.YES_NO_OPTION,
 				JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			Settings.setRest("Short Rest");
+			getJTableRoster().clearSelection();
 			getFight().takeShortRest();
 			updateFromClass();
 		}
@@ -3230,6 +3374,8 @@ public class MainFrame extends JFrame {
 				+ "    -Clear all temporary hit points\n" + "    -Refresh PC action points", "Take Short Rest with Milestone?",
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 		if (n == JOptionPane.YES_OPTION) {
+			Settings.setRest("Short Rest with Milestone");
+			getJTableRoster().clearSelection();
 			getFight().takeShortRestWithMilestone();
 			updateFromClass();
 		}
@@ -3723,6 +3869,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void updateFromClass() {
 		getJTextAreaNotes().setText(getFight().getGlobalNotes());
+		getJLabelPreviousRest().setText("Previous Rest: " + Settings.getRest());
 		reloadListFromClass();
 
 		if (getFight().hasSelectedFighter()) {
@@ -3752,8 +3899,8 @@ public class MainFrame extends JFrame {
 
 		text = "<html><head><style type='text/css'>\n" + "body { margin: 0ex; }\n"
 				+ "table { width: 100%; border-width: 1px; border-style: solid; border-color: black }\n"
-				+ "th { font-size: x-large; border-width: 1px; border-style: solid; border-color: black }\n"
-				+ "td { font-size: x-large; border-width: 1px; border-style: solid; border-color: gray }\n"
+				+ "th { font-size: " + Settings.getFontSize() + "; border-width: 1px; border-style: solid; border-color: black }\n"
+				+ "td { font-size: " + Settings.getFontSize() + "; border-width: 1px; border-style: solid; border-color: gray }\n"
 				+ "</style></head><body><table><tr><th style='width: 12ex'>Combatant</th>"
 				+ "<th style='width: 105px'>HP</th><th style='width: 3ex'>A</th>\n"
 				+ "<th style='width: 3ex'>F</th><th style='width: 3ex'>R</th>\n"
@@ -3924,5 +4071,20 @@ public class MainFrame extends JFrame {
 		// populate music playlists
 		((DefaultComboBoxModel) getJComboBoxPlaylists().getModel()).removeAllElements();
 		loadPlaylists(Settings.getMusicDirectory());
+	}
+
+	/**
+	 * Event: Font Size selection changed.
+	 * 
+	 * @param event
+	 */
+	private void fontSizeSelectionChanged(ItemEvent event) {
+		JRadioButtonMenuItem source = (JRadioButtonMenuItem) event.getSource();
+		if (event.getStateChange() == ItemEvent.SELECTED) {
+			Settings.setFontSize(source.getActionCommand());
+			if (getFight() != null) {
+				updateInitDisplay();
+			}
+		}
 	}
 }

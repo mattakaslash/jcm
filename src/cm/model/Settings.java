@@ -75,6 +75,8 @@ public class Settings {
 		SETTINGS.setProperty("doOngoingPopup", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doPowerRecharge", Boolean.TRUE.toString());
 		SETTINGS.setProperty("doSavingThrows", Boolean.TRUE.toString());
+		SETTINGS.setProperty("fontSize", "x-large");
+		SETTINGS.setProperty("rest", "(none)");
 		SETTINGS.setProperty("musicDirectory", "");
 		SETTINGS.setProperty("victorySong", "");
 		SETTINGS.setProperty("workingDirectory", System.getProperty("user.dir"));
@@ -151,6 +153,23 @@ public class Settings {
 		} else {
 			return null;
 		}
+	}
+	
+	/**
+	 * Returns the font size for the initiative display.
+	 * @return the font size for the initiative display
+	 */
+	public static String getFontSize() {
+		init();
+		return SETTINGS.getProperty("fontSize");
+	}
+
+	/**
+	 * Sets the font size for the initiative display
+	 * @param fontSize the font size
+	 */
+	public static void setFontSize(String fontSize) {
+		SETTINGS.setProperty("fontSize", fontSize);
 	}
 
 	/**
@@ -262,6 +281,27 @@ public class Settings {
 	 */
 	public static void setDoPowerRecharge(Boolean value) {
 		SETTINGS.setProperty("doPowerRecharge", value.toString());
+	}
+
+	/**
+	 * Returns the stored type of rest previously taken.
+	 * 
+	 * @return the stored type of rest previously taken
+	 */
+	public static String getRest() {
+		init();
+		return SETTINGS.getProperty("rest");
+	}
+
+	/**
+	 * Stores the most recently taken rest for future reference.
+	 * 
+	 * @param rest
+	 *            a string describing the last rest taken, e.g.
+	 *            "Short Rest with Milestone", "Extended Rest"
+	 */
+	public static void setRest(String rest) {
+		SETTINGS.setProperty("rest", rest);
 	}
 
 	/**
