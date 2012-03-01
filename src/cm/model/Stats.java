@@ -1,14 +1,10 @@
 package cm.model;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,12 +20,9 @@ import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import cm.util.DnD4eRules;
-
-import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
 
 /**
  * Defines a D&D 4e statblock.
@@ -1001,7 +994,7 @@ public class Stats {
 			value += getMaxHP() + "; <b>Bloodied</b> " + getBloodyHP();
 		}
 		if (isPC()) {
-			value += "; <b>Surge</b>" + getSurgeValue();
+			value += "; <b>Surge</b> " + getSurgeValue();
 		}
 		if (!_regen.isEmpty()) {
 			value += "<br><b>Regeneration</b> " + getRegen();
@@ -1651,452 +1644,6 @@ public class Stats {
 	}
 
 	/**
-	 * Reads basic information about a character from a dnd4e XML stream.
-	 * 
-	 * @param reader
-	 *            the XML stream
-	 * @throws XMLStreamException
-	 *             from the reader
-	 */
-	private void importCharFromCBXML(XMLStreamReader reader) throws XMLStreamException {
-		clearAll();
-		setRole("Hero");
-		setSource("WotC Character Builder");
-		setActionPoints(1);
-
-		if (reader.isStartElement() && reader.getName().toString().contentEquals("D20Character")) {
-			while (reader.hasNext()) {
-				reader.next();
-				if (reader.isStartElement() && reader.getName().toString().contentEquals("CharacterSheet")) {
-					while (reader.hasNext()) {
-						reader.next();
-						if (reader.isStartElement()) {
-							if (reader.getName().toString().contentEquals("Details")) {
-								importCharFromCBXMLDetails(reader);
-							} else if (reader.getName().toString().contentEquals("StatBlock")) {
-								importCharFromCBXMLStatBlock(reader);
-							} else if (reader.getName().toString().contentEquals("RulesElementTally")) {
-								importCharFromCBXMLRulesElementTally(reader);
-							} else if (reader.getName().toString().contentEquals("LootTally")) {
-								importCharFromCBXMLLootTally(reader);
-							} else if (reader.getName().toString().contentEquals("PowerStats")) {
-								importCharFromCBXMLPowerStats(reader);
-							}
-						} else if (reader.isEndElement() && reader.getName().toString().contentEquals("CharacterSheet")) {
-							break;
-						}
-					}
-				} else if (reader.isStartElement() && reader.getName().toString().contentEquals("Level")) {
-					importCharFromCBXMLPowerURLs(reader);
-				}
-			}
-		}
-	}
-
-	/**
-	 * Sets detailed information about a character from a dnd4e XML stream.
-	 * 
-	 * @param reader
-	 *            the XML stream
-	 * @throws XMLStreamException
-	 *             from the reader
-	 */
-	private void importCharFromCBXMLDetails(XMLStreamReader reader) throws XMLStreamException {
-		String elementName = "";
-
-		if (reader.isStartElement() && reader.getName().toString().contentEquals("Details")) {
-			while (reader.hasNext()) {
-				reader.next();
-				if (reader.isStartElement()) {
-					elementName = reader.getName().toString();
-				} else if (reader.isCharacters()) {
-					if (elementName.contentEquals("name")) {
-						setName(reader.getText().trim());
-					} else if (elementName.contentEquals("Level")) {
-						setLevel(Integer.valueOf(reader.getText().trim()));
-					} else if (elementName.contentEquals("Experience")) {
-						setXP(Integer.valueOf(reader.getText().trim()));
-					}
-				} else if (reader.isEndElement()) {
-					elementName = "";
-					if (reader.getName().toString().contentEquals("Details")) {
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Sets stat information from a dnd4e XML stream.
-	 * 
-	 * @param reader
-	 *            the XML stream
-	 * @throws XMLStreamException
-	 *             from the reader
-	 */
-	private void importCharFromCBXMLStatBlock(XMLStreamReader reader) throws XMLStreamException {
-		String elementName = "";
-		Hashtable<String, String> attList = new Hashtable<String, String>();
-		SortedMap<String, String> skillList = new TreeMap<String, String>();
-		String tempValue = "0";
-
-		if (reader.isStartElement() && reader.getName().toString().contentEquals("StatBlock")) {
-			while (reader.hasNext()) {
-				reader.next();
-				if (reader.isStartElement()) {
-					elementName = reader.getName().toString();
-					attList.clear();
-					if (reader.getAttributeCount() > 0) {
-						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList
-									.put(reader.getAttributeName(i).toString().trim(), reader.getAttributeValue(i).toString()
-											.trim());
-						}
-						if (elementName.contentEquals("Stat") && attList.containsKey("value")) {
-							tempValue = attList.get("value");
-						}
-					}
-					if (elementName.contentEquals("alias") && attList.containsKey("name")) {
-						if (attList.get("name").contentEquals("Strength")) {
-							setStr(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Constitution")) {
-							setCon(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Dexterity")) {
-							setDex(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Intelligence")) {
-							setInt(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Wisdom")) {
-							setWis(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Charisma")) {
-							setCha(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("AC")) {
-							setAC(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Fortitude Defense")) {
-							setFort(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Reflex Defense")) {
-							setRef(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Will Defense")) {
-							setWill(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Hit Points")) {
-							setMaxHP(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Initiative")) {
-							setInit(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Speed")) {
-							setSpeed(tempValue);
-						} else if (attList.get("name").contentEquals("Power Points")) {
-							setPowerPoints(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Healing Surges")) {
-							setSurges(Integer.valueOf(tempValue));
-						} else if (attList.get("name").contentEquals("Acrobatics") || attList.get("name").contentEquals("Arcana")
-								|| attList.get("name").contentEquals("Athletics") || attList.get("name").contentEquals("Bluff")
-								|| attList.get("name").contentEquals("Diplomacy")
-								|| attList.get("name").contentEquals("Dungeoneering")
-								|| attList.get("name").contentEquals("Endurance") || attList.get("name").contentEquals("Heal")
-								|| attList.get("name").contentEquals("History") || attList.get("name").contentEquals("Insight")
-								|| attList.get("name").contentEquals("Nature") || attList.get("name").contentEquals("Perception")
-								|| attList.get("name").contentEquals("Religion") || attList.get("name").contentEquals("Stealth")
-								|| attList.get("name").contentEquals("Streetwise") || attList.get("name").contentEquals("Thievery")) {
-							skillList.put(attList.get("name"), tempValue);
-						} else if (attList.get("name").contentEquals("Passive Perception")) {
-							if (!getSenses().isEmpty()) {
-								setSenses(getSenses() + "; ");
-							}
-							setSenses(getSenses() + "Perception " + tempValue);
-						} else if (attList.get("name").contentEquals("Passive Insight")) {
-							if (!getSenses().isEmpty()) {
-								setSenses(getSenses() + "; ");
-							}
-							setSenses(getSenses() + "Insight " + tempValue);
-						}
-					}
-				} else if (reader.isEndElement()) {
-					if (reader.getName().toString().contentEquals("StatBlock")) {
-						// write out skills
-						if (skillList.size() > 0) {
-							String skillTemp = "";
-							for (String skillName : skillList.keySet()) {
-								if (!skillTemp.isEmpty()) {
-									skillTemp += "; ";
-								}
-								skillTemp += skillName + " " + DnD4eRules.integerFormatForPlus(skillList.get(skillName));
-							}
-							setSkills(skillTemp);
-						}
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Sets rules elements from a dnd4e XML stream.
-	 * 
-	 * @param reader
-	 *            the XML stream
-	 * @throws XMLStreamException
-	 *             from the reader
-	 */
-	private void importCharFromCBXMLRulesElementTally(XMLStreamReader reader) throws XMLStreamException {
-		String elementName = "";
-		Hashtable<String, String> attList = new Hashtable<String, String>();
-		String powerSource = "";
-		String classRole = "";
-
-		if (reader.isStartElement() && reader.getName().toString().contentEquals("RulesElementTally")) {
-			while (reader.hasNext()) {
-				reader.next();
-				if (reader.isStartElement()) {
-					elementName = reader.getName().toString();
-					attList.clear();
-					if (reader.getAttributeCount() > 0) {
-						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString(), reader.getAttributeValue(i));
-						}
-					}
-
-					if (elementName.contentEquals("RulesElement") && attList.containsKey("name") && attList.containsKey("type")) {
-						if (attList.get("type").contentEquals("Gender") || attList.get("type").contentEquals("Race")
-								|| attList.get("type").contentEquals("Class")) {
-							if (!getType().isEmpty()) {
-								setType(getType() + "; ");
-							}
-							setType(getType() + attList.get("name"));
-						} else if (attList.get("type").contentEquals("Role")) {
-							classRole = attList.get("name");
-						} else if (attList.get("type").contentEquals("Power Source")) {
-							powerSource = attList.get("name");
-						} else if (attList.get("type").contentEquals("Alignment")) {
-							setAlignment(attList.get("name"));
-						} else if (attList.get("type").contentEquals("Vision")) {
-							if (!attList.get("name").contentEquals("Normal")) {
-								if (!getSenses().isEmpty()) {
-									setSenses(getSenses() + "; ");
-								}
-								setSenses(getSenses() + attList.get("name"));
-							}
-						} else if (attList.get("type").contentEquals("Feat")) {
-							if (!getFeats().isEmpty()) {
-								setFeats(getFeats() + "; ");
-							}
-							setFeats(getFeats() + attList.get("name"));
-						} else if (attList.get("type").contentEquals("Language")) {
-							if (!getLanguages().isEmpty()) {
-								setLanguages(getLanguages() + "; ");
-							}
-							setLanguages(getLanguages() + attList.get("name"));
-						}
-					}
-				} else if (reader.isEndElement()) {
-					if (reader.getName().toString().contentEquals("RulesElementTally")) {
-						if (!classRole.isEmpty() || !powerSource.isEmpty()) {
-							String temp = powerSource + " " + classRole;
-							temp = temp.trim();
-							setType(getType() + " (" + temp + ")");
-						}
-						return;
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Sets loot information from a dnd4e XML stream.
-	 * 
-	 * @param reader
-	 *            the XML stream
-	 * @throws XMLStreamException
-	 *             from the reader
-	 */
-	private void importCharFromCBXMLLootTally(XMLStreamReader reader) throws XMLStreamException {
-		String elementName = "";
-		Hashtable<String, String> attList = new Hashtable<String, String>();
-		String itemName = "";
-		Integer count = 0;
-
-		if (reader.isStartElement() && reader.getName().toString().contentEquals("LootTally")) {
-			while (reader.hasNext()) {
-				reader.next();
-				if (reader.isStartElement()) {
-					elementName = reader.getName().toString();
-					attList.clear();
-					if (reader.getAttributeCount() > 0) {
-						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString().trim(), reader.getAttributeValue(i).trim());
-						}
-					}
-					if (elementName.contentEquals("loot")) {
-						itemName = "";
-						count = Integer.valueOf(attList.get("count"));
-					} else if (elementName.contentEquals("RulesElement") && attList.containsKey("name")
-							&& attList.containsKey("type")) {
-						if (!itemName.isEmpty()) {
-							itemName += " ";
-						}
-						itemName += attList.get("name");
-					}
-				} else if (reader.isEndElement()) {
-					if (reader.getName().toString().contentEquals("LootTally")) {
-						return;
-					} else if (reader.getName().toString().contentEquals("loot") && !itemName.isEmpty() && count > 0) {
-						itemName = itemName.replace(" (heroic tier)", "").replace(" (paragon tier)", "")
-								.replace(" (epic tier)", "");
-						if (count > 1) {
-							itemName += " x" + count.toString();
-						}
-						if (!getEquipment().isEmpty()) {
-							setEquipment(getEquipment() + "; ");
-						}
-						setEquipment(getEquipment() + itemName);
-						itemName = "";
-						count = 0;
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Sets power information from a dnd4e XML stream.
-	 * 
-	 * @param reader
-	 *            the XML stream
-	 * @throws XMLStreamException
-	 *             from the reader
-	 */
-	private void importCharFromCBXMLPowerStats(XMLStreamReader reader) throws XMLStreamException {
-		String elementName = "";
-		Hashtable<String, String> attList = new Hashtable<String, String>();
-		String weaponStats = "";
-		Power newPow = null;
-
-		if (reader.isStartElement() && reader.getName().toString().contentEquals("PowerStats")) {
-			while (reader.hasNext()) {
-				reader.next();
-				if (reader.isStartElement()) {
-					elementName = reader.getName().toString();
-					attList.clear();
-					if (reader.getAttributeCount() > 0) {
-						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString().trim(), reader.getAttributeValue(i).trim());
-						}
-					}
-					if (elementName.contentEquals("Power")) {
-						newPow = new Power();
-						newPow.setName(attList.get("name"));
-						newPow.setDesc("");
-						weaponStats = "";
-					} else if (elementName.contentEquals("specific") && attList.get("name").contentEquals("Power Usage")
-							&& newPow != null) {
-						reader.next();
-						if (reader.isCharacters()) {
-							newPow.setAction(newPow.getAction() + "; " + reader.getText().toLowerCase().trim());
-						}
-					} else if (elementName.contentEquals("specific") && attList.get("name").contentEquals("Action Type")
-							&& newPow != null) {
-						reader.next();
-						if (reader.isCharacters()) {
-							newPow.setAction(reader.getText().toLowerCase().trim().replace(" action", "") + newPow.getAction());
-						}
-					} else if (elementName.contentEquals("Weapon") && newPow != null) {
-						weaponStats += attList.get("name") + ": UUU (WWW) vs YYY, ZZZ damage###";
-					} else if (elementName.contentEquals("AttackBonus") && newPow != null) {
-						reader.next();
-						if (reader.isCharacters()) {
-							if (Integer.valueOf(reader.getText().trim()) >= 0) {
-								weaponStats = weaponStats.replace("UUU", "+" + reader.getText().trim());
-							} else {
-								weaponStats = weaponStats.replace("UUU", reader.getText().trim());
-							}
-						}
-					} else if (elementName.contentEquals("AttackStat") && newPow != null) {
-						reader.next();
-						if (reader.isCharacters()) {
-							weaponStats = weaponStats.replace("WWW", reader.getText().trim().substring(0, 3));
-						}
-					} else if (elementName.contentEquals("Defense") && newPow != null) {
-						reader.next();
-						if (reader.isCharacters()) {
-							weaponStats = weaponStats.replace("YYY", reader.getText().trim());
-						}
-					} else if (elementName.contentEquals("Damage") && newPow != null) {
-						reader.next();
-						if (reader.isCharacters()) {
-							weaponStats = weaponStats.replace("ZZZ", reader.getText().trim());
-						}
-					}
-				} else if (reader.isEndElement()) {
-					if (reader.getName().toString().contentEquals("PowerStats")) {
-						return;
-					} else if (reader.getName().toString().contentEquals("Power")) {
-						if (newPow != null) {
-							if (!newPow.getName().isEmpty() && !newPow.getName().endsWith("Basic Attack")) {
-								weaponStats = weaponStats.replace("ZZZ", "No").replace("(Unk) vs. Unknown, No damage", "");
-								newPow.setDesc(weaponStats);
-								getPowerList().add(newPow);
-								if (newPow.getAction().toLowerCase().contains("encounter (special)")
-										&& "healing infusion majestic word rune of mending healing word inspiring word healing spirit"
-												.contains(newPow.getName().toLowerCase())) {
-									Power newPow2 = new Power();
-									newPow2.setName(newPow.getName() + " - 2");
-									newPow2.setAction(newPow.getAction());
-									getPowerList().add(newPow2);
-									if (getLevel() >= 16) {
-										Power newPow3 = new Power();
-										newPow3.setName(newPow.getName() + " - 3");
-										newPow3.setAction(newPow.getAction());
-										getPowerList().add(newPow3);
-									}
-								}
-							}
-							newPow = null;
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/**
-	 * Sets Compendium URLs for powers from a dnd4e XML stream.
-	 * 
-	 * @param reader
-	 *            the XML stream
-	 * @throws XMLStreamException
-	 *             from the reader
-	 */
-	private void importCharFromCBXMLPowerURLs(XMLStreamReader reader) throws XMLStreamException {
-		String name = "";
-		Hashtable<String, String> attList = new Hashtable<String, String>();
-
-		if (reader.isStartElement() && reader.getName().toString().contentEquals("Level")) {
-			while (reader.hasNext()) {
-				reader.next();
-				if (reader.isStartElement()) {
-					name = reader.getName().toString();
-					attList.clear();
-					if (reader.getAttributeCount() > 0) {
-						for (int i = 0; i < reader.getAttributeCount(); i++) {
-							attList.put(reader.getAttributeName(i).toString().trim(), reader.getAttributeValue(i).trim());
-						}
-					}
-					if (name.contentEquals("RulesElement") && attList.get("type").contentEquals("Power")) {
-						for (Power pow : getPowerList()) {
-							if (pow.getName().contains(attList.get("name")) && attList.containsKey("url")
-									&& !attList.get("url").isEmpty()) {
-								pow.setURL(attList.get("url").replace("&amp;", "&").replace("aspx", "php").replace(
-										"www.wizards.com/dndinsider/compendium", "localhost/ddi"));
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	/**
 	 * Loads a statblock from a Character Builder dnd4e file.
 	 * 
 	 * @param filename
@@ -2105,26 +1652,363 @@ public class Stats {
 	 */
 	public Boolean loadFromCBFile(String filename) {
 		File dnd4e = new File(filename);
-
+		Node node = null;
+		NodeList nodelist = null;
+		
 		if (dnd4e.exists()) {
+			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
+			domFactory.setNamespaceAware(true);
 			try {
-				InputSource input = new InputSource(new FileInputStream(dnd4e));
-				XMLStreamReader reader = XMLStreamReaderFactory.create(input, false);
-				while (reader.hasNext() && !reader.isStartElement()) {
-					reader.next();
+				DocumentBuilder builder = domFactory.newDocumentBuilder();
+				Document doc = builder.parse(dnd4e);
+				XPath xpath = XPathFactory.newInstance().newXPath();
+				
+				// name
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/Details/name/text()", doc, XPathConstants.NODE);
+				setName(node.getNodeValue().trim());
+
+				// role
+				setRole("Hero");
+				
+				// type
+				String type = "";
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Gender\"]/@name", doc, XPathConstants.NODE);
+				if (node != null) {
+					type += node.getNodeValue().trim();
 				}
-				importCharFromCBXML(reader);
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Race\"]/@name", doc, XPathConstants.NODE);
+				if (node != null) {
+					type += " " + node.getNodeValue().trim();
+				}
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Class\"]/@name", doc, XPathConstants.NODE);
+				if (node != null) {
+					type += " " + node.getNodeValue().trim();
+				}
+				
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Power Source\"]/@name", doc, XPathConstants.NODE);
+				if (node != null) {
+					type += " (" + node.getNodeValue().trim();
+				}
+				
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Role\"]/@name", doc, XPathConstants.NODE);
+				if (node != null) {
+					type += " " + node.getNodeValue().trim() + ")";
+				}
+				
+				setType(type.trim());
+
+				// senses
+				String senses = "";
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Passive Perception\"]/@value", doc, XPathConstants.NODE);
+				senses += "Perception " + node.getNodeValue().trim();
+				
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Passive Insight\"]/@value", doc, XPathConstants.NODE);
+				senses += "; Insight " + node.getNodeValue().trim();
+				
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Vision\"]/@name", doc, XPathConstants.NODE);
+				if (node != null) {
+					senses += "; Vision: " + node.getNodeValue().trim();
+				}
+
+				
+				setSenses(senses);
+
+				// TODO: resistance
+
+				// TODO: immunity
+
+				// TODO: vulnerability
+
+				// speeds
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Speed\"]/@value", doc, XPathConstants.NODE);
+				setSpeed(node.getNodeValue().trim());
+
+				// TODO: regeneration
+
+				// alignment
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/Details/Alignment/text()", doc, XPathConstants.NODE);
+				setAlignment(node.getNodeValue().trim());
+				
+				// feats
+				String feats = "";
+				nodelist = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Feat\"]/@name", doc, XPathConstants.NODESET);
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					feats += nodelist.item(i).getNodeValue().trim() + ", ";
+				}
+				setFeats(feats.replaceAll(", $", ""));
+
+				// skills
+				String skills = "";
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Acrobatics\"]/@value", doc, XPathConstants.NODE);
+				skills += "Acrobatics " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Arcana\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Arcana " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Athletics\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Athletics " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Bluff\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Bluff " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Diplomacy\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Diplomacy " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Dungeoneering\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Dungeoneering " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Endurance\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Endurance " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Heal\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Heal " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"History\"]/@value", doc, XPathConstants.NODE);
+				skills += ", History " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Insight\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Insight " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Intimidate\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Intimidate " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Nature\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Nature " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Perception\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Perception " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Religion\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Religion " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Stealth\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Stealth " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Streetwise\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Streetwise " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Thievery\"]/@value", doc, XPathConstants.NODE);
+				skills += ", Thievery " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
+				
+				setSkills(skills);
+
+				// languages
+				String languages = "";
+				nodelist = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Language\"]/@name", doc, XPathConstants.NODESET);
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					languages += nodelist.item(i).getNodeValue().trim() + ", ";
+				}
+				setLanguages(languages.replaceAll(", $", ""));
+
+				// equipment
+				String equipment = "";
+				nodelist = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/LootTally/loot[@count > 0]/RulesElement/@name",
+						doc, XPathConstants.NODESET);
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					String name = nodelist.item(i).getNodeValue();
+					Node n = (Node) xpath.evaluate("/D20Character/CharacterSheet/LootTally/loot[RulesElement/@name=\"" + name
+							+ "\"]/@count", doc, XPathConstants.NODE);
+					if (Integer.valueOf(n.getNodeValue().trim()) > 0) {
+						equipment += name.trim() + " x" + n.getNodeValue().trim() + ", ";
+					}
+				}
+				setEquipment(equipment.replaceAll(", $", ""));
+
+				// source
+				setSource("WotC Character Builder");
+
+				// notes
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/Details/Notes/text()", doc, XPathConstants.NODE);
+				setNotes(node.getNodeValue().trim());
+
+				// level
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/Details/Level/text()", doc, XPathConstants.NODE);
+				setLevel(Integer.valueOf(node.getNodeValue().trim()));
+
+				// experience points
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/Details/Experience/text()", doc, XPathConstants.NODE);
+				setXP(Integer.valueOf(node.getNodeValue().trim()));
+
+				// initiative
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Initiative\"]/@value", doc, XPathConstants.NODE);
+				setInit(Integer.valueOf(node.getNodeValue().trim()));
+
+				// hit points
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Hit Points\"]/@value", doc, XPathConstants.NODE);
+				setMaxHP(Integer.valueOf(node.getNodeValue().trim()));
+
+				// defenses
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"AC\"]/@value", doc, XPathConstants.NODE);
+				setAC(Integer.valueOf(node.getNodeValue().trim()));
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Fortitude\"]/@value", doc, XPathConstants.NODE);
+				setFort(Integer.valueOf(node.getNodeValue().trim()));
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Reflex\"]/@value", doc, XPathConstants.NODE);
+				setRef(Integer.valueOf(node.getNodeValue().trim()));
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Will\"]/@value", doc, XPathConstants.NODE);
+				setWill(Integer.valueOf(node.getNodeValue().trim()));
+
+				// TODO: save bonus
+				
+
+				// action points
+				setActionPoints(1);
+
+				// power points
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Power Points\"]/@value", doc, XPathConstants.NODE);
+				if (node != null) {
+					setPowerPoints(Integer.valueOf(node.getNodeValue().trim()));
+				}
+
+				// healing surges
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Healing Surges\"]/@value", doc, XPathConstants.NODE);
+				setSurges((Integer.valueOf(node.getNodeValue().trim())));
+
+				// ability scores
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"str\"]/@value", doc, XPathConstants.NODE);
+				setStr(Integer.valueOf(node.getNodeValue().trim()));
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"con\"]/@value", doc, XPathConstants.NODE);
+				setCon(Integer.valueOf(node.getNodeValue().trim()));
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"dex\"]/@value", doc, XPathConstants.NODE);
+				setDex(Integer.valueOf(node.getNodeValue().trim()));
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"int\"]/@value", doc, XPathConstants.NODE);
+				setInt(Integer.valueOf(node.getNodeValue().trim()));
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"wis\"]/@value", doc, XPathConstants.NODE);
+				setWis(Integer.valueOf(node.getNodeValue().trim()));
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"cha\"]/@value", doc, XPathConstants.NODE);
+				setCha(Integer.valueOf(node.getNodeValue().trim()));
+
+				// powers
+				nodelist = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power/@name", doc, XPathConstants.NODESET);
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					Node n = null;
+					Power pow = new Power();
+					
+					// name
+					String name = nodelist.item(i).getNodeValue();
+					pow.setName(name.trim());
+					
+					// action
+					String action = "";
+					n = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
+							+ "\"]/specific[@name=\"Action Type\"]/text()", doc, XPathConstants.NODE);
+					action += n.getNodeValue().toLowerCase().replaceAll(" action", "").trim() + "; ";
+					n = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
+							+ "\"]/specific[@name=\"Power Usage\"]/text()", doc, XPathConstants.NODE);
+					action += n.getNodeValue().toLowerCase().trim();
+					pow.setAction(action);
+					
+					// description
+					String description = "";
+					NodeList nl = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
+							+ "\"]/Weapon", doc, XPathConstants.NODESET);
+					for (int j = 0; j < nl.getLength(); j++) {
+						String weapon = nl.item(j).getAttributes().getNamedItem("name").getNodeValue();
+						Node o = null;
+						
+						// attack bonus
+						String atkBonus = "";
+						o = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
+							+ "\"]/Weapon/AttackBonus/text()", doc, XPathConstants.NODE);
+						if (o != null) {
+							atkBonus += DnD4eRules.integerFormatForPlus(o.getNodeValue().trim());
+						}
+						
+						// attack stat
+						String atkStat = "";
+						o = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
+							+ "\"]/Weapon/AttackStat/text()", doc, XPathConstants.NODE);
+						if (o != null) {
+							atkStat += o.getNodeValue().trim().substring(0, 3);
+						}
+						
+						// defense
+						String defense = "";
+						o = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
+							+ "\"]/Weapon/Defense/text()", doc, XPathConstants.NODE);
+						if (o != null) {
+							defense += o.getNodeValue().trim();
+						}
+						
+						// damage
+						String damage = "";
+						o = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
+							+ "\"]/Weapon/Damage/text()", doc, XPathConstants.NODE);
+						if (o != null) {
+							damage += o.getNodeValue().trim();
+						}
+						
+						// compile description
+						description += weapon.trim() + ": ";
+						if (!atkBonus.isEmpty()) {
+							description += atkBonus;
+							if (!atkStat.isEmpty()) {
+								description += " (" + atkStat + ")";
+							}
+						}
+						if (!defense.isEmpty()) {
+							description += " vs. " + defense;
+						}
+						if (!damage.isEmpty()) {
+							description += "; " + damage;
+						}
+						description += "\n";
+					}
+					pow.setDesc(description.trim());
+					getPowerList().add(pow);
+				}
+				
+				// power URLs
+				for (Power pow : getPowerList()) {
+					node = (Node) xpath.evaluate(
+							"/D20Character/CharacterSheet/RulesElementTally/RulesElement[@name=\"" + pow.getName()
+									+ "\" and @type=\"Power\"]/@url", doc, XPathConstants.NODE);
+					if (node != null) {
+						pow.setURL(node.getNodeValue().trim().replace("&amp;", "&").replace("aspx", "php")
+								.replace("www.wizards.com/dndinsider/compendium", "localhost/ddi"));
+					}
+				}
+				
+				// traits
+				nodelist = (NodeList) xpath.evaluate(
+						"/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Racial Trait\" "
+								+ "or @type=\"Class Feature\"]", doc, XPathConstants.NODESET);
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					Power pow = new Power();
+					String name = nodelist.item(i).getAttributes().getNamedItem("name").getNodeValue();
+					pow.setName(name.trim());
+					
+					node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@name=\"" + name
+							+ "\"]/specific[@name=\"Short Description\"]/text()", doc, XPathConstants.NODE);
+					if (node != null) {
+						pow.setDesc(node.getNodeValue().trim());
+					} else {
+						pow.setDesc("");
+					}
+					
+					getPowerList().add(pow);
+				}
+
+				// preset effects
+				getPresetEffects().clear();
+				
 				return true;
-			} catch (FileNotFoundException e) {
-				// this shouldn't happen, should it? We checked for existence
-				// above
+			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 				return false;
-			} catch (XMLStreamException e) {
+			} catch (SAXException e) {
+				e.printStackTrace();
+				return false;
+			} catch (IOException e) {
+				e.printStackTrace();
+				return false;
+			} catch (XPathExpressionException e) {
 				e.printStackTrace();
 				return false;
 			}
 		}
+		
 		return false;
 	}
 
