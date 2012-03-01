@@ -3,5 +3,18 @@ Version 2.0
  - Moved configuration options to a dialog window
  - Removed support for reading VB.NET application's EffectBase Durations.
 
+Version 1.2 (1 March 2012)
+ - Power point buttons now -2, -4, and -6. Use the spinner arrows for adjustments of +/- 1
+ - Ending the encounter and taking rests clear the roster selection
+ - Initiative display has adjustable font size
+ - Previously used rest is displayed on initiative tab for reference
+
+Version 1.1.1 (29 February 2012)
+ - .monster import does not show "Hit" line unless there is an "Attack" line
+
+Version 1.1 (28 February 2012)
+ - Statblock form fixes
+ - Action and power point tracking
+
 Version 1.0 (28 February 2012)
  - Initial release
