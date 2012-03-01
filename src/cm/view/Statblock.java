@@ -1946,6 +1946,9 @@ public class Statblock extends JDialog {
 				getJFormattedTextFieldAuraSize().setText("1");
 				getJFormattedTextFieldAuraSize().requestFocusInWindow();
 			}
+			Power pow = (Power) getJListPowers().getSelectedValue();
+			pow.setAura(Integer.valueOf(getJFormattedTextFieldAuraSize().getText()));
+			getJListPowers().repaint();
 		} else {
 			getJComboBoxPowerIcon().setEnabled(true);
 			getJFormattedTextFieldAuraSize().setEnabled(false);
@@ -1994,7 +1997,9 @@ public class Statblock extends JDialog {
 	private void jFormattedTextFieldAuraSizeKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
 			Power pow = (Power) getJListPowers().getSelectedValue();
-			pow.setAura(Integer.valueOf(getJFormattedTextFieldAuraSize().getText()));
+			if (!getJFormattedTextFieldAuraSize().getText().isEmpty()) {
+				pow.setAura(Integer.valueOf(getJFormattedTextFieldAuraSize().getText()));
+			}
 			setPowerChanged(true);
 			getJListPowers().repaint();
 		}
