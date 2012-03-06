@@ -12,15 +12,20 @@ public class Colors {
 	/**
 	 * The color used for at-will powers.
 	 */
-	public static Color ATWILL = new Color(97, 152, 105);
+	public static final Color ATWILL = new Color(97, 152, 105);
+
+	/**
+	 * The color used for daily powers.
+	 */
+	public static final Color DAILY = new Color(77, 77, 79);
 
 	/**
 	 * The color used for encounter powers.
 	 */
-	public static Color ENCOUNTER = new Color(150, 19, 52);
+	public static final Color ENCOUNTER = new Color(150, 19, 52);
 	
 	/**
-	 * The color used for daily powers.
+	 * The color used for items.
 	 */
-	public static Color DAILY = new Color(77, 77, 79);
+	public static final Color ITEM = new Color(153, 102, 0);
 }

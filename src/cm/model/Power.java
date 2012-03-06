@@ -212,6 +212,10 @@ public class Power {
 		if (isAura()) {
 			return Color.BLUE;
 		}
+		
+		if (isItem()) {
+			return Colors.ITEM;
+		}
 
 		if (getAction().toLowerCase().contains("recharge")) {
 			return Color.ORANGE;

@@ -230,7 +230,9 @@ public class Stats {
 
 	/**
 	 * Creates a copy of another statblock.
-	 * @param orig the original {@link Stats}
+	 * 
+	 * @param orig
+	 *            the original {@link Stats}
 	 */
 	public Stats(Stats orig) {
 		setName(orig.getName());
@@ -269,12 +271,12 @@ public class Stats {
 		setCha(orig.getCha());
 		setLeader(orig.isLeader());
 		setNotesBase(orig.getNotesBase());
-		
+
 		for (Power p : orig.getPowerList()) {
 			Power pow = new Power(p);
 			getPowerList().add(pow);
 		}
-		
+
 		for (EffectBase e : orig.getPresetEffects().values()) {
 			EffectBase eff = new EffectBase(e);
 			getPresetEffects().put(eff.getEffectBaseID(), eff);
@@ -1047,8 +1049,8 @@ public class Stats {
 		}
 		value += getInit().toString() + "<br>";
 		if (!getSenses().isEmpty()) {
-			value += getSenses().replace("Perception", "<b>Perception</b>").replace("Insight", "<b>Insight</b>").replace(",",
-					"<br>").replace(";", "<br>");
+			value += getSenses().replace("Perception", "<b>Perception</b>").replace("Insight", "<b>Insight</b>")
+					.replace(",", "<br>").replace(";", "<br>");
 		}
 		value += "</td></tr></table>";
 
@@ -1654,7 +1656,7 @@ public class Stats {
 		File dnd4e = new File(filename);
 		Node node = null;
 		NodeList nodelist = null;
-		
+
 		if (dnd4e.exists()) {
 			DocumentBuilderFactory domFactory = DocumentBuilderFactory.newInstance();
 			domFactory.setNamespaceAware(true);
@@ -1662,57 +1664,66 @@ public class Stats {
 				DocumentBuilder builder = domFactory.newDocumentBuilder();
 				Document doc = builder.parse(dnd4e);
 				XPath xpath = XPathFactory.newInstance().newXPath();
-				
+
 				// name
 				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/Details/name/text()", doc, XPathConstants.NODE);
 				setName(node.getNodeValue().trim());
 
 				// role
 				setRole("Hero");
-				
+
 				// type
 				String type = "";
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Gender\"]/@name", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Gender\"]/@name",
+						doc, XPathConstants.NODE);
 				if (node != null) {
 					type += node.getNodeValue().trim();
 				}
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Race\"]/@name", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Race\"]/@name",
+						doc, XPathConstants.NODE);
 				if (node != null) {
 					type += " " + node.getNodeValue().trim();
 				}
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Class\"]/@name", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Class\"]/@name",
+						doc, XPathConstants.NODE);
 				if (node != null) {
 					type += " " + node.getNodeValue().trim();
 				}
-				
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Power Source\"]/@name", doc, XPathConstants.NODE);
+
+				node = (Node) xpath.evaluate(
+						"/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Power Source\"]/@name", doc,
+						XPathConstants.NODE);
 				if (node != null) {
 					type += " (" + node.getNodeValue().trim();
 				}
-				
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Role\"]/@name", doc, XPathConstants.NODE);
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Role\"]/@name",
+						doc, XPathConstants.NODE);
 				if (node != null) {
 					type += " " + node.getNodeValue().trim() + ")";
 				}
-				
+
 				setType(type.trim());
 
 				// senses
 				String senses = "";
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Passive Perception\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate(
+						"/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Passive Perception\"]/@value", doc,
+						XPathConstants.NODE);
 				senses += "Perception " + node.getNodeValue().trim();
-				
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Passive Insight\"]/@value", doc, XPathConstants.NODE);
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Passive Insight\"]/@value",
+						doc, XPathConstants.NODE);
 				senses += "; Insight " + node.getNodeValue().trim();
-				
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Vision\"]/@name", doc, XPathConstants.NODE);
+
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Vision\"]/@name",
+						doc, XPathConstants.NODE);
 				if (node != null) {
 					senses += "; Vision: " + node.getNodeValue().trim();
 				}
 
-				
 				setSenses(senses);
 
 				// TODO: resistance
@@ -1722,7 +1733,8 @@ public class Stats {
 				// TODO: vulnerability
 
 				// speeds
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Speed\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Speed\"]/@value", doc,
+						XPathConstants.NODE);
 				setSpeed(node.getNodeValue().trim());
 
 				// TODO: regeneration
@@ -1730,10 +1742,12 @@ public class Stats {
 				// alignment
 				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/Details/Alignment/text()", doc, XPathConstants.NODE);
 				setAlignment(node.getNodeValue().trim());
-				
+
 				// feats
 				String feats = "";
-				nodelist = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Feat\"]/@name", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate(
+						"/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Feat\"]/@name", doc,
+						XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					feats += nodelist.item(i).getNodeValue().trim() + ", ";
 				}
@@ -1741,62 +1755,81 @@ public class Stats {
 
 				// skills
 				String skills = "";
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Acrobatics\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Acrobatics\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += "Acrobatics " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Arcana\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Arcana\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Arcana " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Athletics\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Athletics\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Athletics " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Bluff\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Bluff\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Bluff " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Diplomacy\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Diplomacy\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Diplomacy " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Dungeoneering\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Dungeoneering\"]/@value",
+						doc, XPathConstants.NODE);
 				skills += ", Dungeoneering " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Endurance\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Endurance\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Endurance " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Heal\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Heal\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Heal " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"History\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"History\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", History " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Insight\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Insight\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Insight " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Intimidate\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Intimidate\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Intimidate " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Nature\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Nature\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Nature " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Perception\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Perception\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Perception " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Religion\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Religion\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Religion " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Stealth\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Stealth\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Stealth " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Streetwise\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Streetwise\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Streetwise " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
 
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Thievery\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Thievery\"]/@value", doc,
+						XPathConstants.NODE);
 				skills += ", Thievery " + DnD4eRules.integerFormatForPlus(node.getNodeValue().trim());
-				
+
 				setSkills(skills);
 
 				// languages
 				String languages = "";
-				nodelist = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Language\"]/@name", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate(
+						"/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Language\"]/@name", doc,
+						XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					languages += nodelist.item(i).getNodeValue().trim() + ", ";
 				}
@@ -1832,63 +1865,77 @@ public class Stats {
 				setXP(Integer.valueOf(node.getNodeValue().trim()));
 
 				// initiative
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Initiative\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Initiative\"]/@value", doc,
+						XPathConstants.NODE);
 				setInit(Integer.valueOf(node.getNodeValue().trim()));
 
 				// hit points
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Hit Points\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Hit Points\"]/@value", doc,
+						XPathConstants.NODE);
 				setMaxHP(Integer.valueOf(node.getNodeValue().trim()));
 
 				// defenses
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"AC\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"AC\"]/@value", doc,
+						XPathConstants.NODE);
 				setAC(Integer.valueOf(node.getNodeValue().trim()));
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Fortitude\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Fortitude\"]/@value", doc,
+						XPathConstants.NODE);
 				setFort(Integer.valueOf(node.getNodeValue().trim()));
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Reflex\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Reflex\"]/@value", doc,
+						XPathConstants.NODE);
 				setRef(Integer.valueOf(node.getNodeValue().trim()));
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Will\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Will\"]/@value", doc,
+						XPathConstants.NODE);
 				setWill(Integer.valueOf(node.getNodeValue().trim()));
 
 				// TODO: save bonus
-				
 
 				// action points
 				setActionPoints(1);
 
 				// power points
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Power Points\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Power Points\"]/@value",
+						doc, XPathConstants.NODE);
 				if (node != null) {
 					setPowerPoints(Integer.valueOf(node.getNodeValue().trim()));
 				}
 
 				// healing surges
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Healing Surges\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"Healing Surges\"]/@value",
+						doc, XPathConstants.NODE);
 				setSurges((Integer.valueOf(node.getNodeValue().trim())));
 
 				// ability scores
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"str\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"str\"]/@value", doc,
+						XPathConstants.NODE);
 				setStr(Integer.valueOf(node.getNodeValue().trim()));
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"con\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"con\"]/@value", doc,
+						XPathConstants.NODE);
 				setCon(Integer.valueOf(node.getNodeValue().trim()));
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"dex\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"dex\"]/@value", doc,
+						XPathConstants.NODE);
 				setDex(Integer.valueOf(node.getNodeValue().trim()));
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"int\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"int\"]/@value", doc,
+						XPathConstants.NODE);
 				setInt(Integer.valueOf(node.getNodeValue().trim()));
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"wis\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"wis\"]/@value", doc,
+						XPathConstants.NODE);
 				setWis(Integer.valueOf(node.getNodeValue().trim()));
-				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"cha\"]/@value", doc, XPathConstants.NODE);
+				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"cha\"]/@value", doc,
+						XPathConstants.NODE);
 				setCha(Integer.valueOf(node.getNodeValue().trim()));
 
 				// powers
-				nodelist = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power/@name", doc, XPathConstants.NODESET);
+				nodelist = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power/@name", doc,
+						XPathConstants.NODESET);
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					Node n = null;
 					Power pow = new Power();
-					
+
 					// name
 					String name = nodelist.item(i).getNodeValue();
 					pow.setName(name.trim());
-					
+
 					// action
 					String action = "";
 					n = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
@@ -1898,7 +1945,7 @@ public class Stats {
 							+ "\"]/specific[@name=\"Power Usage\"]/text()", doc, XPathConstants.NODE);
 					action += n.getNodeValue().toLowerCase().trim();
 					pow.setAction(action);
-					
+
 					// description
 					String description = "";
 					NodeList nl = (NodeList) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
@@ -1906,39 +1953,39 @@ public class Stats {
 					for (int j = 0; j < nl.getLength(); j++) {
 						String weapon = nl.item(j).getAttributes().getNamedItem("name").getNodeValue();
 						Node o = null;
-						
+
 						// attack bonus
 						String atkBonus = "";
 						o = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
-							+ "\"]/Weapon/AttackBonus/text()", doc, XPathConstants.NODE);
+								+ "\"]/Weapon/AttackBonus/text()", doc, XPathConstants.NODE);
 						if (o != null) {
 							atkBonus += DnD4eRules.integerFormatForPlus(o.getNodeValue().trim());
 						}
-						
+
 						// attack stat
 						String atkStat = "";
 						o = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
-							+ "\"]/Weapon/AttackStat/text()", doc, XPathConstants.NODE);
+								+ "\"]/Weapon/AttackStat/text()", doc, XPathConstants.NODE);
 						if (o != null) {
 							atkStat += o.getNodeValue().trim().substring(0, 3);
 						}
-						
+
 						// defense
 						String defense = "";
 						o = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
-							+ "\"]/Weapon/Defense/text()", doc, XPathConstants.NODE);
+								+ "\"]/Weapon/Defense/text()", doc, XPathConstants.NODE);
 						if (o != null) {
 							defense += o.getNodeValue().trim();
 						}
-						
+
 						// damage
 						String damage = "";
 						o = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
-							+ "\"]/Weapon/Damage/text()", doc, XPathConstants.NODE);
+								+ "\"]/Weapon/Damage/text()", doc, XPathConstants.NODE);
 						if (o != null) {
 							damage += o.getNodeValue().trim();
 						}
-						
+
 						// compile description
 						description += weapon.trim() + ": ";
 						if (!atkBonus.isEmpty()) {
@@ -1958,7 +2005,7 @@ public class Stats {
 					pow.setDesc(description.trim());
 					getPowerList().add(pow);
 				}
-				
+
 				// power URLs
 				for (Power pow : getPowerList()) {
 					node = (Node) xpath.evaluate(
@@ -1969,7 +2016,7 @@ public class Stats {
 								.replace("www.wizards.com/dndinsider/compendium", "localhost/ddi"));
 					}
 				}
-				
+
 				// traits
 				nodelist = (NodeList) xpath.evaluate(
 						"/D20Character/CharacterSheet/RulesElementTally/RulesElement[@type=\"Racial Trait\" "
@@ -1978,7 +2025,7 @@ public class Stats {
 					Power pow = new Power();
 					String name = nodelist.item(i).getAttributes().getNamedItem("name").getNodeValue();
 					pow.setName(name.trim());
-					
+
 					node = (Node) xpath.evaluate("/D20Character/CharacterSheet/RulesElementTally/RulesElement[@name=\"" + name
 							+ "\"]/specific[@name=\"Short Description\"]/text()", doc, XPathConstants.NODE);
 					if (node != null) {
@@ -1986,13 +2033,31 @@ public class Stats {
 					} else {
 						pow.setDesc("");
 					}
+
+					getPowerList().add(pow);
+				}
+
+				// magic items
+				nodelist = (NodeList) xpath.evaluate(
+						"/D20Character/CharacterSheet/LootTally/loot[@count>0]/RulesElement[@type=\"Magic Item\"]", doc,
+						XPathConstants.NODESET);
+				for (int i = 0; i < nodelist.getLength(); i++) {
+					Power pow = new Power();
+					String name = nodelist.item(i).getAttributes().getNamedItem("name").getNodeValue();
+					pow.setName(name.trim());
+					
+					String url = nodelist.item(i).getAttributes().getNamedItem("url").getNodeValue();
+					pow.setURL(url.trim().replace("&amp;", "&").replace("aspx", "php")
+							.replace("www.wizards.com/dndinsider/compendium", "localhost/ddi"));
+					
+					pow.setAction("item");
 					
 					getPowerList().add(pow);
 				}
 
 				// preset effects
 				getPresetEffects().clear();
-				
+
 				return true;
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
@@ -2008,7 +2073,7 @@ public class Stats {
 				return false;
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -2069,7 +2134,8 @@ public class Stats {
 				String senses = "";
 				for (int i = 0; i < nodelist.getLength(); i++) {
 					String sense = nodelist.item(i).getNodeValue();
-					node = (Node) xpath.evaluate("/Monster/Senses/SenseReference/ReferencedObject[Name=\"" + sense + "\"]/DefaultRange/text()", doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate("/Monster/Senses/SenseReference/ReferencedObject[Name=\"" + sense
+							+ "\"]/DefaultRange/text()", doc, XPathConstants.NODE);
 					senses += sense;
 					if (node != null && !node.getNodeValue().contentEquals("0")) {
 						senses += " " + node.getNodeValue();
@@ -2154,13 +2220,13 @@ public class Stats {
 					if (amount != null) {
 						speed += " " + amount.getNodeValue();
 					}
-					
+
 					Node details = (Node) xpath.evaluate("/Monster/Speeds/CreatureSpeed[ReferencedObject/Name=\"" + speed
 							+ "\"]/Details/text()", doc, XPathConstants.NODE);
 					if (details != null) {
 						speed += " " + details.getNodeValue();
 					}
-					
+
 					speeds += ", " + speed;
 				}
 				setSpeed(speeds);
@@ -2315,11 +2381,9 @@ public class Stats {
 
 					// power type
 					Boolean basic = false;
-					node = (Node) xpath.evaluate(base + "/IsBasic/text()", doc,
-							XPathConstants.NODE);
+					node = (Node) xpath.evaluate(base + "/IsBasic/text()", doc, XPathConstants.NODE);
 					basic = Boolean.valueOf(node.getNodeValue());
-					node = (Node) xpath.evaluate(base + "/Type/text()", doc,
-							XPathConstants.NODE);
+					node = (Node) xpath.evaluate(base + "/Type/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						if (basic) {
 							pow.setType("basic " + node.getNodeValue());
@@ -2330,18 +2394,15 @@ public class Stats {
 
 					// power action
 					String action = "";
-					node = (Node) xpath.evaluate(base + "/Action/text()", doc,
-							XPathConstants.NODE);
+					node = (Node) xpath.evaluate(base + "/Action/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						action += node.getNodeValue().toLowerCase() + "; ";
 					}
-					node = (Node) xpath.evaluate(base + "/Usage/text()", doc,
-							XPathConstants.NODE);
+					node = (Node) xpath.evaluate(base + "/Usage/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						action += node.getNodeValue().toLowerCase();
 					}
-					node = (Node) xpath.evaluate(base + "/UsageDetails/text()",
-							doc, XPathConstants.NODE);
+					node = (Node) xpath.evaluate(base + "/UsageDetails/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						action += " " + node.getNodeValue();
 					}
@@ -2349,23 +2410,24 @@ public class Stats {
 
 					// power keywords
 					String keywords = "";
-					NodeList nl = (NodeList) xpath.evaluate(base + "/Keywords/ObjectReference/ReferencedObject/Name/text()", doc, XPathConstants.NODESET);
+					NodeList nl = (NodeList) xpath.evaluate(base + "/Keywords/ObjectReference/ReferencedObject/Name/text()", doc,
+							XPathConstants.NODESET);
 					if (nl != null) {
 						for (int j = 0; j < nl.getLength(); j++) {
 							keywords += nl.item(j).getNodeValue() + ", ";
 						}
 						pow.setKeywords(keywords.replaceAll(", $", ""));
 					}
-					
+
 					// power description
 					String desc = "";
-					
+
 					// requirements
 					node = (Node) xpath.evaluate(base + "/Requirements/text()", doc, XPathConstants.NODE);
 					if (node != null) {
 						desc += "Requirements: " + node.getNodeValue() + "\n";
 					}
-					
+
 					// trigger
 					node = (Node) xpath.evaluate(base + "/Trigger/text()", doc, XPathConstants.NODE);
 					if (node != null) {
@@ -2443,41 +2505,46 @@ public class Stats {
 
 	/**
 	 * Returns a parsed power attack.
-	 * @param xpath the XPath to use for queries
-	 * @param doc the document against which to query
-	 * @param base the base XML path queries are executed under
+	 * 
+	 * @param xpath
+	 *            the XPath to use for queries
+	 * @param doc
+	 *            the document against which to query
+	 * @param base
+	 *            the base XML path queries are executed under
 	 * @return the parsed power attack
-	 * @throws XPathExpressionException from the XPath
+	 * @throws XPathExpressionException
+	 *             from the XPath
 	 */
 	private String parseMonsterAttack(XPath xpath, Document doc, String base) throws XPathExpressionException {
 		Node n;
-		
+
 		// general attack description
 		String genDesc = "";
 		n = (Node) xpath.evaluate(base + "/Description/text()", doc, XPathConstants.NODE);
 		if (n != null) {
 			genDesc = n.getNodeValue();
 		}
-		
+
 		// range
 		String range = "";
 		n = (Node) xpath.evaluate(base + "/Range/text()", doc, XPathConstants.NODE);
 		if (n != null) {
 			range = n.getNodeValue();
 		}
-		
+
 		// targets
 		String targets = "";
 		n = (Node) xpath.evaluate(base + "/Targets/text()", doc, XPathConstants.NODE);
 		if (n != null) {
 			targets = n.getNodeValue();
 		}
-		
+
 		// hit/miss/effect
 		String hit = parseMonsterEffect(xpath, doc, base + "/Hit");
 		String miss = parseMonsterEffect(xpath, doc, base + "/Miss");
 		String effect = parseMonsterEffect(xpath, doc, base + "/Effect");
-		
+
 		String atkDesc = "";
 		n = (Node) xpath.evaluate(base + "/AttackBonuses/MonsterPowerAttackNumber/Defense/ReferencedObject/DefenseName/text()",
 				doc, XPathConstants.NODE);
@@ -2488,13 +2555,13 @@ public class Stats {
 				atkDesc += "+" + bonus.getNodeValue() + " vs. " + n.getNodeValue();
 			}
 		}
-		
+
 		String desc = "";
 
 		if (!genDesc.isEmpty()) {
 			desc += genDesc + "\n";
 		}
-		
+
 		if (!atkDesc.isEmpty()) {
 			desc += "Attack: " + range;
 			if (!targets.isEmpty()) {
@@ -2502,7 +2569,7 @@ public class Stats {
 			}
 			desc += atkDesc + "\n";
 		}
-		
+
 		if (!atkDesc.isEmpty() && !hit.trim().isEmpty()) {
 			desc += "Hit: " + hit;
 		}
@@ -2519,17 +2586,22 @@ public class Stats {
 			}
 			desc += effect;
 		}
-		
+
 		return desc.trim();
 	}
-	
+
 	/**
 	 * Returns a parsed power effect.
-	 * @param xpath the XPath to use for queries
-	 * @param doc the document against which to query
-	 * @param base the base XML path queries are executed under
+	 * 
+	 * @param xpath
+	 *            the XPath to use for queries
+	 * @param doc
+	 *            the document against which to query
+	 * @param base
+	 *            the base XML path queries are executed under
 	 * @return the parsed power effect
-	 * @throws XPathExpressionException from the XPath
+	 * @throws XPathExpressionException
+	 *             from the XPath
 	 */
 	private String parseMonsterEffect(XPath xpath, Document doc, String base) throws XPathExpressionException {
 		String aftereffect = "";
@@ -2538,7 +2610,7 @@ public class Stats {
 		String subattack = "";
 		String failedsaves = "";
 		String special = "";
-		
+
 		Node n;
 		NodeList nl;
 
@@ -2546,16 +2618,17 @@ public class Stats {
 		n = (Node) xpath.evaluate(base + "/Aftereffects/MonsterAttackEntry", doc, XPathConstants.NODE);
 		if (n != null) {
 			aftereffect += "Aftereffect: \n";
-			aftereffect += "\t" + parseMonsterEffect(xpath, doc, base + "/Aftereffects/MonsterAttackEntry").replaceAll("\n", "\n\t");
+			aftereffect += "\t"
+					+ parseMonsterEffect(xpath, doc, base + "/Aftereffects/MonsterAttackEntry").replaceAll("\n", "\n\t");
 		}
-		
+
 		// sustain
 		n = (Node) xpath.evaluate(base + "/Aftereffects/MonsterSustainEffect/Action/text()", doc, XPathConstants.NODE);
 		if (n != null) {
 			sustain += "Sustain " + n.getNodeValue() + ": ";
 			sustain += parseMonsterAttack(xpath, doc, base + "/Aftereffects/MonsterSustainEffect");
 		}
-		
+
 		// damage
 		n = (Node) xpath.evaluate(base + "/Description/text()", doc, XPathConstants.NODE);
 		if (n != null) {
@@ -2565,31 +2638,29 @@ public class Stats {
 			}
 			damage += " " + n.getNodeValue();
 		}
-		
+
 		// sub-attack
 		n = (Node) xpath.evaluate(base + "/Attacks/MonsterAttack", doc, XPathConstants.NODE);
 		if (n != null) {
 			subattack += "\t" + parseMonsterAttack(xpath, doc, base + "/Attacks/MonsterAttack").replaceAll("\n", "\n\t");
 			subattack.trim();
 		}
-		
+
 		// failed saving throws
-		nl = (NodeList) xpath.evaluate(base + "/FailedSavingThrows/MonsterAttackEntry/Name/text()", doc,
-				XPathConstants.NODESET);
+		nl = (NodeList) xpath.evaluate(base + "/FailedSavingThrows/MonsterAttackEntry/Name/text()", doc, XPathConstants.NODESET);
 		for (int i = 0; i < nl.getLength(); i++) {
 			String name = nl.item(i).getNodeValue();
-			failedsaves += name
-					+ ": "
-					+ parseMonsterEffect(xpath, doc, base + "/FailedSavingThrows/MonsterAttackEntry[Name=\"" + name
-							+ "\"]").trim() + ". ";
+			failedsaves += name + ": "
+					+ parseMonsterEffect(xpath, doc, base + "/FailedSavingThrows/MonsterAttackEntry[Name=\"" + name + "\"]").trim()
+					+ ". ";
 		}
-		
+
 		// special
 		n = (Node) xpath.evaluate(base + "/Special/text()", doc, XPathConstants.NODE);
 		if (n != null) {
 			special += "Special: " + n.getNodeValue();
 		}
-		
+
 		// compile information
 		String desc = "";
 		if (!damage.trim().isEmpty()) {
@@ -2611,7 +2682,7 @@ public class Stats {
 		if (!special.trim().isEmpty()) {
 			desc += special.trim() + "\n";
 		}
-		
+
 		return desc;
 	}
 }
