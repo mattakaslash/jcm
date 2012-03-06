@@ -17,8 +17,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.beans.PropertyChangeEvent;
-import java.beans.VetoableChangeListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -1535,17 +1533,17 @@ public class MainFrame extends JFrame {
 			jTextAreaNotes.getDocument().addDocumentListener(new DocumentListener() {
 
 				@Override
-				public void changedUpdate(DocumentEvent arg0) {
+				public void changedUpdate(DocumentEvent event) {
 					saveGlobalNotes();
 				}
 
 				@Override
-				public void insertUpdate(DocumentEvent arg0) {
+				public void insertUpdate(DocumentEvent event) {
 					saveGlobalNotes();
 				}
 
 				@Override
-				public void removeUpdate(DocumentEvent arg0) {
+				public void removeUpdate(DocumentEvent event) {
 					saveGlobalNotes();
 				}
 			});
@@ -1557,11 +1555,9 @@ public class MainFrame extends JFrame {
 		if (jTextFieldName == null) {
 			jTextFieldName = new JTextField();
 			jTextFieldName.setEnabled(false);
-			jTextFieldName.addVetoableChangeListener(new VetoableChangeListener() {
-
-				@Override
-				public void vetoableChange(PropertyChangeEvent event) {
-					jTextFieldNameVetoableChangeVetoableChange(event);
+			jTextFieldName.addKeyListener(new KeyAdapter() {
+				public void keyReleased(KeyEvent event) {
+					jTextFieldNameKeyKeyReleased(event);
 				}
 			});
 		}
@@ -2871,19 +2867,21 @@ public class MainFrame extends JFrame {
 	 * 
 	 * @param event
 	 */
-	private void jTextFieldNameVetoableChangeVetoableChange(PropertyChangeEvent event) {
-		String newValue = getJTextFieldName().getText().trim();
+	private void jTextFieldNameKeyKeyReleased(KeyEvent event) {
+		if (event.getKeyCode() == KeyEvent.VK_ENTER) {
+			String newValue = getJTextFieldName().getText().trim();
 
-		if (!newValue.isEmpty()) {
-			Combatant fighter = getListSelectedFighter();
+			if (!newValue.isEmpty()) {
+				Combatant fighter = getListSelectedFighter();
 
-			if (fighter != null) {
-				if (!newValue.contentEquals(fighter.getName())) {
-					getFight().remove(fighter.getCombatHandle());
-					fighter.setName(newValue);
-					getFight().add(fighter, false, true);
-					getFight().setSelectedFighter(fighter);
-					updateFromClass();
+				if (fighter != null) {
+					if (!newValue.contentEquals(fighter.getName())) {
+						getFight().remove(fighter.getCombatHandle());
+						fighter.setName(newValue);
+						getFight().add(fighter, false, true);
+						getFight().setSelectedFighter(fighter);
+						updateFromClass();
+					}
 				}
 			}
 		}
