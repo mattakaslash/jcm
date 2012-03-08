@@ -60,6 +60,7 @@ import cm.model.Power;
 import cm.model.Settings;
 import cm.model.Stats;
 import cm.util.external.AutoCompletion;
+import cm.view.render.DurationCellRenderer;
 import cm.view.render.EffectBaseCellRenderer;
 import cm.view.render.PowerDetailsCellRenderer;
 
@@ -527,9 +528,10 @@ public class Statblock extends JDialog {
 		if (jComboBoxDuration == null) {
 			jComboBoxDuration = new JComboBox();
 			jComboBoxDuration.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxDuration.setModel(new DefaultComboBoxModel(new Object[] { "", "End of Source's Next Turn",
-					"End of Target's Next Turn", "End of the Current Turn", "End of the Encounter", "Save Ends", "Special",
-					"Start of Source's Next Turn", "Start of Target's Next Turn", "Sustained", "Permanent" }));
+			jComboBoxDuration.setModel(new DefaultComboBoxModel(new Object[] { Duration.None, Duration.SourceEnd,
+					Duration.TargetEnd, Duration.TurnEnd, Duration.Encounter, Duration.SaveEnds, Duration.Special,
+					Duration.SourceStart, Duration.TargetStart, Duration.Sustained }));
+			jComboBoxDuration.setRenderer(new DurationCellRenderer());
 			jComboBoxDuration.setDoubleBuffered(false);
 			jComboBoxDuration.setBorder(null);
 			jComboBoxDuration.setRequestFocusEnabled(false);
