@@ -3329,7 +3329,7 @@ public class MainFrame extends JFrame {
 
 			@Override
 			public boolean accept(File f) {
-				return f.getName().endsWith(".xml");
+				return (f.isDirectory() || f.getName().endsWith(".xml"));
 			}
 
 			@Override
