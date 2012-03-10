@@ -74,10 +74,6 @@ import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
  * @since 1.0
  */
 //VS4E -- DO NOT REMOVE THIS LINE!
-/**
- * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
- * 
- */
 public class Statblock extends JDialog {
 	/**
 	 * Generated.
@@ -240,36 +236,12 @@ public class Statblock extends JDialog {
 		moveClassToFields(stat);
 	}
 
-	private void initComponents() {
-		setTitle("Statblock Viewer");
-		setFont(new Font("Dialog", Font.PLAIN, 12));
-		setBackground(Color.white);
-		setResizable(false);
-		setModal(true);
-		setForeground(Color.black);
-		setLayout(new GroupLayout());
-		add(getJLabelName(), new Constraints(new Leading(12, 12, 12), new Leading(12, 12, 12)));
-		add(getJTextFieldName(), new Constraints(new Leading(54, 396, 10, 10), new Leading(10, 12, 12)));
-		add(getJPanelDescription(), new Constraints(new Leading(12, 438, 12, 12), new Leading(34, 70, 10, 10)));
-		add(getJPanelDefenses(), new Constraints(new Leading(12, 117, 10, 10), new Leading(110, 112, 10, 10)));
-		add(getJPanelAttributes(), new Constraints(new Leading(131, 161, 10, 10), new Leading(110, 112, 12, 12)));
-		add(getJPanelXPValue(), new Constraints(new Leading(293, 157, 12, 12), new Leading(110, 47, 10, 10)));
-		add(getJPanelHitPoints(), new Constraints(new Leading(293, 156, 12, 12), new Leading(163, 59, 12, 12)));
-		add(getJTabbedPaneTraits(), new Constraints(new Leading(12, 438, 12, 12), new Bilateral(223, 0, 7)));
-		add(getJPanelPowers(), new Constraints(new Bilateral(456, 12, 0), new Bilateral(10, 44, 0)));
-		add(getJButtonATLoad(), new Constraints(new Leading(456, 12, 12), new Trailing(12, 50, 50)));
-		add(getJButtonCBLoad(), new Constraints(new Leading(553, 12, 12), new Trailing(12, 50, 50)));
-		add(getJButtonCancel(), new Constraints(new Trailing(12, 703, 703), new Trailing(12, 50, 50)));
-		add(getJButtonOK(), new Constraints(new Trailing(91, 646, 646), new Trailing(12, 50, 50)));
-		pack();
-	}
-
 	/**
 	 * Clears effect fields.
 	 */
 	private void clearEffect() {
-		getJComboBoxEffect().setSelectedIndex(-1);
-		getJComboBoxDuration().setSelectedIndex(-1);
+		getJComboBoxEffect().setSelectedIndex(0);
+		getJComboBoxDuration().setSelectedIndex(0);
 		getJCheckBoxBeneficial().setSelected(false);
 		getJCheckBoxHidden().setSelected(false);
 	}
@@ -355,6 +327,13 @@ public class Statblock extends JDialog {
 			jButtonEdit = new JButton();
 			jButtonEdit.setText("Edit");
 			jButtonEdit.setEnabled(false);
+			jButtonEdit.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					jButtonEditActionActionPerformed(event);
+				}
+			});
 		}
 		return jButtonEdit;
 	}
@@ -565,10 +544,10 @@ public class Statblock extends JDialog {
 			jComboBoxPowerIcon.setBorder(null);
 			jComboBoxPowerIcon.setEnabled(false);
 			jComboBoxPowerIcon.addItemListener(new ItemListener() {
-				
+
 				@Override
 				public void itemStateChanged(ItemEvent event) {
-					jComboBoxPowerIconItemItemStateChanged(event);					
+					jComboBoxPowerIconItemItemStateChanged(event);
 				}
 			});
 		}
@@ -625,6 +604,7 @@ public class Statblock extends JDialog {
 			jFormattedTextFieldAuraSize.setText("0");
 			jFormattedTextFieldAuraSize.setEnabled(false);
 			jFormattedTextFieldAuraSize.addKeyListener(new KeyAdapter() {
+				@Override
 				public void keyReleased(KeyEvent event) {
 					jFormattedTextFieldAuraSizeKeyKeyReleased(event);
 				}
@@ -1247,8 +1227,7 @@ public class Statblock extends JDialog {
 			jPanelGeneratedEffects.add(getJButtonEdit(), new Constraints(new Trailing(12, 76, 118, 346), new Leading(12, 12, 12)));
 			jPanelGeneratedEffects
 					.add(getJButtonExport(), new Constraints(new Trailing(12, 76, 118, 346), new Leading(44, 12, 12)));
-			jPanelGeneratedEffects
-					.add(getJButtonImport(), new Constraints(new Trailing(12, 76, 118, 346), new Leading(76, 12, 12)));
+			jPanelGeneratedEffects.add(getJButtonImport(), new Constraints(new Trailing(12, 118, 346), new Leading(76, 12, 12)));
 			jPanelGeneratedEffects.add(getJButtonDelete(),
 					new Constraints(new Trailing(12, 76, 118, 346), new Leading(108, 12, 12)));
 			jPanelGeneratedEffects.add(getJScrollPaneEffects(), new Constraints(new Leading(84, 250, 95, 95), new Leading(12, 243,
@@ -1421,6 +1400,7 @@ public class Statblock extends JDialog {
 			jTextAreaPowerDescription = new JTextArea();
 			jTextAreaPowerDescription.setEnabled(false);
 			jTextAreaPowerDescription.addKeyListener(new KeyAdapter() {
+				@Override
 				public void keyReleased(KeyEvent event) {
 					jTextAreaPowerDescriptionKeyKeyReleased(event);
 				}
@@ -1476,7 +1456,7 @@ public class Statblock extends JDialog {
 			jTextFieldPowerAction = new JTextField();
 			jTextFieldPowerAction.setEnabled(false);
 			jTextFieldPowerAction.addKeyListener(new KeyAdapter() {
-				
+
 				@Override
 				public void keyReleased(KeyEvent event) {
 					jTextFieldPowerActionKeyKeyReleased(event);
@@ -1491,6 +1471,7 @@ public class Statblock extends JDialog {
 			jTextFieldPowerKeywords = new JTextField();
 			jTextFieldPowerKeywords.setEnabled(false);
 			jTextFieldPowerKeywords.addKeyListener(new KeyAdapter() {
+				@Override
 				public void keyReleased(KeyEvent event) {
 					jTextFieldPowerKeywordsKeyKeyReleased(event);
 				}
@@ -1601,6 +1582,30 @@ public class Statblock extends JDialog {
 	 */
 	public Stats getStat() {
 		return _stat;
+	}
+
+	private void initComponents() {
+		setTitle("Statblock Viewer");
+		setFont(new Font("Dialog", Font.PLAIN, 12));
+		setBackground(Color.white);
+		setResizable(false);
+		setModal(true);
+		setForeground(Color.black);
+		setLayout(new GroupLayout());
+		add(getJLabelName(), new Constraints(new Leading(12, 12, 12), new Leading(12, 12, 12)));
+		add(getJTextFieldName(), new Constraints(new Leading(54, 396, 10, 10), new Leading(10, 12, 12)));
+		add(getJPanelDescription(), new Constraints(new Leading(12, 438, 12, 12), new Leading(34, 70, 10, 10)));
+		add(getJPanelDefenses(), new Constraints(new Leading(12, 117, 10, 10), new Leading(110, 112, 10, 10)));
+		add(getJPanelAttributes(), new Constraints(new Leading(131, 161, 10, 10), new Leading(110, 112, 12, 12)));
+		add(getJPanelXPValue(), new Constraints(new Leading(293, 157, 12, 12), new Leading(110, 47, 10, 10)));
+		add(getJPanelHitPoints(), new Constraints(new Leading(293, 156, 12, 12), new Leading(163, 59, 12, 12)));
+		add(getJTabbedPaneTraits(), new Constraints(new Leading(12, 438, 12, 12), new Bilateral(223, 0, 7)));
+		add(getJPanelPowers(), new Constraints(new Bilateral(456, 12, 0), new Bilateral(10, 44, 0)));
+		add(getJButtonATLoad(), new Constraints(new Leading(456, 12, 12), new Trailing(12, 50, 50)));
+		add(getJButtonCBLoad(), new Constraints(new Leading(553, 12, 12), new Trailing(12, 50, 50)));
+		add(getJButtonCancel(), new Constraints(new Trailing(12, 703, 703), new Trailing(12, 50, 50)));
+		add(getJButtonOK(), new Constraints(new Trailing(91, 646, 646), new Trailing(12, 50, 50)));
+		pack();
 	}
 
 	/**
@@ -1738,6 +1743,21 @@ public class Statblock extends JDialog {
 	}
 
 	/**
+	 * Event: Effect edit button pressed.
+	 * 
+	 * @param event
+	 */
+	private void jButtonEditActionActionPerformed(ActionEvent event) {
+		if (getJListEffects().getSelectedValue() != null) {
+			EffectBase eff = (EffectBase) getJListEffects().getSelectedValue();
+			getJComboBoxEffect().setSelectedItem(eff.getName());
+			getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
+			getPresetEffects().remove(getJListEffects().getSelectedValue());
+			resetEffectListFromArray();
+		}
+	}
+
+	/**
 	 * Event: Effect Export pressed.
 	 * 
 	 * @param event
@@ -1855,7 +1875,7 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonPowerDeleteActionActionPerformed(ActionEvent event) {
 		if (isPowerDataValid()) {
-			((DefaultListModel)getJListPowers().getModel()).removeElementAt(getJListPowers().getSelectedIndex());
+			((DefaultListModel) getJListPowers().getModel()).removeElementAt(getJListPowers().getSelectedIndex());
 			resetPowerListFromArray();
 			getJListPowers().setSelectedIndex(-1);
 		}
@@ -1886,7 +1906,7 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonPowerNewActionActionPerformed(ActionEvent event) {
 		Power pow = new Power();
-		((DefaultListModel)getJListPowers().getModel()).addElement(pow);
+		((DefaultListModel) getJListPowers().getModel()).addElement(pow);
 		resetPowerListFromArray();
 		getJListPowers().setSelectedValue(pow, true);
 	}
@@ -2015,8 +2035,10 @@ public class Statblock extends JDialog {
 	private void jListEffectsListSelectionValueChanged(ListSelectionEvent event) {
 		if (getJListEffects().getSelectedIndex() >= 0) {
 			getJButtonDelete().setEnabled(true);
+			getJButtonEdit().setEnabled(true);
 		} else {
 			getJButtonDelete().setEnabled(false);
+			getJButtonEdit().setEnabled(false);
 		}
 	}
 
