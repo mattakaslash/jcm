@@ -1,3 +1,8 @@
+Version 1.3 (10 March 2012)
+ - Fixed issue #14 (non-functional preset effect edit button)
+ - Fixed issue #15 (improper field validation when adding a preset effect)
+ - Fixed an issue where encounter save dialog was not displaying directories
+
 Version 1.2.2 (7 March 2012)
  - Fixed the name change field on the main interface so that it actually does something
  - Fixed issue #12 on preset effects
