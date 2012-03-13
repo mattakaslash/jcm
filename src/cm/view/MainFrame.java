@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -188,6 +190,7 @@ public class MainFrame extends JFrame {
 	private JPanel jPanelHealth;
 	private JPanel jPanelInitiative;
 	private JPanel jPanelMusic;
+	private JPanel jPanelNotes;
 	private JPanel jPanelPoints;
 	private JPanel jPanelPowerPoints;
 	private JPanel jPanelSurges;
@@ -220,6 +223,7 @@ public class MainFrame extends JFrame {
 	private JTextField jTextFieldName;
 	private JTextField jTextFieldNumber;
 	private JTextField jTextFieldSurges;
+	private JTextField jTextFieldXP;
 	private JMenuBar menuBarMain;
 	private JMenu menuEncounter;
 	private JMenuItem menuEncounterEnd;
@@ -1149,6 +1153,16 @@ public class MainFrame extends JFrame {
 		return jPanelMusic;
 	}
 
+	private JPanel getJPanelNotes() {
+		if (jPanelNotes == null) {
+			jPanelNotes = new JPanel();
+			jPanelNotes.setLayout(new BorderLayout());
+			jPanelNotes.add(getJScrollPaneNotes(), BorderLayout.CENTER);
+			jPanelNotes.add(getJTextFieldXP(), BorderLayout.SOUTH);
+		}
+		return jPanelNotes;
+	}
+
 	private JPanel getJPanelPoints() {
 		if (jPanelPoints == null) {
 			jPanelPoints = new JPanel();
@@ -1427,8 +1441,8 @@ public class MainFrame extends JFrame {
 			jSplitPaneLeft = new JSplitPane();
 			jSplitPaneLeft.setDividerLocation(350);
 			jSplitPaneLeft.setDividerSize(0);
-			jSplitPaneLeft.setResizeWeight(1.0);
 			jSplitPaneLeft.setOrientation(JSplitPane.VERTICAL_SPLIT);
+			jSplitPaneLeft.setResizeWeight(1.0);
 			jSplitPaneLeft.setTopComponent(getJScrollPaneRoster());
 			jSplitPaneLeft.setBottomComponent(getJTabbedPaneUtils());
 		}
@@ -1482,7 +1496,7 @@ public class MainFrame extends JFrame {
 	private JTabbedPane getJTabbedPaneUtils() {
 		if (jTabbedPaneUtils == null) {
 			jTabbedPaneUtils = new JTabbedPane();
-			jTabbedPaneUtils.addTab("Notes", getJScrollPaneNotes());
+			jTabbedPaneUtils.addTab("Notes", getJPanelNotes());
 			jTabbedPaneUtils.addTab("Off-Turn Powers", getJScrollPaneOffTurnPowers());
 			jTabbedPaneUtils.addTab("Music", getJPanelMusic());
 		}
@@ -1582,6 +1596,21 @@ public class MainFrame extends JFrame {
 			jTextFieldSurges.setEnabled(false);
 		}
 		return jTextFieldSurges;
+	}
+
+	private JTextField getJTextFieldXP() {
+		if (jTextFieldXP == null) {
+			jTextFieldXP = new JTextField();
+			jTextFieldXP.setEnabled(false);
+			jTextFieldXP.addMouseListener(new MouseAdapter() {
+				
+				@Override
+				public void mouseClicked(MouseEvent event) {
+					jTextFieldXPMouseMouseClicked(event);
+				}
+			});
+		}
+		return jTextFieldXP;
 	}
 
 	/**
@@ -2886,6 +2915,19 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
+	
+	/**
+	 * Event: XP, clicked.
+	 * 
+	 * @param event
+	 */
+	private void jTextFieldXPMouseMouseClicked(MouseEvent event) {
+		if (event.getClickCount() == 2) {
+			String XP = getJTextFieldXP().getText().replace("Total XP: ", "");
+			Toolkit.getDefaultToolkit().getSystemClipboard()
+					.setContents(new StringSelection(XP), null);
+		}
+	}
 
 	/**
 	 * Loads or imports an encounter.
@@ -3316,6 +3358,7 @@ public class MainFrame extends JFrame {
 		updateOffTurnPowers();
 		updateInitDisplay();
 		updateEnabledControls();
+		updateEncounterXP();
 	}
 
 	/**
@@ -3608,6 +3651,26 @@ public class MainFrame extends JFrame {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Updates display of encounter experience total.
+	 */
+	private void updateEncounterXP() {
+		int index = 0;
+		int xp = 0;
+		
+		while (index < getFight().size()) {
+			Combatant fighter = getFight().getFighterByIndex(index);
+			
+			if (!fighter.isPC()) {
+				xp += fighter.getStats().getXP();
+			}
+			
+			index++;
+		}
+		
+		getJTextFieldXP().setText("Total XP: " + xp);
 	}
 
 	/**
