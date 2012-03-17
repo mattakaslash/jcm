@@ -3788,11 +3788,19 @@ public class MainFrame extends JFrame {
 					text += "<td>Dying: " + fighter.getDeathStatus() + "</td>";
 				} else if ((fighter.isPC() || isFullInit()) && fighter.getMaxHP() > 0) {
 					int healthPercent = (int) (((double) fighter.getCurrHP() / (double) fighter.getMaxHP()) * 100);
-					text += "<td style='width: 105px'><div style='height: 1em; border-width: 1px; border-style: solid; border-color: white; "
-							+ "width: 100px'><div style='border-width: 0px; width: "
-							+ healthPercent
-							+ "px; background-color: "
-							+ hpBarColor + "'></div></div></td>";
+					text += "<td style='width: 105px'>";
+					if (fighter.isPC()) {
+						text += "<div style='color: " + hpBarColor + "; text-align: center; width: 100px'>" + fighter.getCurrHP()
+								+ "/" + fighter.getMaxHP() + "</div>";
+					} else {
+						text += "<div style='height: 1em; border-width: 1px; border-style: solid; border-color: white; width: 100px'>"
+								+ "<div style='border-width: 0px; width: "
+								+ healthPercent
+								+ "px; background-color: "
+								+ hpBarColor
+								+ "'></div></div>";
+					}
+					text += "</td>";
 				} else if (fighter.isBloody()) {
 					text += "<td><span style='color: red'>bloody</span></td>";
 				} else {
