@@ -97,7 +97,14 @@ public class DiceBag {
 		Integer dieNum = Integer.valueOf(num.trim());
 		Integer dieType = Integer.valueOf(type.trim());
 		Integer mod = Integer.valueOf(bonus.trim());
-
-		return diceExpr + " = " + (roll(dieNum, dieType) + mod);
+		Integer roll = roll(dieNum, dieType);
+		
+		if (dieNum == 1 && dieType == 20 && roll == 20) {
+			return diceExpr + " = CRITICAL HIT (" + (roll + mod) + ")";
+		} else if (dieNum == 1 && dieType == 20 && roll == 1) {
+			return diceExpr + " = CRTICIAL FAIL (" + (roll + mod) + ")";
+		} else {
+			return diceExpr + " = " + (roll(dieNum, dieType) + mod);
+		}
 	}
 }
