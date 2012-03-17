@@ -1,6 +1,12 @@
+Version 1.5 (17 March 2012)
+ - Critical hits and misses are called out on automatic dice rolls
+ - The initiative display is closed when the encounter is ended
+ - Only one copy of each off-turn power is displayed, even if there are multiple monsters with that power
+ - PCs have actual HP numbers displayed on initiative display instead of HP bars
+
 Version 1.4 (13 March 2012)
  - Added XP total to the bottom of the notes tab. Double-clicking the disabled field copies the XP
-   value to the clipboard.
+   value to the clipboard
 
 Version 1.3 (10 March 2012)
  - Fixed issue #14 (non-functional preset effect edit button)
