@@ -2977,6 +2977,8 @@ public class MainFrame extends JFrame {
 				JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, null, null);
 
 		if (n == JOptionPane.YES_OPTION) {
+			getMenuOptionsShowMinimalInitDisplay().setSelected(false);
+			getMenuOptionsShowFullInitDisplay().setSelected(false);
 			getJTableRoster().clearSelection();
 			getFight().resetEncounter(false);
 			getJTabbedPaneUtils().setSelectedIndex(0);
