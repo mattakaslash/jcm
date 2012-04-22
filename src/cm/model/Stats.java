@@ -1711,7 +1711,7 @@ public class Stats {
 					elementName = reader.getName().toString();
 				} else if (reader.isCharacters()) {
 					if (elementName.contentEquals("name")) {
-						setName(reader.getText().trim());
+						setName(getName() + reader.getText().trim());
 					} else if (elementName.contentEquals("Level")) {
 						setLevel(Integer.valueOf(reader.getText().trim()));
 					} else if (elementName.contentEquals("Experience")) {
