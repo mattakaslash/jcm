@@ -2046,9 +2046,11 @@ public class Stats {
 					String name = nodelist.item(i).getAttributes().getNamedItem("name").getNodeValue();
 					pow.setName(name.trim());
 					
-					String url = nodelist.item(i).getAttributes().getNamedItem("url").getNodeValue();
-					pow.setURL(url.trim().replace("&amp;", "&").replace("aspx", "php")
+					if (nodelist.item(i).getAttributes().getNamedItem("url") != null) {
+						String url = nodelist.item(i).getAttributes().getNamedItem("url").getNodeValue();
+						pow.setURL(url.trim().replace("&amp;", "&").replace("aspx", "php")
 							.replace("www.wizards.com/dndinsider/compendium", "localhost/ddi"));
+					}
 					
 					pow.setAction("item");
 					
