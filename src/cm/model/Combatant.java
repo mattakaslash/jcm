@@ -218,6 +218,10 @@ public class Combatant implements Comparable<Combatant> {
 		writer.writeStartElement("customname");
 		writer.writeCharacters(getCustomName());
 		writer.writeEndElement();
+			
+		writer.writeStartElement("nActionPointsRemaining");
+		writer.writeCharacters(getActionPointsRemaining().toString());
+		writer.writeEndElement();
 
 		getStats().exportXML(writer);
 
@@ -252,10 +256,6 @@ public class Combatant implements Comparable<Combatant> {
 			
 			writer.writeStartElement("bActionPointSpent");
 			writer.writeCharacters(isActionPointSpent().toString());
-			writer.writeEndElement();
-			
-			writer.writeStartElement("nActionPointsRemaining");
-			writer.writeCharacters(getActionPointsRemaining().toString());
 			writer.writeEndElement();
 			
 			writer.writeStartElement("nPowerPointsRemaining");
