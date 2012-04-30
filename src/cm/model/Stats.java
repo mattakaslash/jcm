@@ -2384,8 +2384,10 @@ public class Stats {
 					// power type
 					Boolean basic = false;
 					node = (Node) xpath.evaluate(base + "/IsBasic/text()", doc, XPathConstants.NODE);
+
 					basic = Boolean.valueOf(node.getNodeValue());
 					node = (Node) xpath.evaluate(base + "/Type/text()", doc, XPathConstants.NODE);
+
 					if (node != null) {
 						if (basic) {
 							pow.setType("basic " + node.getNodeValue());
@@ -2397,14 +2399,17 @@ public class Stats {
 					// power action
 					String action = "";
 					node = (Node) xpath.evaluate(base + "/Action/text()", doc, XPathConstants.NODE);
+
 					if (node != null) {
 						action += node.getNodeValue().toLowerCase() + "; ";
 					}
 					node = (Node) xpath.evaluate(base + "/Usage/text()", doc, XPathConstants.NODE);
+
 					if (node != null) {
 						action += node.getNodeValue().toLowerCase();
 					}
 					node = (Node) xpath.evaluate(base + "/UsageDetails/text()", doc, XPathConstants.NODE);
+
 					if (node != null) {
 						action += " " + node.getNodeValue();
 					}
@@ -2414,13 +2419,14 @@ public class Stats {
 					String keywords = "";
 					NodeList nl = (NodeList) xpath.evaluate(base + "/Keywords/ObjectReference/ReferencedObject/Name/text()", doc,
 							XPathConstants.NODESET);
+
 					if (nl != null) {
 						for (int j = 0; j < nl.getLength(); j++) {
 							keywords += nl.item(j).getNodeValue() + ", ";
 						}
 						pow.setKeywords(keywords.replaceAll(", $", ""));
 					}
-
+					
 					// power description
 					String desc = "";
 

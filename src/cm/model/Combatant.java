@@ -24,12 +24,12 @@ public class Combatant implements Comparable<Combatant> {
 	/**
 	 * A count of the remaining action points for this combatant.
 	 */
-	private Integer _actionPointsRemaining;
+	private Integer _actionPointsRemaining = 0;
 
 	/**
 	 * Indicates if a PC's action point has been spent this encounter.
 	 */
-	private Boolean _actionPointSpent;
+	private Boolean _actionPointSpent = false;
 
 	/**
 	 * The current hit points for the combatant in this encounter.
@@ -61,7 +61,7 @@ public class Combatant implements Comparable<Combatant> {
 	/**
 	 * The number of power points remaining for use.
 	 */
-	private Integer _powerPointsRemaining;
+	private Integer _powerPointsRemaining = 0;
 
 	/**
 	 * A list of power names for powers that are no longer available for the
@@ -1148,6 +1148,7 @@ public class Combatant implements Comparable<Combatant> {
 	}
 
 	/**
+<<<<<<< HEAD
 	 * Sets the name of this combatant.
 	 * 
 	 * @param name
