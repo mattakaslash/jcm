@@ -1908,21 +1908,45 @@ public class Stats {
 				// ability scores
 				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"str\"]/@value", doc,
 						XPathConstants.NODE);
+				if (node == null) {
+					node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"STR\"]/@value", doc,
+							XPathConstants.NODE);
+				}
 				setStr(Integer.valueOf(node.getNodeValue().trim()));
 				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"con\"]/@value", doc,
 						XPathConstants.NODE);
+				if (node == null) {
+					node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"CON\"]/@value", doc,
+							XPathConstants.NODE);
+				}
 				setCon(Integer.valueOf(node.getNodeValue().trim()));
 				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"dex\"]/@value", doc,
 						XPathConstants.NODE);
+				if (node == null) {
+					node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"DEX\"]/@value", doc,
+							XPathConstants.NODE);
+				}
 				setDex(Integer.valueOf(node.getNodeValue().trim()));
 				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"int\"]/@value", doc,
 						XPathConstants.NODE);
+				if (node == null) {
+					node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"INT\"]/@value", doc,
+							XPathConstants.NODE);
+				}
 				setInt(Integer.valueOf(node.getNodeValue().trim()));
 				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"wis\"]/@value", doc,
 						XPathConstants.NODE);
+				if (node == null) {
+					node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"WIS\"]/@value", doc,
+							XPathConstants.NODE);
+				}
 				setWis(Integer.valueOf(node.getNodeValue().trim()));
 				node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"cha\"]/@value", doc,
 						XPathConstants.NODE);
+				if (node == null) {
+					node = (Node) xpath.evaluate("/D20Character/CharacterSheet/StatBlock/Stat[alias/@name=\"CHA\"]/@value", doc,
+							XPathConstants.NODE);
+				}
 				setCha(Integer.valueOf(node.getNodeValue().trim()));
 
 				// powers
