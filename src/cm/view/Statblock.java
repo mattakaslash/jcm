@@ -2148,6 +2148,7 @@ public class Statblock extends JDialog {
 		getJComboBoxRole().setSelectedItem(stat.getRole());
 		getJComboBoxRole2().setSelectedItem(stat.getRole2());
 		getJCheckBoxLeader().setSelected(stat.isLeader());
+		getJCheckBoxPC().setSelected(stat.isPC());
 
 		getJTextFieldTypeKeywords().setText(stat.getType());
 		getJFormattedTextFieldXPValue().setText(stat.getXP().toString());
