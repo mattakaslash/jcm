@@ -719,7 +719,7 @@ public class Combatant implements Comparable<Combatant> {
 	 * 
 	 * @return amount of temporary HP
 	 */
-	private Integer getTempHP() {
+	public Integer getTempHP() {
 		return _tempHP;
 	}
 
