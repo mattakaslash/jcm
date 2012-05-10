@@ -104,7 +104,6 @@ import cm.model.Settings;
 import cm.model.StatLibrary;
 import cm.model.Stats;
 import cm.util.DiceBag;
-import cm.util.DnD4eRules;
 import cm.util.StatLogger;
 import cm.util.external.ColumnsAutoSizer;
 import cm.util.music.Player;
@@ -285,6 +284,8 @@ public class MainFrame extends JFrame {
 	private JLabel jLabelPreviousRest;
 	private JPanel jPanelNotes;
 	private JTextField jTextFieldXP;
+
+	private JButton jButtonPlayNext;
 
 	/**
 	 * Displays the interface.
@@ -1222,14 +1223,15 @@ public class MainFrame extends JFrame {
 	private JPanel getJPanelMusic() {
 		if (jPanelMusic == null) {
 			jPanelMusic = new JPanel();
-			jPanelMusic.setBorder(BorderFactory.createTitledBorder(null, "Music Player", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
+			jPanelMusic.setBorder(BorderFactory.createTitledBorder(null, "Music Player", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
+					Font.BOLD, 12), new Color(51, 51, 51)));
 			jPanelMusic.setLayout(new GroupLayout());
-			jPanelMusic.add(getJToggleButtonPlay(), new Constraints(new Leading(0, 165, 165), new Trailing(29, 84, 12, 12)));
 			jPanelMusic.add(getJPanelCrits(), new Constraints(new Bilateral(64, 88, 71), new Trailing(29, 84, 12, 12)));
 			jPanelMusic.add(getJPanelMisc(), new Constraints(new Trailing(0, 10, 141), new Trailing(29, 84, 12, 12)));
-			jPanelMusic.add(getJScrollPaneNowPlaying(), new Constraints(new Bilateral(0, 0, 22), new Bilateral(0, 119, 22)));
 			jPanelMusic.add(getJComboBoxPlaylists(), new Constraints(new Bilateral(0, 0, 60), new Trailing(0, 170, 165)));
+			jPanelMusic.add(getJToggleButtonPlay(), new Constraints(new Leading(0, 60, 165, 165), new Trailing(67, 46, 187, 191)));
+			jPanelMusic.add(getJButtonPlayNext(), new Constraints(new Leading(0, 60, 165, 165), new Trailing(31, 30, 40, 50)));
+			jPanelMusic.add(getJScrollPaneNowPlaying(), new Constraints(new Bilateral(0, 0, 22), new Bilateral(0, 119, 28)));
 		}
 		return jPanelMusic;
 	}
@@ -1533,7 +1535,7 @@ public class MainFrame extends JFrame {
 	private JSplitPane getJSplitPaneLeft() {
 		if (jSplitPaneLeft == null) {
 			jSplitPaneLeft = new JSplitPane();
-			jSplitPaneLeft.setDividerLocation(400);
+			jSplitPaneLeft.setDividerLocation(369);
 			jSplitPaneLeft.setDividerSize(0);
 			jSplitPaneLeft.setOrientation(JSplitPane.VERTICAL_SPLIT);
 			jSplitPaneLeft.setResizeWeight(1.0);
@@ -1596,7 +1598,7 @@ public class MainFrame extends JFrame {
 		}
 		return jTabbedPaneUtils;
 	}
-	
+
 	private JPanel getJPanelNotes() {
 		if (jPanelNotes == null) {
 			jPanelNotes = new JPanel();
@@ -2227,27 +2229,39 @@ public class MainFrame extends JFrame {
 		setForeground(Color.black);
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
 		addComponentListener(new ComponentAdapter() {
-
-			@Override
+	
 			public void componentResized(ComponentEvent event) {
 				componentComponentResized(event);
 			}
 		});
 		addWindowListener(new WindowAdapter() {
-
-			@Override
-			public void windowClosing(WindowEvent event) {
-				windowWindowClosing(event);
-			}
-
-			@Override
+	
 			public void windowOpened(WindowEvent event) {
 				windowWindowOpened(event);
+			}
+	
+			public void windowClosing(WindowEvent event) {
+				windowWindowClosing(event);
 			}
 		});
 		setJMenuBar(getMenuBarMain());
 		initFontSizeButtonGroup();
 		pack();
+	}
+
+	private JButton getJButtonPlayNext() {
+		if (jButtonPlayNext == null) {
+			jButtonPlayNext = new JButton();
+			jButtonPlayNext.setText(">|");
+			jButtonPlayNext.addActionListener(new ActionListener() {
+				
+				@Override
+				public void actionPerformed(ActionEvent event) {
+					jButtonPlayNextActionActionPerformed(event);
+				}
+			});
+		}
+		return jButtonPlayNext;
 	}
 
 	private JLabel getJLabelPreviousRest() {
@@ -2560,6 +2574,16 @@ public class MainFrame extends JFrame {
 		getFight().finishCurrentTurn();
 		updateFromClass();
 		getJTableRoster().getSelectionModel().setSelectionInterval(0, 0);
+	}
+	
+	/**
+	 * Event: Play next clicked.
+	 * 
+	 * @param event
+	 */
+	private void jButtonPlayNextActionActionPerformed(ActionEvent event) {
+		getJToggleButtonPlay().setSelected(false);
+		getJToggleButtonPlay().setSelected(true);
 	}
 
 	/**
