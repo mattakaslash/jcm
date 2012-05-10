@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
+import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
@@ -100,6 +102,7 @@ import cm.model.Settings;
 import cm.model.StatLibrary;
 import cm.model.Stats;
 import cm.util.DiceBag;
+import cm.util.DnD4eRules;
 import cm.util.StatLogger;
 import cm.util.external.ColumnsAutoSizer;
 import cm.util.music.Player;
@@ -278,6 +281,8 @@ public class MainFrame extends JFrame {
 	private JMenu menuWindowsFontSize;
 	private ButtonGroup fontSizeButtonGroup;
 	private JLabel jLabelPreviousRest;
+	private JPanel jPanelNotes;
+	private JTextField jTextFieldXP;
 
 	/**
 	 * Displays the interface.
@@ -1583,11 +1588,36 @@ public class MainFrame extends JFrame {
 	private JTabbedPane getJTabbedPaneUtils() {
 		if (jTabbedPaneUtils == null) {
 			jTabbedPaneUtils = new JTabbedPane();
-			jTabbedPaneUtils.addTab("Notes", getJScrollPaneNotes());
+			jTabbedPaneUtils.addTab("Notes", getJPanelNotes());
 			jTabbedPaneUtils.addTab("Off-Turn Powers", getJScrollPaneOffTurnPowers());
 			jTabbedPaneUtils.addTab("Music", getJPanelMusic());
 		}
 		return jTabbedPaneUtils;
+	}
+	
+	private JPanel getJPanelNotes() {
+		if (jPanelNotes == null) {
+			jPanelNotes = new JPanel();
+			jPanelNotes.setLayout(new BorderLayout());
+			jPanelNotes.add(getJScrollPaneNotes(), BorderLayout.CENTER);
+			jPanelNotes.add(getJTextFieldXP(), BorderLayout.SOUTH);
+		}
+		return jPanelNotes;
+	}
+	
+	private JTextField getJTextFieldXP() {
+		if (jTextFieldXP == null) {
+			jTextFieldXP = new JTextField();
+			jTextFieldXP.setEnabled(false);
+			jTextFieldXP.addMouseListener(new MouseAdapter() {
+				
+				@Override
+				public void mouseClicked(MouseEvent event) {
+					jTextFieldXPMouseMouseClicked(event);
+				}
+			});
+		}
+		return jTextFieldXP;
 	}
 
 	private JTable getJTableRoster() {
@@ -3023,6 +3053,18 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
+	
+	/**
+	 * Event: XP, clicked.
+	 * 
+	 * @param event
+	 */
+	private void jTextFieldXPMouseMouseClicked(MouseEvent event) {
+		if (event.getClickCount() == 2) {
+			String XP = getJTextFieldXP().getText().replace("Total XP: ", "");
+			Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(XP), null);
+		}
+	}
 
 	private void jToggleButtonCritHitItemItemStateChanged(ItemEvent event) {
 		if (event.getStateChange() == ItemEvent.SELECTED) {
@@ -3570,6 +3612,7 @@ public class MainFrame extends JFrame {
 		updateOffTurnPowers();
 		updateInitDisplay();
 		updateEnabledControls();
+		updateEncounterXP();
 	}
 
 	/**
@@ -3862,6 +3905,26 @@ public class MainFrame extends JFrame {
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Updates display of encounter experience total.
+	 */
+	private void updateEncounterXP() {
+		int index = 0;
+		int xp = 0;
+		
+		while (index < getFight().size()) {
+			Combatant fighter = getFight().getFighterByIndex(index);
+			
+			if (!fighter.isPC()) {
+				xp += fighter.getStats().getXP();
+			}
+			
+			index++;
+		}
+		
+		getJTextFieldXP().setText("Total XP: " + xp);
 	}
 
 	/**
