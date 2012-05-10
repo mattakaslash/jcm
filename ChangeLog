@@ -1,3 +1,6 @@
+Version 2.0.1 (10 May 2012)
+ - Re-implemented a number of features that were accidentally merged out
+
 Version 2.0 (4 May 2012)
  - Added a music player
  - Moved configuration options to a dialog window
