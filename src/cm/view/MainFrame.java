@@ -28,7 +28,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.SortedMap;
 import java.util.SortedSet;
+import java.util.TreeMap;
 import java.util.TreeSet;
 
 import javax.swing.BorderFactory;
@@ -4092,6 +4094,7 @@ public class MainFrame extends JFrame {
 	 */
 	private void updateOffTurnPowers() {
 		getJListOffTurnPowers().setCellRenderer(new OffTurnPowerRenderer(getFight()));
+		SortedMap<String, FighterPower> powers = new TreeMap<String, FighterPower>();
 		DefaultListModel model = (DefaultListModel) getJListOffTurnPowers().getModel();
 		model.clear();
 		for (String handle : getFight().getRolledList().values()) {
@@ -4102,9 +4105,13 @@ public class MainFrame extends JFrame {
 						&& (pow.getAction().contains("immediate") || pow.getAction().contains("opportunity;")
 								|| pow.getAction().contains("triggered;") || pow.getAction().contains("free;")
 								|| pow.getAction().contains("no;") || pow.isAura())) {
-					model.addElement(new FighterPower(fighter, pow));
+					powers.put(fighter.getStats().getHandle() + pow.getName(), new FighterPower(fighter, pow));
 				}
 			}
+		}
+		
+		for (String key : powers.keySet()) {
+			model.addElement(powers.get(key));
 		}
 	}
 
