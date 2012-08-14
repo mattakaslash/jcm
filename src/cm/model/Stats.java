@@ -2679,12 +2679,29 @@ public class Stats {
 		}
 
 		// failed saving throws
-		nl = (NodeList) xpath.evaluate(base + "/FailedSavingThrows/MonsterAttackEntry/Name/text()", doc, XPathConstants.NODESET);
-		for (int i = 0; i < nl.getLength(); i++) {
-			String name = nl.item(i).getNodeValue();
-			failedsaves += name + ": "
-					+ parseMonsterEffect(xpath, doc, base + "/FailedSavingThrows/MonsterAttackEntry[Name=\"" + name + "\"]").trim()
-					+ ". ";
+		nl = (NodeList) xpath.evaluate(base + "/FailedSavingThrows/MonsterAttackEntry", doc, XPathConstants.NODESET);
+		for (int i = 1; i <= nl.getLength(); i++) {
+			Node nameNode = (Node) xpath.evaluate(base + "/FailedSavingThrows/MonsterAttackEntry[" + i + "]/Name/text()", doc, XPathConstants.NODE);
+			String name = "";
+			if (nameNode != null) {
+				name = nameNode.getNodeValue();
+			} else {
+				switch (i) {
+				case 1:
+					name = "First Failed Save";
+					break;
+				case 2:
+					name = "Second Failed Save";
+					break;
+				case 3:
+					name = "Third Failed Save";
+					break;
+				default:
+					name = i + "th Failed Save";
+					break;
+				}
+			}
+			failedsaves += name + ": " + parseMonsterEffect(xpath, doc, base + "/FailedSavingThrows/MonsterAttackEntry[" + i + "]");
 		}
 
 		// special
