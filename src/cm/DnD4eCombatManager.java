@@ -13,7 +13,7 @@ public class DnD4eCombatManager {
 	/**
 	 * Application version.
 	 */
-	public static String VERSION = "2.0.1";
+	public static String VERSION = "2.0.2";
 
 	/**
 	 * Invokes the main frame.
