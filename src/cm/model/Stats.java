@@ -1964,10 +1964,14 @@ public class Stats {
 					String action = "";
 					n = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
 							+ "\"]/specific[@name=\"Action Type\"]/text()", doc, XPathConstants.NODE);
-					action += n.getNodeValue().toLowerCase().replaceAll(" action", "").trim() + "; ";
+					if (n != null) {
+						action += n.getNodeValue().toLowerCase().replaceAll(" action", "").trim() + "; ";
+					}
 					n = (Node) xpath.evaluate("/D20Character/CharacterSheet/PowerStats/Power[@name=\"" + name
 							+ "\"]/specific[@name=\"Power Usage\"]/text()", doc, XPathConstants.NODE);
-					action += n.getNodeValue().toLowerCase().trim();
+					if (n != null) {
+						action += n.getNodeValue().toLowerCase().trim();
+					}
 					pow.setAction(action);
 
 					// description

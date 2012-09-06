@@ -1,3 +1,9 @@
+Version 2.0.3 (6 September 2012)
+ - Bugfix for issue #22
+
+Version 2.0.2 (14 August 2012)
+ - Change to importing creatures with "failed saving throw" conditions
+
 Version 2.0.1 (10 May 2012)
  - Re-implemented a number of features that were accidentally merged out
 
