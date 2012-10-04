@@ -5,7 +5,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.nio.channels.FileChannel;
 import java.util.Collection;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -215,9 +214,11 @@ public class StatLibrary {
 			JOptionPane.showMessageDialog(null, "Previous library backup found. It is possible a previous "
 					+ "session failed. Backup has been copied to prevent data loss.", "Backup Found", JOptionPane.ERROR_MESSAGE);
 			try {
-				FileChannel src = new FileInputStream(libraryBackup).getChannel();
-				FileChannel dst = new FileOutputStream(new File(filename + ".saved.bak")).getChannel();
-				dst.transferFrom(src, 0, src.size());
+				FileInputStream src = new FileInputStream(libraryBackup);
+				FileOutputStream dst = new FileOutputStream(new File(filename + ".saved.bak"));
+				dst.getChannel().transferFrom(src.getChannel(), 0, src.getChannel().size());
+				src.close();
+				dst.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				return false;
@@ -231,9 +232,11 @@ public class StatLibrary {
 
 		if (library.exists()) {
 			try {
-				FileChannel src = new FileInputStream(library).getChannel();
-				FileChannel dst = new FileOutputStream(new File(filename + ".bak")).getChannel();
-				dst.transferFrom(src, 0, src.size());
+				FileInputStream src = new FileInputStream(library);
+				FileOutputStream dst = new FileOutputStream(new File(filename + ".bak"));
+				dst.getChannel().transferFrom(src.getChannel(), 0, src.getChannel().size());
+				src.close();
+				dst.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				return false;
@@ -276,8 +279,8 @@ public class StatLibrary {
 	 * @return true on success
 	 */
 	public Boolean saveToFile(String filename) {
-		FileChannel src = null;
-		FileChannel dst = null;
+		FileInputStream src = null;
+		FileOutputStream dst = null;
 		File tempFile = null;
 		try {
 			tempFile = File.createTempFile(filename, ".tmp");
@@ -285,10 +288,10 @@ public class StatLibrary {
 			XMLStreamWriter writer = XMLStreamWriterFactory.create(new FileOutputStream(tempFile));
 			exportXML(writer);
 
-			src = new FileInputStream(tempFile).getChannel();
-			dst = new FileOutputStream(new File(filename)).getChannel();
+			src = new FileInputStream(tempFile);
+			dst = new FileOutputStream(new File(filename));
 
-			dst.transferFrom(src, 0, src.size());
+			dst.getChannel().transferFrom(src.getChannel(), 0, src.getChannel().size());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return false;

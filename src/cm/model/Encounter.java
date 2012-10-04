@@ -6,7 +6,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -1091,6 +1090,8 @@ public class Encounter {
 		case TurnEnd:
 			tillRound = getCurrentRound();
 			break;
+		default:
+			// use initialized value of 99
 		}
 		return tillRound;
 	}
@@ -1481,8 +1482,8 @@ public class Encounter {
 		String tmpFilename = filename + ".tmp";
 		File encounter = new File(filename);
 		File tmpFile = new File(tmpFilename);
-		FileChannel src = null;
-		FileChannel dst = null;
+		FileInputStream src = null;
+		FileOutputStream dst = null;
 
 		if (tmpFile.exists()) {
 			if (!tmpFile.delete()) {
@@ -1495,9 +1496,9 @@ public class Encounter {
 			XMLStreamWriter writer = XMLStreamWriterFactory.create(output);
 			exportXML(writer);
 
-			src = new FileInputStream(tmpFile).getChannel();
-			dst = new FileOutputStream(encounter).getChannel();
-			dst.transferFrom(src, 0, src.size());
+			src = new FileInputStream(tmpFile);
+			dst = new FileOutputStream(encounter);
+			dst.getChannel().transferFrom(src.getChannel(), 0, src.getChannel().size());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return false;
