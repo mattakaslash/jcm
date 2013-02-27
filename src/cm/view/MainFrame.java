@@ -3,6 +3,7 @@ package cm.view;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Toolkit;
@@ -228,6 +229,7 @@ public class MainFrame extends JFrame {
 	private JSeparator jSeparator2;
 	private JSeparator jSeparator3;
 	private JSeparator jSeparator4;
+	private JSeparator jSeparator5;
 	private JSpinner jSpinnerActionPoints;
 	private JSpinner jSpinnerDamageHealAmount;
 	private JSpinner jSpinnerInitRoll;
@@ -280,12 +282,15 @@ public class MainFrame extends JFrame {
 	private JRadioButtonMenuItem jRadioButtonMenuItemExtraLarge;
 	private JRadioButtonMenuItem jRadioButtonMenuItemExtraExtraLarge;
 	private JMenu menuWindowsFontSize;
+	private JMenuItem menuWindowsMoveInitDisplay;
 	private ButtonGroup fontSizeButtonGroup;
 	private JLabel jLabelPreviousRest;
 	private JPanel jPanelNotes;
 	private JTextField jTextFieldXP;
 
 	private JButton jButtonPlayNext;
+
+	private int _secondDisplayIndex = 1;
 
 	/**
 	 * Displays the interface.
@@ -303,7 +308,7 @@ public class MainFrame extends JFrame {
 		} else if (Settings.getFontSize().contentEquals("xx-large")) {
 			getJRadioButtonMenuItemExtraExtraLarge().setSelected(true);
 		}
-		
+
 		Player.setListener(new PlayerListener() {
 
 			@Override
@@ -1223,8 +1228,8 @@ public class MainFrame extends JFrame {
 	private JPanel getJPanelMusic() {
 		if (jPanelMusic == null) {
 			jPanelMusic = new JPanel();
-			jPanelMusic.setBorder(BorderFactory.createTitledBorder(null, "Music Player", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font("Dialog",
-					Font.BOLD, 12), new Color(51, 51, 51)));
+			jPanelMusic.setBorder(BorderFactory.createTitledBorder(null, "Music Player", TitledBorder.LEADING,
+					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
 			jPanelMusic.setLayout(new GroupLayout());
 			jPanelMusic.add(getJPanelCrits(), new Constraints(new Bilateral(64, 88, 71), new Trailing(29, 84, 12, 12)));
 			jPanelMusic.add(getJPanelMisc(), new Constraints(new Trailing(0, 10, 141), new Trailing(29, 84, 12, 12)));
@@ -1253,8 +1258,8 @@ public class MainFrame extends JFrame {
 					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
 			jPanelPowerPoints.setLayout(new GroupLayout());
 			jPanelPowerPoints.add(getJSpinnerPowerPoints(), new Constraints(new Bilateral(12, 12, 27), new Leading(0, 41, 10, 10)));
-			jPanelPowerPoints.add(getJButtonPowerPointsMinusSix(), new Constraints(new Trailing(12, 53, 53), new Leading(47, 12,
-					12)));
+			jPanelPowerPoints.add(getJButtonPowerPointsMinusSix(), new Constraints(new Trailing(12, 53, 53),
+					new Leading(47, 12, 12)));
 			jPanelPowerPoints.add(getJButtonPowerPointsMinusFour(), new Constraints(new Bilateral(42, 42, 17), new Leading(47, 12,
 					12)));
 			jPanelPowerPoints.add(getJButtonPowerPointsMinusTwo(),
@@ -1429,6 +1434,13 @@ public class MainFrame extends JFrame {
 			jSeparator4 = new JSeparator();
 		}
 		return jSeparator4;
+	}
+
+	private JSeparator getJSeparator5() {
+		if (jSeparator5 == null) {
+			jSeparator5 = new JSeparator();
+		}
+		return jSeparator5;
 	}
 
 	private JSpinner getJSpinnerActionPoints() {
@@ -1608,13 +1620,13 @@ public class MainFrame extends JFrame {
 		}
 		return jPanelNotes;
 	}
-	
+
 	private JTextField getJTextFieldXP() {
 		if (jTextFieldXP == null) {
 			jTextFieldXP = new JTextField();
 			jTextFieldXP.setEnabled(false);
 			jTextFieldXP.addMouseListener(new MouseAdapter() {
-				
+
 				@Override
 				public void mouseClicked(MouseEvent event) {
 					jTextFieldXPMouseMouseClicked(event);
@@ -2130,8 +2142,26 @@ public class MainFrame extends JFrame {
 			menuWindows.add(getJSeparator4());
 			menuWindows.add(getMenuWindowsOptions());
 			menuWindows.add(getMenuWindowsFontSize());
+			menuWindows.add(getJSeparator5());
+			menuWindows.add(getMenuWindowsMoveInitDisplay());
 		}
 		return menuWindows;
+	}
+
+	private JMenuItem getMenuWindowsMoveInitDisplay() {
+		if (menuWindowsMoveInitDisplay == null) {
+			menuWindowsMoveInitDisplay = new JMenuItem();
+			menuWindowsMoveInitDisplay.setText("Move Init Display");
+			menuWindowsMoveInitDisplay.setAccelerator(KeyStroke.getKeyStroke("control shift pressed M"));
+			menuWindowsMoveInitDisplay.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					menuWindowsMoveInitDisplayActionActionPerformed(e);
+				}
+			});
+		}
+		return menuWindowsMoveInitDisplay;
 	}
 
 	private JMenu getMenuWindowsFontSize() {
@@ -2229,17 +2259,17 @@ public class MainFrame extends JFrame {
 		setForeground(Color.black);
 		add(getJSplitPaneMain(), BorderLayout.CENTER);
 		addComponentListener(new ComponentAdapter() {
-	
+
 			public void componentResized(ComponentEvent event) {
 				componentComponentResized(event);
 			}
 		});
 		addWindowListener(new WindowAdapter() {
-	
+
 			public void windowOpened(WindowEvent event) {
 				windowWindowOpened(event);
 			}
-	
+
 			public void windowClosing(WindowEvent event) {
 				windowWindowClosing(event);
 			}
@@ -2254,7 +2284,7 @@ public class MainFrame extends JFrame {
 			jButtonPlayNext = new JButton();
 			jButtonPlayNext.setText(">|");
 			jButtonPlayNext.addActionListener(new ActionListener() {
-				
+
 				@Override
 				public void actionPerformed(ActionEvent event) {
 					jButtonPlayNextActionActionPerformed(event);
@@ -2278,7 +2308,7 @@ public class MainFrame extends JFrame {
 			jRadioButtonMenuItemExtraExtraLarge.setText("Extra Extra Large");
 			jRadioButtonMenuItemExtraExtraLarge.setActionCommand("xx-large");
 			jRadioButtonMenuItemExtraExtraLarge.addItemListener(new ItemListener() {
-	
+
 				public void itemStateChanged(ItemEvent event) {
 					fontSizeSelectionChanged(event);
 				}
@@ -2293,7 +2323,7 @@ public class MainFrame extends JFrame {
 			jRadioButtonMenuItemExtraLarge.setText("Extra Large");
 			jRadioButtonMenuItemExtraLarge.setActionCommand("x-large");
 			jRadioButtonMenuItemExtraLarge.addItemListener(new ItemListener() {
-	
+
 				public void itemStateChanged(ItemEvent event) {
 					fontSizeSelectionChanged(event);
 				}
@@ -2308,7 +2338,7 @@ public class MainFrame extends JFrame {
 			jRadioButtonMenuItemLarge.setText("Large");
 			jRadioButtonMenuItemLarge.setActionCommand("large");
 			jRadioButtonMenuItemLarge.addItemListener(new ItemListener() {
-	
+
 				public void itemStateChanged(ItemEvent event) {
 					fontSizeSelectionChanged(event);
 				}
@@ -2323,7 +2353,7 @@ public class MainFrame extends JFrame {
 			jRadioButtonMenuItemMedium.setText("Medium");
 			jRadioButtonMenuItemMedium.setActionCommand("medium");
 			jRadioButtonMenuItemMedium.addItemListener(new ItemListener() {
-	
+
 				public void itemStateChanged(ItemEvent event) {
 					fontSizeSelectionChanged(event);
 				}
@@ -2339,7 +2369,7 @@ public class MainFrame extends JFrame {
 			jRadioButtonMenuItemSmall.setText("Small");
 			jRadioButtonMenuItemSmall.setActionCommand("small");
 			jRadioButtonMenuItemSmall.addItemListener(new ItemListener() {
-	
+
 				public void itemStateChanged(ItemEvent event) {
 					fontSizeSelectionChanged(event);
 				}
@@ -2575,7 +2605,7 @@ public class MainFrame extends JFrame {
 		updateFromClass();
 		getJTableRoster().getSelectionModel().setSelectionInterval(0, 0);
 	}
-	
+
 	/**
 	 * Event: Play next clicked.
 	 * 
@@ -3079,7 +3109,7 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
-	
+
 	/**
 	 * Event: XP, clicked.
 	 * 
@@ -3489,7 +3519,7 @@ public class MainFrame extends JFrame {
 			GraphicsEnvironment gc = GraphicsEnvironment.getLocalGraphicsEnvironment();
 			if (gc.getScreenDevices().length > 1) {
 				getInitDisplay().setUndecorated(true);
-				gc.getScreenDevices()[1].setFullScreenWindow(getInitDisplay());
+				gc.getScreenDevices()[getSecondDisplayIndex()].setFullScreenWindow(getInitDisplay());
 			} else {
 				getInitDisplay().setBounds(0, 0, 1024, 768);
 				getInitDisplay().setUndecorated(false);
@@ -3501,6 +3531,14 @@ public class MainFrame extends JFrame {
 		}
 	}
 
+	private int getSecondDisplayIndex() {
+		return _secondDisplayIndex;
+	}
+
+	private void setSecondDisplayIndex(int index) {
+		_secondDisplayIndex = index;
+	}
+
 	private void menuWindowsOptionsActionActionPerformed(ActionEvent event) {
 		Options options = new Options();
 		options.setLocationRelativeTo(this);
@@ -3509,6 +3547,18 @@ public class MainFrame extends JFrame {
 
 		((DefaultComboBoxModel) getJComboBoxPlaylists().getModel()).removeAllElements();
 		loadPlaylists(Settings.getMusicDirectory());
+	}
+
+	private void menuWindowsMoveInitDisplayActionActionPerformed(ActionEvent event) {
+		GraphicsEnvironment gc = GraphicsEnvironment.getLocalGraphicsEnvironment();
+		int numScreens = gc.getScreenDevices().length;
+		if (numScreens > 1) {
+			setSecondDisplayIndex(getSecondDisplayIndex() + 1);
+			if (getSecondDisplayIndex() >= numScreens) {
+				setSecondDisplayIndex(0);
+			}
+			gc.getScreenDevices()[getSecondDisplayIndex()].setFullScreenWindow(getInitDisplay());
+		}
 	}
 
 	/**
@@ -3934,24 +3984,24 @@ public class MainFrame extends JFrame {
 			}
 		}
 	}
-	
+
 	/**
 	 * Updates display of encounter experience total.
 	 */
 	private void updateEncounterXP() {
 		int index = 0;
 		int xp = 0;
-		
+
 		while (index < getFight().size()) {
 			Combatant fighter = getFight().getFighterByIndex(index);
-			
+
 			if (!fighter.isPC()) {
 				xp += fighter.getStats().getXP();
 			}
-			
+
 			index++;
 		}
-		
+
 		getJTextFieldXP().setText("Total XP: " + xp);
 	}
 
@@ -3989,9 +4039,9 @@ public class MainFrame extends JFrame {
 		String text;
 
 		text = "<html><head><style type='text/css'>\n" + "body { margin: 0ex; }\n"
-				+ "table { width: 100%; border-width: 1px; border-style: solid; border-color: black }\n"
-				+ "th { font-size: " + Settings.getFontSize() + "; border-width: 1px; border-style: solid; border-color: black }\n"
-				+ "td { font-size: " + Settings.getFontSize() + "; border-width: 1px; border-style: solid; border-color: gray }\n"
+				+ "table { width: 100%; border-width: 1px; border-style: solid; border-color: black }\n" + "th { font-size: "
+				+ Settings.getFontSize() + "; border-width: 1px; border-style: solid; border-color: black }\n" + "td { font-size: "
+				+ Settings.getFontSize() + "; border-width: 1px; border-style: solid; border-color: gray }\n"
 				+ "</style></head><body><table><tr><th style='width: 12ex'>Combatant</th>"
 				+ "<th style='width: 105px'>HP</th><th style='width: 3ex'>A</th>\n"
 				+ "<th style='width: 3ex'>F</th><th style='width: 3ex'>R</th>\n"
@@ -4076,9 +4126,7 @@ public class MainFrame extends JFrame {
 						text += "</div>";
 					} else {
 						text += "<div style='height: 1em; border-width: 1px; border-style: solid; border-color: white; "
-								+ "width: 100px'><div style='border-width: 0px; width: "
-								+ healthPercent
-								+ "px; background-color: "
+								+ "width: 100px'><div style='border-width: 0px; width: " + healthPercent + "px; background-color: "
 								+ hpBarColor + "'></div></div>";
 					}
 					text += "</td>";
@@ -4144,7 +4192,7 @@ public class MainFrame extends JFrame {
 				}
 			}
 		}
-		
+
 		for (String key : powers.keySet()) {
 			model.addElement(powers.get(key));
 		}
