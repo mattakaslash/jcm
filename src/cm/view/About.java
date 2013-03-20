@@ -3,7 +3,6 @@ package cm.view;
 import javax.swing.JDialog;
 
 import java.awt.Desktop;
-import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
