@@ -1,45 +1,38 @@
 package cm.view;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Frame;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Hashtable;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+import java.awt.Frame;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import javax.swing.JLabel;
+import java.awt.Insets;
+import java.util.Hashtable;
+
+import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-
-import org.dyno.visual.swing.layouts.Bilateral;
-import org.dyno.visual.swing.layouts.Constraints;
-import org.dyno.visual.swing.layouts.GroupLayout;
-import org.dyno.visual.swing.layouts.Leading;
-import org.dyno.visual.swing.layouts.Trailing;
+import javax.swing.SwingConstants;
+import javax.swing.JList;
 
 import cm.model.Combatant;
 import cm.model.Effect;
 import cm.model.EffectBase;
-import cm.model.EffectBase.Duration;
 import cm.model.Encounter;
-import cm.util.external.AutoCompletion;
-import cm.view.render.DurationCellRenderer;
-import cm.view.render.EffectBaseCellRenderer;
+import cm.model.EffectBase.Duration;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.event.MouseAdapter;
 
 /**
  * Displays a list of prior/preset effects and provides an interface to add new
@@ -48,12 +41,11 @@ import cm.view.render.EffectBaseCellRenderer;
  * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
  * @since 1.0
  */
-// VS4E -- DO NOT REMOVE THIS LINE!
 public class EffectWin extends JDialog {
 	/**
 	 * Generated.
 	 */
-	private static final long serialVersionUID = 2486886460442963333L;
+	private static final long serialVersionUID = -7381308473910493347L;
 
 	/**
 	 * The {@link Encounter} the effects are occurring in.
@@ -81,21 +73,22 @@ public class EffectWin extends JDialog {
 	 */
 	private Hashtable<String, EffectBase> _presetEffects = new Hashtable<String, EffectBase>();
 
-	private JButton jButtonCancel;
-	private JButton jButtonOK;
-	private JCheckBox jCheckBoxBeneficial;
-	private JCheckBox jCheckBoxHidden;
-	private JComboBox jComboBoxDuration;
-	private JComboBox jComboBoxName;
-	private JComboBox jComboBoxSource;
-	private JComboBox jComboBoxTarget;
-	private JLabel jLabelDuration;
-	private JLabel jLabelName;
-	private JLabel jLabelSource;
-	private JLabel jLabelTarget;
-	private JList jListPresets;
-	private JPanel jPanelEffect;
-	private JScrollPane jScrollPanePresets;
+	private JPanel _panelEffect;
+	private JLabel _lblName;
+	private JComboBox _comboBoxName;
+	private JLabel _lblDuration;
+	private JComboBox _comboBoxDuration;
+	private JLabel _lblSource;
+	private JComboBox _comboBoxSource;
+	private JLabel _lblTarget;
+	private JComboBox _comboBoxTarget;
+	private JPanel _panelButtons;
+	private JButton _buttonOK;
+	private JButton _buttonCancel;
+	private JPanel _panelPresets;
+	private JList _listPresets;
+	private JCheckBox _chckbxHidden;
+	private JCheckBox _chckbxBeneficial;
 
 	/**
 	 * Creates a default effect window.
@@ -165,219 +158,6 @@ public class EffectWin extends JDialog {
 		return _fight;
 	}
 
-	private JButton getJButtonCancel() {
-		if (jButtonCancel == null) {
-			jButtonCancel = new JButton();
-			jButtonCancel.setText("Cancel");
-			jButtonCancel.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonCancelActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonCancel;
-	}
-
-	private JButton getJButtonOK() {
-		if (jButtonOK == null) {
-			jButtonOK = new JButton();
-			jButtonOK.setText("OK");
-			jButtonOK.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonOKActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonOK;
-	}
-
-	private JCheckBox getJCheckBoxBeneficial() {
-		if (jCheckBoxBeneficial == null) {
-			jCheckBoxBeneficial = new JCheckBox();
-			jCheckBoxBeneficial.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jCheckBoxBeneficial.setText("Beneficial");
-		}
-		return jCheckBoxBeneficial;
-	}
-
-	private JCheckBox getJCheckBoxHidden() {
-		if (jCheckBoxHidden == null) {
-			jCheckBoxHidden = new JCheckBox();
-			jCheckBoxHidden.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jCheckBoxHidden.setText("Hidden");
-		}
-		return jCheckBoxHidden;
-	}
-
-	private JComboBox getJComboBoxDuration() {
-		if (jComboBoxDuration == null) {
-			jComboBoxDuration = new JComboBox();
-			jComboBoxDuration.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxDuration.setModel(new DefaultComboBoxModel(new Object[] { Duration.None, Duration.SourceEnd,
-					Duration.TargetEnd, Duration.TurnEnd, Duration.Encounter, Duration.SaveEnds, Duration.Special,
-					Duration.SourceStart, Duration.TargetStart, Duration.Sustained }));
-			jComboBoxDuration.setRenderer(new DurationCellRenderer());
-			jComboBoxDuration.setDoubleBuffered(false);
-			jComboBoxDuration.setBorder(null);
-			jComboBoxDuration.setRequestFocusEnabled(false);
-		}
-		return jComboBoxDuration;
-	}
-
-	private JComboBox getJComboBoxName() {
-		if (jComboBoxName == null) {
-			jComboBoxName = new JComboBox();
-			jComboBoxName.setEditable(true);
-			jComboBoxName.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxName.setModel(new DefaultComboBoxModel(new Object[] { "", "Attack Penalty", "Blinded", "Dazed", "Deafened",
-					"Defense Penalty", "Dominated", "Full Defense (+2 all def)", "Granting Combat Advantage", "Immobilized",
-					"Marked", "Ongoing Damage", "Petrified", "Prone", "Regeneration", "Resist", "Restrained",
-					"Second Wind (+2 all def)", "Slowed", "Stunned", "Surprised", "Unconscious", "Vulnerability", "Weakened" }));
-			jComboBoxName.setDoubleBuffered(false);
-			jComboBoxName.setBorder(null);
-			jComboBoxName.setRequestFocusEnabled(false);
-			AutoCompletion.enable(jComboBoxName);
-		}
-		return jComboBoxName;
-	}
-
-	private JComboBox getJComboBoxSource() {
-		if (jComboBoxSource == null) {
-			jComboBoxSource = new JComboBox();
-			jComboBoxSource.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxSource.setModel(new DefaultComboBoxModel(new Object[] {}));
-			jComboBoxSource.setDoubleBuffered(false);
-			jComboBoxSource.setBorder(null);
-			jComboBoxSource.setRequestFocusEnabled(false);
-			jComboBoxSource.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jComboBoxSourceActionActionPerformed(event);
-				}
-			});
-		}
-		return jComboBoxSource;
-	}
-
-	private JComboBox getJComboBoxTarget() {
-		if (jComboBoxTarget == null) {
-			jComboBoxTarget = new JComboBox();
-			jComboBoxTarget.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxTarget.setModel(new DefaultComboBoxModel(new Object[] {}));
-			jComboBoxTarget.setDoubleBuffered(false);
-			jComboBoxTarget.setBorder(null);
-			jComboBoxTarget.setRequestFocusEnabled(false);
-			jComboBoxTarget.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jComboBoxTargetActionActionPerformed(event);
-				}
-			});
-		}
-		return jComboBoxTarget;
-	}
-
-	private JLabel getJLabelDuration() {
-		if (jLabelDuration == null) {
-			jLabelDuration = new JLabel();
-			jLabelDuration.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelDuration.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelDuration.setText("Duration");
-		}
-		return jLabelDuration;
-	}
-
-	private JLabel getJLabelName() {
-		if (jLabelName == null) {
-			jLabelName = new JLabel();
-			jLabelName.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelName.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelName.setText("Name");
-		}
-		return jLabelName;
-	}
-
-	private JLabel getJLabelSource() {
-		if (jLabelSource == null) {
-			jLabelSource = new JLabel();
-			jLabelSource.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelSource.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelSource.setText("Source");
-		}
-		return jLabelSource;
-	}
-
-	private JLabel getJLabelTarget() {
-		if (jLabelTarget == null) {
-			jLabelTarget = new JLabel();
-			jLabelTarget.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelTarget.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelTarget.setText("Target");
-		}
-		return jLabelTarget;
-	}
-
-	private JList getJListPresets() {
-		if (jListPresets == null) {
-			jListPresets = new JList();
-			DefaultListModel listModel = new DefaultListModel();
-			jListPresets.setModel(listModel);
-			jListPresets.setCellRenderer(new EffectBaseCellRenderer());
-			jListPresets.addMouseListener(new MouseAdapter() {
-
-				@Override
-				public void mouseClicked(MouseEvent event) {
-					jListPresetsMouseMouseClicked(event);
-				}
-			});
-			jListPresets.addListSelectionListener(new ListSelectionListener() {
-
-				@Override
-				public void valueChanged(ListSelectionEvent event) {
-					jListPresetsListSelectionValueChanged(event);
-				}
-			});
-		}
-		return jListPresets;
-	}
-
-	private JPanel getJPanelEffect() {
-		if (jPanelEffect == null) {
-			jPanelEffect = new JPanel();
-			jPanelEffect.setBorder(BorderFactory.createTitledBorder(null, "Effect", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jPanelEffect.setLayout(new GroupLayout());
-			jPanelEffect.add(getJLabelName(), new Constraints(new Leading(12, 57, 10, 10), new Leading(0, 12, 12)));
-			jPanelEffect.add(getJLabelDuration(), new Constraints(new Leading(12, 57, 12, 12), new Leading(27, 12, 12)));
-			jPanelEffect.add(getJCheckBoxBeneficial(), new Constraints(new Trailing(8, 174, 174), new Leading(-4, 8, 8)));
-			jPanelEffect.add(getJCheckBoxHidden(), new Constraints(new Trailing(8, 79, 73, 83), new Leading(24, 8, 8)));
-			jPanelEffect.add(getJComboBoxName(), new Constraints(new Bilateral(81, 89, 184), new Leading(-4, 12, 12)));
-			jPanelEffect.add(getJComboBoxDuration(), new Constraints(new Bilateral(81, 89, 60), new Leading(23, 12, 12)));
-			jPanelEffect.add(getJLabelSource(), new Constraints(new Leading(12, 57, 132, 132), new Leading(58, 12, 12)));
-			jPanelEffect.add(getJLabelTarget(), new Constraints(new Leading(12, 57, 132, 132), new Leading(85, 12, 12)));
-			jPanelEffect.add(getJComboBoxSource(), new Constraints(new Bilateral(81, 8, 31), new Leading(54, 12, 12)));
-			jPanelEffect.add(getJComboBoxTarget(), new Constraints(new Bilateral(81, 8, 31), new Leading(82, 10, 10)));
-		}
-		return jPanelEffect;
-	}
-
-	private JScrollPane getJScrollPanePresets() {
-		if (jScrollPanePresets == null) {
-			jScrollPanePresets = new JScrollPane();
-			jScrollPanePresets
-					.setBorder(BorderFactory.createTitledBorder(null, "Prior/Preset Effects from Source", TitledBorder.LEADING,
-							TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jScrollPanePresets.setViewportView(getJListPresets());
-		}
-		return jScrollPanePresets;
-	}
-
 	/**
 	 * Returns the effect that being created/modified.
 	 * 
@@ -414,20 +194,6 @@ public class EffectWin extends JDialog {
 		return _presetEffects;
 	}
 
-	private void initComponents() {
-		setTitle("Effect");
-		setFont(new Font("Dialog", Font.PLAIN, 12));
-		setBackground(Color.white);
-		setModal(true);
-		setForeground(Color.black);
-		setLayout(new GroupLayout());
-		add(getJPanelEffect(), new Constraints(new Bilateral(12, 12, 0), new Leading(12, 136, 10, 10)));
-		add(getJButtonCancel(), new Constraints(new Trailing(12, 12, 12), new Leading(154, 12, 12)));
-		add(getJButtonOK(), new Constraints(new Trailing(91, 12, 12), new Leading(154, 12, 12)));
-		add(getJScrollPanePresets(), new Constraints(new Leading(12, 379, 12, 12), new Bilateral(185, 12, 22)));
-		pack();
-	}
-
 	/**
 	 * Event: Cancel clicked.
 	 * 
@@ -444,10 +210,10 @@ public class EffectWin extends JDialog {
 	 * @param event
 	 */
 	private void jButtonOKActionActionPerformed(ActionEvent event) {
-		String name = (String) getJComboBoxName().getSelectedItem();
-		String source = (String) getJComboBoxSource().getSelectedItem();
-		String target = (String) getJComboBoxTarget().getSelectedItem();
-		Duration duration = (Duration) getJComboBoxDuration().getSelectedItem();
+		String name = (String) _comboBoxName.getSelectedItem();
+		String source = (String) _comboBoxSource.getSelectedItem();
+		String target = (String) _comboBoxTarget.getSelectedItem();
+		Duration duration = (Duration) _comboBoxDuration.getSelectedItem();
 
 		if (name == null || name.isEmpty() || source == null || source.isEmpty() || target == null || target.isEmpty()
 				|| duration == null || duration.toString().contentEquals("None")) {
@@ -485,12 +251,12 @@ public class EffectWin extends JDialog {
 	 * @param event
 	 */
 	private void jListPresetsListSelectionValueChanged(ListSelectionEvent event) {
-		if (getJListPresets().getSelectedIndex() >= 0) {
-			EffectBase eff = (EffectBase) getJListPresets().getSelectedValue();
+		if (_listPresets.getSelectedIndex() >= 0) {
+			EffectBase eff = (EffectBase) _listPresets.getSelectedValue();
 			if (eff != null) {
-				getJComboBoxName().setSelectedItem(eff.getName());
-				getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
-				getJCheckBoxBeneficial().setSelected(eff.isBeneficial());
+				_comboBoxName.setSelectedItem(eff.getName());
+				_comboBoxDuration.setSelectedItem(eff.getDurationCode());
+				_chckbxBeneficial.setSelected(eff.isBeneficial());
 			}
 		}
 	}
@@ -502,7 +268,7 @@ public class EffectWin extends JDialog {
 	 */
 	private void jListPresetsMouseMouseClicked(MouseEvent event) {
 		if (event.getClickCount() == 2) {
-			getJButtonOK().doClick();
+			_buttonOK.doClick();
 		}
 	}
 
@@ -512,8 +278,8 @@ public class EffectWin extends JDialog {
 	private void loadCombos() {
 		if (getFight() != null) {
 			for (Combatant fighter : getFight().getFullList()) {
-				getJComboBoxSource().addItem(fighter.getCombatHandle());
-				getJComboBoxTarget().addItem(fighter.getCombatHandle());
+				_comboBoxSource.addItem(fighter.getCombatHandle());
+				_comboBoxTarget.addItem(fighter.getCombatHandle());
 			}
 		}
 	}
@@ -522,12 +288,12 @@ public class EffectWin extends JDialog {
 	 * Loads effect history into the effect list.
 	 */
 	private void loadHistory() {
-		if (!((String) getJComboBoxSource().getSelectedItem()).isEmpty()) {
-			((DefaultListModel) getJListPresets().getModel()).clear();
+		if (!((String) _comboBoxSource.getSelectedItem()).isEmpty()) {
+			((DefaultListModel) _listPresets.getModel()).clear();
 			getPresetEffects().clear();
 
-			String sourceHandle = (String) getJComboBoxSource().getSelectedItem();
-			String targetHandle = (String) getJComboBoxTarget().getSelectedItem();
+			String sourceHandle = (String) _comboBoxSource.getSelectedItem();
+			String targetHandle = (String) _comboBoxTarget.getSelectedItem();
 			Combatant fighter = getFight().getFighterByHandle(sourceHandle);
 			if (fighter != null && sourceHandle != null) {
 				for (EffectBase eff : fighter.getPresetEffects()) {
@@ -546,7 +312,7 @@ public class EffectWin extends JDialog {
 				}
 			}
 
-			DefaultListModel model = (DefaultListModel) getJListPresets().getModel();
+			DefaultListModel model = (DefaultListModel) _listPresets.getModel();
 			for (EffectBase eff : getPresetEffects().values()) {
 				model.addElement(eff);
 			}
@@ -559,12 +325,12 @@ public class EffectWin extends JDialog {
 	 * @param eff
 	 */
 	private void moveClassToFields(Effect eff) {
-		getJComboBoxName().setSelectedItem(eff.getName());
-		getJComboBoxSource().setSelectedItem(eff.getSourceHandle());
-		getJComboBoxTarget().setSelectedItem(eff.getTargetHandle());
-		getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
-		getJCheckBoxBeneficial().setSelected(eff.isBeneficial());
-		getJCheckBoxHidden().setSelected(eff.isHidden());
+		_comboBoxName.setSelectedItem(eff.getName());
+		_comboBoxSource.setSelectedItem(eff.getSourceHandle());
+		_comboBoxTarget.setSelectedItem(eff.getTargetHandle());
+		_comboBoxDuration.setSelectedItem(eff.getDurationCode());
+		_chckbxBeneficial.setSelected(eff.isBeneficial());
+		_chckbxHidden.setSelected(eff.isHidden());
 	}
 
 	/**
@@ -574,12 +340,12 @@ public class EffectWin extends JDialog {
 	 *            the effect
 	 */
 	private void moveFieldsToClass(Effect eff) {
-		eff.setName((String) getJComboBoxName().getSelectedItem());
-		eff.setSourceHandle((String) getJComboBoxSource().getSelectedItem());
-		eff.setTargetHandle((String) getJComboBoxTarget().getSelectedItem());
-		eff.setDurationCode((Duration) getJComboBoxDuration().getSelectedItem());
-		eff.setBeneficial(getJCheckBoxBeneficial().isSelected());
-		eff.setHidden(getJCheckBoxHidden().isSelected());
+		eff.setName((String) _comboBoxName.getSelectedItem());
+		eff.setSourceHandle((String) _comboBoxSource.getSelectedItem());
+		eff.setTargetHandle((String) _comboBoxTarget.getSelectedItem());
+		eff.setDurationCode((Duration) _comboBoxDuration.getSelectedItem());
+		eff.setBeneficial(_chckbxBeneficial.isSelected());
+		eff.setHidden(_chckbxHidden.isSelected());
 		eff.setEffectID(getOrigID());
 		eff.setRoundTill(getOrigRound());
 	}
@@ -601,13 +367,14 @@ public class EffectWin extends JDialog {
 	 */
 	private void setDefaults() {
 		if (getFight().getCurrentFighterHandle().isEmpty()) {
-			getJComboBoxSource().setSelectedItem(getFight().getSelectedFighterHandle());
+			_comboBoxSource.setSelectedItem(getFight().getSelectedFighterHandle());
 		} else {
-			getJComboBoxSource().setSelectedItem(getFight().getCurrentFighterHandle());
+			_comboBoxSource.setSelectedItem(getFight().getCurrentFighterHandle());
 		}
-		getJComboBoxTarget().setSelectedItem(getFight().getSelectedFighterHandle());
-		getJComboBoxDuration().setSelectedIndex(0);
-		getJCheckBoxBeneficial().setSelected(false);
+		_comboBoxTarget.setSelectedItem(getFight().getSelectedFighterHandle());
+		_comboBoxDuration.setSelectedIndex(0);
+		_chckbxBeneficial.setSelected(false);
+		_chckbxHidden.setSelected(false);
 	}
 
 	/**
@@ -648,5 +415,175 @@ public class EffectWin extends JDialog {
 	 */
 	private void setOrigRound(Integer origRound) {
 		_origRound = origRound;
+	}
+
+	/**
+	 * Create the dialog.
+	 */
+	private void initComponents() {
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 0, 0 };
+		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
+		gridBagLayout.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 1.0, 1.0, 1.0, Double.MIN_VALUE };
+		getContentPane().setLayout(gridBagLayout);
+
+		_panelEffect = new JPanel();
+		_panelEffect.setBorder(new TitledBorder(null, "Effect", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelEffect = new GridBagConstraints();
+		gbc_panelEffect.insets = new Insets(0, 0, 5, 0);
+		gbc_panelEffect.fill = GridBagConstraints.BOTH;
+		gbc_panelEffect.gridx = 0;
+		gbc_panelEffect.gridy = 0;
+		getContentPane().add(_panelEffect, gbc_panelEffect);
+		GridBagLayout gbl_panelEffect = new GridBagLayout();
+		gbl_panelEffect.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gbl_panelEffect.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0 };
+		_panelEffect.setLayout(gbl_panelEffect);
+
+		_lblName = new JLabel("Name");
+		_lblName.setHorizontalAlignment(SwingConstants.TRAILING);
+		GridBagConstraints gbc__lblName = new GridBagConstraints();
+		gbc__lblName.anchor = GridBagConstraints.EAST;
+		gbc__lblName.insets = new Insets(0, 0, 5, 5);
+		gbc__lblName.gridx = 0;
+		gbc__lblName.gridy = 0;
+		_panelEffect.add(_lblName, gbc__lblName);
+
+		_comboBoxName = new JComboBox();
+		GridBagConstraints gbc_comboBoxName = new GridBagConstraints();
+		gbc_comboBoxName.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBoxName.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBoxName.gridx = 1;
+		gbc_comboBoxName.gridy = 0;
+		_panelEffect.add(_comboBoxName, gbc_comboBoxName);
+
+		_lblDuration = new JLabel("Duration");
+		_lblDuration.setHorizontalAlignment(SwingConstants.TRAILING);
+		GridBagConstraints gbc__lblDuration = new GridBagConstraints();
+		gbc__lblDuration.anchor = GridBagConstraints.EAST;
+		gbc__lblDuration.insets = new Insets(0, 0, 5, 5);
+		gbc__lblDuration.gridx = 0;
+		gbc__lblDuration.gridy = 1;
+		_panelEffect.add(_lblDuration, gbc__lblDuration);
+
+		_comboBoxDuration = new JComboBox();
+		GridBagConstraints gbc_comboBoxDuration = new GridBagConstraints();
+		gbc_comboBoxDuration.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBoxDuration.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBoxDuration.gridx = 1;
+		gbc_comboBoxDuration.gridy = 1;
+		_panelEffect.add(_comboBoxDuration, gbc_comboBoxDuration);
+
+		_chckbxHidden = new JCheckBox("Hidden");
+		GridBagConstraints gbc__chckbxHidden = new GridBagConstraints();
+		gbc__chckbxHidden.fill = GridBagConstraints.HORIZONTAL;
+		gbc__chckbxHidden.insets = new Insets(0, 0, 5, 0);
+		gbc__chckbxHidden.gridx = 2;
+		gbc__chckbxHidden.gridy = 1;
+		_panelEffect.add(_chckbxHidden, gbc__chckbxHidden);
+
+		_lblSource = new JLabel("Source");
+		_lblSource.setHorizontalAlignment(SwingConstants.TRAILING);
+		GridBagConstraints gbc__lblSource = new GridBagConstraints();
+		gbc__lblSource.anchor = GridBagConstraints.EAST;
+		gbc__lblSource.insets = new Insets(0, 0, 5, 5);
+		gbc__lblSource.gridx = 0;
+		gbc__lblSource.gridy = 2;
+		_panelEffect.add(_lblSource, gbc__lblSource);
+
+		_comboBoxSource = new JComboBox();
+		_comboBoxSource.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jComboBoxSourceActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_comboBoxSource = new GridBagConstraints();
+		gbc_comboBoxSource.gridwidth = 2;
+		gbc_comboBoxSource.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBoxSource.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBoxSource.gridx = 1;
+		gbc_comboBoxSource.gridy = 2;
+		_panelEffect.add(_comboBoxSource, gbc_comboBoxSource);
+
+		_lblTarget = new JLabel("Target");
+		_lblTarget.setHorizontalAlignment(SwingConstants.TRAILING);
+		GridBagConstraints gbc__lblTarget = new GridBagConstraints();
+		gbc__lblTarget.anchor = GridBagConstraints.EAST;
+		gbc__lblTarget.insets = new Insets(0, 0, 5, 5);
+		gbc__lblTarget.gridx = 0;
+		gbc__lblTarget.gridy = 3;
+		_panelEffect.add(_lblTarget, gbc__lblTarget);
+
+		_comboBoxTarget = new JComboBox();
+		_comboBoxTarget.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jComboBoxTargetActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_comboBoxTarget = new GridBagConstraints();
+		gbc_comboBoxTarget.gridwidth = 2;
+		gbc_comboBoxTarget.insets = new Insets(0, 0, 5, 5);
+		gbc_comboBoxTarget.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBoxTarget.gridx = 1;
+		gbc_comboBoxTarget.gridy = 3;
+		_panelEffect.add(_comboBoxTarget, gbc_comboBoxTarget);
+
+		_chckbxBeneficial = new JCheckBox("Beneficial");
+		GridBagConstraints gbc__chckbxBeneficial = new GridBagConstraints();
+		gbc__chckbxBeneficial.fill = GridBagConstraints.HORIZONTAL;
+		gbc__chckbxBeneficial.insets = new Insets(0, 0, 5, 0);
+		gbc__chckbxBeneficial.gridx = 2;
+		gbc__chckbxBeneficial.gridy = 0;
+		_panelEffect.add(_chckbxBeneficial, gbc__chckbxBeneficial);
+
+		_panelButtons = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) _panelButtons.getLayout();
+		flowLayout.setAlignment(FlowLayout.TRAILING);
+		GridBagConstraints gbc_panelButtons = new GridBagConstraints();
+		gbc_panelButtons.insets = new Insets(0, 0, 5, 0);
+		gbc_panelButtons.fill = GridBagConstraints.BOTH;
+		gbc_panelButtons.gridx = 0;
+		gbc_panelButtons.gridy = 1;
+		getContentPane().add(_panelButtons, gbc_panelButtons);
+
+		_buttonOK = new JButton("OK");
+		_buttonOK.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonOKActionActionPerformed(e);
+			}
+		});
+		_panelButtons.add(_buttonOK);
+
+		_buttonCancel = new JButton("Cancel");
+		_buttonCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonCancelActionActionPerformed(e);
+			}
+		});
+		_panelButtons.add(_buttonCancel);
+
+		_panelPresets = new JPanel();
+		GridBagConstraints gbc_panelPresets = new GridBagConstraints();
+		gbc_panelPresets.fill = GridBagConstraints.BOTH;
+		gbc_panelPresets.gridx = 0;
+		gbc_panelPresets.gridy = 2;
+		getContentPane().add(_panelPresets, gbc_panelPresets);
+		_panelPresets.setLayout(new BorderLayout(0, 0));
+
+		_listPresets = new JList();
+		_listPresets.addMouseListener(new MouseAdapter() {
+			public void mouseClicked(MouseEvent e) {
+				jListPresetsMouseMouseClicked(e);
+			}
+		});
+		_listPresets.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				jListPresetsListSelectionValueChanged(e);
+			}
+		});
+		_panelPresets.add(_listPresets, BorderLayout.CENTER);
+
+		pack();
 	}
 }
