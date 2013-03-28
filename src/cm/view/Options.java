@@ -3,13 +3,9 @@
  */
 package cm.view;
 
-import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
@@ -18,17 +14,15 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 import javax.swing.filechooser.FileFilter;
 
-import org.dyno.visual.swing.layouts.Bilateral;
-import org.dyno.visual.swing.layouts.Constraints;
-import org.dyno.visual.swing.layouts.GroupLayout;
-import org.dyno.visual.swing.layouts.Leading;
-import org.dyno.visual.swing.layouts.Trailing;
-
 import cm.model.Settings;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
 
 /**
  * Defines a program options window.
@@ -36,327 +30,291 @@ import cm.model.Settings;
  * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
  * @since 2.0
  */
-//VS4E -- DO NOT REMOVE THIS LINE!
+// VS4E -- DO NOT REMOVE THIS LINE!
 public class Options extends JDialog {
 	/**
 	 * Generated.
 	 */
 	private static final long serialVersionUID = 1948071096317227461L;
-	private JButton jButtonBrowseRoot;
-	private JButton jButtonCancel;
-	private JButton jButtonBrowseCriticalHit;
-	private JButton jButtonBrowseCriticalMiss;
-	private JButton jButtonBrowseDaily;
-	private JButton jButtonOK;
-	private JButton jButtonBrowseVictory;
-	private JCheckBox jCheckBoxGroupSimilar;
-	private JCheckBox jCheckBoxOngoingPopup;
-	private JCheckBox jCheckBoxPowerRecharges;
-	private JCheckBox jCheckBoxSavingThrows;
-	private JLabel jLabelCriticalHit;
-	private JLabel jLabelCriticalMiss;
-	private JLabel jLabelDaily;
-	private JLabel jLabelRootDirectory;
-	private JLabel jLabelVictory;
-	private JPanel jPanelAutomaticRolls;
-	private JPanel jPanelMusicLocation;
-	private JTextField jTextFieldCriticalHit;
-	private JTextField jTextFieldCriticalMiss;
-	private JTextField jTextFieldDaily;
-	private JTextField jTextFieldRootDirectory;
-	private JTextField jTextFieldVictory;
+	private JTextField _textFieldRootDirectory;
+	private JTextField _textFieldCriticalHit;
+	private JTextField _textFieldCriticalMiss;
+	private JTextField _textFieldVictory;
+	private JTextField _textFieldDaily;
+	private JCheckBox _chckbxGroupSimilar;
+	private JCheckBox _chckbxSavingThrows;
+	private JCheckBox _chckbxPowerRecharges;
+	private JCheckBox _chckbxPopup;
 
 	/**
-	 * Defines the options window and loads settings into their respective controls.
+	 * Defines the options window and loads settings into their respective
+	 * controls.
 	 */
 	public Options() {
-		initComponents();
-		getJCheckBoxGroupSimilar().setSelected(Settings.doGroupSimilar());
-		getJCheckBoxOngoingPopup().setSelected(Settings.doPopupForOngoingDamage());
-		getJCheckBoxPowerRecharges().setSelected(Settings.doPowerRecharge());
-		getJCheckBoxSavingThrows().setSelected(Settings.doSavingThrows());
+		setTitle("Options");
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
+		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
+		getContentPane().setLayout(gridBagLayout);
+
+		_chckbxGroupSimilar = new JCheckBox("Group Similar Combatants when Rolling Initiative");
+		_chckbxGroupSimilar.setSelected(true);
+		GridBagConstraints gbc__chckbxGroupSimilar = new GridBagConstraints();
+		gbc__chckbxGroupSimilar.anchor = GridBagConstraints.WEST;
+		gbc__chckbxGroupSimilar.insets = new Insets(0, 0, 5, 5);
+		gbc__chckbxGroupSimilar.gridx = 0;
+		gbc__chckbxGroupSimilar.gridy = 0;
+		getContentPane().add(_chckbxGroupSimilar, gbc__chckbxGroupSimilar);
+
+		JPanel panelRolls = new JPanel();
+		panelRolls.setBorder(new TitledBorder(null, "Automatic Rolls", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelRolls = new GridBagConstraints();
+		gbc_panelRolls.gridheight = 2;
+		gbc_panelRolls.insets = new Insets(0, 0, 5, 0);
+		gbc_panelRolls.fill = GridBagConstraints.BOTH;
+		gbc_panelRolls.gridx = 1;
+		gbc_panelRolls.gridy = 0;
+		getContentPane().add(panelRolls, gbc_panelRolls);
+		GridBagLayout gbl_panelRolls = new GridBagLayout();
+		gbl_panelRolls.columnWidths = new int[] { 95, 109, 0 };
+		gbl_panelRolls.rowHeights = new int[] { 23, 0 };
+		gbl_panelRolls.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelRolls.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+		panelRolls.setLayout(gbl_panelRolls);
+
+		_chckbxSavingThrows = new JCheckBox("Saving Throws");
+		_chckbxSavingThrows.setSelected(true);
+		GridBagConstraints gbc__chckbxSavingThrows = new GridBagConstraints();
+		gbc__chckbxSavingThrows.anchor = GridBagConstraints.NORTHWEST;
+		gbc__chckbxSavingThrows.insets = new Insets(0, 0, 0, 5);
+		gbc__chckbxSavingThrows.gridx = 0;
+		gbc__chckbxSavingThrows.gridy = 0;
+		panelRolls.add(_chckbxSavingThrows, gbc__chckbxSavingThrows);
+
+		_chckbxPowerRecharges = new JCheckBox("Power Recharges");
+		_chckbxPowerRecharges.setSelected(true);
+		GridBagConstraints gbc__chckbxPowerRecharges = new GridBagConstraints();
+		gbc__chckbxPowerRecharges.anchor = GridBagConstraints.NORTHWEST;
+		gbc__chckbxPowerRecharges.gridx = 1;
+		gbc__chckbxPowerRecharges.gridy = 0;
+		panelRolls.add(_chckbxPowerRecharges, gbc__chckbxPowerRecharges);
+
+		_chckbxPopup = new JCheckBox("Display Popup for Ongoing Effects");
+		_chckbxPopup.setSelected(true);
+		GridBagConstraints gbc__chckbxPopup = new GridBagConstraints();
+		gbc__chckbxPopup.anchor = GridBagConstraints.WEST;
+		gbc__chckbxPopup.insets = new Insets(0, 0, 5, 5);
+		gbc__chckbxPopup.gridx = 0;
+		gbc__chckbxPopup.gridy = 1;
+		getContentPane().add(_chckbxPopup, gbc__chckbxPopup);
+
+		JPanel panelMusicLocations = new JPanel();
+		panelMusicLocations
+				.setBorder(new TitledBorder(null, "Music Locations", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelMusicLocations = new GridBagConstraints();
+		gbc_panelMusicLocations.insets = new Insets(0, 0, 5, 0);
+		gbc_panelMusicLocations.gridwidth = 2;
+		gbc_panelMusicLocations.fill = GridBagConstraints.BOTH;
+		gbc_panelMusicLocations.gridx = 0;
+		gbc_panelMusicLocations.gridy = 2;
+		getContentPane().add(panelMusicLocations, gbc_panelMusicLocations);
+		GridBagLayout gbl_panelMusicLocations = new GridBagLayout();
+		gbl_panelMusicLocations.columnWeights = new double[] { 0.0, 1.0, 0.0 };
+		gbl_panelMusicLocations.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0 };
+		panelMusicLocations.setLayout(gbl_panelMusicLocations);
+
+		JLabel lblRootDirectory = new JLabel("Root Directory");
+		GridBagConstraints gbc_lblRootDirectory = new GridBagConstraints();
+		gbc_lblRootDirectory.anchor = GridBagConstraints.EAST;
+		gbc_lblRootDirectory.insets = new Insets(0, 0, 5, 5);
+		gbc_lblRootDirectory.gridx = 0;
+		gbc_lblRootDirectory.gridy = 0;
+		panelMusicLocations.add(lblRootDirectory, gbc_lblRootDirectory);
+
+		_textFieldRootDirectory = new JTextField();
+		GridBagConstraints gbc_textFieldRootDirectory = new GridBagConstraints();
+		gbc_textFieldRootDirectory.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldRootDirectory.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldRootDirectory.gridx = 1;
+		gbc_textFieldRootDirectory.gridy = 0;
+		panelMusicLocations.add(_textFieldRootDirectory, gbc_textFieldRootDirectory);
+		_textFieldRootDirectory.setColumns(10);
+
+		JLabel lblCriticalHit = new JLabel("Critical Hit");
+		GridBagConstraints gbc_lblCriticalHit = new GridBagConstraints();
+		gbc_lblCriticalHit.anchor = GridBagConstraints.EAST;
+		gbc_lblCriticalHit.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCriticalHit.gridx = 0;
+		gbc_lblCriticalHit.gridy = 1;
+		panelMusicLocations.add(lblCriticalHit, gbc_lblCriticalHit);
+
+		_textFieldCriticalHit = new JTextField();
+		GridBagConstraints gbc_textFieldCriticalHit = new GridBagConstraints();
+		gbc_textFieldCriticalHit.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldCriticalHit.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldCriticalHit.gridx = 1;
+		gbc_textFieldCriticalHit.gridy = 1;
+		panelMusicLocations.add(_textFieldCriticalHit, gbc_textFieldCriticalHit);
+		_textFieldCriticalHit.setColumns(10);
+
+		JButton btnCriticalHit = new JButton("Browse...");
+		btnCriticalHit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonBrowseCriticalHitActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnCriticalHit = new GridBagConstraints();
+		gbc_btnCriticalHit.insets = new Insets(0, 0, 5, 0);
+		gbc_btnCriticalHit.gridx = 2;
+		gbc_btnCriticalHit.gridy = 1;
+		panelMusicLocations.add(btnCriticalHit, gbc_btnCriticalHit);
+
+		JLabel lblCriticalMiss = new JLabel("Critical Miss");
+		GridBagConstraints gbc_lblCriticalMiss = new GridBagConstraints();
+		gbc_lblCriticalMiss.anchor = GridBagConstraints.EAST;
+		gbc_lblCriticalMiss.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCriticalMiss.gridx = 0;
+		gbc_lblCriticalMiss.gridy = 2;
+		panelMusicLocations.add(lblCriticalMiss, gbc_lblCriticalMiss);
+
+		_textFieldCriticalMiss = new JTextField();
+		GridBagConstraints gbc_textFieldCriticalMiss = new GridBagConstraints();
+		gbc_textFieldCriticalMiss.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldCriticalMiss.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldCriticalMiss.gridx = 1;
+		gbc_textFieldCriticalMiss.gridy = 2;
+		panelMusicLocations.add(_textFieldCriticalMiss, gbc_textFieldCriticalMiss);
+		_textFieldCriticalMiss.setColumns(10);
+
+		JButton btnCriticalMiss = new JButton("Browse...");
+		btnCriticalMiss.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonBrowseCriticalMissActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnCriticalMiss = new GridBagConstraints();
+		gbc_btnCriticalMiss.insets = new Insets(0, 0, 5, 0);
+		gbc_btnCriticalMiss.gridx = 2;
+		gbc_btnCriticalMiss.gridy = 2;
+		panelMusicLocations.add(btnCriticalMiss, gbc_btnCriticalMiss);
+
+		JLabel lblVictory = new JLabel("Victory");
+		GridBagConstraints gbc_lblVictory = new GridBagConstraints();
+		gbc_lblVictory.anchor = GridBagConstraints.EAST;
+		gbc_lblVictory.insets = new Insets(0, 0, 5, 5);
+		gbc_lblVictory.gridx = 0;
+		gbc_lblVictory.gridy = 3;
+		panelMusicLocations.add(lblVictory, gbc_lblVictory);
+
+		_textFieldVictory = new JTextField();
+		GridBagConstraints gbc_textFieldVictory = new GridBagConstraints();
+		gbc_textFieldVictory.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldVictory.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldVictory.gridx = 1;
+		gbc_textFieldVictory.gridy = 3;
+		panelMusicLocations.add(_textFieldVictory, gbc_textFieldVictory);
+		_textFieldVictory.setColumns(10);
+
+		JButton btnVictory = new JButton("Browse...");
+		btnVictory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonBrowseVictoryActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnVictory = new GridBagConstraints();
+		gbc_btnVictory.insets = new Insets(0, 0, 5, 0);
+		gbc_btnVictory.gridx = 2;
+		gbc_btnVictory.gridy = 3;
+		panelMusicLocations.add(btnVictory, gbc_btnVictory);
+
+		JLabel lblDaily = new JLabel("Daily");
+		GridBagConstraints gbc_lblDaily = new GridBagConstraints();
+		gbc_lblDaily.anchor = GridBagConstraints.EAST;
+		gbc_lblDaily.insets = new Insets(0, 0, 0, 5);
+		gbc_lblDaily.gridx = 0;
+		gbc_lblDaily.gridy = 4;
+		panelMusicLocations.add(lblDaily, gbc_lblDaily);
+
+		_textFieldDaily = new JTextField();
+		GridBagConstraints gbc_textFieldDaily = new GridBagConstraints();
+		gbc_textFieldDaily.insets = new Insets(0, 0, 0, 5);
+		gbc_textFieldDaily.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldDaily.gridx = 1;
+		gbc_textFieldDaily.gridy = 4;
+		panelMusicLocations.add(_textFieldDaily, gbc_textFieldDaily);
+		_textFieldDaily.setColumns(10);
+
+		JButton btnRootDirectory = new JButton("Browse...");
+		btnRootDirectory.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonBrowseRootActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnRootDirectory = new GridBagConstraints();
+		gbc_btnRootDirectory.insets = new Insets(0, 0, 5, 0);
+		gbc_btnRootDirectory.gridx = 2;
+		gbc_btnRootDirectory.gridy = 0;
+		panelMusicLocations.add(btnRootDirectory, gbc_btnRootDirectory);
+
+		JButton btnDaily = new JButton("Browse...");
+		btnDaily.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonBrowseDailyActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnDaily = new GridBagConstraints();
+		gbc_btnDaily.gridx = 2;
+		gbc_btnDaily.gridy = 4;
+		panelMusicLocations.add(btnDaily, gbc_btnDaily);
+
+		JPanel panelCancelOK = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) panelCancelOK.getLayout();
+		flowLayout.setAlignment(FlowLayout.RIGHT);
+		GridBagConstraints gbc_panelCancelOK = new GridBagConstraints();
+		gbc_panelCancelOK.gridwidth = 2;
+		gbc_panelCancelOK.fill = GridBagConstraints.BOTH;
+		gbc_panelCancelOK.gridx = 0;
+		gbc_panelCancelOK.gridy = 3;
+		getContentPane().add(panelCancelOK, gbc_panelCancelOK);
+
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonCancelActionActionPerformed(e);
+			}
+		});
+		panelCancelOK.add(btnCancel);
+
+		JButton btnOk = new JButton("OK");
+		btnOk.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonOKActionActionPerformed(e);
+			}
+		});
+		panelCancelOK.add(btnOk);
+		pack();
+		_chckbxGroupSimilar.setSelected(Settings.doGroupSimilar());
+		_chckbxPopup.setSelected(Settings.doPopupForOngoingDamage());
+		_chckbxPowerRecharges.setSelected(Settings.doPowerRecharge());
+		_chckbxSavingThrows.setSelected(Settings.doSavingThrows());
+
 		if (Settings.getMusicDirectory() != null) {
-			getJTextFieldRootDirectory().setText(Settings.getMusicDirectory().getAbsolutePath());
+			_textFieldRootDirectory.setText(Settings.getMusicDirectory().getAbsolutePath());
 		}
 		if (Settings.getCriticalHitSong() != null) {
-			getJTextFieldCriticalHit().setText(Settings.getCriticalHitSong().getAbsolutePath());
+			_textFieldCriticalHit.setText(Settings.getCriticalHitSong().getAbsolutePath());
 		}
 		if (Settings.getCriticalMissSong() != null) {
-			getJTextFieldCriticalMiss().setText(Settings.getCriticalMissSong().getAbsolutePath());
+			_textFieldCriticalMiss.setText(Settings.getCriticalMissSong().getAbsolutePath());
 		}
 		if (Settings.getVictorySong() != null) {
-			getJTextFieldVictory().setText(Settings.getVictorySong().getAbsolutePath());
+			_textFieldVictory.setText(Settings.getVictorySong().getAbsolutePath());
 		}
 		if (Settings.getDailySong() != null) {
-			getJTextFieldDaily().setText(Settings.getDailySong().getAbsolutePath());
+			_textFieldDaily.setText(Settings.getDailySong().getAbsolutePath());
 		}
-	}
-
-	private JButton getJButtonBrowseRoot() {
-		if (jButtonBrowseRoot == null) {
-			jButtonBrowseRoot = new JButton();
-			jButtonBrowseRoot.setText("Browse...");
-			jButtonBrowseRoot.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonBrowseRootActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonBrowseRoot;
-	}
-
-	private JButton getJButtonCancel() {
-		if (jButtonCancel == null) {
-			jButtonCancel = new JButton();
-			jButtonCancel.setText("Cancel");
-			jButtonCancel.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonCancelActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonCancel;
-	}
-
-	private JButton getJButtonBrowseCriticalHit() {
-		if (jButtonBrowseCriticalHit == null) {
-			jButtonBrowseCriticalHit = new JButton();
-			jButtonBrowseCriticalHit.setText("Browse...");
-			jButtonBrowseCriticalHit.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonBrowseCriticalHitActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonBrowseCriticalHit;
-	}
-
-	private JButton getJButtonBrowseCriticalMiss() {
-		if (jButtonBrowseCriticalMiss == null) {
-			jButtonBrowseCriticalMiss = new JButton();
-			jButtonBrowseCriticalMiss.setText("Browse...");
-			jButtonBrowseCriticalMiss.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonBrowseCriticalMissActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonBrowseCriticalMiss;
-	}
-
-	private JButton getJButtonBrowseDaily() {
-		if (jButtonBrowseDaily == null) {
-			jButtonBrowseDaily = new JButton();
-			jButtonBrowseDaily.setText("Browse...");
-			jButtonBrowseDaily.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonBrowseDailyActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonBrowseDaily;
-	}
-
-	private JButton getJButtonOK() {
-		if (jButtonOK == null) {
-			jButtonOK = new JButton();
-			jButtonOK.setText("OK");
-			jButtonOK.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonOKActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonOK;
-	}
-
-	private JButton getJButtonBrowseVictory() {
-		if (jButtonBrowseVictory == null) {
-			jButtonBrowseVictory = new JButton();
-			jButtonBrowseVictory.setText("Browse...");
-			jButtonBrowseVictory.addActionListener(new ActionListener() {
-	
-				public void actionPerformed(ActionEvent event) {
-					jButtonBrowseVictoryActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonBrowseVictory;
-	}
-
-	private JCheckBox getJCheckBoxGroupSimilar() {
-		if (jCheckBoxGroupSimilar == null) {
-			jCheckBoxGroupSimilar = new JCheckBox();
-			jCheckBoxGroupSimilar.setSelected(true);
-			jCheckBoxGroupSimilar.setText("Group Similar Combatants when Rolling Initiative");
-		}
-		return jCheckBoxGroupSimilar;
-	}
-
-	private JCheckBox getJCheckBoxOngoingPopup() {
-		if (jCheckBoxOngoingPopup == null) {
-			jCheckBoxOngoingPopup = new JCheckBox();
-			jCheckBoxOngoingPopup.setSelected(true);
-			jCheckBoxOngoingPopup.setText("Display Popup for Ongoing Effects");
-		}
-		return jCheckBoxOngoingPopup;
-	}
-
-	private JCheckBox getJCheckBoxPowerRecharges() {
-		if (jCheckBoxPowerRecharges == null) {
-			jCheckBoxPowerRecharges = new JCheckBox();
-			jCheckBoxPowerRecharges.setSelected(true);
-			jCheckBoxPowerRecharges.setText("Power Recharges");
-		}
-		return jCheckBoxPowerRecharges;
-	}
-
-	private JCheckBox getJCheckBoxSavingThrows() {
-		if (jCheckBoxSavingThrows == null) {
-			jCheckBoxSavingThrows = new JCheckBox();
-			jCheckBoxSavingThrows.setSelected(true);
-			jCheckBoxSavingThrows.setText("Saving Throws");
-		}
-		return jCheckBoxSavingThrows;
-	}
-
-	private JLabel getJLabelCriticalHit() {
-		if (jLabelCriticalHit == null) {
-			jLabelCriticalHit = new JLabel();
-			jLabelCriticalHit.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelCriticalHit.setText("Critical Hit");
-		}
-		return jLabelCriticalHit;
-	}
-
-	private JLabel getJLabelCriticalMiss() {
-		if (jLabelCriticalMiss == null) {
-			jLabelCriticalMiss = new JLabel();
-			jLabelCriticalMiss.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelCriticalMiss.setText("Critical Miss");
-		}
-		return jLabelCriticalMiss;
-	}
-
-	private JLabel getJLabelDaily() {
-		if (jLabelDaily == null) {
-			jLabelDaily = new JLabel();
-			jLabelDaily.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelDaily.setText("Daily");
-		}
-		return jLabelDaily;
-	}
-
-	private JLabel getJLabelRootDirectory() {
-		if (jLabelRootDirectory == null) {
-			jLabelRootDirectory = new JLabel();
-			jLabelRootDirectory.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelRootDirectory.setText("Root Directory");
-		}
-		return jLabelRootDirectory;
-	}
-
-	private JLabel getJLabelVictory() {
-		if (jLabelVictory == null) {
-			jLabelVictory = new JLabel();
-			jLabelVictory.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelVictory.setText("Victory");
-		}
-		return jLabelVictory;
-	}
-
-	private JPanel getJPanelAutomaticRolls() {
-		if (jPanelAutomaticRolls == null) {
-			jPanelAutomaticRolls = new JPanel();
-			jPanelAutomaticRolls.setBorder(BorderFactory.createTitledBorder(null, "Automatic Rolls", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font(
-					"Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			jPanelAutomaticRolls.setLayout(new GroupLayout());
-			jPanelAutomaticRolls.add(getJCheckBoxSavingThrows(), new Constraints(new Leading(8, 8, 8), new Leading(0, 8, 8)));
-			jPanelAutomaticRolls.add(getJCheckBoxPowerRecharges(), new Constraints(new Leading(121, 8, 8), new Leading(0, 8, 8)));
-		}
-		return jPanelAutomaticRolls;
-	}
-
-	private JPanel getJPanelMusicLocation() {
-		if (jPanelMusicLocation == null) {
-			jPanelMusicLocation = new JPanel();
-			jPanelMusicLocation.setBorder(BorderFactory.createTitledBorder(null, "Music Locations", TitledBorder.LEADING, TitledBorder.DEFAULT_POSITION, new Font(
-					"Dialog", Font.BOLD, 12), new Color(51, 51, 51)));
-			jPanelMusicLocation.setLayout(new GroupLayout());
-			jPanelMusicLocation.add(getJButtonBrowseRoot(), new Constraints(new Trailing(0, 93, 109, 168), new Leading(-3, 12, 12)));
-			jPanelMusicLocation.add(getJButtonBrowseCriticalHit(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(26, 12, 12)));
-			jPanelMusicLocation.add(getJButtonBrowseCriticalMiss(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(55, 12, 12)));
-			jPanelMusicLocation.add(getJButtonBrowseVictory(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(84, 12, 12)));
-			jPanelMusicLocation.add(getJButtonBrowseDaily(), new Constraints(new Trailing(1, 92, 12, 12), new Leading(113, 12, 12)));
-			jPanelMusicLocation.add(getJLabelRootDirectory(), new Constraints(new Leading(0, 102, 10, 10), new Leading(1, 12, 12)));
-			jPanelMusicLocation.add(getJLabelCriticalHit(), new Constraints(new Leading(0, 102, 10, 10), new Leading(30, 12, 12)));
-			jPanelMusicLocation.add(getJLabelCriticalMiss(), new Constraints(new Leading(0, 102, 10, 10), new Leading(59, 12, 12)));
-			jPanelMusicLocation.add(getJLabelVictory(), new Constraints(new Leading(0, 102, 10, 10), new Leading(88, 12, 12)));
-			jPanelMusicLocation.add(getJLabelDaily(), new Constraints(new Leading(0, 102, 10, 10), new Leading(117, 12, 12)));
-			jPanelMusicLocation.add(getJTextFieldRootDirectory(), new Constraints(new Bilateral(114, 99, 4), new Leading(0, 12, 12)));
-			jPanelMusicLocation.add(getJTextFieldCriticalHit(), new Constraints(new Bilateral(114, 99, 4), new Leading(29, 12, 12)));
-			jPanelMusicLocation.add(getJTextFieldCriticalMiss(), new Constraints(new Bilateral(114, 99, 4), new Leading(58, 12, 12)));
-			jPanelMusicLocation.add(getJTextFieldVictory(), new Constraints(new Bilateral(114, 99, 4), new Leading(87, 12, 12)));
-			jPanelMusicLocation.add(getJTextFieldDaily(), new Constraints(new Bilateral(114, 99, 4), new Leading(116, 12, 12)));
-		}
-		return jPanelMusicLocation;
-	}
-
-	private JTextField getJTextFieldCriticalHit() {
-		if (jTextFieldCriticalHit == null) {
-			jTextFieldCriticalHit = new JTextField();
-		}
-		return jTextFieldCriticalHit;
-	}
-
-	private JTextField getJTextFieldCriticalMiss() {
-		if (jTextFieldCriticalMiss == null) {
-			jTextFieldCriticalMiss = new JTextField();
-		}
-		return jTextFieldCriticalMiss;
-	}
-
-	private JTextField getJTextFieldDaily() {
-		if (jTextFieldDaily == null) {
-			jTextFieldDaily = new JTextField();
-		}
-		return jTextFieldDaily;
-	}
-
-	private JTextField getJTextFieldRootDirectory() {
-		if (jTextFieldRootDirectory == null) {
-			jTextFieldRootDirectory = new JTextField();
-		}
-		return jTextFieldRootDirectory;
-	}
-
-	private JTextField getJTextFieldVictory() {
-		if (jTextFieldVictory == null) {
-			jTextFieldVictory = new JTextField();
-		}
-		return jTextFieldVictory;
-	}
-
-	private void initComponents() {
-		setTitle("Options");
-		setFont(new Font("Dialog", Font.PLAIN, 12));
-		setBackground(Color.white);
-		setModal(true);
-		setForeground(Color.black);
-		setLayout(new GroupLayout());
-		add(getJCheckBoxGroupSimilar(), new Constraints(new Leading(8, 10, 10), new Leading(8, 8, 8)));
-		add(getJCheckBoxOngoingPopup(), new Constraints(new Leading(8, 298, 8, 8), new Leading(32, 8, 8)));
-		add(getJPanelAutomaticRolls(), new Constraints(new Leading(308, 317, 12, 12), new Leading(8, 53, 12, 12)));
-		add(getJPanelMusicLocation(), new Constraints(new Leading(8, 617, 12, 12), new Leading(58, 167, 10, 10)));
-		add(getJButtonCancel(), new Constraints(new Leading(494, 10, 10), new Leading(231, 12, 12)));
-		add(getJButtonOK(), new Constraints(new Leading(574, 12, 12), new Leading(231, 12, 12)));
-		pack();
 	}
 
 	private void jButtonBrowseCriticalHitActionActionPerformed(ActionEvent event) {
@@ -366,20 +324,20 @@ public class Options extends JDialog {
 			jc.setCurrentDirectory(Settings.getCriticalHitSong());
 		}
 		jc.setFileFilter(new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File f) {
 				return f.isDirectory() || f.getName().toLowerCase().endsWith(".mp3");
 			}
-			
+
 			@Override
 			public String getDescription() {
 				return "MP3s";
 			}
 		});
-		
+
 		if (jc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			getJTextFieldCriticalHit().setText(jc.getSelectedFile().getAbsolutePath());
+			_textFieldCriticalHit.setText(jc.getSelectedFile().getAbsolutePath());
 		}
 	}
 
@@ -390,20 +348,20 @@ public class Options extends JDialog {
 			jc.setCurrentDirectory(Settings.getCriticalMissSong());
 		}
 		jc.setFileFilter(new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File f) {
 				return f.isDirectory() || f.getName().toLowerCase().endsWith(".mp3");
 			}
-			
+
 			@Override
 			public String getDescription() {
 				return "MP3s";
 			}
 		});
-		
+
 		if (jc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			getJTextFieldCriticalMiss().setText(jc.getSelectedFile().getAbsolutePath());
+			_textFieldCriticalMiss.setText(jc.getSelectedFile().getAbsolutePath());
 		}
 	}
 
@@ -414,20 +372,20 @@ public class Options extends JDialog {
 			jc.setCurrentDirectory(Settings.getDailySong());
 		}
 		jc.setFileFilter(new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File f) {
 				return f.isDirectory() || f.getName().toLowerCase().endsWith(".mp3");
 			}
-			
+
 			@Override
 			public String getDescription() {
 				return "MP3s";
 			}
 		});
-		
+
 		if (jc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			getJTextFieldDaily().setText(jc.getSelectedFile().getAbsolutePath());
+			_textFieldDaily.setText(jc.getSelectedFile().getAbsolutePath());
 		}
 	}
 
@@ -438,20 +396,20 @@ public class Options extends JDialog {
 			jc.setCurrentDirectory(Settings.getVictorySong());
 		}
 		jc.setFileFilter(new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File f) {
 				return f.isDirectory() || f.getName().toLowerCase().endsWith(".mp3");
 			}
-			
+
 			@Override
 			public String getDescription() {
 				return "MP3s";
 			}
 		});
-		
+
 		if (jc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-			getJTextFieldVictory().setText(jc.getSelectedFile().getAbsolutePath());
+			_textFieldVictory.setText(jc.getSelectedFile().getAbsolutePath());
 		}
 	}
 
@@ -464,20 +422,20 @@ public class Options extends JDialog {
 			jc.setCurrentDirectory(Settings.getMusicDirectory());
 		}
 		jc.setFileFilter(new FileFilter() {
-			
+
 			@Override
 			public boolean accept(File f) {
 				return f.isDirectory();
 			}
-			
+
 			@Override
 			public String getDescription() {
 				return "Root Directory";
 			}
 		});
-		
+
 		if (jc.showDialog(this, "Select") == JFileChooser.APPROVE_OPTION) {
-			getJTextFieldRootDirectory().setText(jc.getSelectedFile().getAbsolutePath());
+			_textFieldRootDirectory.setText(jc.getSelectedFile().getAbsolutePath());
 		}
 	}
 
@@ -486,33 +444,38 @@ public class Options extends JDialog {
 	}
 
 	private void jButtonOKActionActionPerformed(ActionEvent event) {
-		File rootDirectory = new File(getJTextFieldRootDirectory().getText());
-		File criticalHit = new File(getJTextFieldCriticalHit().getText());
-		File criticalMiss = new File(getJTextFieldCriticalMiss().getText());
-		File victory = new File(getJTextFieldVictory().getText());
-		File daily = new File(getJTextFieldDaily().getText());
-		
+		File rootDirectory = new File(_textFieldRootDirectory.getText());
+		File criticalHit = new File(_textFieldCriticalHit.getText());
+		File criticalMiss = new File(_textFieldCriticalMiss.getText());
+		File victory = new File(_textFieldVictory.getText());
+		File daily = new File(_textFieldDaily.getText());
+
 		if (!rootDirectory.getPath().isEmpty() && !(rootDirectory.exists() && rootDirectory.isDirectory())) {
-			JOptionPane.showMessageDialog(this, "Music directory does not exist or is not a directory.", "Invalid Music Directory", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Music directory does not exist or is not a directory.", "Invalid Music Directory",
+					JOptionPane.ERROR_MESSAGE);
 		} else if (!criticalHit.getPath().isEmpty() && !(criticalHit.exists() && criticalHit.canRead())) {
-			JOptionPane.showMessageDialog(this, "Critical Hit song does not exist or is not readable.", "Invalid Critical Hit", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Critical Hit song does not exist or is not readable.", "Invalid Critical Hit",
+					JOptionPane.ERROR_MESSAGE);
 		} else if (!criticalMiss.getPath().isEmpty() && !(criticalMiss.exists() && criticalMiss.canRead())) {
-			JOptionPane.showMessageDialog(this, "Critical Miss song does not exist or is not readable.", "Invalid Critical Miss", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Critical Miss song does not exist or is not readable.", "Invalid Critical Miss",
+					JOptionPane.ERROR_MESSAGE);
 		} else if (!victory.getPath().isEmpty() && !(victory.exists() && victory.canRead())) {
-			JOptionPane.showMessageDialog(this, "Victory song does not exist or is not readable.", "Invalid Victory", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Victory song does not exist or is not readable.", "Invalid Victory",
+					JOptionPane.ERROR_MESSAGE);
 		} else if (!daily.getPath().isEmpty() && !(daily.exists() && daily.canRead())) {
-			JOptionPane.showMessageDialog(this, "Daily song does not exist or is not readable.", "Invalid Daily", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Daily song does not exist or is not readable.", "Invalid Daily",
+					JOptionPane.ERROR_MESSAGE);
 		} else {
-			Settings.setDoPowerRecharge(getJCheckBoxPowerRecharges().isSelected());
-			Settings.setDoSavingThrows(getJCheckBoxSavingThrows().isSelected());
-			Settings.setGroupSimilar(getJCheckBoxGroupSimilar().isSelected());
-			Settings.setPopupForOngoingDamage(getJCheckBoxOngoingPopup().isSelected());
+			Settings.setDoPowerRecharge(_chckbxPowerRecharges.isSelected());
+			Settings.setDoSavingThrows(_chckbxSavingThrows.isSelected());
+			Settings.setGroupSimilar(_chckbxGroupSimilar.isSelected());
+			Settings.setPopupForOngoingDamage(_chckbxPopup.isSelected());
 			Settings.setMusicDirectory(rootDirectory);
 			Settings.setCriticalHitSong(criticalHit);
 			Settings.setCriticalMissSong(criticalMiss);
 			Settings.setVictorySong(victory);
 			Settings.setDailySong(daily);
-			
+
 			this.setVisible(false);
 		}
 	}
