@@ -2,14 +2,10 @@ package cm.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -23,17 +19,16 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
-
-import org.dyno.visual.swing.layouts.Constraints;
-import org.dyno.visual.swing.layouts.GroupLayout;
-import org.dyno.visual.swing.layouts.Leading;
-
 import cm.model.CheckableItem;
 import cm.model.Effect;
 import cm.util.DiceBag;
-import cm.view.render.CheckListRenderer;
+import java.awt.GridBagLayout;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.SwingConstants;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.WindowAdapter;
 
 /**
  * Displays a window listing effects that require a save.
@@ -58,18 +53,19 @@ public class SavingThrows extends JDialog {
 	 */
 	private List<Integer> _successfulSaves = new ArrayList<Integer>();
 
-	private JButton jButtonRerollAll;
-	private JButton jButtonSave;
-	private JFormattedTextField jFormattedTextFieldBonus;
-	private JLabel jLabelSaveBonus;
-	private JList jListEffects;
-	private JPanel jPanelBottom;
-	private JScrollPane jScrollPaneList;
+	private JFormattedTextField _textFieldSaveBonus;
+	private JList _listEffects;
 
 	/**
 	 * Displays a default (empty) saving throw window.
 	 */
 	public SavingThrows() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowOpened(WindowEvent e) {
+				windowWindowOpened(e);
+			}
+		});
 		initComponents();
 	}
 
@@ -87,7 +83,7 @@ public class SavingThrows extends JDialog {
 		super(parent);
 		initComponents();
 
-		getJFormattedTextFieldBonus().setText(bonus.toString());
+		_textFieldSaveBonus.setText(bonus.toString());
 
 		for (Effect eff : effectList) {
 			eff.setActive();
@@ -126,88 +122,6 @@ public class SavingThrows extends JDialog {
 		return _effects;
 	}
 
-	private JButton getJButtonRerollAll() {
-		if (jButtonRerollAll == null) {
-			jButtonRerollAll = new JButton();
-			jButtonRerollAll.setText("Reroll All");
-			jButtonRerollAll.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent event) {
-					jButtonRerollAllActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonRerollAll;
-	}
-
-	private JButton getJButtonSave() {
-		if (jButtonSave == null) {
-			jButtonSave = new JButton();
-			jButtonSave.setText("Save");
-			jButtonSave.addActionListener(new ActionListener() {
-
-				public void actionPerformed(ActionEvent event) {
-					jButtonSaveActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonSave;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldBonus() {
-		if (jFormattedTextFieldBonus == null) {
-			jFormattedTextFieldBonus = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldBonus.setText("0");
-		}
-		return jFormattedTextFieldBonus;
-	}
-
-	private JLabel getJLabelSaveBonus() {
-		if (jLabelSaveBonus == null) {
-			jLabelSaveBonus = new JLabel();
-			jLabelSaveBonus.setText("Save Bonus: ");
-		}
-		return jLabelSaveBonus;
-	}
-
-	private JList getJListEffects() {
-		if (jListEffects == null) {
-			jListEffects = new JList();
-			jListEffects.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-			DefaultListModel listModel = new DefaultListModel();
-			jListEffects.setModel(listModel);
-			jListEffects.setCellRenderer(new CheckListRenderer(CheckListRenderer.EFFECT_TYPE));
-			jListEffects.addMouseListener(new MouseAdapter() {
-
-				public void mouseClicked(MouseEvent event) {
-					jListEffectsMouseMouseClicked(event);
-				}
-			});
-		}
-		return jListEffects;
-	}
-
-	private JPanel getJPanelBottom() {
-		if (jPanelBottom == null) {
-			jPanelBottom = new JPanel();
-			jPanelBottom.setPreferredSize(new Dimension(40, 40));
-			jPanelBottom.setLayout(new GroupLayout());
-			jPanelBottom.add(getJLabelSaveBonus(), new Constraints(new Leading(12, 12, 12), new Leading(12, 12, 12)));
-			jPanelBottom.add(getJFormattedTextFieldBonus(), new Constraints(new Leading(97, 42, 10, 10), new Leading(10, 12, 12)));
-			jPanelBottom.add(getJButtonRerollAll(), new Constraints(new Leading(145, 12, 12), new Leading(7, 12, 12)));
-			jPanelBottom.add(getJButtonSave(), new Constraints(new Leading(235, 12, 12), new Leading(7, 12, 12)));
-		}
-		return jPanelBottom;
-	}
-
-	private JScrollPane getJScrollPaneList() {
-		if (jScrollPaneList == null) {
-			jScrollPaneList = new JScrollPane();
-			jScrollPaneList.setViewportView(getJListEffects());
-		}
-		return jScrollPaneList;
-	}
-
 	/**
 	 * Returns the list of successful saves.
 	 * 
@@ -223,14 +137,65 @@ public class SavingThrows extends JDialog {
 		setBackground(Color.white);
 		setModal(true);
 		setForeground(Color.black);
-		add(getJPanelBottom(), BorderLayout.SOUTH);
-		add(getJScrollPaneList(), BorderLayout.CENTER);
-		addWindowListener(new WindowAdapter() {
 
-			public void windowOpened(WindowEvent event) {
-				windowWindowOpened(event);
+		_listEffects = new JList();
+		_listEffects.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				jListEffectsMouseMouseClicked(e);
 			}
 		});
+		getContentPane().add(_listEffects, BorderLayout.CENTER);
+
+		JPanel panelControls = new JPanel();
+		getContentPane().add(panelControls, BorderLayout.SOUTH);
+		GridBagLayout gbl_panelControls = new GridBagLayout();
+		gbl_panelControls.columnWidths = new int[] { 0, 0, 0, 0, 0 };
+		gbl_panelControls.rowHeights = new int[] { 0, 0 };
+		gbl_panelControls.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelControls.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+		panelControls.setLayout(gbl_panelControls);
+
+		JLabel lblSaveBonus = new JLabel("Save Bonus:");
+		GridBagConstraints gbc_lblSaveBonus = new GridBagConstraints();
+		gbc_lblSaveBonus.anchor = GridBagConstraints.EAST;
+		gbc_lblSaveBonus.insets = new Insets(0, 0, 0, 5);
+		gbc_lblSaveBonus.gridx = 0;
+		gbc_lblSaveBonus.gridy = 0;
+		panelControls.add(lblSaveBonus, gbc_lblSaveBonus);
+
+		_textFieldSaveBonus = new JFormattedTextField(NumberFormat.getInstance());
+		_textFieldSaveBonus.setHorizontalAlignment(SwingConstants.TRAILING);
+		GridBagConstraints gbc_textFieldSaveBonus = new GridBagConstraints();
+		gbc_textFieldSaveBonus.insets = new Insets(0, 0, 0, 5);
+		gbc_textFieldSaveBonus.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldSaveBonus.gridx = 1;
+		gbc_textFieldSaveBonus.gridy = 0;
+		panelControls.add(_textFieldSaveBonus, gbc_textFieldSaveBonus);
+		_textFieldSaveBonus.setColumns(2);
+
+		JButton btnRerollAll = new JButton("Reroll All");
+		btnRerollAll.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonRerollAllActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnRerollAll = new GridBagConstraints();
+		gbc_btnRerollAll.insets = new Insets(0, 0, 0, 5);
+		gbc_btnRerollAll.gridx = 2;
+		gbc_btnRerollAll.gridy = 0;
+		panelControls.add(btnRerollAll, gbc_btnRerollAll);
+
+		JButton btnSave = new JButton("Save");
+		btnSave.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonSaveActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnSave = new GridBagConstraints();
+		gbc_btnSave.gridx = 3;
+		gbc_btnSave.gridy = 0;
+		panelControls.add(btnSave, gbc_btnSave);
 		pack();
 	}
 
@@ -249,7 +214,7 @@ public class SavingThrows extends JDialog {
 	 * @param event
 	 */
 	private void jButtonSaveActionActionPerformed(ActionEvent event) {
-		DefaultListModel model = (DefaultListModel) getJListEffects().getModel();
+		DefaultListModel model = (DefaultListModel) _listEffects.getModel();
 
 		for (int i = 0; i < model.getSize(); i++) {
 			CheckableItem item = (CheckableItem) model.getElementAt(i);
@@ -268,7 +233,7 @@ public class SavingThrows extends JDialog {
 	 * @param event
 	 */
 	private void jListEffectsMouseMouseClicked(MouseEvent event) {
-		JList list = getJListEffects();
+		JList list = _listEffects;
 		CheckableItem item = (CheckableItem) list.getModel().getElementAt(list.locationToIndex(event.getPoint()));
 		item.setSelected(!item.isSelected());
 		item.setText(null);
@@ -279,7 +244,7 @@ public class SavingThrows extends JDialog {
 	 * Loads the list of effects to the UI.
 	 */
 	private void loadEffectsToList() {
-		DefaultListModel model = ((DefaultListModel) getJListEffects().getModel());
+		DefaultListModel model = ((DefaultListModel) _listEffects.getModel());
 		model.clear();
 
 		for (Effect eff : getEffects().values()) {
@@ -293,16 +258,16 @@ public class SavingThrows extends JDialog {
 	 * Re-rolls all saving throws in the list.
 	 */
 	private void rerollAllSaves() {
-		DefaultListModel model = ((DefaultListModel) getJListEffects().getModel());
+		DefaultListModel model = ((DefaultListModel) _listEffects.getModel());
 
 		for (int i = 0; i < model.getSize(); i++) {
 			CheckableItem item = (CheckableItem) model.getElementAt(i);
-			Integer roll = DiceBag.roll(20) + Integer.valueOf(getJFormattedTextFieldBonus().getText());
+			Integer roll = DiceBag.roll(20) + Integer.valueOf(_textFieldSaveBonus.getText());
 			item.setSelected(roll >= 10);
 			item.setText("(roll=" + roll + ")");
 		}
 
-		getJListEffects().repaint();
+		_listEffects.repaint();
 	}
 
 	/**
