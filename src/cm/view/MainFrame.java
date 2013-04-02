@@ -110,6 +110,8 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.event.KeyAdapter;
 import java.beans.VetoableChangeListener;
 import java.awt.event.ItemListener;
+import java.awt.Dimension;
+import javax.swing.JScrollPane;
 
 /**
  * Displays the main interface for the application.
@@ -607,6 +609,7 @@ public class MainFrame extends JFrame {
 		_splitPaneMain.setRightComponent(_splitPaneMiddleRight);
 
 		_splitPaneMiddle = new JSplitPane();
+		_splitPaneMiddle.setResizeWeight(0.5);
 		_splitPaneMiddle.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		_splitPaneMiddleRight.setLeftComponent(_splitPaneMiddle);
 
@@ -614,7 +617,7 @@ public class MainFrame extends JFrame {
 		_splitPaneMiddle.setLeftComponent(_panelControls);
 		GridBagLayout gbl_panelControls = new GridBagLayout();
 		gbl_panelControls.columnWeights = new double[] { 1.0, 0.0 };
-		gbl_panelControls.rowWeights = new double[] { 0.0, 1.0, 0.0, 1.0 };
+		gbl_panelControls.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0 };
 		_panelControls.setLayout(gbl_panelControls);
 
 		_tabbedPaneControls = new JTabbedPane(JTabbedPane.TOP);
@@ -1139,7 +1142,13 @@ public class MainFrame extends JFrame {
 		_panelControls.add(_panelEffects, gbc_panelEffects);
 		_panelEffects.setLayout(new BorderLayout(0, 0));
 
+		JScrollPane scrollPaneEffects = new JScrollPane();
+		_panelEffects.add(scrollPaneEffects, BorderLayout.CENTER);
+
 		_listEffects = new JList();
+		scrollPaneEffects.setViewportView(_listEffects);
+		_listEffects.setModel(new DefaultListModel());
+		_listEffects.setPreferredSize(new Dimension(0, 50));
 		_listEffects.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -1151,7 +1160,6 @@ public class MainFrame extends JFrame {
 				jListEffectsListSelectionValueChanged(e);
 			}
 		});
-		_panelEffects.add(_listEffects, BorderLayout.CENTER);
 
 		_panelEffectsButtons = new JPanel();
 		_panelEffects.add(_panelEffectsButtons, BorderLayout.SOUTH);
@@ -1185,7 +1193,12 @@ public class MainFrame extends JFrame {
 		_splitPaneMiddle.setRightComponent(_panelPowers);
 		_panelPowers.setLayout(new BorderLayout(0, 0));
 
+		JScrollPane scrollPanePowers = new JScrollPane();
+		_panelPowers.add(scrollPanePowers);
 		_listPowers = new JList();
+		scrollPanePowers.setViewportView(_listPowers);
+		_listPowers.setPreferredSize(new Dimension(0, 50));
+		_listPowers.setModel(new DefaultListModel());
 		_listPowers.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -1197,34 +1210,48 @@ public class MainFrame extends JFrame {
 				jListPowerListListSelectionValueChanged(e);
 			}
 		});
-		_panelPowers.add(_listPowers);
 
 		_splitPaneRight = new JSplitPane();
-		_splitPaneRight.setResizeWeight(1.0);
+		_splitPaneRight.setResizeWeight(0.5);
 		_splitPaneRight.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		_splitPaneMiddleRight.setRightComponent(_splitPaneRight);
 
+		JScrollPane scrollPaneStatblock = new JScrollPane();
+		_splitPaneRight.setLeftComponent(scrollPaneStatblock);
 		_textPaneStatblock = new JTextPane();
+		scrollPaneStatblock.setViewportView(_textPaneStatblock);
+		_textPaneStatblock.setEditable(false);
+		_textPaneStatblock.setContentType("text/html");
 		_textPaneStatblock.addHyperlinkListener(new HyperlinkListener() {
 			public void hyperlinkUpdate(HyperlinkEvent e) {
 				jEditorPaneStatblockHyperlinkHyperlinkUpdate(e);
 			}
 		});
-		_splitPaneRight.setLeftComponent(_textPaneStatblock);
 
+		JScrollPane scrollPanePowerBrowser = new JScrollPane();
+		_splitPaneRight.setRightComponent(scrollPanePowerBrowser);
 		_textPanePowerBrowser = new JTextPane();
-		_splitPaneRight.setRightComponent(_textPanePowerBrowser);
+		scrollPanePowerBrowser.setViewportView(_textPanePowerBrowser);
+		_textPanePowerBrowser.setEditable(false);
+		_textPanePowerBrowser.setContentType("text/html");
 
 		_panelLeft = new JPanel();
 		_splitPaneMain.setLeftComponent(_panelLeft);
 		GridBagLayout gbl__panelLeft = new GridBagLayout();
-		gbl__panelLeft.columnWidths = new int[] { 0, 0 };
-		gbl__panelLeft.rowHeights = new int[] { 0, 0, 0, 0 };
-		gbl__panelLeft.columnWeights = new double[] { 1.0, Double.MIN_VALUE };
+		gbl__panelLeft.columnWeights = new double[] { 1.0 };
 		gbl__panelLeft.rowWeights = new double[] { 1.0, 1.0, 0.0, Double.MIN_VALUE };
 		_panelLeft.setLayout(gbl__panelLeft);
 
+		JScrollPane scrollPaneRoster = new JScrollPane();
+		GridBagConstraints gbc_scrollPaneRoster = new GridBagConstraints();
+		gbc_scrollPaneRoster.fill = GridBagConstraints.BOTH;
+		gbc_scrollPaneRoster.insets = new Insets(0, 0, 5, 0);
+		gbc_scrollPaneRoster.gridx = 0;
+		gbc_scrollPaneRoster.gridy = 0;
+		_panelLeft.add(scrollPaneRoster, gbc_scrollPaneRoster);
+
 		_tableRoster = new JTable();
+		scrollPaneRoster.setViewportView(_tableRoster);
 		_tableRoster.setModel(new ReadOnlyTableModel(new Object[][] {}, new String[] { "V", "R", "Name", "Status", "AC", "F", "R",
 				"W" }));
 		_tableRoster.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -1312,12 +1339,6 @@ public class MainFrame extends JFrame {
 
 		_separator_8 = new JSeparator();
 		_popupMenuRoster.add(_separator_8);
-		GridBagConstraints gbc_tableRoster = new GridBagConstraints();
-		gbc_tableRoster.insets = new Insets(0, 0, 5, 0);
-		gbc_tableRoster.fill = GridBagConstraints.BOTH;
-		gbc_tableRoster.gridx = 0;
-		gbc_tableRoster.gridy = 0;
-		_panelLeft.add(_tableRoster, gbc_tableRoster);
 
 		_tabbedPaneBottomLeft = new JTabbedPane(JTabbedPane.TOP);
 		GridBagConstraints gbc__tabbedPaneBottomLeft = new GridBagConstraints();
@@ -1331,7 +1352,11 @@ public class MainFrame extends JFrame {
 		_tabbedPaneBottomLeft.addTab("Notes", null, _panelNotes, null);
 		_panelNotes.setLayout(new BorderLayout(0, 0));
 
+		JScrollPane scrollPaneNotes = new JScrollPane();
+		_panelNotes.add(scrollPaneNotes);
+
 		_textAreaNotes = new JTextArea();
+		scrollPaneNotes.setViewportView(_textAreaNotes);
 		_textAreaNotes.getDocument().addDocumentListener(new DocumentListener() {
 
 			@Override
@@ -1350,19 +1375,21 @@ public class MainFrame extends JFrame {
 			}
 
 		});
-		_panelNotes.add(_textAreaNotes);
 
 		_panelOffTurnPowers = new JPanel();
 		_tabbedPaneBottomLeft.addTab("Off-Turn Powers", null, _panelOffTurnPowers, null);
 		_panelOffTurnPowers.setLayout(new BorderLayout(0, 0));
 
+		JScrollPane scrollPaneOffTurnPowers = new JScrollPane();
+		_panelOffTurnPowers.add(scrollPaneOffTurnPowers);
 		_listOffTurnPowers = new JList();
+		scrollPaneOffTurnPowers.setViewportView(_listOffTurnPowers);
+		_listOffTurnPowers.setModel(new DefaultListModel());
 		_listOffTurnPowers.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				jListOffTurnPowersListSelectionValueChanged(e);
 			}
 		});
-		_panelOffTurnPowers.add(_listOffTurnPowers);
 
 		_panelMusic = new JPanel();
 		_tabbedPaneBottomLeft.addTab("Music", null, _panelMusic, null);
