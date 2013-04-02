@@ -1,13 +1,21 @@
 package cm.view;
 
+import javax.swing.JDialog;
+import java.awt.GridBagLayout;
+import javax.swing.JPanel;
+import java.awt.GridBagConstraints;
+import java.awt.Insets;
+import javax.swing.JLabel;
+import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
+import javax.swing.DefaultListModel;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.JSpinner;
+import javax.swing.JComboBox;
+import javax.swing.JCheckBox;
+import javax.swing.UIManager;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -15,57 +23,46 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.SortedSet;
-import java.util.TreeSet;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JDialog;
-import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
 import javax.swing.JTabbedPane;
+import javax.swing.JButton;
+import java.awt.Component;
+import javax.swing.Box;
+import javax.swing.JList;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.JTextPane;
+import java.awt.BorderLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+
 import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
+import javax.swing.border.EmptyBorder;
+
+import cm.model.EffectBase;
+import cm.model.Power;
+import cm.model.Settings;
+import cm.model.Stats;
+import cm.model.EffectBase.Duration;
+
+import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.filechooser.FileFilter;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 import javax.xml.stream.XMLStreamWriter;
 
-import org.dyno.visual.swing.layouts.Bilateral;
-import org.dyno.visual.swing.layouts.Constraints;
-import org.dyno.visual.swing.layouts.GroupLayout;
-import org.dyno.visual.swing.layouts.Leading;
-import org.dyno.visual.swing.layouts.Trailing;
 import org.xml.sax.InputSource;
-
-import cm.model.EffectBase;
-import cm.model.EffectBase.Duration;
-import cm.model.Power;
-import cm.model.Settings;
-import cm.model.Stats;
-import cm.util.external.AutoCompletion;
-import cm.view.render.DurationCellRenderer;
-import cm.view.render.EffectBaseCellRenderer;
-import cm.view.render.PowerDetailsCellRenderer;
 
 import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory;
 import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
+import javax.swing.JTextPane;
+import java.awt.event.ActionListener;
+import javax.swing.event.ChangeListener;
+import java.awt.event.ItemListener;
+import java.awt.event.KeyAdapter;
+import javax.swing.event.ListSelectionListener;
 
 /**
  * Displays a window allowing for creation/editing of {@link Stats}.
@@ -73,1497 +70,1284 @@ import com.sun.xml.internal.ws.api.streaming.XMLStreamWriterFactory;
  * @author Matthew Rinehart &lt;gomamon2k at yahoo.com&gt;
  * @since 1.0
  */
-//VS4E -- DO NOT REMOVE THIS LINE!
 public class Statblock extends JDialog {
 	/**
-	 * Generated.
+	 * generated
 	 */
-	private static final long serialVersionUID = 7037881329866112856L;
+	private static final long serialVersionUID = -7828665815825335204L;
+	private JTextField _textFieldName;
+	private JTextField _textFieldTypeKeywords;
+	private JFormattedTextField _textFieldXP;
+	private JTextField _textFieldSenses;
+	private JTextField _textFieldImmune;
+	private JFormattedTextField _formattedTextFieldSaveBonus;
+	private JTextField _textFieldResist;
+	private JTextField _textFieldVulnerable;
+	private JTextField _textFieldRegen;
+	private JTextField _textFieldSpeed;
+	private JTextField _textFieldAlignment;
+	private JTextField _textFieldSkills;
+	private JTextField _textFieldFeats;
+	private JTextField _textFieldLanguages;
+	private JTextField _textFieldEquipment;
+	private JTextField _textFieldSource;
+	private JTextField _textFieldPowerName;
+	private JTextField _textFieldPowerAction;
+	private JTextField _textFieldPowerKeywords;
+	private JTextField _textFieldPowerURL;
+	private JComboBox _comboBoxEffect;
+	private JComboBox _comboBoxDuration;
+	private JCheckBox _chckbxBeneficial;
+	private JCheckBox _chckbxHidden;
+	private SortedSet<EffectBase> _presetEffects;
+	private Stats _stat;
+	private Boolean _powerChanged;
+	private JList _listPowers;
+	private JList _listEffects;
+	private JCheckBox _chckbxPc;
+	private JComboBox _comboBoxRole;
+	private JComboBox _comboBoxRole2;
+	private JCheckBox _chckbxLeader;
+	private JComboBox _comboBoxPowerIcon;
+	private JCheckBox _chckbxPowerAura;
+	private JFormattedTextField _formattedTextFieldPowerAuraSize;
+	private JTextArea _textAreaPowerDescription;
+	private JButton _btnEffectEdit;
+	private JButton _btnEffectDelete;
+	private JButton _btnPowerDelete;
+	private JButton _btnPowerUp;
+	private JButton _btnPowerDown;
+	private JSpinner _spinnerLevel;
+	private JFormattedTextField _formattedTextFieldInit;
+	private JFormattedTextField _formattedTextFieldActionPts;
+	private JFormattedTextField _formattedTextFieldPowerPts;
+	private JFormattedTextField _formattedTextFieldAC;
+	private JFormattedTextField _formattedTextFieldFort;
+	private JFormattedTextField _formattedTextFieldRef;
+	private JFormattedTextField _formattedTextFieldWill;
+	private JFormattedTextField _formattedTextFieldStr;
+	private JFormattedTextField _formattedTextFieldDex;
+	private JFormattedTextField _formattedTextFieldWis;
+	private JFormattedTextField _formattedTextFieldCon;
+	private JFormattedTextField _formattedTextFieldInt;
+	private JFormattedTextField _formattedTextFieldCha;
+	private JFormattedTextField _formattedTextFieldMax;
+	private JFormattedTextField _formattedTextFieldSurges;
+	private JTextPane _textPaneNotes;
 
 	/**
-	 * Indicates if a power has been edited.
-	 */
-	private Boolean _powerChanged = false;
-
-	/**
-	 * Stores the list of preset effects.
-	 */
-	private SortedSet<EffectBase> _presetEffects = new TreeSet<EffectBase>();
-
-	/**
-	 * The statblock being created/edited.
-	 */
-	private Stats _stat = new Stats();
-
-	private JButton jButtonAdd;
-	private JButton jButtonATLoad;
-	private JButton jButtonCancel;
-	private JButton jButtonCBLoad;
-	private JButton jButtonDelete;
-	private JButton jButtonEdit;
-	private JButton jButtonExport;
-	private JButton jButtonImport;
-	private JButton jButtonOK;
-	private JButton jButtonPowerDelete;
-	private JButton jButtonPowerDown;
-	private JButton jButtonPowerNew;
-	private JButton jButtonPowerUp;
-	private JCheckBox jCheckBoxBeneficial;
-	private JCheckBox jCheckBoxHidden;
-	private JCheckBox jCheckBoxLeader;
-	private JCheckBox jCheckBoxPC;
-	private JCheckBox jCheckBoxPowerAura;
-	private JComboBox jComboBoxDuration;
-	private JComboBox jComboBoxEffect;
-	private JComboBox jComboBoxPowerIcon;
-	private JComboBox jComboBoxRole;
-	private JComboBox jComboBoxRole2;
-	private JFormattedTextField jFormattedTextFieldAC;
-	private JFormattedTextField jFormattedTextFieldActionPts;
-	private JFormattedTextField jFormattedTextFieldAuraSize;
-	private JFormattedTextField jFormattedTextFieldCha;
-	private JFormattedTextField jFormattedTextFieldCon;
-	private JFormattedTextField jFormattedTextFieldDex;
-	private JFormattedTextField jFormattedTextFieldFortitude;
-	private JFormattedTextField jFormattedTextFieldInitiative;
-	private JFormattedTextField jFormattedTextFieldInt;
-	private JFormattedTextField jFormattedTextFieldMax;
-	private JFormattedTextField jFormattedTextFieldPowerPts;
-	private JFormattedTextField jFormattedTextFieldReflex;
-	private JFormattedTextField jFormattedTextFieldSaveBonus;
-	private JFormattedTextField jFormattedTextFieldStr;
-	private JFormattedTextField jFormattedTextFieldSurges;
-	private JFormattedTextField jFormattedTextFieldWill;
-	private JFormattedTextField jFormattedTextFieldWis;
-	private JFormattedTextField jFormattedTextFieldXPValue;
-	private JLabel jLabelAC;
-	private JLabel jLabelActionPts;
-	private JLabel jLabelAlignment;
-	private JLabel jLabelCha;
-	private JLabel jLabelCon;
-	private JLabel jLabelDex;
-	private JLabel jLabelDuration;
-	private JLabel jLabelEffect;
-	private JLabel jLabelEquipment;
-	private JLabel jLabelFeats;
-	private JLabel jLabelFortitude;
-	private JLabel jLabelImmune;
-	private JLabel jLabelInitiative;
-	private JLabel jLabelInt;
-	private JLabel jLabelLanguages;
-	private JLabel jLabelLevel;
-	private JLabel jLabelMax;
-	private JLabel jLabelName;
-	private JLabel jLabelPowerAction;
-	private JLabel jLabelPowerIcon;
-	private JLabel jLabelPowerKeywords;
-	private JLabel jLabelPowerName;
-	private JLabel jLabelPowerPts;
-	private JLabel jLabelPowerURL;
-	private JLabel jLabelReflex;
-	private JLabel jLabelRegen;
-	private JLabel jLabelResist;
-	private JLabel jLabelRole;
-	private JLabel jLabelSaveBonus;
-	private JLabel jLabelSenses;
-	private JLabel jLabelSkills;
-	private JLabel jLabelSource;
-	private JLabel jLabelSpeed;
-	private JLabel jLabelStr;
-	private JLabel jLabelSurges;
-	private JLabel jLabelTypeKeywords;
-	private JLabel jLabelVulnerable;
-	private JLabel jLabelWill;
-	private JLabel jLabelWis;
-	private JList jListEffects;
-	private JList jListPowers;
-	private JPanel jPanelAttributes;
-	private JPanel jPanelDefenses;
-	private JPanel jPanelDescription;
-	private JPanel jPanelGeneratedEffects;
-	private JPanel jPanelHitPoints;
-	private JPanel jPanelPowers;
-	private JPanel jPanelTraits;
-	private JPanel jPanelXPValue;
-	private JScrollPane jScrollPaneEffects;
-	private JScrollPane jScrollPaneNotes;
-	private JScrollPane jScrollPanePowerDescription;
-	private JScrollPane jScrollPanePowers;
-	private JSpinner jSpinnerLevel;
-	private JTabbedPane jTabbedPaneTraits;
-	private JTextArea jTextAreaPowerDescription;
-	private JTextField jTextFieldAlignment;
-	private JTextField jTextFieldEquipment;
-	private JTextField jTextFieldFeats;
-	private JTextField jTextFieldImmune;
-	private JTextField jTextFieldLanguages;
-	private JTextField jTextFieldName;
-	private JTextField jTextFieldPowerAction;
-	private JTextField jTextFieldPowerKeywords;
-	private JTextField jTextFieldPowerName;
-	private JTextField jTextFieldPowerURL;
-	private JTextField jTextFieldRegen;
-	private JTextField jTextFieldResist;
-	private JTextField jTextFieldSenses;
-	private JTextField jTextFieldSkills;
-	private JTextField jTextFieldSource;
-	private JTextField jTextFieldSpeed;
-	private JTextField jTextFieldTypeKeywords;
-	private JTextField jTextFieldVulnerable;
-	private JTextPane jTextPaneNotes;
-
-	/**
-	 * Creates a default (empty) statblock window.
+	 * Create the dialog.
 	 */
 	public Statblock() {
-		initComponents();
-	}
+		setTitle("Statblock Viewer");
+		GridBagLayout gridBagLayout = new GridBagLayout();
+		gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
+		gridBagLayout.rowHeights = new int[] { 0, 0 };
+		gridBagLayout.columnWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		gridBagLayout.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+		getContentPane().setLayout(gridBagLayout);
 
-	/**
-	 * Creates a new form for editing the given statblock.
-	 * 
-	 * @param stat
-	 *            the statblock
-	 * @param c
-	 *            the parent dialog
-	 */
-	public Statblock(Stats stat, JDialog c) {
-		super(c);
-		initComponents();
-		setLocationRelativeTo(c);
+		JPanel panelLeft = new JPanel();
+		panelLeft.setBorder(new EmptyBorder(5, 5, 0, 5));
+		GridBagConstraints gbc_panelLeft = new GridBagConstraints();
+		gbc_panelLeft.insets = new Insets(0, 0, 0, 5);
+		gbc_panelLeft.fill = GridBagConstraints.BOTH;
+		gbc_panelLeft.gridx = 0;
+		gbc_panelLeft.gridy = 0;
+		getContentPane().add(panelLeft, gbc_panelLeft);
+		GridBagLayout gbl_panelLeft = new GridBagLayout();
+		gbl_panelLeft.columnWidths = new int[] { 0, 0, 0, 0, 0 };
+		gbl_panelLeft.rowHeights = new int[] { 0, 0, 0, 0, 0, 0 };
+		gbl_panelLeft.columnWeights = new double[] { 0.0, 1.0, 1.0, 1.0, Double.MIN_VALUE };
+		gbl_panelLeft.rowWeights = new double[] { 0.0, 0.0, 0.0, 1.0, 1.0, Double.MIN_VALUE };
+		panelLeft.setLayout(gbl_panelLeft);
 
-		setStat(stat);
-		moveClassToFields(stat);
+		JLabel lblName = new JLabel("Name");
+		lblName.setHorizontalAlignment(SwingConstants.TRAILING);
+		GridBagConstraints gbc_lblName = new GridBagConstraints();
+		gbc_lblName.fill = GridBagConstraints.HORIZONTAL;
+		gbc_lblName.insets = new Insets(0, 0, 5, 5);
+		gbc_lblName.gridx = 0;
+		gbc_lblName.gridy = 0;
+		panelLeft.add(lblName, gbc_lblName);
+
+		_textFieldName = new JTextField();
+		GridBagConstraints gbc_textFieldName = new GridBagConstraints();
+		gbc_textFieldName.gridwidth = 3;
+		gbc_textFieldName.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldName.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldName.gridx = 1;
+		gbc_textFieldName.gridy = 0;
+		panelLeft.add(_textFieldName, gbc_textFieldName);
+		_textFieldName.setColumns(10);
+
+		JPanel panelDescription = new JPanel();
+		panelDescription.setBorder(new TitledBorder(null, "Description", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelDescription = new GridBagConstraints();
+		gbc_panelDescription.insets = new Insets(0, 0, 5, 0);
+		gbc_panelDescription.gridwidth = 4;
+		gbc_panelDescription.fill = GridBagConstraints.BOTH;
+		gbc_panelDescription.gridx = 0;
+		gbc_panelDescription.gridy = 1;
+		panelLeft.add(panelDescription, gbc_panelDescription);
+		GridBagLayout gbl_panelDescription = new GridBagLayout();
+		gbl_panelDescription.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panelDescription.rowHeights = new int[] { 0, 0, 0 };
+		gbl_panelDescription.columnWeights = new double[] { 1.0, 1.0, 0.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelDescription.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		panelDescription.setLayout(gbl_panelDescription);
+
+		JLabel lblLevel = new JLabel("Level");
+		GridBagConstraints gbc_lblLevel = new GridBagConstraints();
+		gbc_lblLevel.anchor = GridBagConstraints.EAST;
+		gbc_lblLevel.insets = new Insets(0, 0, 5, 5);
+		gbc_lblLevel.gridx = 0;
+		gbc_lblLevel.gridy = 0;
+		panelDescription.add(lblLevel, gbc_lblLevel);
+
+		_spinnerLevel = new JSpinner();
+		GridBagConstraints gbc__spinnerLevel = new GridBagConstraints();
+		gbc__spinnerLevel.fill = GridBagConstraints.HORIZONTAL;
+		gbc__spinnerLevel.insets = new Insets(0, 0, 5, 5);
+		gbc__spinnerLevel.gridx = 1;
+		gbc__spinnerLevel.gridy = 0;
+		panelDescription.add(_spinnerLevel, gbc__spinnerLevel);
+
+		JLabel lblTypekeywords = new JLabel("Type/Keywords");
+		GridBagConstraints gbc_lblTypekeywords = new GridBagConstraints();
+		gbc_lblTypekeywords.anchor = GridBagConstraints.EAST;
+		gbc_lblTypekeywords.gridwidth = 2;
+		gbc_lblTypekeywords.insets = new Insets(0, 0, 5, 5);
+		gbc_lblTypekeywords.gridx = 2;
+		gbc_lblTypekeywords.gridy = 0;
+		panelDescription.add(lblTypekeywords, gbc_lblTypekeywords);
+
+		_textFieldTypeKeywords = new JTextField();
+		GridBagConstraints gbc_textFieldTypeKeywords = new GridBagConstraints();
+		gbc_textFieldTypeKeywords.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldTypeKeywords.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldTypeKeywords.gridx = 4;
+		gbc_textFieldTypeKeywords.gridy = 0;
+		panelDescription.add(_textFieldTypeKeywords, gbc_textFieldTypeKeywords);
+		_textFieldTypeKeywords.setColumns(10);
+
+		JLabel lblRole = new JLabel("Role");
+		GridBagConstraints gbc_lblRole = new GridBagConstraints();
+		gbc_lblRole.anchor = GridBagConstraints.EAST;
+		gbc_lblRole.insets = new Insets(0, 0, 0, 5);
+		gbc_lblRole.gridx = 0;
+		gbc_lblRole.gridy = 1;
+		panelDescription.add(lblRole, gbc_lblRole);
+
+		_comboBoxRole2 = new JComboBox();
+		GridBagConstraints gbc_comboBoxRole2 = new GridBagConstraints();
+		gbc_comboBoxRole2.gridwidth = 2;
+		gbc_comboBoxRole2.insets = new Insets(0, 0, 0, 5);
+		gbc_comboBoxRole2.fill = GridBagConstraints.HORIZONTAL;
+		gbc_comboBoxRole2.gridx = 1;
+		gbc_comboBoxRole2.gridy = 1;
+		panelDescription.add(_comboBoxRole2, gbc_comboBoxRole2);
+
+		_comboBoxRole = new JComboBox();
+		_comboBoxRole.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				jComboBoxRoleItemItemStateChanged(e);
+			}
+		});
+		GridBagConstraints gbc__comboBoxRole = new GridBagConstraints();
+		gbc__comboBoxRole.gridwidth = 2;
+		gbc__comboBoxRole.insets = new Insets(0, 0, 0, 5);
+		gbc__comboBoxRole.fill = GridBagConstraints.HORIZONTAL;
+		gbc__comboBoxRole.gridx = 3;
+		gbc__comboBoxRole.gridy = 1;
+		panelDescription.add(_comboBoxRole, gbc__comboBoxRole);
+
+		_chckbxLeader = new JCheckBox("Leader");
+		GridBagConstraints gbc__chckbxLeader = new GridBagConstraints();
+		gbc__chckbxLeader.anchor = GridBagConstraints.WEST;
+		gbc__chckbxLeader.insets = new Insets(0, 0, 5, 0);
+		gbc__chckbxLeader.gridx = 5;
+		gbc__chckbxLeader.gridy = 0;
+		panelDescription.add(_chckbxLeader, gbc__chckbxLeader);
+
+		_chckbxPc = new JCheckBox("PC");
+		_chckbxPc.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				jCheckBoxPCChangeStateChanged(e);
+			}
+		});
+		GridBagConstraints gbc__chckbxPc = new GridBagConstraints();
+		gbc__chckbxPc.anchor = GridBagConstraints.WEST;
+		gbc__chckbxPc.gridx = 5;
+		gbc__chckbxPc.gridy = 1;
+		panelDescription.add(_chckbxPc, gbc__chckbxPc);
+
+		JPanel panelDefenses = new JPanel();
+		panelDefenses.setBorder(new TitledBorder(null, "Defenses", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelDefenses = new GridBagConstraints();
+		gbc_panelDefenses.gridwidth = 2;
+		gbc_panelDefenses.gridheight = 2;
+		gbc_panelDefenses.insets = new Insets(0, 0, 5, 5);
+		gbc_panelDefenses.fill = GridBagConstraints.BOTH;
+		gbc_panelDefenses.gridx = 0;
+		gbc_panelDefenses.gridy = 2;
+		panelLeft.add(panelDefenses, gbc_panelDefenses);
+		GridBagLayout gbl_panelDefenses = new GridBagLayout();
+		gbl_panelDefenses.columnWeights = new double[] { 1.0, 1.0 };
+		gbl_panelDefenses.rowWeights = new double[] { Double.MIN_VALUE, 0.0, 0.0, 0.0 };
+		panelDefenses.setLayout(gbl_panelDefenses);
+
+		JLabel lblAc = new JLabel("AC");
+		GridBagConstraints gbc_lblAc = new GridBagConstraints();
+		gbc_lblAc.anchor = GridBagConstraints.EAST;
+		gbc_lblAc.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAc.gridx = 0;
+		gbc_lblAc.gridy = 0;
+		panelDefenses.add(lblAc, gbc_lblAc);
+
+		_formattedTextFieldAC = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldAC.setColumns(3);
+		_formattedTextFieldAC.setText("0");
+		GridBagConstraints gbc__formattedTextFieldAC = new GridBagConstraints();
+		gbc__formattedTextFieldAC.insets = new Insets(0, 0, 5, 0);
+		gbc__formattedTextFieldAC.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldAC.gridx = 1;
+		gbc__formattedTextFieldAC.gridy = 0;
+		panelDefenses.add(_formattedTextFieldAC, gbc__formattedTextFieldAC);
+
+		JLabel lblFortitude = new JLabel("Fortitude");
+		GridBagConstraints gbc_lblFortitude = new GridBagConstraints();
+		gbc_lblFortitude.anchor = GridBagConstraints.EAST;
+		gbc_lblFortitude.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFortitude.gridx = 0;
+		gbc_lblFortitude.gridy = 1;
+		panelDefenses.add(lblFortitude, gbc_lblFortitude);
+
+		_formattedTextFieldFort = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldFort.setColumns(3);
+		_formattedTextFieldFort.setText("0");
+		GridBagConstraints gbc__formattedTextFieldFort = new GridBagConstraints();
+		gbc__formattedTextFieldFort.insets = new Insets(0, 0, 5, 0);
+		gbc__formattedTextFieldFort.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldFort.gridx = 1;
+		gbc__formattedTextFieldFort.gridy = 1;
+		panelDefenses.add(_formattedTextFieldFort, gbc__formattedTextFieldFort);
+
+		JLabel lblReflex = new JLabel("Reflex");
+		GridBagConstraints gbc_lblReflex = new GridBagConstraints();
+		gbc_lblReflex.anchor = GridBagConstraints.EAST;
+		gbc_lblReflex.insets = new Insets(0, 0, 5, 5);
+		gbc_lblReflex.gridx = 0;
+		gbc_lblReflex.gridy = 2;
+		panelDefenses.add(lblReflex, gbc_lblReflex);
+
+		_formattedTextFieldRef = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldRef.setColumns(3);
+		_formattedTextFieldRef.setText("0");
+		GridBagConstraints gbc__formattedTextFieldRef = new GridBagConstraints();
+		gbc__formattedTextFieldRef.insets = new Insets(0, 0, 5, 0);
+		gbc__formattedTextFieldRef.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldRef.gridx = 1;
+		gbc__formattedTextFieldRef.gridy = 2;
+		panelDefenses.add(_formattedTextFieldRef, gbc__formattedTextFieldRef);
+
+		_formattedTextFieldWill = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldWill.setColumns(3);
+		_formattedTextFieldWill.setText("0");
+		GridBagConstraints gbc__formattedTextFieldWill = new GridBagConstraints();
+		gbc__formattedTextFieldWill.insets = new Insets(0, 0, 5, 0);
+		gbc__formattedTextFieldWill.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldWill.gridx = 1;
+		gbc__formattedTextFieldWill.gridy = 3;
+		panelDefenses.add(_formattedTextFieldWill, gbc__formattedTextFieldWill);
+
+		JLabel lblWill = new JLabel("Will");
+		GridBagConstraints gbc_lblWill = new GridBagConstraints();
+		gbc_lblWill.anchor = GridBagConstraints.EAST;
+		gbc_lblWill.insets = new Insets(0, 0, 0, 5);
+		gbc_lblWill.gridx = 0;
+		gbc_lblWill.gridy = 3;
+		panelDefenses.add(lblWill, gbc_lblWill);
+
+		JPanel panelAttributes = new JPanel();
+		panelAttributes.setBorder(new TitledBorder(null, "Attributes", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelAttributes = new GridBagConstraints();
+		gbc_panelAttributes.gridheight = 2;
+		gbc_panelAttributes.insets = new Insets(0, 0, 5, 5);
+		gbc_panelAttributes.fill = GridBagConstraints.BOTH;
+		gbc_panelAttributes.gridx = 2;
+		gbc_panelAttributes.gridy = 2;
+		panelLeft.add(panelAttributes, gbc_panelAttributes);
+		GridBagLayout gbl_panelAttributes = new GridBagLayout();
+		gbl_panelAttributes.columnWidths = new int[] { 19, 0, 0, 0, 0 };
+		gbl_panelAttributes.rowHeights = new int[] { 14, 0, 0, 0 };
+		gbl_panelAttributes.columnWeights = new double[] { 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE };
+		gbl_panelAttributes.rowWeights = new double[] { 1.0, 1.0, 1.0, Double.MIN_VALUE };
+		panelAttributes.setLayout(gbl_panelAttributes);
+
+		JLabel lblStr = new JLabel("STR");
+		GridBagConstraints gbc_lblStr = new GridBagConstraints();
+		gbc_lblStr.anchor = GridBagConstraints.EAST;
+		gbc_lblStr.insets = new Insets(0, 0, 5, 5);
+		gbc_lblStr.gridx = 0;
+		gbc_lblStr.gridy = 0;
+		panelAttributes.add(lblStr, gbc_lblStr);
+
+		_formattedTextFieldStr = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldStr.setColumns(3);
+		_formattedTextFieldStr.setText("0");
+		GridBagConstraints gbc__formattedTextFieldStr = new GridBagConstraints();
+		gbc__formattedTextFieldStr.insets = new Insets(0, 0, 5, 5);
+		gbc__formattedTextFieldStr.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldStr.gridx = 1;
+		gbc__formattedTextFieldStr.gridy = 0;
+		panelAttributes.add(_formattedTextFieldStr, gbc__formattedTextFieldStr);
+
+		JLabel lblCon = new JLabel("CON");
+		GridBagConstraints gbc_lblCon = new GridBagConstraints();
+		gbc_lblCon.anchor = GridBagConstraints.EAST;
+		gbc_lblCon.insets = new Insets(0, 0, 5, 5);
+		gbc_lblCon.gridx = 2;
+		gbc_lblCon.gridy = 0;
+		panelAttributes.add(lblCon, gbc_lblCon);
+
+		_formattedTextFieldCon = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldCon.setColumns(3);
+		_formattedTextFieldCon.setText("0");
+		GridBagConstraints gbc__formattedTextFieldCon = new GridBagConstraints();
+		gbc__formattedTextFieldCon.insets = new Insets(0, 0, 5, 0);
+		gbc__formattedTextFieldCon.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldCon.gridx = 3;
+		gbc__formattedTextFieldCon.gridy = 0;
+		panelAttributes.add(_formattedTextFieldCon, gbc__formattedTextFieldCon);
+
+		JLabel lblDex = new JLabel("DEX");
+		GridBagConstraints gbc_lblDex = new GridBagConstraints();
+		gbc_lblDex.anchor = GridBagConstraints.EAST;
+		gbc_lblDex.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDex.gridx = 0;
+		gbc_lblDex.gridy = 1;
+		panelAttributes.add(lblDex, gbc_lblDex);
+
+		_formattedTextFieldDex = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldDex.setColumns(3);
+		_formattedTextFieldDex.setText("0");
+		GridBagConstraints gbc_formattedTextFieldDex = new GridBagConstraints();
+		gbc_formattedTextFieldDex.insets = new Insets(0, 0, 5, 5);
+		gbc_formattedTextFieldDex.fill = GridBagConstraints.HORIZONTAL;
+		gbc_formattedTextFieldDex.gridx = 1;
+		gbc_formattedTextFieldDex.gridy = 1;
+		panelAttributes.add(_formattedTextFieldDex, gbc_formattedTextFieldDex);
+
+		JLabel lblInt = new JLabel("INT");
+		GridBagConstraints gbc_lblInt = new GridBagConstraints();
+		gbc_lblInt.anchor = GridBagConstraints.EAST;
+		gbc_lblInt.insets = new Insets(0, 0, 5, 5);
+		gbc_lblInt.gridx = 2;
+		gbc_lblInt.gridy = 1;
+		panelAttributes.add(lblInt, gbc_lblInt);
+
+		_formattedTextFieldInt = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldInt.setColumns(3);
+		_formattedTextFieldInt.setText("0");
+		GridBagConstraints gbc_formattedTextFieldInt = new GridBagConstraints();
+		gbc_formattedTextFieldInt.insets = new Insets(0, 0, 5, 0);
+		gbc_formattedTextFieldInt.fill = GridBagConstraints.HORIZONTAL;
+		gbc_formattedTextFieldInt.gridx = 3;
+		gbc_formattedTextFieldInt.gridy = 1;
+		panelAttributes.add(_formattedTextFieldInt, gbc_formattedTextFieldInt);
+
+		JLabel lblWis = new JLabel("WIS");
+		GridBagConstraints gbc_lblWis = new GridBagConstraints();
+		gbc_lblWis.anchor = GridBagConstraints.EAST;
+		gbc_lblWis.insets = new Insets(0, 0, 0, 5);
+		gbc_lblWis.gridx = 0;
+		gbc_lblWis.gridy = 2;
+		panelAttributes.add(lblWis, gbc_lblWis);
+
+		_formattedTextFieldWis = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldWis.setColumns(3);
+		_formattedTextFieldWis.setText("0");
+		GridBagConstraints gbc_formattedTextFieldWis = new GridBagConstraints();
+		gbc_formattedTextFieldWis.insets = new Insets(0, 0, 0, 5);
+		gbc_formattedTextFieldWis.fill = GridBagConstraints.HORIZONTAL;
+		gbc_formattedTextFieldWis.gridx = 1;
+		gbc_formattedTextFieldWis.gridy = 2;
+		panelAttributes.add(_formattedTextFieldWis, gbc_formattedTextFieldWis);
+
+		JLabel lblCha = new JLabel("CHA");
+		GridBagConstraints gbc_lblCha = new GridBagConstraints();
+		gbc_lblCha.insets = new Insets(0, 0, 0, 5);
+		gbc_lblCha.anchor = GridBagConstraints.EAST;
+		gbc_lblCha.gridx = 2;
+		gbc_lblCha.gridy = 2;
+		panelAttributes.add(lblCha, gbc_lblCha);
+
+		_formattedTextFieldCha = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldCha.setColumns(3);
+		_formattedTextFieldCha.setText("0");
+		GridBagConstraints gbc_formattedTextFieldCha = new GridBagConstraints();
+		gbc_formattedTextFieldCha.fill = GridBagConstraints.HORIZONTAL;
+		gbc_formattedTextFieldCha.gridx = 3;
+		gbc_formattedTextFieldCha.gridy = 2;
+		panelAttributes.add(_formattedTextFieldCha, gbc_formattedTextFieldCha);
+
+		JPanel panelXPValue = new JPanel();
+		panelXPValue.setBorder(new TitledBorder(null, "XP Value", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelXPValue = new GridBagConstraints();
+		gbc_panelXPValue.insets = new Insets(0, 0, 5, 0);
+		gbc_panelXPValue.fill = GridBagConstraints.BOTH;
+		gbc_panelXPValue.gridx = 3;
+		gbc_panelXPValue.gridy = 2;
+		panelLeft.add(panelXPValue, gbc_panelXPValue);
+		panelXPValue.setLayout(new BorderLayout(0, 0));
+
+		_textFieldXP = new JFormattedTextField(NumberFormat.getInstance());
+		_textFieldXP.setText("0");
+		panelXPValue.add(_textFieldXP);
+		_textFieldXP.setColumns(10);
+
+		JPanel panelHitPoints = new JPanel();
+		panelHitPoints.setBorder(new TitledBorder(null, "Hit Points", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelHitPoints = new GridBagConstraints();
+		gbc_panelHitPoints.insets = new Insets(0, 0, 5, 0);
+		gbc_panelHitPoints.fill = GridBagConstraints.BOTH;
+		gbc_panelHitPoints.gridx = 3;
+		gbc_panelHitPoints.gridy = 3;
+		panelLeft.add(panelHitPoints, gbc_panelHitPoints);
+		GridBagLayout gbl_panelHitPoints = new GridBagLayout();
+		gbl_panelHitPoints.columnWidths = new int[] { 0, 0, 0 };
+		gbl_panelHitPoints.rowHeights = new int[] { 0, 0, 0 };
+		gbl_panelHitPoints.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
+		gbl_panelHitPoints.rowWeights = new double[] { 0.0, 0.0, Double.MIN_VALUE };
+		panelHitPoints.setLayout(gbl_panelHitPoints);
+
+		JLabel lblMax = new JLabel("Max");
+		GridBagConstraints gbc_lblMax = new GridBagConstraints();
+		gbc_lblMax.anchor = GridBagConstraints.EAST;
+		gbc_lblMax.insets = new Insets(0, 0, 5, 5);
+		gbc_lblMax.gridx = 0;
+		gbc_lblMax.gridy = 0;
+		panelHitPoints.add(lblMax, gbc_lblMax);
+
+		_formattedTextFieldMax = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldMax.setText("0");
+		GridBagConstraints gbc__formattedTextFieldMax = new GridBagConstraints();
+		gbc__formattedTextFieldMax.insets = new Insets(0, 0, 5, 0);
+		gbc__formattedTextFieldMax.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldMax.gridx = 1;
+		gbc__formattedTextFieldMax.gridy = 0;
+		panelHitPoints.add(_formattedTextFieldMax, gbc__formattedTextFieldMax);
+
+		JLabel lblSurges = new JLabel("Surges");
+		GridBagConstraints gbc_lblSurges = new GridBagConstraints();
+		gbc_lblSurges.insets = new Insets(0, 0, 0, 5);
+		gbc_lblSurges.anchor = GridBagConstraints.EAST;
+		gbc_lblSurges.gridx = 0;
+		gbc_lblSurges.gridy = 1;
+		panelHitPoints.add(lblSurges, gbc_lblSurges);
+
+		_formattedTextFieldSurges = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldSurges.setText("0");
+		GridBagConstraints gbc__formattedTextFieldSurges = new GridBagConstraints();
+		gbc__formattedTextFieldSurges.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldSurges.gridx = 1;
+		gbc__formattedTextFieldSurges.gridy = 1;
+		panelHitPoints.add(_formattedTextFieldSurges, gbc__formattedTextFieldSurges);
+
+		JTabbedPane tabbedPaneMisc = new JTabbedPane(JTabbedPane.TOP);
+		GridBagConstraints gbc_tabbedPaneMisc = new GridBagConstraints();
+		gbc_tabbedPaneMisc.gridwidth = 4;
+		gbc_tabbedPaneMisc.fill = GridBagConstraints.BOTH;
+		gbc_tabbedPaneMisc.gridx = 0;
+		gbc_tabbedPaneMisc.gridy = 4;
+		panelLeft.add(tabbedPaneMisc, gbc_tabbedPaneMisc);
+
+		JPanel panelTraits = new JPanel();
+		tabbedPaneMisc.addTab("Traits", null, panelTraits, null);
+		GridBagLayout gbl_panelTraits = new GridBagLayout();
+		gbl_panelTraits.columnWidths = new int[] { 155, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panelTraits.rowHeights = new int[] { 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panelTraits.columnWeights = new double[] { 0.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, Double.MIN_VALUE };
+		gbl_panelTraits.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+				Double.MIN_VALUE };
+		panelTraits.setLayout(gbl_panelTraits);
+
+		JLabel lblSenses = new JLabel("Senses");
+		GridBagConstraints gbc_lblSenses = new GridBagConstraints();
+		gbc_lblSenses.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSenses.anchor = GridBagConstraints.NORTHEAST;
+		gbc_lblSenses.gridx = 0;
+		gbc_lblSenses.gridy = 0;
+		panelTraits.add(lblSenses, gbc_lblSenses);
+
+		_textFieldSenses = new JTextField();
+		GridBagConstraints gbc_textFieldSenses = new GridBagConstraints();
+		gbc_textFieldSenses.gridwidth = 7;
+		gbc_textFieldSenses.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldSenses.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldSenses.gridx = 1;
+		gbc_textFieldSenses.gridy = 0;
+		panelTraits.add(_textFieldSenses, gbc_textFieldSenses);
+		_textFieldSenses.setColumns(10);
+
+		_textFieldImmune = new JTextField();
+		GridBagConstraints gbc_textFieldImmune = new GridBagConstraints();
+		gbc_textFieldImmune.gridwidth = 7;
+		gbc_textFieldImmune.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldImmune.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldImmune.gridx = 1;
+		gbc_textFieldImmune.gridy = 1;
+		panelTraits.add(_textFieldImmune, gbc_textFieldImmune);
+		_textFieldImmune.setColumns(10);
+
+		_textFieldResist = new JTextField();
+		GridBagConstraints gbc_textFieldResist = new GridBagConstraints();
+		gbc_textFieldResist.gridwidth = 7;
+		gbc_textFieldResist.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldResist.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldResist.gridx = 1;
+		gbc_textFieldResist.gridy = 2;
+		panelTraits.add(_textFieldResist, gbc_textFieldResist);
+		_textFieldResist.setColumns(10);
+
+		_textFieldVulnerable = new JTextField();
+		GridBagConstraints gbc_textFieldVulnerable = new GridBagConstraints();
+		gbc_textFieldVulnerable.gridwidth = 7;
+		gbc_textFieldVulnerable.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldVulnerable.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldVulnerable.gridx = 1;
+		gbc_textFieldVulnerable.gridy = 3;
+		panelTraits.add(_textFieldVulnerable, gbc_textFieldVulnerable);
+		_textFieldVulnerable.setColumns(10);
+
+		_textFieldRegen = new JTextField();
+		GridBagConstraints gbc_textFieldRegen = new GridBagConstraints();
+		gbc_textFieldRegen.gridwidth = 7;
+		gbc_textFieldRegen.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldRegen.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldRegen.gridx = 1;
+		gbc_textFieldRegen.gridy = 4;
+		panelTraits.add(_textFieldRegen, gbc_textFieldRegen);
+		_textFieldRegen.setColumns(10);
+
+		_textFieldSpeed = new JTextField();
+		GridBagConstraints gbc_textFieldSpeed = new GridBagConstraints();
+		gbc_textFieldSpeed.gridwidth = 7;
+		gbc_textFieldSpeed.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldSpeed.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldSpeed.gridx = 1;
+		gbc_textFieldSpeed.gridy = 5;
+		panelTraits.add(_textFieldSpeed, gbc_textFieldSpeed);
+		_textFieldSpeed.setColumns(10);
+
+		_formattedTextFieldInit = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldInit.setText("0");
+		_formattedTextFieldInit.setColumns(3);
+		GridBagConstraints gbc__formattedTextFieldInit = new GridBagConstraints();
+		gbc__formattedTextFieldInit.insets = new Insets(0, 0, 5, 5);
+		gbc__formattedTextFieldInit.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldInit.gridx = 1;
+		gbc__formattedTextFieldInit.gridy = 6;
+		panelTraits.add(_formattedTextFieldInit, gbc__formattedTextFieldInit);
+
+		_formattedTextFieldActionPts = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldActionPts.setText("0");
+		_formattedTextFieldActionPts.setColumns(3);
+		GridBagConstraints gbc__formattedTextFieldActionPts = new GridBagConstraints();
+		gbc__formattedTextFieldActionPts.insets = new Insets(0, 0, 5, 5);
+		gbc__formattedTextFieldActionPts.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldActionPts.gridx = 3;
+		gbc__formattedTextFieldActionPts.gridy = 6;
+		panelTraits.add(_formattedTextFieldActionPts, gbc__formattedTextFieldActionPts);
+
+		_formattedTextFieldPowerPts = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldPowerPts.setText("0");
+		_formattedTextFieldPowerPts.setColumns(3);
+		GridBagConstraints gbc__formattedTextFieldPowerPts = new GridBagConstraints();
+		gbc__formattedTextFieldPowerPts.insets = new Insets(0, 0, 5, 5);
+		gbc__formattedTextFieldPowerPts.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldPowerPts.gridx = 5;
+		gbc__formattedTextFieldPowerPts.gridy = 6;
+		panelTraits.add(_formattedTextFieldPowerPts, gbc__formattedTextFieldPowerPts);
+
+		_formattedTextFieldSaveBonus = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldSaveBonus.setText("0");
+		GridBagConstraints gbc_textFieldSaveBonus = new GridBagConstraints();
+		gbc_textFieldSaveBonus.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldSaveBonus.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldSaveBonus.gridx = 7;
+		gbc_textFieldSaveBonus.gridy = 6;
+		panelTraits.add(_formattedTextFieldSaveBonus, gbc_textFieldSaveBonus);
+		_formattedTextFieldSaveBonus.setColumns(3);
+
+		JLabel lblAlignment = new JLabel("Alignment");
+		GridBagConstraints gbc_lblAlignment = new GridBagConstraints();
+		gbc_lblAlignment.anchor = GridBagConstraints.EAST;
+		gbc_lblAlignment.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAlignment.gridx = 0;
+		gbc_lblAlignment.gridy = 7;
+		panelTraits.add(lblAlignment, gbc_lblAlignment);
+
+		_textFieldAlignment = new JTextField();
+		GridBagConstraints gbc_textFieldAlignment = new GridBagConstraints();
+		gbc_textFieldAlignment.gridwidth = 7;
+		gbc_textFieldAlignment.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldAlignment.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldAlignment.gridx = 1;
+		gbc_textFieldAlignment.gridy = 7;
+		panelTraits.add(_textFieldAlignment, gbc_textFieldAlignment);
+		_textFieldAlignment.setColumns(10);
+
+		JLabel lblSkills = new JLabel("Skills");
+		GridBagConstraints gbc_lblSkills = new GridBagConstraints();
+		gbc_lblSkills.anchor = GridBagConstraints.EAST;
+		gbc_lblSkills.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSkills.gridx = 0;
+		gbc_lblSkills.gridy = 8;
+		panelTraits.add(lblSkills, gbc_lblSkills);
+
+		_textFieldSkills = new JTextField();
+		GridBagConstraints gbc_textFieldSkills = new GridBagConstraints();
+		gbc_textFieldSkills.gridwidth = 7;
+		gbc_textFieldSkills.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldSkills.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldSkills.gridx = 1;
+		gbc_textFieldSkills.gridy = 8;
+		panelTraits.add(_textFieldSkills, gbc_textFieldSkills);
+		_textFieldSkills.setColumns(10);
+
+		JLabel lblFeats = new JLabel("Feats");
+		GridBagConstraints gbc_lblFeats = new GridBagConstraints();
+		gbc_lblFeats.anchor = GridBagConstraints.EAST;
+		gbc_lblFeats.insets = new Insets(0, 0, 5, 5);
+		gbc_lblFeats.gridx = 0;
+		gbc_lblFeats.gridy = 9;
+		panelTraits.add(lblFeats, gbc_lblFeats);
+
+		_textFieldFeats = new JTextField();
+		GridBagConstraints gbc_textFieldFeats = new GridBagConstraints();
+		gbc_textFieldFeats.gridwidth = 7;
+		gbc_textFieldFeats.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldFeats.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldFeats.gridx = 1;
+		gbc_textFieldFeats.gridy = 9;
+		panelTraits.add(_textFieldFeats, gbc_textFieldFeats);
+		_textFieldFeats.setColumns(10);
+
+		JLabel lblLanguages = new JLabel("Languages");
+		GridBagConstraints gbc_lblLanguages = new GridBagConstraints();
+		gbc_lblLanguages.anchor = GridBagConstraints.EAST;
+		gbc_lblLanguages.insets = new Insets(0, 0, 5, 5);
+		gbc_lblLanguages.gridx = 0;
+		gbc_lblLanguages.gridy = 10;
+		panelTraits.add(lblLanguages, gbc_lblLanguages);
+
+		_textFieldLanguages = new JTextField();
+		GridBagConstraints gbc_textFieldLanguages = new GridBagConstraints();
+		gbc_textFieldLanguages.gridwidth = 7;
+		gbc_textFieldLanguages.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldLanguages.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldLanguages.gridx = 1;
+		gbc_textFieldLanguages.gridy = 10;
+		panelTraits.add(_textFieldLanguages, gbc_textFieldLanguages);
+		_textFieldLanguages.setColumns(10);
+
+		JLabel lblEquipment = new JLabel("Equipment");
+		GridBagConstraints gbc_lblEquipment = new GridBagConstraints();
+		gbc_lblEquipment.anchor = GridBagConstraints.EAST;
+		gbc_lblEquipment.insets = new Insets(0, 0, 5, 5);
+		gbc_lblEquipment.gridx = 0;
+		gbc_lblEquipment.gridy = 11;
+		panelTraits.add(lblEquipment, gbc_lblEquipment);
+
+		_textFieldEquipment = new JTextField();
+		GridBagConstraints gbc_textFieldEquipment = new GridBagConstraints();
+		gbc_textFieldEquipment.gridwidth = 7;
+		gbc_textFieldEquipment.insets = new Insets(0, 0, 5, 5);
+		gbc_textFieldEquipment.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldEquipment.gridx = 1;
+		gbc_textFieldEquipment.gridy = 11;
+		panelTraits.add(_textFieldEquipment, gbc_textFieldEquipment);
+		_textFieldEquipment.setColumns(10);
+
+		JLabel lblSource = new JLabel("Source");
+		GridBagConstraints gbc_lblSource = new GridBagConstraints();
+		gbc_lblSource.anchor = GridBagConstraints.EAST;
+		gbc_lblSource.insets = new Insets(0, 0, 0, 5);
+		gbc_lblSource.gridx = 0;
+		gbc_lblSource.gridy = 12;
+		panelTraits.add(lblSource, gbc_lblSource);
+
+		JLabel lblImmune = new JLabel("Immune");
+		GridBagConstraints gbc_lblImmune = new GridBagConstraints();
+		gbc_lblImmune.anchor = GridBagConstraints.EAST;
+		gbc_lblImmune.insets = new Insets(0, 0, 5, 5);
+		gbc_lblImmune.gridx = 0;
+		gbc_lblImmune.gridy = 1;
+		panelTraits.add(lblImmune, gbc_lblImmune);
+
+		JLabel lblResist = new JLabel("Resist");
+		GridBagConstraints gbc_lblResist = new GridBagConstraints();
+		gbc_lblResist.anchor = GridBagConstraints.EAST;
+		gbc_lblResist.insets = new Insets(0, 0, 5, 5);
+		gbc_lblResist.gridx = 0;
+		gbc_lblResist.gridy = 2;
+		panelTraits.add(lblResist, gbc_lblResist);
+
+		JLabel lblVulnerable = new JLabel("Vulnerable");
+		GridBagConstraints gbc_lblVulnerable = new GridBagConstraints();
+		gbc_lblVulnerable.anchor = GridBagConstraints.EAST;
+		gbc_lblVulnerable.insets = new Insets(0, 0, 5, 5);
+		gbc_lblVulnerable.gridx = 0;
+		gbc_lblVulnerable.gridy = 3;
+		panelTraits.add(lblVulnerable, gbc_lblVulnerable);
+
+		JLabel lblRegen = new JLabel("Regen");
+		GridBagConstraints gbc_lblRegen = new GridBagConstraints();
+		gbc_lblRegen.anchor = GridBagConstraints.EAST;
+		gbc_lblRegen.insets = new Insets(0, 0, 5, 5);
+		gbc_lblRegen.gridx = 0;
+		gbc_lblRegen.gridy = 4;
+		panelTraits.add(lblRegen, gbc_lblRegen);
+
+		JLabel lblSpeed = new JLabel("Speed");
+		GridBagConstraints gbc_lblSpeed = new GridBagConstraints();
+		gbc_lblSpeed.anchor = GridBagConstraints.EAST;
+		gbc_lblSpeed.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSpeed.gridx = 0;
+		gbc_lblSpeed.gridy = 5;
+		panelTraits.add(lblSpeed, gbc_lblSpeed);
+
+		JLabel lblSaveBonus = new JLabel("Save Bonus");
+		GridBagConstraints gbc_lblSaveBonus = new GridBagConstraints();
+		gbc_lblSaveBonus.insets = new Insets(0, 0, 5, 5);
+		gbc_lblSaveBonus.gridx = 6;
+		gbc_lblSaveBonus.gridy = 6;
+		panelTraits.add(lblSaveBonus, gbc_lblSaveBonus);
+
+		JLabel lblInitiative = new JLabel("Initiative");
+		GridBagConstraints gbc_lblInitiative = new GridBagConstraints();
+		gbc_lblInitiative.anchor = GridBagConstraints.EAST;
+		gbc_lblInitiative.insets = new Insets(0, 0, 5, 5);
+		gbc_lblInitiative.gridx = 0;
+		gbc_lblInitiative.gridy = 6;
+		panelTraits.add(lblInitiative, gbc_lblInitiative);
+
+		JLabel lblActionPoints = new JLabel("Action Points");
+		GridBagConstraints gbc_lblActionPoints = new GridBagConstraints();
+		gbc_lblActionPoints.anchor = GridBagConstraints.EAST;
+		gbc_lblActionPoints.insets = new Insets(0, 0, 5, 5);
+		gbc_lblActionPoints.gridx = 2;
+		gbc_lblActionPoints.gridy = 6;
+		panelTraits.add(lblActionPoints, gbc_lblActionPoints);
+
+		JLabel lblPowerPoints = new JLabel("Power Points");
+		GridBagConstraints gbc_lblPowerPoints = new GridBagConstraints();
+		gbc_lblPowerPoints.anchor = GridBagConstraints.EAST;
+		gbc_lblPowerPoints.insets = new Insets(0, 0, 5, 5);
+		gbc_lblPowerPoints.gridx = 4;
+		gbc_lblPowerPoints.gridy = 6;
+		panelTraits.add(lblPowerPoints, gbc_lblPowerPoints);
+
+		_textFieldSource = new JTextField();
+		GridBagConstraints gbc_textFieldSource = new GridBagConstraints();
+		gbc_textFieldSource.gridwidth = 7;
+		gbc_textFieldSource.insets = new Insets(0, 0, 0, 5);
+		gbc_textFieldSource.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldSource.gridx = 1;
+		gbc_textFieldSource.gridy = 12;
+		panelTraits.add(_textFieldSource, gbc_textFieldSource);
+		_textFieldSource.setColumns(10);
+
+		JPanel panelGeneratedEffects = new JPanel();
+		panelGeneratedEffects.setBorder(new EmptyBorder(5, 5, 5, 5));
+		tabbedPaneMisc.addTab("Generated Effects", null, panelGeneratedEffects, null);
+		GridBagLayout gbl_panelGeneratedEffects = new GridBagLayout();
+		gbl_panelGeneratedEffects.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panelGeneratedEffects.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panelGeneratedEffects.columnWeights = new double[] { 1.0, 0.0, 1.0, 1.0, 1.0, 0.0, 1.0, Double.MIN_VALUE };
+		gbl_panelGeneratedEffects.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, Double.MIN_VALUE };
+		panelGeneratedEffects.setLayout(gbl_panelGeneratedEffects);
+
+		_listEffects = new JList();
+		_listEffects.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				jListEffectsListSelectionValueChanged(e);
+			}
+		});
+		_listEffects.setBorder(new LineBorder(new Color(0, 0, 0)));
+		GridBagConstraints gbc__listEffects = new GridBagConstraints();
+		gbc__listEffects.gridheight = 5;
+		gbc__listEffects.gridwidth = 3;
+		gbc__listEffects.insets = new Insets(0, 0, 5, 5);
+		gbc__listEffects.fill = GridBagConstraints.BOTH;
+		gbc__listEffects.gridx = 2;
+		gbc__listEffects.gridy = 0;
+		panelGeneratedEffects.add(_listEffects, gbc__listEffects);
+
+		_btnEffectEdit = new JButton("Edit");
+		_btnEffectEdit.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonEditActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnEffectEdit = new GridBagConstraints();
+		gbc_btnEffectEdit.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnEffectEdit.insets = new Insets(0, 0, 5, 5);
+		gbc_btnEffectEdit.gridx = 5;
+		gbc_btnEffectEdit.gridy = 0;
+		panelGeneratedEffects.add(_btnEffectEdit, gbc_btnEffectEdit);
+
+		JButton btnExport = new JButton("Export");
+		btnExport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonExportActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnExport = new GridBagConstraints();
+		gbc_btnExport.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnExport.insets = new Insets(0, 0, 5, 5);
+		gbc_btnExport.gridx = 5;
+		gbc_btnExport.gridy = 1;
+		panelGeneratedEffects.add(btnExport, gbc_btnExport);
+
+		JButton btnImport = new JButton("Import");
+		btnImport.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonImportActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnImport = new GridBagConstraints();
+		gbc_btnImport.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnImport.insets = new Insets(0, 0, 5, 5);
+		gbc_btnImport.gridx = 5;
+		gbc_btnImport.gridy = 2;
+		panelGeneratedEffects.add(btnImport, gbc_btnImport);
+
+		_btnEffectDelete = new JButton("Delete");
+		_btnEffectDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonDeleteActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnEffectDelete = new GridBagConstraints();
+		gbc_btnEffectDelete.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnEffectDelete.insets = new Insets(0, 0, 5, 5);
+		gbc_btnEffectDelete.gridx = 5;
+		gbc_btnEffectDelete.gridy = 3;
+		panelGeneratedEffects.add(_btnEffectDelete, gbc_btnEffectDelete);
+
+		JLabel lblEffect = new JLabel("Effect");
+		GridBagConstraints gbc_lblEffect = new GridBagConstraints();
+		gbc_lblEffect.gridwidth = 2;
+		gbc_lblEffect.anchor = GridBagConstraints.EAST;
+		gbc_lblEffect.insets = new Insets(0, 0, 5, 5);
+		gbc_lblEffect.gridx = 0;
+		gbc_lblEffect.gridy = 5;
+		panelGeneratedEffects.add(lblEffect, gbc_lblEffect);
+
+		_comboBoxEffect = new JComboBox();
+		GridBagConstraints gbc__comboBoxEffect = new GridBagConstraints();
+		gbc__comboBoxEffect.fill = GridBagConstraints.HORIZONTAL;
+		gbc__comboBoxEffect.gridwidth = 3;
+		gbc__comboBoxEffect.insets = new Insets(0, 0, 5, 5);
+		gbc__comboBoxEffect.gridx = 2;
+		gbc__comboBoxEffect.gridy = 5;
+		panelGeneratedEffects.add(_comboBoxEffect, gbc__comboBoxEffect);
+
+		JLabel lblDuration = new JLabel("Duration");
+		GridBagConstraints gbc_lblDuration = new GridBagConstraints();
+		gbc_lblDuration.gridwidth = 2;
+		gbc_lblDuration.anchor = GridBagConstraints.EAST;
+		gbc_lblDuration.insets = new Insets(0, 0, 5, 5);
+		gbc_lblDuration.gridx = 0;
+		gbc_lblDuration.gridy = 6;
+		panelGeneratedEffects.add(lblDuration, gbc_lblDuration);
+
+		_comboBoxDuration = new JComboBox();
+		GridBagConstraints gbc__comboBoxDuration = new GridBagConstraints();
+		gbc__comboBoxDuration.fill = GridBagConstraints.HORIZONTAL;
+		gbc__comboBoxDuration.gridwidth = 3;
+		gbc__comboBoxDuration.insets = new Insets(0, 0, 5, 5);
+		gbc__comboBoxDuration.gridx = 2;
+		gbc__comboBoxDuration.gridy = 6;
+		panelGeneratedEffects.add(_comboBoxDuration, gbc__comboBoxDuration);
+
+		_chckbxBeneficial = new JCheckBox("Beneficial");
+		GridBagConstraints gbc__chckbxBeneficial = new GridBagConstraints();
+		gbc__chckbxBeneficial.fill = GridBagConstraints.HORIZONTAL;
+		gbc__chckbxBeneficial.insets = new Insets(0, 0, 0, 5);
+		gbc__chckbxBeneficial.gridx = 2;
+		gbc__chckbxBeneficial.gridy = 7;
+		panelGeneratedEffects.add(_chckbxBeneficial, gbc__chckbxBeneficial);
+
+		_chckbxHidden = new JCheckBox("Hidden");
+		GridBagConstraints gbc__chckbxHidden = new GridBagConstraints();
+		gbc__chckbxHidden.anchor = GridBagConstraints.WEST;
+		gbc__chckbxHidden.insets = new Insets(0, 0, 0, 5);
+		gbc__chckbxHidden.gridx = 3;
+		gbc__chckbxHidden.gridy = 7;
+		panelGeneratedEffects.add(_chckbxHidden, gbc__chckbxHidden);
+
+		JButton btnAdd = new JButton("Add");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonAddActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnAdd = new GridBagConstraints();
+		gbc_btnAdd.insets = new Insets(0, 0, 0, 5);
+		gbc_btnAdd.gridx = 4;
+		gbc_btnAdd.gridy = 7;
+		panelGeneratedEffects.add(btnAdd, gbc_btnAdd);
+
+		JPanel panelNotes = new JPanel();
+		panelNotes.setBorder(new LineBorder(new Color(0, 0, 0)));
+		tabbedPaneMisc.addTab("Notes", null, panelNotes, null);
+		panelNotes.setLayout(new BorderLayout(0, 0));
+
+		_textPaneNotes = new JTextPane();
+		panelNotes.add(_textPaneNotes);
+
+		JPanel panelRight = new JPanel();
+		panelRight.setBorder(new EmptyBorder(5, 0, 5, 5));
+		GridBagConstraints gbc_panelRight = new GridBagConstraints();
+		gbc_panelRight.fill = GridBagConstraints.BOTH;
+		gbc_panelRight.gridx = 1;
+		gbc_panelRight.gridy = 0;
+		getContentPane().add(panelRight, gbc_panelRight);
+		GridBagLayout gbl_panelRight = new GridBagLayout();
+		gbl_panelRight.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panelRight.rowHeights = new int[] { 0, 0, 0 };
+		gbl_panelRight.columnWeights = new double[] { 0.0, 0.0, 1.0, 1.0, 0.0, 0.0, Double.MIN_VALUE };
+		gbl_panelRight.rowWeights = new double[] { 1.0, 0.0, Double.MIN_VALUE };
+		panelRight.setLayout(gbl_panelRight);
+
+		JPanel panelPowers = new JPanel();
+		panelPowers.setBorder(new TitledBorder(UIManager.getBorder("TitledBorder.border"), "Powers", TitledBorder.LEADING,
+				TitledBorder.TOP, null, new Color(0, 70, 213)));
+		GridBagConstraints gbc_panelPowers = new GridBagConstraints();
+		gbc_panelPowers.gridwidth = 6;
+		gbc_panelPowers.insets = new Insets(0, 0, 5, 0);
+		gbc_panelPowers.fill = GridBagConstraints.BOTH;
+		gbc_panelPowers.gridx = 0;
+		gbc_panelPowers.gridy = 0;
+		panelRight.add(panelPowers, gbc_panelPowers);
+		GridBagLayout gbl_panelPowers = new GridBagLayout();
+		gbl_panelPowers.columnWidths = new int[] { 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panelPowers.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+		gbl_panelPowers.columnWeights = new double[] { 1.0, 0.0, 0.0, 0.0, 1.0, 0.0, Double.MIN_VALUE };
+		gbl_panelPowers.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
+		panelPowers.setLayout(gbl_panelPowers);
+
+		_listPowers = new JList();
+		_listPowers.addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent e) {
+				jListPowersListSelectionValueChanged(e);
+			}
+		});
+		_listPowers.setBorder(new LineBorder(new Color(0, 0, 0)));
+		GridBagConstraints gbc__listPowers = new GridBagConstraints();
+		gbc__listPowers.gridwidth = 5;
+		gbc__listPowers.gridheight = 5;
+		gbc__listPowers.insets = new Insets(0, 0, 5, 5);
+		gbc__listPowers.fill = GridBagConstraints.BOTH;
+		gbc__listPowers.gridx = 0;
+		gbc__listPowers.gridy = 0;
+		panelPowers.add(_listPowers, gbc__listPowers);
+
+		JButton btnNew = new JButton("New");
+		btnNew.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonPowerNewActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnNew = new GridBagConstraints();
+		gbc_btnNew.fill = GridBagConstraints.HORIZONTAL;
+		gbc_btnNew.insets = new Insets(0, 0, 5, 0);
+		gbc_btnNew.gridx = 5;
+		gbc_btnNew.gridy = 0;
+		panelPowers.add(btnNew, gbc_btnNew);
+
+		_btnPowerDelete = new JButton("Delete");
+		_btnPowerDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonPowerDeleteActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc__btnDelete = new GridBagConstraints();
+		gbc__btnDelete.fill = GridBagConstraints.HORIZONTAL;
+		gbc__btnDelete.insets = new Insets(0, 0, 5, 0);
+		gbc__btnDelete.gridx = 5;
+		gbc__btnDelete.gridy = 1;
+		panelPowers.add(_btnPowerDelete, gbc__btnDelete);
+
+		Box verticalBox = Box.createVerticalBox();
+		GridBagConstraints gbc_verticalBox = new GridBagConstraints();
+		gbc_verticalBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_verticalBox.insets = new Insets(0, 0, 5, 0);
+		gbc_verticalBox.gridx = 5;
+		gbc_verticalBox.gridy = 2;
+		panelPowers.add(verticalBox, gbc_verticalBox);
+
+		_btnPowerUp = new JButton("Up");
+		_btnPowerUp.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonPowerUpActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc__btnPowerUp = new GridBagConstraints();
+		gbc__btnPowerUp.fill = GridBagConstraints.HORIZONTAL;
+		gbc__btnPowerUp.insets = new Insets(0, 0, 5, 0);
+		gbc__btnPowerUp.gridx = 5;
+		gbc__btnPowerUp.gridy = 3;
+		panelPowers.add(_btnPowerUp, gbc__btnPowerUp);
+
+		_btnPowerDown = new JButton("Down");
+		_btnPowerDown.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonPowerDownActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc__btnPowerDown = new GridBagConstraints();
+		gbc__btnPowerDown.fill = GridBagConstraints.HORIZONTAL;
+		gbc__btnPowerDown.insets = new Insets(0, 0, 5, 0);
+		gbc__btnPowerDown.gridx = 5;
+		gbc__btnPowerDown.gridy = 4;
+		panelPowers.add(_btnPowerDown, gbc__btnPowerDown);
+
+		JLabel lblName_1 = new JLabel("Name");
+		GridBagConstraints gbc_lblName_1 = new GridBagConstraints();
+		gbc_lblName_1.anchor = GridBagConstraints.EAST;
+		gbc_lblName_1.insets = new Insets(0, 0, 5, 5);
+		gbc_lblName_1.gridx = 0;
+		gbc_lblName_1.gridy = 5;
+		panelPowers.add(lblName_1, gbc_lblName_1);
+
+		_textFieldPowerName = new JTextField();
+		_textFieldPowerName.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				jTextFieldPowerNameKeyKeyReleased(e);
+			}
+		});
+		GridBagConstraints gbc_textFieldPowerName = new GridBagConstraints();
+		gbc_textFieldPowerName.gridwidth = 5;
+		gbc_textFieldPowerName.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldPowerName.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldPowerName.gridx = 1;
+		gbc_textFieldPowerName.gridy = 5;
+		panelPowers.add(_textFieldPowerName, gbc_textFieldPowerName);
+		_textFieldPowerName.setColumns(10);
+
+		JLabel lblAction = new JLabel("Action");
+		GridBagConstraints gbc_lblAction = new GridBagConstraints();
+		gbc_lblAction.anchor = GridBagConstraints.EAST;
+		gbc_lblAction.insets = new Insets(0, 0, 5, 5);
+		gbc_lblAction.gridx = 0;
+		gbc_lblAction.gridy = 6;
+		panelPowers.add(lblAction, gbc_lblAction);
+
+		_textFieldPowerAction = new JTextField();
+		_textFieldPowerAction.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				jTextFieldPowerActionKeyKeyReleased(e);
+			}
+		});
+		GridBagConstraints gbc_textFieldPowerAction = new GridBagConstraints();
+		gbc_textFieldPowerAction.gridwidth = 5;
+		gbc_textFieldPowerAction.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldPowerAction.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldPowerAction.gridx = 1;
+		gbc_textFieldPowerAction.gridy = 6;
+		panelPowers.add(_textFieldPowerAction, gbc_textFieldPowerAction);
+		_textFieldPowerAction.setColumns(10);
+
+		JLabel lblKeywords = new JLabel("Keywords");
+		GridBagConstraints gbc_lblKeywords = new GridBagConstraints();
+		gbc_lblKeywords.anchor = GridBagConstraints.EAST;
+		gbc_lblKeywords.insets = new Insets(0, 0, 5, 5);
+		gbc_lblKeywords.gridx = 0;
+		gbc_lblKeywords.gridy = 7;
+		panelPowers.add(lblKeywords, gbc_lblKeywords);
+
+		_textFieldPowerKeywords = new JTextField();
+		_textFieldPowerKeywords.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				jTextFieldPowerKeywordsKeyKeyReleased(e);
+			}
+		});
+		GridBagConstraints gbc_textFieldPowerKeywords = new GridBagConstraints();
+		gbc_textFieldPowerKeywords.gridwidth = 5;
+		gbc_textFieldPowerKeywords.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldPowerKeywords.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldPowerKeywords.gridx = 1;
+		gbc_textFieldPowerKeywords.gridy = 7;
+		panelPowers.add(_textFieldPowerKeywords, gbc_textFieldPowerKeywords);
+		_textFieldPowerKeywords.setColumns(10);
+
+		JLabel lblUrl = new JLabel("URL");
+		GridBagConstraints gbc_lblUrl = new GridBagConstraints();
+		gbc_lblUrl.anchor = GridBagConstraints.EAST;
+		gbc_lblUrl.insets = new Insets(0, 0, 5, 5);
+		gbc_lblUrl.gridx = 0;
+		gbc_lblUrl.gridy = 8;
+		panelPowers.add(lblUrl, gbc_lblUrl);
+
+		_textFieldPowerURL = new JTextField();
+		GridBagConstraints gbc_textFieldPowerURL = new GridBagConstraints();
+		gbc_textFieldPowerURL.gridwidth = 5;
+		gbc_textFieldPowerURL.insets = new Insets(0, 0, 5, 0);
+		gbc_textFieldPowerURL.fill = GridBagConstraints.HORIZONTAL;
+		gbc_textFieldPowerURL.gridx = 1;
+		gbc_textFieldPowerURL.gridy = 8;
+		panelPowers.add(_textFieldPowerURL, gbc_textFieldPowerURL);
+		_textFieldPowerURL.setColumns(10);
+
+		JLabel lblIcon = new JLabel("Icon");
+		GridBagConstraints gbc_lblIcon = new GridBagConstraints();
+		gbc_lblIcon.anchor = GridBagConstraints.EAST;
+		gbc_lblIcon.insets = new Insets(0, 0, 5, 5);
+		gbc_lblIcon.gridx = 0;
+		gbc_lblIcon.gridy = 9;
+		panelPowers.add(lblIcon, gbc_lblIcon);
+
+		_comboBoxPowerIcon = new JComboBox();
+		_comboBoxPowerIcon.addItemListener(new ItemListener() {
+			public void itemStateChanged(ItemEvent e) {
+				jComboBoxPowerIconItemItemStateChanged(e);
+			}
+		});
+		GridBagConstraints gbc__comboBoxIcon = new GridBagConstraints();
+		gbc__comboBoxIcon.insets = new Insets(0, 0, 5, 5);
+		gbc__comboBoxIcon.fill = GridBagConstraints.HORIZONTAL;
+		gbc__comboBoxIcon.gridx = 1;
+		gbc__comboBoxIcon.gridy = 9;
+		panelPowers.add(_comboBoxPowerIcon, gbc__comboBoxIcon);
+
+		_chckbxPowerAura = new JCheckBox("Aura");
+		_chckbxPowerAura.addChangeListener(new ChangeListener() {
+			public void stateChanged(ChangeEvent e) {
+				jCheckBoxPowerAuraChangeStateChanged(e);
+			}
+		});
+		GridBagConstraints gbc__chckbxAura = new GridBagConstraints();
+		gbc__chckbxAura.insets = new Insets(0, 0, 5, 5);
+		gbc__chckbxAura.gridx = 2;
+		gbc__chckbxAura.gridy = 9;
+		panelPowers.add(_chckbxPowerAura, gbc__chckbxAura);
+
+		_formattedTextFieldPowerAuraSize = new JFormattedTextField(NumberFormat.getInstance());
+		_formattedTextFieldPowerAuraSize.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				jFormattedTextFieldAuraSizeKeyKeyReleased(e);
+			}
+		});
+		_formattedTextFieldPowerAuraSize.setColumns(3);
+		_formattedTextFieldPowerAuraSize.setText("0");
+		GridBagConstraints gbc__formattedTextFieldAura = new GridBagConstraints();
+		gbc__formattedTextFieldAura.insets = new Insets(0, 0, 5, 5);
+		gbc__formattedTextFieldAura.fill = GridBagConstraints.HORIZONTAL;
+		gbc__formattedTextFieldAura.gridx = 3;
+		gbc__formattedTextFieldAura.gridy = 9;
+		panelPowers.add(_formattedTextFieldPowerAuraSize, gbc__formattedTextFieldAura);
+
+		Box horizontalBox = Box.createHorizontalBox();
+		GridBagConstraints gbc_horizontalBox = new GridBagConstraints();
+		gbc_horizontalBox.fill = GridBagConstraints.HORIZONTAL;
+		gbc_horizontalBox.insets = new Insets(0, 0, 5, 5);
+		gbc_horizontalBox.gridx = 4;
+		gbc_horizontalBox.gridy = 9;
+		panelPowers.add(horizontalBox, gbc_horizontalBox);
+
+		JPanel panelPowerDescription = new JPanel();
+		panelPowerDescription.setBorder(new TitledBorder(null, "Description", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		GridBagConstraints gbc_panelPowerDescription = new GridBagConstraints();
+		gbc_panelPowerDescription.gridwidth = 6;
+		gbc_panelPowerDescription.insets = new Insets(0, 0, 0, 5);
+		gbc_panelPowerDescription.fill = GridBagConstraints.BOTH;
+		gbc_panelPowerDescription.gridx = 0;
+		gbc_panelPowerDescription.gridy = 10;
+		panelPowers.add(panelPowerDescription, gbc_panelPowerDescription);
+		panelPowerDescription.setLayout(new BorderLayout(0, 0));
+
+		_textAreaPowerDescription = new JTextArea();
+		_textAreaPowerDescription.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				jTextAreaPowerDescriptionKeyKeyReleased(e);
+			}
+		});
+		panelPowerDescription.add(_textAreaPowerDescription);
+
+		JButton btnAtLoad = new JButton("AT Load");
+		btnAtLoad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonATLoadActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnAtLoad = new GridBagConstraints();
+		gbc_btnAtLoad.insets = new Insets(0, 0, 0, 5);
+		gbc_btnAtLoad.gridx = 0;
+		gbc_btnAtLoad.gridy = 1;
+		panelRight.add(btnAtLoad, gbc_btnAtLoad);
+
+		JButton btnCbLoad = new JButton("CB Load");
+		btnCbLoad.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonCBLoadActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnCbLoad = new GridBagConstraints();
+		gbc_btnCbLoad.insets = new Insets(0, 0, 0, 5);
+		gbc_btnCbLoad.gridx = 1;
+		gbc_btnCbLoad.gridy = 1;
+		panelRight.add(btnCbLoad, gbc_btnCbLoad);
+
+		Component horizontalStrut = Box.createHorizontalStrut(20);
+		GridBagConstraints gbc_horizontalStrut = new GridBagConstraints();
+		gbc_horizontalStrut.insets = new Insets(0, 0, 0, 5);
+		gbc_horizontalStrut.gridx = 2;
+		gbc_horizontalStrut.gridy = 1;
+		panelRight.add(horizontalStrut, gbc_horizontalStrut);
+
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonCancelActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnCancel = new GridBagConstraints();
+		gbc_btnCancel.insets = new Insets(0, 0, 0, 5);
+		gbc_btnCancel.gridx = 4;
+		gbc_btnCancel.gridy = 1;
+		panelRight.add(btnCancel, gbc_btnCancel);
+
+		JButton btnOk = new JButton("OK");
+		btnOk.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				jButtonOKActionActionPerformed(e);
+			}
+		});
+		GridBagConstraints gbc_btnOk = new GridBagConstraints();
+		gbc_btnOk.gridx = 5;
+		gbc_btnOk.gridy = 1;
+		panelRight.add(btnOk, gbc_btnOk);
+		pack();
 	}
 
 	/**
 	 * Clears effect fields.
 	 */
 	private void clearEffect() {
-		getJComboBoxEffect().setSelectedIndex(0);
-		getJComboBoxDuration().setSelectedIndex(0);
-		getJCheckBoxBeneficial().setSelected(false);
-		getJCheckBoxHidden().setSelected(false);
-	}
-
-	private JButton getJButtonAdd() {
-		if (jButtonAdd == null) {
-			jButtonAdd = new JButton();
-			jButtonAdd.setText("Add");
-			jButtonAdd.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonAddActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonAdd;
-	}
-
-	private JButton getJButtonATLoad() {
-		if (jButtonATLoad == null) {
-			jButtonATLoad = new JButton();
-			jButtonATLoad.setText("AT Load");
-			jButtonATLoad.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonATLoadActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonATLoad;
-	}
-
-	private JButton getJButtonCancel() {
-		if (jButtonCancel == null) {
-			jButtonCancel = new JButton();
-			jButtonCancel.setText("Cancel");
-			jButtonCancel.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonCancelActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonCancel;
-	}
-
-	private JButton getJButtonCBLoad() {
-		if (jButtonCBLoad == null) {
-			jButtonCBLoad = new JButton();
-			jButtonCBLoad.setText("CB Load");
-			jButtonCBLoad.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonCBLoadActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonCBLoad;
-	}
-
-	private JButton getJButtonDelete() {
-		if (jButtonDelete == null) {
-			jButtonDelete = new JButton();
-			jButtonDelete.setText("Delete");
-			jButtonDelete.setEnabled(false);
-			jButtonDelete.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonDeleteActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonDelete;
-	}
-
-	private JButton getJButtonEdit() {
-		if (jButtonEdit == null) {
-			jButtonEdit = new JButton();
-			jButtonEdit.setText("Edit");
-			jButtonEdit.setEnabled(false);
-			jButtonEdit.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonEditActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonEdit;
-	}
-
-	private JButton getJButtonExport() {
-		if (jButtonExport == null) {
-			jButtonExport = new JButton();
-			jButtonExport.setText("Export");
-			jButtonExport.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonExportActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonExport;
-	}
-
-	private JButton getJButtonImport() {
-		if (jButtonImport == null) {
-			jButtonImport = new JButton();
-			jButtonImport.setText("Import");
-			jButtonImport.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonImportActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonImport;
-	}
-
-	private JButton getJButtonOK() {
-		if (jButtonOK == null) {
-			jButtonOK = new JButton();
-			jButtonOK.setText("OK");
-			jButtonOK.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonOKActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonOK;
-	}
-
-	private JButton getJButtonPowerDelete() {
-		if (jButtonPowerDelete == null) {
-			jButtonPowerDelete = new JButton();
-			jButtonPowerDelete.setText("Delete");
-			jButtonPowerDelete.setEnabled(false);
-			jButtonPowerDelete.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonPowerDeleteActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonPowerDelete;
-	}
-
-	private JButton getJButtonPowerDown() {
-		if (jButtonPowerDown == null) {
-			jButtonPowerDown = new JButton();
-			jButtonPowerDown.setText("Down");
-			jButtonPowerDown.setEnabled(false);
-			jButtonPowerDown.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonPowerDownActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonPowerDown;
-	}
-
-	private JButton getJButtonPowerNew() {
-		if (jButtonPowerNew == null) {
-			jButtonPowerNew = new JButton();
-			jButtonPowerNew.setText("New");
-			jButtonPowerNew.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonPowerNewActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonPowerNew;
-	}
-
-	private JButton getJButtonPowerUp() {
-		if (jButtonPowerUp == null) {
-			jButtonPowerUp = new JButton();
-			jButtonPowerUp.setText("Up");
-			jButtonPowerUp.setEnabled(false);
-			jButtonPowerUp.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jButtonPowerUpActionActionPerformed(event);
-				}
-			});
-		}
-		return jButtonPowerUp;
-	}
-
-	private JCheckBox getJCheckBoxBeneficial() {
-		if (jCheckBoxBeneficial == null) {
-			jCheckBoxBeneficial = new JCheckBox();
-			jCheckBoxBeneficial.setText("Beneficial");
-		}
-		return jCheckBoxBeneficial;
-	}
-
-	private JCheckBox getJCheckBoxHidden() {
-		if (jCheckBoxHidden == null) {
-			jCheckBoxHidden = new JCheckBox();
-			jCheckBoxHidden.setText("Hidden");
-		}
-		return jCheckBoxHidden;
-	}
-
-	private JCheckBox getJCheckBoxLeader() {
-		if (jCheckBoxLeader == null) {
-			jCheckBoxLeader = new JCheckBox();
-			jCheckBoxLeader.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jCheckBoxLeader.setText("Leader");
-		}
-		return jCheckBoxLeader;
-	}
-
-	private JCheckBox getJCheckBoxPC() {
-		if (jCheckBoxPC == null) {
-			jCheckBoxPC = new JCheckBox();
-			jCheckBoxPC.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jCheckBoxPC.setText("PC");
-			jCheckBoxPC.addChangeListener(new ChangeListener() {
-
-				@Override
-				public void stateChanged(ChangeEvent event) {
-					jCheckBoxPCChangeStateChanged(event);
-				}
-			});
-		}
-		return jCheckBoxPC;
-	}
-
-	private JCheckBox getJCheckBoxPowerAura() {
-		if (jCheckBoxPowerAura == null) {
-			jCheckBoxPowerAura = new JCheckBox();
-			jCheckBoxPowerAura.setText("Aura");
-			jCheckBoxPowerAura.setEnabled(false);
-			jCheckBoxPowerAura.addActionListener(new ActionListener() {
-
-				@Override
-				public void actionPerformed(ActionEvent event) {
-					jCheckBoxPowerAuraActionActionPerformed(event);
-				}
-			});
-		}
-		return jCheckBoxPowerAura;
-	}
-
-	private JComboBox getJComboBoxDuration() {
-		if (jComboBoxDuration == null) {
-			jComboBoxDuration = new JComboBox();
-			jComboBoxDuration.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxDuration.setModel(new DefaultComboBoxModel(new Object[] { Duration.None, Duration.SourceEnd,
-					Duration.TargetEnd, Duration.TurnEnd, Duration.Encounter, Duration.SaveEnds, Duration.Special,
-					Duration.SourceStart, Duration.TargetStart, Duration.Sustained }));
-			jComboBoxDuration.setRenderer(new DurationCellRenderer());
-			jComboBoxDuration.setDoubleBuffered(false);
-			jComboBoxDuration.setBorder(null);
-			jComboBoxDuration.setRequestFocusEnabled(false);
-		}
-		return jComboBoxDuration;
-	}
-
-	private JComboBox getJComboBoxEffect() {
-		if (jComboBoxEffect == null) {
-			jComboBoxEffect = new JComboBox();
-			jComboBoxEffect.setEditable(true);
-			jComboBoxEffect.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jComboBoxEffect.setModel(new DefaultComboBoxModel(new Object[] { "", "Attack Penalty", "Blinded", "Dazed", "Deafened",
-					"Defense Penalty", "Dominated", "Full Defense (+2 all def)", "Granting Combat Advantage", "Immobilized",
-					"Marked", "Ongoing Damage", "Petrified", "Prone", "Regeneration", "Resist", "Restrained",
-					"Second Wind (+2 all def)", "Slowed", "Stunned", "Surprised", "Unconscious", "Vulnerability", "Weakened" }));
-			jComboBoxEffect.setDoubleBuffered(false);
-			jComboBoxEffect.setBorder(null);
-			jComboBoxEffect.setRequestFocusEnabled(false);
-			AutoCompletion.enable(jComboBoxEffect);
-		}
-		return jComboBoxEffect;
-	}
-
-	private JComboBox getJComboBoxPowerIcon() {
-		if (jComboBoxPowerIcon == null) {
-			jComboBoxPowerIcon = new JComboBox();
-			jComboBoxPowerIcon.setModel(new DefaultComboBoxModel(new Object[] { "(no icon)", "Basic Melee", "Basic Ranged",
-					"Melee", "Ranged", "Close", "Area" }));
-			jComboBoxPowerIcon.setDoubleBuffered(false);
-			jComboBoxPowerIcon.setBorder(null);
-			jComboBoxPowerIcon.setEnabled(false);
-			jComboBoxPowerIcon.addItemListener(new ItemListener() {
-
-				@Override
-				public void itemStateChanged(ItemEvent event) {
-					jComboBoxPowerIconItemItemStateChanged(event);
-				}
-			});
-		}
-		return jComboBoxPowerIcon;
-	}
-
-	private JComboBox getJComboBoxRole() {
-		if (jComboBoxRole == null) {
-			jComboBoxRole = new JComboBox();
-			jComboBoxRole.setModel(new DefaultComboBoxModel(new Object[] { "", "Artillery", "Blaster", "Brute", "Controller",
-					"Lurker", "Minion", "Obstacle", "Puzzle", "Skirmisher", "Soldier", "Warder", "Hero", "Companion" }));
-			jComboBoxRole.setDoubleBuffered(false);
-			jComboBoxRole.setBorder(null);
-		}
-		return jComboBoxRole;
-	}
-
-	private JComboBox getJComboBoxRole2() {
-		if (jComboBoxRole2 == null) {
-			jComboBoxRole2 = new JComboBox();
-			jComboBoxRole2.setModel(new DefaultComboBoxModel(new Object[] { "", "Elite", "Solo" }));
-			jComboBoxRole2.setBorder(null);
-			jComboBoxRole2.setDoubleBuffered(false);
-			jComboBoxRole2.addItemListener(new ItemListener() {
-
-				@Override
-				public void itemStateChanged(ItemEvent event) {
-					jComboBoxRoleItemItemStateChanged(event);
-				}
-			});
-		}
-		return jComboBoxRole2;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldAC() {
-		if (jFormattedTextFieldAC == null) {
-			jFormattedTextFieldAC = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldAC.setText("0");
-		}
-		return jFormattedTextFieldAC;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldActionPts() {
-		if (jFormattedTextFieldActionPts == null) {
-			jFormattedTextFieldActionPts = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldActionPts.setText("0");
-		}
-		return jFormattedTextFieldActionPts;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldAuraSize() {
-		if (jFormattedTextFieldAuraSize == null) {
-			jFormattedTextFieldAuraSize = new JFormattedTextField();
-			jFormattedTextFieldAuraSize.setText("0");
-			jFormattedTextFieldAuraSize.setEnabled(false);
-			jFormattedTextFieldAuraSize.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent event) {
-					jFormattedTextFieldAuraSizeKeyKeyReleased(event);
-				}
-			});
-		}
-		return jFormattedTextFieldAuraSize;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldCha() {
-		if (jFormattedTextFieldCha == null) {
-			jFormattedTextFieldCha = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldCha.setText("0");
-		}
-		return jFormattedTextFieldCha;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldCon() {
-		if (jFormattedTextFieldCon == null) {
-			jFormattedTextFieldCon = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldCon.setText("0");
-		}
-		return jFormattedTextFieldCon;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldDex() {
-		if (jFormattedTextFieldDex == null) {
-			jFormattedTextFieldDex = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldDex.setText("0");
-		}
-		return jFormattedTextFieldDex;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldFortitude() {
-		if (jFormattedTextFieldFortitude == null) {
-			jFormattedTextFieldFortitude = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldFortitude.setText("0");
-		}
-		return jFormattedTextFieldFortitude;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldInitiative() {
-		if (jFormattedTextFieldInitiative == null) {
-			jFormattedTextFieldInitiative = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldInitiative.setText("0");
-		}
-		return jFormattedTextFieldInitiative;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldInt() {
-		if (jFormattedTextFieldInt == null) {
-			jFormattedTextFieldInt = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldInt.setText("0");
-		}
-		return jFormattedTextFieldInt;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldMax() {
-		if (jFormattedTextFieldMax == null) {
-			jFormattedTextFieldMax = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldMax.setText("0");
-		}
-		return jFormattedTextFieldMax;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldPowerPts() {
-		if (jFormattedTextFieldPowerPts == null) {
-			jFormattedTextFieldPowerPts = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldPowerPts.setText("0");
-		}
-		return jFormattedTextFieldPowerPts;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldReflex() {
-		if (jFormattedTextFieldReflex == null) {
-			jFormattedTextFieldReflex = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldReflex.setText("0");
-		}
-		return jFormattedTextFieldReflex;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldSaveBonus() {
-		if (jFormattedTextFieldSaveBonus == null) {
-			jFormattedTextFieldSaveBonus = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldSaveBonus.setText("0");
-		}
-		return jFormattedTextFieldSaveBonus;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldStr() {
-		if (jFormattedTextFieldStr == null) {
-			jFormattedTextFieldStr = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldStr.setText("0");
-		}
-		return jFormattedTextFieldStr;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldSurges() {
-		if (jFormattedTextFieldSurges == null) {
-			jFormattedTextFieldSurges = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldSurges.setText("0");
-		}
-		return jFormattedTextFieldSurges;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldWill() {
-		if (jFormattedTextFieldWill == null) {
-			jFormattedTextFieldWill = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldWill.setText("0");
-		}
-		return jFormattedTextFieldWill;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldWis() {
-		if (jFormattedTextFieldWis == null) {
-			jFormattedTextFieldWis = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldWis.setText("0");
-		}
-		return jFormattedTextFieldWis;
-	}
-
-	private JFormattedTextField getJFormattedTextFieldXPValue() {
-		if (jFormattedTextFieldXPValue == null) {
-			jFormattedTextFieldXPValue = new JFormattedTextField(NumberFormat.getInstance());
-			jFormattedTextFieldXPValue.setText("0");
-		}
-		return jFormattedTextFieldXPValue;
-	}
-
-	private JLabel getJLabelAC() {
-		if (jLabelAC == null) {
-			jLabelAC = new JLabel();
-			jLabelAC.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelAC.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelAC.setText("AC");
-		}
-		return jLabelAC;
-	}
-
-	private JLabel getJLabelActionPts() {
-		if (jLabelActionPts == null) {
-			jLabelActionPts = new JLabel();
-			jLabelActionPts.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelActionPts.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelActionPts.setText("Action Pts");
-		}
-		return jLabelActionPts;
-	}
-
-	private JLabel getJLabelAlignment() {
-		if (jLabelAlignment == null) {
-			jLabelAlignment = new JLabel();
-			jLabelAlignment.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelAlignment.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelAlignment.setText("Alignment");
-		}
-		return jLabelAlignment;
-	}
-
-	private JLabel getJLabelCha() {
-		if (jLabelCha == null) {
-			jLabelCha = new JLabel();
-			jLabelCha.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelCha.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelCha.setText("Cha");
-		}
-		return jLabelCha;
-	}
-
-	private JLabel getJLabelCon() {
-		if (jLabelCon == null) {
-			jLabelCon = new JLabel();
-			jLabelCon.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelCon.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelCon.setText("Con");
-		}
-		return jLabelCon;
-	}
-
-	private JLabel getJLabelDex() {
-		if (jLabelDex == null) {
-			jLabelDex = new JLabel();
-			jLabelDex.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelDex.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelDex.setText("Dex");
-		}
-		return jLabelDex;
-	}
-
-	private JLabel getJLabelDuration() {
-		if (jLabelDuration == null) {
-			jLabelDuration = new JLabel();
-			jLabelDuration.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelDuration.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelDuration.setText("Duration");
-		}
-		return jLabelDuration;
-	}
-
-	private JLabel getJLabelEffect() {
-		if (jLabelEffect == null) {
-			jLabelEffect = new JLabel();
-			jLabelEffect.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelEffect.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelEffect.setText("Effect");
-		}
-		return jLabelEffect;
-	}
-
-	private JLabel getJLabelEquipment() {
-		if (jLabelEquipment == null) {
-			jLabelEquipment = new JLabel();
-			jLabelEquipment.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelEquipment.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelEquipment.setText("Equipment");
-		}
-		return jLabelEquipment;
-	}
-
-	private JLabel getJLabelFeats() {
-		if (jLabelFeats == null) {
-			jLabelFeats = new JLabel();
-			jLabelFeats.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelFeats.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelFeats.setText("Feats");
-		}
-		return jLabelFeats;
-	}
-
-	private JLabel getJLabelFortitude() {
-		if (jLabelFortitude == null) {
-			jLabelFortitude = new JLabel();
-			jLabelFortitude.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelFortitude.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelFortitude.setText("Fortitude");
-		}
-		return jLabelFortitude;
-	}
-
-	private JLabel getJLabelImmune() {
-		if (jLabelImmune == null) {
-			jLabelImmune = new JLabel();
-			jLabelImmune.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelImmune.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelImmune.setText("Immune");
-		}
-		return jLabelImmune;
-	}
-
-	private JLabel getJLabelInitiative() {
-		if (jLabelInitiative == null) {
-			jLabelInitiative = new JLabel();
-			jLabelInitiative.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelInitiative.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelInitiative.setText("Initiative");
-		}
-		return jLabelInitiative;
-	}
-
-	private JLabel getJLabelInt() {
-		if (jLabelInt == null) {
-			jLabelInt = new JLabel();
-			jLabelInt.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelInt.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelInt.setText("Int");
-		}
-		return jLabelInt;
-	}
-
-	private JLabel getJLabelLanguages() {
-		if (jLabelLanguages == null) {
-			jLabelLanguages = new JLabel();
-			jLabelLanguages.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelLanguages.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelLanguages.setText("Languages");
-		}
-		return jLabelLanguages;
-	}
-
-	private JLabel getJLabelLevel() {
-		if (jLabelLevel == null) {
-			jLabelLevel = new JLabel();
-			jLabelLevel.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelLevel.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelLevel.setText("Level");
-		}
-		return jLabelLevel;
-	}
-
-	private JLabel getJLabelMax() {
-		if (jLabelMax == null) {
-			jLabelMax = new JLabel();
-			jLabelMax.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelMax.setText("Max");
-		}
-		return jLabelMax;
-	}
-
-	private JLabel getJLabelName() {
-		if (jLabelName == null) {
-			jLabelName = new JLabel();
-			jLabelName.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelName.setText("Name");
-		}
-		return jLabelName;
-	}
-
-	private JLabel getJLabelPowerAction() {
-		if (jLabelPowerAction == null) {
-			jLabelPowerAction = new JLabel();
-			jLabelPowerAction.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelPowerAction.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelPowerAction.setText("Action");
-		}
-		return jLabelPowerAction;
-	}
-
-	private JLabel getJLabelPowerIcon() {
-		if (jLabelPowerIcon == null) {
-			jLabelPowerIcon = new JLabel();
-			jLabelPowerIcon.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelPowerIcon.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelPowerIcon.setText("Icon");
-		}
-		return jLabelPowerIcon;
-	}
-
-	private JLabel getJLabelPowerKeywords() {
-		if (jLabelPowerKeywords == null) {
-			jLabelPowerKeywords = new JLabel();
-			jLabelPowerKeywords.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelPowerKeywords.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelPowerKeywords.setText("Keywords");
-		}
-		return jLabelPowerKeywords;
-	}
-
-	private JLabel getJLabelPowerName() {
-		if (jLabelPowerName == null) {
-			jLabelPowerName = new JLabel();
-			jLabelPowerName.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelPowerName.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelPowerName.setText("Name");
-		}
-		return jLabelPowerName;
-	}
-
-	private JLabel getJLabelPowerPts() {
-		if (jLabelPowerPts == null) {
-			jLabelPowerPts = new JLabel();
-			jLabelPowerPts.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelPowerPts.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelPowerPts.setText("Power Pts");
-		}
-		return jLabelPowerPts;
-	}
-
-	private JLabel getJLabelPowerURL() {
-		if (jLabelPowerURL == null) {
-			jLabelPowerURL = new JLabel();
-			jLabelPowerURL.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelPowerURL.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelPowerURL.setText("URL");
-		}
-		return jLabelPowerURL;
-	}
-
-	private JLabel getJLabelReflex() {
-		if (jLabelReflex == null) {
-			jLabelReflex = new JLabel();
-			jLabelReflex.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelReflex.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelReflex.setText("Reflex");
-		}
-		return jLabelReflex;
-	}
-
-	private JLabel getJLabelRegen() {
-		if (jLabelRegen == null) {
-			jLabelRegen = new JLabel();
-			jLabelRegen.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelRegen.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelRegen.setText("Regen");
-		}
-		return jLabelRegen;
-	}
-
-	private JLabel getJLabelResist() {
-		if (jLabelResist == null) {
-			jLabelResist = new JLabel();
-			jLabelResist.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelResist.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelResist.setText("Resist");
-		}
-		return jLabelResist;
-	}
-
-	private JLabel getJLabelRole() {
-		if (jLabelRole == null) {
-			jLabelRole = new JLabel();
-			jLabelRole.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelRole.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelRole.setText("Role");
-		}
-		return jLabelRole;
-	}
-
-	private JLabel getJLabelSaveBonus() {
-		if (jLabelSaveBonus == null) {
-			jLabelSaveBonus = new JLabel();
-			jLabelSaveBonus.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelSaveBonus.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelSaveBonus.setText("Save Bonus");
-		}
-		return jLabelSaveBonus;
-	}
-
-	private JLabel getJLabelSenses() {
-		if (jLabelSenses == null) {
-			jLabelSenses = new JLabel();
-			jLabelSenses.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelSenses.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelSenses.setText("Senses");
-		}
-		return jLabelSenses;
-	}
-
-	private JLabel getJLabelSkills() {
-		if (jLabelSkills == null) {
-			jLabelSkills = new JLabel();
-			jLabelSkills.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelSkills.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelSkills.setText("Skills");
-		}
-		return jLabelSkills;
-	}
-
-	private JLabel getJLabelSource() {
-		if (jLabelSource == null) {
-			jLabelSource = new JLabel();
-			jLabelSource.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelSource.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelSource.setText("Source");
-		}
-		return jLabelSource;
-	}
-
-	private JLabel getJLabelSpeed() {
-		if (jLabelSpeed == null) {
-			jLabelSpeed = new JLabel();
-			jLabelSpeed.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelSpeed.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelSpeed.setText("Speed");
-		}
-		return jLabelSpeed;
-	}
-
-	private JLabel getJLabelStr() {
-		if (jLabelStr == null) {
-			jLabelStr = new JLabel();
-			jLabelStr.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelStr.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelStr.setText("Str");
-		}
-		return jLabelStr;
-	}
-
-	private JLabel getJLabelSurges() {
-		if (jLabelSurges == null) {
-			jLabelSurges = new JLabel();
-			jLabelSurges.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelSurges.setText("Surges");
-		}
-		return jLabelSurges;
-	}
-
-	private JLabel getJLabelTypeKeywords() {
-		if (jLabelTypeKeywords == null) {
-			jLabelTypeKeywords = new JLabel();
-			jLabelTypeKeywords.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelTypeKeywords.setText("Type/Keywords");
-		}
-		return jLabelTypeKeywords;
-	}
-
-	private JLabel getJLabelVulnerable() {
-		if (jLabelVulnerable == null) {
-			jLabelVulnerable = new JLabel();
-			jLabelVulnerable.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelVulnerable.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelVulnerable.setText("Vulnerable");
-		}
-		return jLabelVulnerable;
-	}
-
-	private JLabel getJLabelWill() {
-		if (jLabelWill == null) {
-			jLabelWill = new JLabel();
-			jLabelWill.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelWill.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelWill.setText("Will");
-		}
-		return jLabelWill;
-	}
-
-	private JLabel getJLabelWis() {
-		if (jLabelWis == null) {
-			jLabelWis = new JLabel();
-			jLabelWis.setFont(new Font("Dialog", Font.PLAIN, 12));
-			jLabelWis.setHorizontalAlignment(SwingConstants.TRAILING);
-			jLabelWis.setText("Wis");
-		}
-		return jLabelWis;
-	}
-
-	private JList getJListEffects() {
-		if (jListEffects == null) {
-			jListEffects = new JList();
-			DefaultListModel listModel = new DefaultListModel();
-			jListEffects.setModel(listModel);
-			jListEffects.setCellRenderer(new EffectBaseCellRenderer());
-			jListEffects.addListSelectionListener(new ListSelectionListener() {
-
-				@Override
-				public void valueChanged(ListSelectionEvent event) {
-					jListEffectsListSelectionValueChanged(event);
-				}
-			});
-		}
-		return jListEffects;
-	}
-
-	private JList getJListPowers() {
-		if (jListPowers == null) {
-			jListPowers = new JList();
-			DefaultListModel listModel = new DefaultListModel();
-			jListPowers.setModel(listModel);
-			jListPowers.setCellRenderer(new PowerDetailsCellRenderer());
-			jListPowers.addListSelectionListener(new ListSelectionListener() {
-
-				@Override
-				public void valueChanged(ListSelectionEvent event) {
-					jListPowersListSelectionValueChanged(event);
-				}
-			});
-		}
-		return jListPowers;
-	}
-
-	private JPanel getJPanelAttributes() {
-		if (jPanelAttributes == null) {
-			jPanelAttributes = new JPanel();
-			jPanelAttributes.setBorder(BorderFactory.createTitledBorder(null, "Attributes", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jPanelAttributes.setLayout(new GroupLayout());
-			jPanelAttributes.add(getJLabelStr(), new Constraints(new Leading(0, 24, 12, 12), new Leading(0, 12, 12)));
-			jPanelAttributes.add(getJLabelDex(), new Constraints(new Leading(0, 24, 12, 12), new Leading(34, 12, 12)));
-			jPanelAttributes.add(getJLabelWis(), new Constraints(new Leading(0, 24, 12, 12), new Leading(68, 12, 12)));
-			jPanelAttributes.add(getJFormattedTextFieldStr(), new Constraints(new Leading(36, 33, 12, 12), new Leading(0, 12, 12)));
-			jPanelAttributes
-					.add(getJFormattedTextFieldDex(), new Constraints(new Leading(36, 33, 12, 12), new Leading(34, 12, 12)));
-			jPanelAttributes
-					.add(getJFormattedTextFieldWis(), new Constraints(new Leading(36, 33, 12, 12), new Leading(68, 12, 12)));
-			jPanelAttributes.add(getJLabelCon(), new Constraints(new Leading(81, 24, 12, 12), new Leading(0, 12, 12)));
-			jPanelAttributes.add(getJLabelInt(), new Constraints(new Leading(81, 24, 12, 12), new Leading(34, 12, 12)));
-			jPanelAttributes.add(getJLabelCha(), new Constraints(new Leading(81, 24, 12, 12), new Leading(68, 12, 12)));
-			jPanelAttributes
-					.add(getJFormattedTextFieldCon(), new Constraints(new Leading(117, 33, 12, 12), new Leading(0, 12, 12)));
-			jPanelAttributes.add(getJFormattedTextFieldInt(),
-					new Constraints(new Leading(117, 33, 12, 12), new Leading(34, 12, 12)));
-			jPanelAttributes.add(getJFormattedTextFieldCha(),
-					new Constraints(new Leading(117, 33, 12, 12), new Leading(68, 12, 12)));
-		}
-		return jPanelAttributes;
-	}
-
-	private JPanel getJPanelDefenses() {
-		if (jPanelDefenses == null) {
-			jPanelDefenses = new JPanel();
-			jPanelDefenses.setBorder(BorderFactory.createTitledBorder(null, "Defenses", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jPanelDefenses.setLayout(new GroupLayout());
-			jPanelDefenses.add(getJLabelAC(), new Constraints(new Leading(12, 48, 12, 12), new Leading(0, 12, 12)));
-			jPanelDefenses.add(getJLabelFortitude(), new Constraints(new Leading(12, 48, 12, 12), new Leading(22, 12, 12)));
-			jPanelDefenses.add(getJLabelReflex(), new Constraints(new Leading(12, 48, 12, 12), new Leading(44, 12, 12)));
-			jPanelDefenses.add(getJLabelWill(), new Constraints(new Leading(12, 48, 12, 12), new Leading(66, 12, 12)));
-			jPanelDefenses.add(getJFormattedTextFieldAC(), new Constraints(new Leading(72, 33, 10, 10), new Leading(0, 12, 12)));
-			jPanelDefenses.add(getJFormattedTextFieldFortitude(), new Constraints(new Leading(72, 33, 10, 10), new Leading(22, 12,
-					12)));
-			jPanelDefenses.add(getJFormattedTextFieldReflex(),
-					new Constraints(new Leading(72, 33, 10, 10), new Leading(44, 12, 12)));
-			jPanelDefenses.add(getJFormattedTextFieldWill(), new Constraints(new Leading(72, 33, 10, 10), new Leading(66, 12, 12)));
-		}
-		return jPanelDefenses;
-	}
-
-	private JPanel getJPanelDescription() {
-		if (jPanelDescription == null) {
-			jPanelDescription = new JPanel();
-			jPanelDescription.setBorder(BorderFactory.createTitledBorder(null, "Description", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jPanelDescription.setLayout(new GroupLayout());
-			jPanelDescription.add(getJLabelLevel(), new Constraints(new Leading(12, 32, 79, 79), new Leading(0, 12, 12)));
-			jPanelDescription.add(getJLabelTypeKeywords(), new Constraints(new Leading(120, 79, 79), new Leading(0, 12, 12)));
-			jPanelDescription.add(getJLabelRole(), new Constraints(new Leading(12, 32, 62, 62), new Leading(24, 12, 12)));
-			jPanelDescription.add(getJSpinnerLevel(), new Constraints(new Leading(56, 40, 274, 274), new Leading(0, 12, 12)));
-			jPanelDescription.add(getJTextFieldTypeKeywords(), new Constraints(new Leading(211, 140, 78, 78),
-					new Leading(0, 12, 12)));
-			jPanelDescription.add(getJComboBoxRole2(), new Constraints(new Leading(56, 80, 56, 56), new Leading(21, 20, 12, 12)));
-			jPanelDescription.add(getJComboBoxRole(), new Constraints(new Leading(142, 208, 56, 56), new Leading(21, 20, 12, 12)));
-			jPanelDescription.add(getJCheckBoxLeader(), new Constraints(new Trailing(8, 68, 10, 10), new Leading(0, 17, 8, 8)));
-			jPanelDescription.add(getJCheckBoxPC(), new Constraints(new Trailing(8, 68, 245, 299), new Leading(21, 20, 8, 8)));
-		}
-		return jPanelDescription;
-	}
-
-	private JPanel getJPanelGeneratedEffects() {
-		if (jPanelGeneratedEffects == null) {
-			jPanelGeneratedEffects = new JPanel();
-			jPanelGeneratedEffects.setLayout(new GroupLayout());
-			jPanelGeneratedEffects.add(getJButtonEdit(), new Constraints(new Trailing(12, 76, 118, 346), new Leading(12, 12, 12)));
-			jPanelGeneratedEffects
-					.add(getJButtonExport(), new Constraints(new Trailing(12, 76, 118, 346), new Leading(44, 12, 12)));
-			jPanelGeneratedEffects.add(getJButtonImport(), new Constraints(new Trailing(12, 118, 346), new Leading(76, 12, 12)));
-			jPanelGeneratedEffects.add(getJButtonDelete(),
-					new Constraints(new Trailing(12, 76, 118, 346), new Leading(108, 12, 12)));
-			jPanelGeneratedEffects.add(getJScrollPaneEffects(), new Constraints(new Leading(84, 250, 95, 95), new Leading(12, 243,
-					12, 12)));
-			jPanelGeneratedEffects.add(getJLabelEffect(), new Constraints(new Leading(12, 60, 12, 12), new Leading(265, 12, 12)));
-			jPanelGeneratedEffects.add(getJLabelDuration(), new Constraints(new Leading(12, 60, 12, 12), new Leading(294, 12, 12)));
-			jPanelGeneratedEffects.add(getJComboBoxEffect(),
-					new Constraints(new Leading(84, 250, 95, 95), new Leading(261, 12, 12)));
-			jPanelGeneratedEffects.add(getJComboBoxDuration(), new Constraints(new Leading(84, 250, 95, 95), new Leading(290, 12,
-					12)));
-			jPanelGeneratedEffects.add(getJCheckBoxBeneficial(), new Constraints(new Leading(84, 8, 8), new Leading(317, 8, 8)));
-			jPanelGeneratedEffects.add(getJCheckBoxHidden(), new Constraints(new Leading(177, 8, 8), new Leading(317, 8, 8)));
-			jPanelGeneratedEffects.add(getJButtonAdd(), new Constraints(new Leading(270, 64, 12, 12), new Leading(317, 12, 12)));
-		}
-		return jPanelGeneratedEffects;
-	}
-
-	private JPanel getJPanelHitPoints() {
-		if (jPanelHitPoints == null) {
-			jPanelHitPoints = new JPanel();
-			jPanelHitPoints.setBorder(BorderFactory.createTitledBorder(null, "Hit Points", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jPanelHitPoints.setLayout(new GroupLayout());
-			jPanelHitPoints.add(getJLabelMax(), new Constraints(new Leading(0, 16, 23), new Leading(4, 12, 12)));
-			jPanelHitPoints.add(getJFormattedTextFieldMax(), new Constraints(new Leading(24, 45, 10, 10), new Leading(4, 12, 12)));
-			jPanelHitPoints.add(getJLabelSurges(), new Constraints(new Leading(72, 42, 10, 10), new Leading(4, 12, 12)));
-			jPanelHitPoints.add(getJFormattedTextFieldSurges(), new Constraints(new Leading(114, 30, 10, 10),
-					new Leading(4, 12, 12)));
-		}
-		return jPanelHitPoints;
-	}
-
-	private JPanel getJPanelPowers() {
-		if (jPanelPowers == null) {
-			jPanelPowers = new JPanel();
-			jPanelPowers.setBorder(BorderFactory.createTitledBorder(null, "Powers", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jPanelPowers.setLayout(new GroupLayout());
-			jPanelPowers.add(getJScrollPanePowers(), new Constraints(new Bilateral(11, 76, 22), new Leading(0, 184, 10, 10)));
-			jPanelPowers.add(getJButtonPowerNew(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(0, 12, 12)));
-			jPanelPowers.add(getJButtonPowerDelete(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(31, 12, 12)));
-			jPanelPowers.add(getJButtonPowerUp(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(125, 12, 12)));
-			jPanelPowers.add(getJButtonPowerDown(), new Constraints(new Trailing(0, 74, 104, 341), new Leading(157, 12, 12)));
-			jPanelPowers.add(getJLabelPowerName(), new Constraints(new Leading(12, 63, 22, 253), new Leading(191, 12, 12)));
-			jPanelPowers.add(getJLabelPowerAction(), new Constraints(new Leading(12, 63, 22, 253), new Leading(213, 12, 12)));
-			jPanelPowers.add(getJLabelPowerKeywords(), new Constraints(new Leading(12, 63, 22, 253), new Leading(235, 12, 12)));
-			jPanelPowers.add(getJLabelPowerURL(), new Constraints(new Leading(12, 63, 22, 253), new Leading(258, 12, 12)));
-			jPanelPowers.add(getJLabelPowerIcon(), new Constraints(new Leading(12, 63, 22, 253), new Leading(282, 12, 12)));
-			jPanelPowers.add(getJComboBoxPowerIcon(), new Constraints(new Leading(87, 12, 12), new Leading(278, 12, 12)));
-			jPanelPowers.add(getJCheckBoxPowerAura(), new Constraints(new Leading(200, 12, 12), new Leading(278, 12, 12)));
-			jPanelPowers.add(getJScrollPanePowerDescription(), new Constraints(new Bilateral(0, 0, 31), new Bilateral(301, 0, 47)));
-			jPanelPowers.add(getJTextFieldPowerName(), new Constraints(new Bilateral(87, 0, 235), new Leading(189, 12, 12)));
-			jPanelPowers.add(getJTextFieldPowerAction(), new Constraints(new Bilateral(87, 0, 235), new Leading(211, 12, 12)));
-			jPanelPowers.add(getJTextFieldPowerKeywords(), new Constraints(new Bilateral(87, 0, 235), new Leading(233, 12, 12)));
-			jPanelPowers.add(getJTextFieldPowerURL(), new Constraints(new Bilateral(87, 0, 235), new Leading(256, 12, 12)));
-			jPanelPowers.add(getJFormattedTextFieldAuraSize(), new Constraints(new Leading(260, 23, 10, 10), new Leading(280, 53,
-					48)));
-		}
-		return jPanelPowers;
-	}
-
-	private JPanel getJPanelTraits() {
-		if (jPanelTraits == null) {
-			jPanelTraits = new JPanel();
-			jPanelTraits.setLayout(new GroupLayout());
-			jPanelTraits.add(getJLabelSenses(), new Constraints(new Leading(4, 65, 28, 28), new Leading(4, 10, 10)));
-			jPanelTraits.add(getJLabelImmune(), new Constraints(new Leading(4, 65, 28, 28), new Leading(26, 10, 10)));
-			jPanelTraits.add(getJLabelResist(), new Constraints(new Leading(4, 65, 28, 28), new Leading(48, 10, 10)));
-			jPanelTraits.add(getJLabelVulnerable(), new Constraints(new Leading(4, 65, 28, 28), new Leading(70, 10, 10)));
-			jPanelTraits.add(getJLabelRegen(), new Constraints(new Leading(4, 65, 28, 28), new Leading(91, 10, 10)));
-			jPanelTraits.add(getJLabelSpeed(), new Constraints(new Leading(4, 65, 28, 28), new Leading(113, 10, 10)));
-			jPanelTraits.add(getJLabelInitiative(), new Constraints(new Leading(4, 65, 28, 28), new Leading(134, 10, 10)));
-			jPanelTraits.add(getJLabelActionPts(), new Constraints(new Leading(100, 65, 28, 28), new Leading(134, 10, 10)));
-			jPanelTraits.add(getJLabelPowerPts(), new Constraints(new Leading(200, 65, 28, 28), new Leading(134, 10, 10)));
-			jPanelTraits.add(getJLabelSaveBonus(), new Constraints(new Leading(300, 70, 28, 28), new Leading(134, 10, 10)));
-			jPanelTraits.add(getJLabelAlignment(), new Constraints(new Leading(4, 65, 28, 28), new Leading(156, 10, 10)));
-			jPanelTraits.add(getJLabelSkills(), new Constraints(new Leading(4, 65, 28, 28), new Leading(179, 10, 10)));
-			jPanelTraits.add(getJLabelFeats(), new Constraints(new Leading(4, 65, 28, 28), new Leading(202, 10, 10)));
-			jPanelTraits.add(getJLabelLanguages(), new Constraints(new Leading(4, 65, 28, 28), new Leading(225, 10, 10)));
-			jPanelTraits.add(getJLabelEquipment(), new Constraints(new Leading(4, 65, 28, 28), new Leading(250, 10, 10)));
-			jPanelTraits.add(getJLabelSource(), new Constraints(new Leading(4, 65, 28, 28), new Leading(272, 10, 10)));
-			jPanelTraits.add(getJTextFieldSenses(), new Constraints(new Bilateral(76, 12, 4), new Leading(4, 10, 10)));
-			jPanelTraits.add(getJTextFieldImmune(), new Constraints(new Bilateral(76, 12, 4), new Leading(26, 10, 10)));
-			jPanelTraits.add(getJTextFieldResist(), new Constraints(new Bilateral(76, 12, 4), new Leading(48, 10, 10)));
-			jPanelTraits.add(getJTextFieldVulnerable(), new Constraints(new Bilateral(76, 12, 4), new Leading(70, 10, 10)));
-			jPanelTraits.add(getJTextFieldRegen(), new Constraints(new Bilateral(76, 12, 4), new Leading(91, 10, 10)));
-			jPanelTraits.add(getJTextFieldSpeed(), new Constraints(new Bilateral(76, 12, 4), new Leading(112, 10, 10)));
-			jPanelTraits.add(getJFormattedTextFieldInitiative(), new Constraints(new Leading(76, 23, 10, 10), new Leading(133, 10,
-					10)));
-			jPanelTraits.add(getJFormattedTextFieldActionPts(), new Constraints(new Leading(170, 23, 10, 10), new Leading(133, 10,
-					10)));
-			jPanelTraits.add(getJFormattedTextFieldPowerPts(), new Constraints(new Leading(270, 23, 10, 10), new Leading(133, 10,
-					10)));
-			jPanelTraits.add(getJFormattedTextFieldSaveBonus(), new Constraints(new Leading(375, 23, 10, 10), new Leading(133, 10,
-					10)));
-			jPanelTraits.add(getJTextFieldAlignment(), new Constraints(new Bilateral(76, 12, 4), new Leading(155, 10, 10)));
-			jPanelTraits.add(getJTextFieldSkills(), new Constraints(new Bilateral(76, 12, 4), new Leading(178, 10, 10)));
-			jPanelTraits.add(getJTextFieldFeats(), new Constraints(new Bilateral(76, 12, 4), new Leading(201, 10, 10)));
-			jPanelTraits.add(getJTextFieldLanguages(), new Constraints(new Bilateral(76, 12, 4), new Leading(225, 10, 10)));
-			jPanelTraits.add(getJTextFieldEquipment(), new Constraints(new Bilateral(76, 12, 4), new Leading(248, 10, 10)));
-			jPanelTraits.add(getJTextFieldSource(), new Constraints(new Bilateral(76, 12, 4), new Leading(270, 10, 10)));
-		}
-		return jPanelTraits;
-	}
-
-	private JPanel getJPanelXPValue() {
-		if (jPanelXPValue == null) {
-			jPanelXPValue = new JPanel();
-			jPanelXPValue.setBorder(BorderFactory.createTitledBorder(null, "XP Value", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jPanelXPValue.setLayout(new GroupLayout());
-			jPanelXPValue.add(getJFormattedTextFieldXPValue(), new Constraints(new Bilateral(0, 0, 4), new Leading(0, 12, 12)));
-		}
-		return jPanelXPValue;
-	}
-
-	private JScrollPane getJScrollPaneEffects() {
-		if (jScrollPaneEffects == null) {
-			jScrollPaneEffects = new JScrollPane();
-			jScrollPaneEffects.setViewportView(getJListEffects());
-		}
-		return jScrollPaneEffects;
-	}
-
-	private JScrollPane getJScrollPaneNotes() {
-		if (jScrollPaneNotes == null) {
-			jScrollPaneNotes = new JScrollPane();
-			jScrollPaneNotes.setViewportView(getJTextPaneNotes());
-		}
-		return jScrollPaneNotes;
-	}
-
-	private JScrollPane getJScrollPanePowerDescription() {
-		if (jScrollPanePowerDescription == null) {
-			jScrollPanePowerDescription = new JScrollPane();
-			jScrollPanePowerDescription.setBorder(BorderFactory.createTitledBorder(null, "Description", TitledBorder.LEADING,
-					TitledBorder.DEFAULT_POSITION, new Font("Dialog", Font.PLAIN, 12), new Color(51, 51, 51)));
-			jScrollPanePowerDescription.setViewportView(getJTextAreaPowerDescription());
-		}
-		return jScrollPanePowerDescription;
-	}
-
-	private JScrollPane getJScrollPanePowers() {
-		if (jScrollPanePowers == null) {
-			jScrollPanePowers = new JScrollPane();
-			jScrollPanePowers.setViewportView(getJListPowers());
-		}
-		return jScrollPanePowers;
-	}
-
-	private JSpinner getJSpinnerLevel() {
-		if (jSpinnerLevel == null) {
-			jSpinnerLevel = new JSpinner();
-		}
-		return jSpinnerLevel;
-	}
-
-	private JTabbedPane getJTabbedPaneTraits() {
-		if (jTabbedPaneTraits == null) {
-			jTabbedPaneTraits = new JTabbedPane();
-			jTabbedPaneTraits.addTab("Traits", getJPanelTraits());
-			jTabbedPaneTraits.addTab("Generated Effects", getJPanelGeneratedEffects());
-			jTabbedPaneTraits.addTab("Notes", getJScrollPaneNotes());
-		}
-		return jTabbedPaneTraits;
-	}
-
-	private JTextArea getJTextAreaPowerDescription() {
-		if (jTextAreaPowerDescription == null) {
-			jTextAreaPowerDescription = new JTextArea();
-			jTextAreaPowerDescription.setEnabled(false);
-			jTextAreaPowerDescription.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent event) {
-					jTextAreaPowerDescriptionKeyKeyReleased(event);
-				}
-			});
-		}
-		return jTextAreaPowerDescription;
-	}
-
-	private JTextField getJTextFieldAlignment() {
-		if (jTextFieldAlignment == null) {
-			jTextFieldAlignment = new JTextField();
-		}
-		return jTextFieldAlignment;
-	}
-
-	private JTextField getJTextFieldEquipment() {
-		if (jTextFieldEquipment == null) {
-			jTextFieldEquipment = new JTextField();
-		}
-		return jTextFieldEquipment;
-	}
-
-	private JTextField getJTextFieldFeats() {
-		if (jTextFieldFeats == null) {
-			jTextFieldFeats = new JTextField();
-		}
-		return jTextFieldFeats;
-	}
-
-	private JTextField getJTextFieldImmune() {
-		if (jTextFieldImmune == null) {
-			jTextFieldImmune = new JTextField();
-		}
-		return jTextFieldImmune;
-	}
-
-	private JTextField getJTextFieldLanguages() {
-		if (jTextFieldLanguages == null) {
-			jTextFieldLanguages = new JTextField();
-		}
-		return jTextFieldLanguages;
-	}
-
-	private JTextField getJTextFieldName() {
-		if (jTextFieldName == null) {
-			jTextFieldName = new JTextField();
-		}
-		return jTextFieldName;
-	}
-
-	private JTextField getJTextFieldPowerAction() {
-		if (jTextFieldPowerAction == null) {
-			jTextFieldPowerAction = new JTextField();
-			jTextFieldPowerAction.setEnabled(false);
-			jTextFieldPowerAction.addKeyListener(new KeyAdapter() {
-
-				@Override
-				public void keyReleased(KeyEvent event) {
-					jTextFieldPowerActionKeyKeyReleased(event);
-				}
-			});
-		}
-		return jTextFieldPowerAction;
-	}
-
-	private JTextField getJTextFieldPowerKeywords() {
-		if (jTextFieldPowerKeywords == null) {
-			jTextFieldPowerKeywords = new JTextField();
-			jTextFieldPowerKeywords.setEnabled(false);
-			jTextFieldPowerKeywords.addKeyListener(new KeyAdapter() {
-				@Override
-				public void keyReleased(KeyEvent event) {
-					jTextFieldPowerKeywordsKeyKeyReleased(event);
-				}
-			});
-		}
-		return jTextFieldPowerKeywords;
-	}
-
-	private JTextField getJTextFieldPowerName() {
-		if (jTextFieldPowerName == null) {
-			jTextFieldPowerName = new JTextField();
-			jTextFieldPowerName.setEnabled(false);
-			jTextFieldPowerName.addKeyListener(new KeyAdapter() {
-
-				@Override
-				public void keyReleased(KeyEvent event) {
-					jTextFieldPowerNameKeyKeyReleased(event);
-				}
-			});
-		}
-		return jTextFieldPowerName;
-	}
-
-	private JTextField getJTextFieldPowerURL() {
-		if (jTextFieldPowerURL == null) {
-			jTextFieldPowerURL = new JTextField();
-			jTextFieldPowerURL.setEnabled(false);
-		}
-		return jTextFieldPowerURL;
-	}
-
-	private JTextField getJTextFieldRegen() {
-		if (jTextFieldRegen == null) {
-			jTextFieldRegen = new JTextField();
-		}
-		return jTextFieldRegen;
-	}
-
-	private JTextField getJTextFieldResist() {
-		if (jTextFieldResist == null) {
-			jTextFieldResist = new JTextField();
-		}
-		return jTextFieldResist;
-	}
-
-	private JTextField getJTextFieldSenses() {
-		if (jTextFieldSenses == null) {
-			jTextFieldSenses = new JTextField();
-		}
-		return jTextFieldSenses;
-	}
-
-	private JTextField getJTextFieldSkills() {
-		if (jTextFieldSkills == null) {
-			jTextFieldSkills = new JTextField();
-		}
-		return jTextFieldSkills;
-	}
-
-	private JTextField getJTextFieldSource() {
-		if (jTextFieldSource == null) {
-			jTextFieldSource = new JTextField();
-		}
-		return jTextFieldSource;
-	}
-
-	private JTextField getJTextFieldSpeed() {
-		if (jTextFieldSpeed == null) {
-			jTextFieldSpeed = new JTextField();
-		}
-		return jTextFieldSpeed;
-	}
-
-	private JTextField getJTextFieldTypeKeywords() {
-		if (jTextFieldTypeKeywords == null) {
-			jTextFieldTypeKeywords = new JTextField();
-		}
-		return jTextFieldTypeKeywords;
-	}
-
-	private JTextField getJTextFieldVulnerable() {
-		if (jTextFieldVulnerable == null) {
-			jTextFieldVulnerable = new JTextField();
-		}
-		return jTextFieldVulnerable;
-	}
-
-	private JTextPane getJTextPaneNotes() {
-		if (jTextPaneNotes == null) {
-			jTextPaneNotes = new JTextPane();
-		}
-		return jTextPaneNotes;
+		_comboBoxEffect.setSelectedIndex(0);
+		_comboBoxDuration.setSelectedIndex(0);
+		_chckbxBeneficial.setSelected(false);
+		_chckbxHidden.setSelected(false);
 	}
 
 	/**
@@ -1584,30 +1368,6 @@ public class Statblock extends JDialog {
 		return _stat;
 	}
 
-	private void initComponents() {
-		setTitle("Statblock Viewer");
-		setFont(new Font("Dialog", Font.PLAIN, 12));
-		setBackground(Color.white);
-		setResizable(false);
-		setModal(true);
-		setForeground(Color.black);
-		setLayout(new GroupLayout());
-		add(getJLabelName(), new Constraints(new Leading(12, 12, 12), new Leading(12, 12, 12)));
-		add(getJTextFieldName(), new Constraints(new Leading(54, 396, 10, 10), new Leading(10, 12, 12)));
-		add(getJPanelDescription(), new Constraints(new Leading(12, 438, 12, 12), new Leading(34, 70, 10, 10)));
-		add(getJPanelDefenses(), new Constraints(new Leading(12, 117, 10, 10), new Leading(110, 112, 10, 10)));
-		add(getJPanelAttributes(), new Constraints(new Leading(131, 161, 10, 10), new Leading(110, 112, 12, 12)));
-		add(getJPanelXPValue(), new Constraints(new Leading(293, 157, 12, 12), new Leading(110, 47, 10, 10)));
-		add(getJPanelHitPoints(), new Constraints(new Leading(293, 156, 12, 12), new Leading(163, 59, 12, 12)));
-		add(getJTabbedPaneTraits(), new Constraints(new Leading(12, 438, 12, 12), new Bilateral(223, 0, 7)));
-		add(getJPanelPowers(), new Constraints(new Bilateral(456, 12, 0), new Bilateral(10, 44, 0)));
-		add(getJButtonATLoad(), new Constraints(new Leading(456, 12, 12), new Trailing(12, 50, 50)));
-		add(getJButtonCBLoad(), new Constraints(new Leading(553, 12, 12), new Trailing(12, 50, 50)));
-		add(getJButtonCancel(), new Constraints(new Trailing(12, 703, 703), new Trailing(12, 50, 50)));
-		add(getJButtonOK(), new Constraints(new Trailing(91, 646, 646), new Trailing(12, 50, 50)));
-		pack();
-	}
-
 	/**
 	 * Returns an indicator of if the power information changed.
 	 * 
@@ -1623,7 +1383,7 @@ public class Statblock extends JDialog {
 	 * @return true, if the power data is valid
 	 */
 	private Boolean isPowerDataValid() {
-		if (((DefaultListModel) getJListPowers().getModel()).size() < 1) {
+		if (((DefaultListModel) _listPowers.getModel()).size() < 1) {
 			powDataDisable();
 			powDataClear();
 			return false;
@@ -1638,8 +1398,8 @@ public class Statblock extends JDialog {
 	 * @param event
 	 */
 	private void jButtonAddActionActionPerformed(ActionEvent event) {
-		EffectBase eff = new EffectBase((String) getJComboBoxEffect().getSelectedItem(), (Duration) getJComboBoxDuration()
-				.getSelectedItem(), getJCheckBoxBeneficial().isSelected());
+		EffectBase eff = new EffectBase((String) _comboBoxEffect.getSelectedItem(), (Duration) _comboBoxDuration.getSelectedItem(),
+				_chckbxBeneficial.isSelected());
 		if (eff.isValid()) {
 			presetEffectAdd(eff);
 			clearEffect();
@@ -1736,8 +1496,8 @@ public class Statblock extends JDialog {
 	 * @param event
 	 */
 	private void jButtonDeleteActionActionPerformed(ActionEvent event) {
-		if (getJListEffects().getSelectedIndex() >= 0) {
-			getPresetEffects().remove(getJListEffects().getSelectedValue());
+		if (_listEffects.getSelectedIndex() >= 0) {
+			getPresetEffects().remove(_listEffects.getSelectedValue());
 			resetEffectListFromArray();
 		}
 	}
@@ -1748,11 +1508,11 @@ public class Statblock extends JDialog {
 	 * @param event
 	 */
 	private void jButtonEditActionActionPerformed(ActionEvent event) {
-		if (getJListEffects().getSelectedValue() != null) {
-			EffectBase eff = (EffectBase) getJListEffects().getSelectedValue();
-			getJComboBoxEffect().setSelectedItem(eff.getName());
-			getJComboBoxDuration().setSelectedItem(eff.getDurationCode());
-			getPresetEffects().remove(getJListEffects().getSelectedValue());
+		if (_listEffects.getSelectedValue() != null) {
+			EffectBase eff = (EffectBase) _listEffects.getSelectedValue();
+			_comboBoxEffect.setSelectedItem(eff.getName());
+			_comboBoxDuration.setSelectedItem(eff.getDurationCode());
+			getPresetEffects().remove(_listEffects.getSelectedValue());
 			resetEffectListFromArray();
 		}
 	}
@@ -1875,9 +1635,9 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonPowerDeleteActionActionPerformed(ActionEvent event) {
 		if (isPowerDataValid()) {
-			((DefaultListModel) getJListPowers().getModel()).removeElementAt(getJListPowers().getSelectedIndex());
+			((DefaultListModel) _listPowers.getModel()).removeElementAt(_listPowers.getSelectedIndex());
 			resetPowerListFromArray();
-			getJListPowers().setSelectedIndex(-1);
+			_listPowers.setSelectedIndex(-1);
 		}
 	}
 
@@ -1888,14 +1648,14 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonPowerDownActionActionPerformed(ActionEvent event) {
 		if (isPowerDataValid()) {
-			Integer index = getJListPowers().getSelectedIndex();
-			DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+			Integer index = _listPowers.getSelectedIndex();
+			DefaultListModel model = (DefaultListModel) _listPowers.getModel();
 			Power tempPow = (Power) model.get(index);
 			model.set(index, model.get(index + 1));
 			index++;
 			model.set(index, tempPow);
 			resetPowerListFromArray();
-			getJListPowers().setSelectedValue(tempPow, true);
+			_listPowers.setSelectedValue(tempPow, true);
 		}
 	}
 
@@ -1906,9 +1666,9 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonPowerNewActionActionPerformed(ActionEvent event) {
 		Power pow = new Power();
-		((DefaultListModel) getJListPowers().getModel()).addElement(pow);
+		((DefaultListModel) _listPowers.getModel()).addElement(pow);
 		resetPowerListFromArray();
-		getJListPowers().setSelectedValue(pow, true);
+		_listPowers.setSelectedValue(pow, true);
 	}
 
 	/**
@@ -1918,15 +1678,15 @@ public class Statblock extends JDialog {
 	 */
 	private void jButtonPowerUpActionActionPerformed(ActionEvent event) {
 		if (isPowerDataValid()) {
-			Integer index = getJListPowers().getSelectedIndex();
-			DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+			Integer index = _listPowers.getSelectedIndex();
+			DefaultListModel model = (DefaultListModel) _listPowers.getModel();
 			if (index > 0) {
 				Power tempPow = (Power) model.get(index);
 				model.set(index, model.get(index - 1));
 				index--;
 				model.set(index, tempPow);
 				resetPowerListFromArray();
-				getJListPowers().setSelectedValue(tempPow, true);
+				_listPowers.setSelectedValue(tempPow, true);
 			}
 		}
 	}
@@ -1937,20 +1697,20 @@ public class Statblock extends JDialog {
 	 * @param event
 	 */
 	private void jCheckBoxPCChangeStateChanged(ChangeEvent event) {
-		if (getJCheckBoxPC().isSelected()) {
-			getJComboBoxRole().setSelectedItem("Hero");
-			getJComboBoxRole2().setSelectedItem("");
-			getJCheckBoxLeader().setSelected(false);
+		if (_chckbxPc.isSelected()) {
+			_comboBoxRole.setSelectedItem("Hero");
+			_comboBoxRole2.setSelectedItem("");
+			_chckbxLeader.setSelected(false);
 
-			getJComboBoxRole().setEnabled(false);
-			getJComboBoxRole2().setEnabled(false);
-			getJCheckBoxLeader().setEnabled(false);
+			_comboBoxRole.setEnabled(false);
+			_comboBoxRole2.setEnabled(false);
+			_chckbxLeader.setEnabled(false);
 		} else {
-			getJComboBoxRole().setEnabled(true);
-			getJComboBoxRole2().setEnabled(true);
-			getJCheckBoxLeader().setEnabled(true);
-			if (((String) getJComboBoxRole().getSelectedItem()).contentEquals("Hero")) {
-				getJComboBoxRole().setSelectedItem("");
+			_comboBoxRole.setEnabled(true);
+			_comboBoxRole2.setEnabled(true);
+			_chckbxLeader.setEnabled(true);
+			if (((String) _comboBoxRole.getSelectedItem()).contentEquals("Hero")) {
+				_comboBoxRole.setSelectedItem("");
 			}
 		}
 	}
@@ -1958,27 +1718,27 @@ public class Statblock extends JDialog {
 	/**
 	 * Event: Aura checked/unchecked.
 	 * 
-	 * @param event
+	 * @param e
 	 */
-	private void jCheckBoxPowerAuraActionActionPerformed(ActionEvent event) {
-		if (getJCheckBoxPowerAura().isSelected()) {
-			getJComboBoxPowerIcon().setEnabled(false);
-			getJFormattedTextFieldAuraSize().setEnabled(true);
-			if (Integer.valueOf(getJFormattedTextFieldAuraSize().getText()) < 1) {
-				getJFormattedTextFieldAuraSize().setText("1");
-				getJFormattedTextFieldAuraSize().requestFocusInWindow();
+	private void jCheckBoxPowerAuraChangeStateChanged(ChangeEvent e) {
+		if (_chckbxPowerAura.isSelected()) {
+			_comboBoxPowerIcon.setEnabled(false);
+			_formattedTextFieldPowerAuraSize.setEnabled(true);
+			if (Integer.valueOf(_formattedTextFieldPowerAuraSize.getText()) < 1) {
+				_formattedTextFieldPowerAuraSize.setText("1");
+				_formattedTextFieldPowerAuraSize.requestFocusInWindow();
 			}
-			Power pow = (Power) getJListPowers().getSelectedValue();
-			pow.setAura(Integer.valueOf(getJFormattedTextFieldAuraSize().getText()));
-			getJListPowers().repaint();
+			Power pow = (Power) _listPowers.getSelectedValue();
+			pow.setAura(Integer.valueOf(_formattedTextFieldPowerAuraSize.getText()));
+			_listPowers.repaint();
 		} else {
-			getJComboBoxPowerIcon().setEnabled(true);
-			getJFormattedTextFieldAuraSize().setEnabled(false);
-			getJFormattedTextFieldAuraSize().setText("0");
+			_comboBoxPowerIcon.setEnabled(true);
+			_formattedTextFieldPowerAuraSize.setEnabled(false);
+			_formattedTextFieldPowerAuraSize.setText("0");
 			if (isPowerDataValid()) {
-				Power pow = (Power) getJListPowers().getSelectedValue();
+				Power pow = (Power) _listPowers.getSelectedValue();
 				pow.setAura(0);
-				getJListPowers().repaint();
+				_listPowers.repaint();
 			}
 		}
 		setPowerChanged(true);
@@ -1991,10 +1751,10 @@ public class Statblock extends JDialog {
 	 */
 	private void jComboBoxPowerIconItemItemStateChanged(ItemEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = (Power) getJListPowers().getSelectedValue();
-			pow.setType((String) getJComboBoxPowerIcon().getSelectedItem());
+			Power pow = (Power) _listPowers.getSelectedValue();
+			pow.setType((String) _comboBoxPowerIcon.getSelectedItem());
 			setPowerChanged(true);
-			getJListPowers().repaint();
+			_listPowers.repaint();
 		}
 	}
 
@@ -2004,10 +1764,10 @@ public class Statblock extends JDialog {
 	 * @param event
 	 */
 	private void jComboBoxRoleItemItemStateChanged(ItemEvent event) {
-		if (((String) getJComboBoxRole2().getSelectedItem()).contentEquals("Hero") && !getJCheckBoxPC().isSelected()) {
-			getJCheckBoxPC().doClick();
-		} else if (!((String) getJComboBoxRole2().getSelectedItem()).contentEquals("Hero") && getJCheckBoxPC().isSelected()) {
-			getJCheckBoxPC().doClick();
+		if (((String) _comboBoxRole2.getSelectedItem()).contentEquals("Hero") && !_chckbxPc.isSelected()) {
+			_chckbxPc.doClick();
+		} else if (!((String) _comboBoxRole2.getSelectedItem()).contentEquals("Hero") && _chckbxPc.isSelected()) {
+			_chckbxPc.doClick();
 		}
 	}
 
@@ -2018,12 +1778,12 @@ public class Statblock extends JDialog {
 	 */
 	private void jFormattedTextFieldAuraSizeKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = (Power) getJListPowers().getSelectedValue();
-			if (!getJFormattedTextFieldAuraSize().getText().isEmpty()) {
-				pow.setAura(Integer.valueOf(getJFormattedTextFieldAuraSize().getText()));
+			Power pow = (Power) _listPowers.getSelectedValue();
+			if (!_formattedTextFieldPowerAuraSize.getText().isEmpty()) {
+				pow.setAura(Integer.valueOf(_formattedTextFieldPowerAuraSize.getText()));
 			}
 			setPowerChanged(true);
-			getJListPowers().repaint();
+			_listPowers.repaint();
 		}
 	}
 
@@ -2033,12 +1793,12 @@ public class Statblock extends JDialog {
 	 * @param event
 	 */
 	private void jListEffectsListSelectionValueChanged(ListSelectionEvent event) {
-		if (getJListEffects().getSelectedIndex() >= 0) {
-			getJButtonDelete().setEnabled(true);
-			getJButtonEdit().setEnabled(true);
+		if (_listEffects.getSelectedIndex() >= 0) {
+			_btnEffectDelete.setEnabled(true);
+			_btnEffectEdit.setEnabled(true);
 		} else {
-			getJButtonDelete().setEnabled(false);
-			getJButtonEdit().setEnabled(false);
+			_btnEffectDelete.setEnabled(false);
+			_btnEffectEdit.setEnabled(false);
 		}
 	}
 
@@ -2048,29 +1808,29 @@ public class Statblock extends JDialog {
 	 * @param event
 	 */
 	private void jListPowersListSelectionValueChanged(ListSelectionEvent event) {
-		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
-		if (getJListPowers().getSelectedIndex() >= 0) {
-			Power pow = (Power) getJListPowers().getSelectedValue();
+		DefaultListModel model = (DefaultListModel) _listPowers.getModel();
+		if (_listPowers.getSelectedIndex() >= 0) {
+			Power pow = (Power) _listPowers.getSelectedValue();
 			powDataEnable();
 			powDataLoad(pow);
-			getJButtonPowerDelete().setEnabled(true);
+			_btnPowerDelete.setEnabled(true);
 
-			if (model.size() > 1 && getJListPowers().getSelectedIndex() > 0) {
-				getJButtonPowerUp().setEnabled(true);
+			if (model.size() > 1 && _listPowers.getSelectedIndex() > 0) {
+				_btnPowerUp.setEnabled(true);
 			} else {
-				getJButtonPowerUp().setEnabled(false);
+				_btnPowerUp.setEnabled(false);
 			}
-			if (model.size() > 1 && getJListPowers().getSelectedIndex() < model.size() - 1) {
-				getJButtonPowerDown().setEnabled(true);
+			if (model.size() > 1 && _listPowers.getSelectedIndex() < model.size() - 1) {
+				_btnPowerDown.setEnabled(true);
 			} else {
-				getJButtonPowerDown().setEnabled(false);
+				_btnPowerDown.setEnabled(false);
 			}
 		} else {
 			powDataDisable();
 			powDataClear();
-			getJButtonPowerDelete().setEnabled(false);
-			getJButtonPowerUp().setEnabled(false);
-			getJButtonPowerDown().setEnabled(false);
+			_btnPowerDelete.setEnabled(false);
+			_btnPowerUp.setEnabled(false);
+			_btnPowerDown.setEnabled(false);
 			if (isPowerChanged()) {
 				resetPowerListFromArray();
 			}
@@ -2084,10 +1844,10 @@ public class Statblock extends JDialog {
 	 */
 	private void jTextAreaPowerDescriptionKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = (Power) getJListPowers().getSelectedValue();
-			pow.setDesc(getJTextAreaPowerDescription().getText());
+			Power pow = (Power) _listPowers.getSelectedValue();
+			pow.setDesc(_textAreaPowerDescription.getText());
 			setPowerChanged(true);
-			getJListPowers().repaint();
+			_listPowers.repaint();
 		}
 	}
 
@@ -2098,10 +1858,10 @@ public class Statblock extends JDialog {
 	 */
 	private void jTextFieldPowerActionKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = (Power) getJListPowers().getSelectedValue();
-			pow.setAction(getJTextFieldPowerAction().getText());
+			Power pow = (Power) _listPowers.getSelectedValue();
+			pow.setAction(_textFieldPowerAction.getText());
 			setPowerChanged(true);
-			getJListPowers().repaint();
+			_listPowers.repaint();
 		}
 	}
 
@@ -2112,10 +1872,10 @@ public class Statblock extends JDialog {
 	 */
 	private void jTextFieldPowerKeywordsKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = (Power) getJListPowers().getSelectedValue();
-			pow.setKeywords(getJTextFieldPowerKeywords().getText());
+			Power pow = (Power) _listPowers.getSelectedValue();
+			pow.setKeywords(_textFieldPowerKeywords.getText());
 			setPowerChanged(true);
-			getJListPowers().repaint();
+			_listPowers.repaint();
 		}
 	}
 
@@ -2126,13 +1886,13 @@ public class Statblock extends JDialog {
 	 */
 	private void jTextFieldPowerNameKeyKeyReleased(KeyEvent event) {
 		if (isPowerDataValid()) {
-			Power pow = (Power) getJListPowers().getSelectedValue();
-			if (getJTextFieldPowerName().getText().isEmpty()) {
-				getJTextFieldPowerName().setText("(no name)");
+			Power pow = (Power) _listPowers.getSelectedValue();
+			if (_textFieldPowerName.getText().isEmpty()) {
+				_textFieldPowerName.setText("(no name)");
 			}
-			pow.setName(getJTextFieldPowerName().getText());
+			pow.setName(_textFieldPowerName.getText());
 			setPowerChanged(true);
-			getJListPowers().repaint();
+			_listPowers.repaint();
 		}
 	}
 
@@ -2143,52 +1903,52 @@ public class Statblock extends JDialog {
 	 *            the statblock
 	 */
 	private void moveClassToFields(Stats stat) {
-		getJTextFieldName().setText(stat.getName());
-		getJSpinnerLevel().setValue(stat.getLevel());
-		getJComboBoxRole().setSelectedItem(stat.getRole());
-		getJComboBoxRole2().setSelectedItem(stat.getRole2());
-		getJCheckBoxLeader().setSelected(stat.isLeader());
-		getJCheckBoxPC().setSelected(stat.isPC());
+		_textFieldName.setText(stat.getName());
+		_spinnerLevel.setValue(stat.getLevel());
+		_comboBoxRole.setSelectedItem(stat.getRole());
+		_comboBoxRole2.setSelectedItem(stat.getRole2());
+		_chckbxLeader.setSelected(stat.isLeader());
+		_chckbxPc.setSelected(stat.isPC());
 
-		getJTextFieldTypeKeywords().setText(stat.getType());
-		getJFormattedTextFieldXPValue().setText(stat.getXP().toString());
+		_textFieldTypeKeywords.setText(stat.getType());
+		_textFieldXP.setText(stat.getXP().toString());
 
-		getJTextFieldSenses().setText(stat.getSenses());
-		getJTextFieldSpeed().setText(stat.getSpeed());
+		_textFieldSenses.setText(stat.getSenses());
+		_textFieldSpeed.setText(stat.getSpeed());
 
-		getJTextFieldImmune().setText(stat.getImmunity());
-		getJTextFieldResist().setText(stat.getResistance());
-		getJTextFieldVulnerable().setText(stat.getVulnerability());
-		getJTextFieldRegen().setText(stat.getRegen());
+		_textFieldImmune.setText(stat.getImmunity());
+		_textFieldResist.setText(stat.getResistance());
+		_textFieldVulnerable.setText(stat.getVulnerability());
+		_textFieldRegen.setText(stat.getRegen());
 
-		getJFormattedTextFieldInitiative().setText(stat.getInit().toString());
-		getJFormattedTextFieldSaveBonus().setText(stat.getSaveBonus().toString());
-		getJFormattedTextFieldActionPts().setText(stat.getActionPoints().toString());
-		getJFormattedTextFieldPowerPts().setText(stat.getPowerPoints().toString());
-		getJFormattedTextFieldMax().setText(stat.getMaxHP().toString());
-		getJFormattedTextFieldSurges().setText(stat.getSurges().toString());
+		_formattedTextFieldInit.setText(stat.getInit().toString());
+		_formattedTextFieldSaveBonus.setText(stat.getSaveBonus().toString());
+		_formattedTextFieldActionPts.setText(stat.getActionPoints().toString());
+		_formattedTextFieldPowerPts.setText(stat.getPowerPoints().toString());
+		_formattedTextFieldMax.setText(stat.getMaxHP().toString());
+		_formattedTextFieldSurges.setText(stat.getSurges().toString());
 
-		getJFormattedTextFieldAC().setText(stat.getAC().toString());
-		getJFormattedTextFieldFortitude().setText(stat.getFort().toString());
-		getJFormattedTextFieldReflex().setText(stat.getRef().toString());
-		getJFormattedTextFieldWill().setText(stat.getWill().toString());
+		_formattedTextFieldAC.setText(stat.getAC().toString());
+		_formattedTextFieldFort.setText(stat.getFort().toString());
+		_formattedTextFieldRef.setText(stat.getRef().toString());
+		_formattedTextFieldWill.setText(stat.getWill().toString());
 
-		getJFormattedTextFieldStr().setText(stat.getStr().toString());
-		getJFormattedTextFieldCon().setText(stat.getCon().toString());
-		getJFormattedTextFieldDex().setText(stat.getDex().toString());
-		getJFormattedTextFieldInt().setText(stat.getInt().toString());
-		getJFormattedTextFieldWis().setText(stat.getWis().toString());
-		getJFormattedTextFieldCha().setText(stat.getCha().toString());
+		_formattedTextFieldStr.setText(stat.getStr().toString());
+		_formattedTextFieldCon.setText(stat.getCon().toString());
+		_formattedTextFieldDex.setText(stat.getDex().toString());
+		_formattedTextFieldInt.setText(stat.getInt().toString());
+		_formattedTextFieldWis.setText(stat.getWis().toString());
+		_formattedTextFieldCha.setText(stat.getCha().toString());
 
-		getJTextFieldAlignment().setText(stat.getAlignment());
-		getJTextFieldSkills().setText(stat.getSkills());
-		getJTextFieldFeats().setText(stat.getFeats());
-		getJTextFieldLanguages().setText(stat.getLanguages());
-		getJTextFieldEquipment().setText(stat.getEquipment());
-		getJTextFieldSource().setText(stat.getSource());
-		getJTextPaneNotes().setText(stat.getNotes());
+		_textFieldAlignment.setText(stat.getAlignment());
+		_textFieldSkills.setText(stat.getSkills());
+		_textFieldFeats.setText(stat.getFeats());
+		_textFieldLanguages.setText(stat.getLanguages());
+		_textFieldEquipment.setText(stat.getEquipment());
+		_textFieldSource.setText(stat.getSource());
+		_textPaneNotes.setText(stat.getNotes());
 
-		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+		DefaultListModel model = (DefaultListModel) _listPowers.getModel();
 		model.clear();
 		for (Power pow : stat.getPowerList()) {
 			model.addElement(pow);
@@ -2208,51 +1968,51 @@ public class Statblock extends JDialog {
 	 *            the stats
 	 */
 	private void moveFieldsToClass(Stats stat) {
-		stat.setName(getJTextFieldName().getText());
-		stat.setLevel((Integer) getJSpinnerLevel().getValue());
-		stat.setRole((String) getJComboBoxRole().getSelectedItem());
-		stat.setRole2((String) getJComboBoxRole2().getSelectedItem());
-		stat.setLeader(getJCheckBoxLeader().isSelected());
-		stat.setType(getJTextFieldTypeKeywords().getText());
-		stat.setXP(Integer.valueOf(getJFormattedTextFieldXPValue().getText().replace(",", "")));
+		stat.setName(_textFieldName.getText());
+		stat.setLevel((Integer) _spinnerLevel.getValue());
+		stat.setRole((String) _comboBoxRole.getSelectedItem());
+		stat.setRole2((String) _comboBoxRole2.getSelectedItem());
+		stat.setLeader(_chckbxLeader.isSelected());
+		stat.setType(_textFieldTypeKeywords.getText());
+		stat.setXP(Integer.valueOf(_textFieldXP.getText().replace(",", "")));
 
-		stat.setSenses(getJTextFieldSenses().getText());
-		stat.setSpeed(getJTextFieldSpeed().getText());
+		stat.setSenses(_textFieldSenses.getText());
+		stat.setSpeed(_textFieldSpeed.getText());
 
-		stat.setImmunity(getJTextFieldImmune().getText());
-		stat.setResistance(getJTextFieldResist().getText());
-		stat.setVulnerability(getJTextFieldVulnerable().getText());
-		stat.setRegen(getJTextFieldRegen().getText());
+		stat.setImmunity(_textFieldImmune.getText());
+		stat.setResistance(_textFieldResist.getText());
+		stat.setVulnerability(_textFieldVulnerable.getText());
+		stat.setRegen(_textFieldRegen.getText());
 
-		stat.setInit(Integer.valueOf(getJFormattedTextFieldInitiative().getText().replace(",", "")));
-		stat.setSaveBonus(Integer.valueOf(getJFormattedTextFieldSaveBonus().getText().replace(",", "")));
-		stat.setActionPoints(Integer.valueOf(getJFormattedTextFieldActionPts().getText()));
-		stat.setPowerPoints(Integer.valueOf(getJFormattedTextFieldPowerPts().getText()));
-		stat.setMaxHP(Integer.valueOf(getJFormattedTextFieldMax().getText().replace(",", "")));
-		stat.setSurges(Integer.valueOf(getJFormattedTextFieldSurges().getText().replace(",", "")));
+		stat.setInit(Integer.valueOf(_formattedTextFieldInit.getText().replace(",", "")));
+		stat.setSaveBonus(Integer.valueOf(_formattedTextFieldSaveBonus.getText().replace(",", "")));
+		stat.setActionPoints(Integer.valueOf(_formattedTextFieldActionPts.getText()));
+		stat.setPowerPoints(Integer.valueOf(_formattedTextFieldPowerPts.getText()));
+		stat.setMaxHP(Integer.valueOf(_formattedTextFieldMax.getText().replace(",", "")));
+		stat.setSurges(Integer.valueOf(_formattedTextFieldSurges.getText().replace(",", "")));
 
-		stat.setAC(Integer.valueOf(getJFormattedTextFieldAC().getText().replace(",", "")));
-		stat.setFort(Integer.valueOf(getJFormattedTextFieldFortitude().getText().replace(",", "")));
-		stat.setRef(Integer.valueOf(getJFormattedTextFieldReflex().getText().replace(",", "")));
-		stat.setWill(Integer.valueOf(getJFormattedTextFieldWill().getText().replace(",", "")));
+		stat.setAC(Integer.valueOf(_formattedTextFieldAC.getText().replace(",", "")));
+		stat.setFort(Integer.valueOf(_formattedTextFieldFort.getText().replace(",", "")));
+		stat.setRef(Integer.valueOf(_formattedTextFieldRef.getText().replace(",", "")));
+		stat.setWill(Integer.valueOf(_formattedTextFieldWill.getText().replace(",", "")));
 
-		stat.setStr(Integer.valueOf(getJFormattedTextFieldStr().getText().replace(",", "")));
-		stat.setCon(Integer.valueOf(getJFormattedTextFieldCon().getText().replace(",", "")));
-		stat.setDex(Integer.valueOf(getJFormattedTextFieldDex().getText().replace(",", "")));
-		stat.setInt(Integer.valueOf(getJFormattedTextFieldInt().getText().replace(",", "")));
-		stat.setWis(Integer.valueOf(getJFormattedTextFieldWis().getText().replace(",", "")));
-		stat.setCha(Integer.valueOf(getJFormattedTextFieldCha().getText().replace(",", "")));
+		stat.setStr(Integer.valueOf(_formattedTextFieldStr.getText().replace(",", "")));
+		stat.setCon(Integer.valueOf(_formattedTextFieldCon.getText().replace(",", "")));
+		stat.setDex(Integer.valueOf(_formattedTextFieldDex.getText().replace(",", "")));
+		stat.setInt(Integer.valueOf(_formattedTextFieldInt.getText().replace(",", "")));
+		stat.setWis(Integer.valueOf(_formattedTextFieldWis.getText().replace(",", "")));
+		stat.setCha(Integer.valueOf(_formattedTextFieldCha.getText().replace(",", "")));
 
-		stat.setAlignment(getJTextFieldAlignment().getText());
-		stat.setSkills(getJTextFieldSkills().getText());
-		stat.setFeats(getJTextFieldFeats().getText());
-		stat.setLanguages(getJTextFieldLanguages().getText());
-		stat.setEquipment(getJTextFieldEquipment().getText());
-		stat.setSource(getJTextFieldSource().getText());
-		stat.setNotes(getJTextPaneNotes().getText());
+		stat.setAlignment(_textFieldAlignment.getText());
+		stat.setSkills(_textFieldSkills.getText());
+		stat.setFeats(_textFieldFeats.getText());
+		stat.setLanguages(_textFieldLanguages.getText());
+		stat.setEquipment(_textFieldEquipment.getText());
+		stat.setSource(_textFieldSource.getText());
+		stat.setNotes(_textPaneNotes.getText());
 
 		stat.getPowerList().clear();
-		DefaultListModel model = (DefaultListModel) getJListPowers().getModel();
+		DefaultListModel model = (DefaultListModel) _listPowers.getModel();
 		for (int i = 0; i < model.getSize(); i++) {
 			Power pow = (Power) model.get(i);
 			if (!pow.getName().isEmpty()) {
@@ -2269,45 +2029,45 @@ public class Statblock extends JDialog {
 	 * Clears power data fields.
 	 */
 	private void powDataClear() {
-		getJTextFieldPowerName().setText("");
-		getJComboBoxPowerIcon().setSelectedItem(null);
-		getJTextFieldPowerKeywords().setText("");
-		getJTextFieldPowerAction().setText("");
-		getJFormattedTextFieldAuraSize().setText("0");
-		getJCheckBoxPowerAura().setSelected(false);
-		getJComboBoxPowerIcon().setEnabled(false);
-		getJFormattedTextFieldAuraSize().setEnabled(false);
-		getJTextAreaPowerDescription().setText("");
+		_textFieldPowerName.setText("");
+		_comboBoxPowerIcon.setSelectedItem(null);
+		_textFieldPowerKeywords.setText("");
+		_textFieldPowerAction.setText("");
+		_formattedTextFieldPowerAuraSize.setText("0");
+		_chckbxPowerAura.setSelected(false);
+		_comboBoxPowerIcon.setEnabled(false);
+		_formattedTextFieldPowerAuraSize.setEnabled(false);
+		_textAreaPowerDescription.setText("");
 	}
 
 	/**
 	 * Disables power data fields.
 	 */
 	private void powDataDisable() {
-		getJTextFieldPowerName().setEnabled(false);
-		getJTextFieldPowerKeywords().setEnabled(false);
-		getJTextFieldPowerAction().setEnabled(false);
-		getJTextAreaPowerDescription().setEnabled(false);
-		getJCheckBoxPowerAura().setEnabled(false);
-		getJFormattedTextFieldAuraSize().setEnabled(false);
-		getJComboBoxPowerIcon().setEnabled(false);
+		_textFieldPowerName.setEnabled(false);
+		_textFieldPowerKeywords.setEnabled(false);
+		_textFieldPowerAction.setEnabled(false);
+		_textAreaPowerDescription.setEnabled(false);
+		_chckbxPowerAura.setEnabled(false);
+		_formattedTextFieldPowerAuraSize.setEnabled(false);
+		_comboBoxPowerIcon.setEnabled(false);
 	}
 
 	/**
 	 * Enables power data fields.
 	 */
 	private void powDataEnable() {
-		getJTextFieldPowerName().setEnabled(true);
-		getJTextFieldPowerKeywords().setEnabled(true);
-		getJTextFieldPowerAction().setEnabled(true);
-		getJTextAreaPowerDescription().setEnabled(true);
-		getJCheckBoxPowerAura().setEnabled(true);
-		if (getJCheckBoxPowerAura().isSelected()) {
-			getJFormattedTextFieldAuraSize().setEnabled(true);
-			getJComboBoxPowerIcon().setEnabled(false);
+		_textFieldPowerName.setEnabled(true);
+		_textFieldPowerKeywords.setEnabled(true);
+		_textFieldPowerAction.setEnabled(true);
+		_textAreaPowerDescription.setEnabled(true);
+		_chckbxPowerAura.setEnabled(true);
+		if (_chckbxPowerAura.isSelected()) {
+			_formattedTextFieldPowerAuraSize.setEnabled(true);
+			_comboBoxPowerIcon.setEnabled(false);
 		} else {
-			getJFormattedTextFieldAuraSize().setEnabled(false);
-			getJComboBoxPowerIcon().setEnabled(true);
+			_formattedTextFieldPowerAuraSize.setEnabled(false);
+			_comboBoxPowerIcon.setEnabled(true);
 		}
 	}
 
@@ -2318,23 +2078,23 @@ public class Statblock extends JDialog {
 	 *            the power for which data should be loaded
 	 */
 	private void powDataLoad(Power pow) {
-		getJTextFieldPowerName().setText(pow.getName());
-		getJTextFieldPowerKeywords().setText(pow.getKeywords());
-		getJTextFieldPowerAction().setText(pow.getAction());
-		getJTextFieldPowerURL().setText(pow.getURL());
-		getJTextAreaPowerDescription().setText(pow.getDesc());
+		_textFieldPowerName.setText(pow.getName());
+		_textFieldPowerKeywords.setText(pow.getKeywords());
+		_textFieldPowerAction.setText(pow.getAction());
+		_textFieldPowerURL.setText(pow.getURL());
+		_textAreaPowerDescription.setText(pow.getDesc());
 		if (pow.isAura()) {
-			getJComboBoxPowerIcon().setSelectedIndex(0);
-			getJComboBoxPowerIcon().setEnabled(false);
-			getJCheckBoxPowerAura().setSelected(true);
-			getJFormattedTextFieldAuraSize().setEnabled(true);
-			getJFormattedTextFieldAuraSize().setText(pow.getAura().toString());
+			_comboBoxPowerIcon.setSelectedIndex(0);
+			_comboBoxPowerIcon.setEnabled(false);
+			_chckbxPowerAura.setSelected(true);
+			_formattedTextFieldPowerAuraSize.setEnabled(true);
+			_formattedTextFieldPowerAuraSize.setText(pow.getAura().toString());
 		} else {
-			getJComboBoxPowerIcon().setSelectedItem(pow.getType());
-			getJComboBoxPowerIcon().setEnabled(true);
-			getJCheckBoxPowerAura().setSelected(false);
-			getJFormattedTextFieldAuraSize().setEnabled(false);
-			getJFormattedTextFieldAuraSize().setText("0");
+			_comboBoxPowerIcon.setSelectedItem(pow.getType());
+			_comboBoxPowerIcon.setEnabled(true);
+			_chckbxPowerAura.setSelected(false);
+			_formattedTextFieldPowerAuraSize.setEnabled(false);
+			_formattedTextFieldPowerAuraSize.setText("0");
 		}
 		setPowerChanged(false);
 	}
@@ -2354,11 +2114,11 @@ public class Statblock extends JDialog {
 	 * Reloads the effect list from the array in the class.
 	 */
 	private void resetEffectListFromArray() {
-		DefaultListModel model = (DefaultListModel) getJListEffects().getModel();
+		DefaultListModel model = (DefaultListModel) _listEffects.getModel();
 		model.clear();
 
 		if (model.isEmpty()) {
-			getJButtonDelete().setEnabled(false);
+			_btnEffectDelete.setEnabled(false);
 
 			for (EffectBase eff : getPresetEffects().toArray(new EffectBase[0])) {
 				model.addElement(eff);
