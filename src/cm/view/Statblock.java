@@ -1341,6 +1341,20 @@ public class Statblock extends JDialog {
 	}
 
 	/**
+	 * Creates a Statblock viewer for the given stats and the given library
+	 * 
+	 * @param stat
+	 *            the stats to load
+	 * @param c
+	 *            the dialog to display relative to
+	 */
+	public Statblock(Stats stat, JDialog c) {
+		this();
+		setStat(stat);
+		setLocationRelativeTo(c);
+	}
+
+	/**
 	 * Clears effect fields.
 	 */
 	private void clearEffect() {
