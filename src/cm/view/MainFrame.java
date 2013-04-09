@@ -1,7 +1,6 @@
 package cm.view;
 
 import java.awt.BorderLayout;
-import java.awt.EventQueue;
 import java.awt.GraphicsEnvironment;
 import java.awt.Toolkit;
 
@@ -288,24 +287,6 @@ public class MainFrame extends JFrame {
 	private JSeparator _separator_8;
 	private JMenuItem _menuItemToggleVisibility;
 	private int _secondDisplayIndex = 1;
-
-	/**
-	 * Launch the application.
-	 * 
-	 * @param args
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					MainFrame frame = new MainFrame();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 
 	/**
 	 * Create the frame.

@@ -32,6 +32,7 @@ public class About extends JDialog {
 	 * Creates the About dialog box.
 	 */
 	public About() {
+		setModal(true);
 		setTitle("About DnD 4e Combat Manager");
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 615, 0 };

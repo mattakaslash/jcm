@@ -51,6 +51,7 @@ public class Options extends JDialog {
 	 * controls.
 	 */
 	public Options() {
+		setModal(true);
 		setTitle("Options");
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0, 0 };

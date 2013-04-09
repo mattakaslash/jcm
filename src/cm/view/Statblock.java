@@ -8,6 +8,7 @@ import java.awt.Insets;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -23,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.SortedSet;
+import java.util.TreeSet;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JTabbedPane;
@@ -44,6 +46,7 @@ import cm.model.Power;
 import cm.model.Settings;
 import cm.model.Stats;
 import cm.model.EffectBase.Duration;
+import cm.view.render.PowerDetailsCellRenderer;
 
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
@@ -63,6 +66,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyAdapter;
 import javax.swing.event.ListSelectionListener;
+import javax.swing.JScrollPane;
 
 /**
  * Displays a window allowing for creation/editing of {@link Stats}.
@@ -99,7 +103,7 @@ public class Statblock extends JDialog {
 	private JComboBox _comboBoxDuration;
 	private JCheckBox _chckbxBeneficial;
 	private JCheckBox _chckbxHidden;
-	private SortedSet<EffectBase> _presetEffects;
+	private SortedSet<EffectBase> _presetEffects = new TreeSet<EffectBase>();
 	private Stats _stat;
 	private Boolean _powerChanged;
 	private JList _listPowers;
@@ -139,6 +143,7 @@ public class Statblock extends JDialog {
 	 * Create the dialog.
 	 */
 	public Statblock() {
+		setModal(true);
 		setTitle("Statblock Viewer");
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0, 0 };
@@ -871,6 +876,7 @@ public class Statblock extends JDialog {
 		panelGeneratedEffects.setLayout(gbl_panelGeneratedEffects);
 
 		_listEffects = new JList();
+		_listEffects.setModel(new DefaultListModel());
 		_listEffects.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				jListEffectsListSelectionValueChanged(e);
@@ -1041,21 +1047,25 @@ public class Statblock extends JDialog {
 		gbl_panelPowers.rowWeights = new double[] { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, Double.MIN_VALUE };
 		panelPowers.setLayout(gbl_panelPowers);
 
+		JScrollPane scrollPanePowers = new JScrollPane();
+		GridBagConstraints gbc_scrollPanePowers = new GridBagConstraints();
+		gbc_scrollPanePowers.fill = GridBagConstraints.BOTH;
+		gbc_scrollPanePowers.gridheight = 5;
+		gbc_scrollPanePowers.gridwidth = 5;
+		gbc_scrollPanePowers.insets = new Insets(0, 0, 5, 5);
+		gbc_scrollPanePowers.gridx = 0;
+		gbc_scrollPanePowers.gridy = 0;
+		panelPowers.add(scrollPanePowers, gbc_scrollPanePowers);
+
 		_listPowers = new JList();
+		scrollPanePowers.setViewportView(_listPowers);
+		_listPowers.setModel(new DefaultListModel());
 		_listPowers.addListSelectionListener(new ListSelectionListener() {
 			public void valueChanged(ListSelectionEvent e) {
 				jListPowersListSelectionValueChanged(e);
 			}
 		});
 		_listPowers.setBorder(new LineBorder(new Color(0, 0, 0)));
-		GridBagConstraints gbc__listPowers = new GridBagConstraints();
-		gbc__listPowers.gridwidth = 5;
-		gbc__listPowers.gridheight = 5;
-		gbc__listPowers.insets = new Insets(0, 0, 5, 5);
-		gbc__listPowers.fill = GridBagConstraints.BOTH;
-		gbc__listPowers.gridx = 0;
-		gbc__listPowers.gridy = 0;
-		panelPowers.add(_listPowers, gbc__listPowers);
 
 		JButton btnNew = new JButton("New");
 		btnNew.addActionListener(new ActionListener() {
@@ -1216,6 +1226,8 @@ public class Statblock extends JDialog {
 		panelPowers.add(lblIcon, gbc_lblIcon);
 
 		_comboBoxPowerIcon = new JComboBox();
+		_comboBoxPowerIcon.setModel(new DefaultComboBoxModel(new Object[] { "(no icon)", "Basic Melee", "Basic Ranged", "Melee",
+				"Ranged", "Close", "Area" }));
 		_comboBoxPowerIcon.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				jComboBoxPowerIconItemItemStateChanged(e);
@@ -1268,7 +1280,6 @@ public class Statblock extends JDialog {
 		panelPowerDescription.setBorder(new TitledBorder(null, "Description", TitledBorder.LEADING, TitledBorder.TOP, null, null));
 		GridBagConstraints gbc_panelPowerDescription = new GridBagConstraints();
 		gbc_panelPowerDescription.gridwidth = 6;
-		gbc_panelPowerDescription.insets = new Insets(0, 0, 0, 5);
 		gbc_panelPowerDescription.fill = GridBagConstraints.BOTH;
 		gbc_panelPowerDescription.gridx = 0;
 		gbc_panelPowerDescription.gridy = 10;
@@ -1352,6 +1363,8 @@ public class Statblock extends JDialog {
 		this();
 		setStat(stat);
 		setLocationRelativeTo(c);
+		_listPowers.setCellRenderer(new PowerDetailsCellRenderer());
+		moveClassToFields(stat);
 	}
 
 	/**

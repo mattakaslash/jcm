@@ -94,6 +94,7 @@ public class EffectWin extends JDialog {
 	 * Creates a default effect window.
 	 */
 	public EffectWin() {
+		setModal(true);
 		initComponents();
 	}
 
