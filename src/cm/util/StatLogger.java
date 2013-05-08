@@ -24,10 +24,10 @@ public class StatLogger {
 		if (LOG == null) {
 			try {
 				File logFile = new File("stats.csv");
-				LOG = new FileOutputStream(logFile);
 				if (!logFile.exists()) {
 					logFile.createNewFile();
 				}
+				LOG = new FileOutputStream(logFile, true);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
