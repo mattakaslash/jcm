@@ -3,6 +3,7 @@ package cm.view;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -27,12 +28,15 @@ import cm.model.Effect;
 import cm.model.EffectBase;
 import cm.model.Encounter;
 import cm.model.EffectBase.Duration;
+import cm.view.render.DurationCellRenderer;
+import cm.view.render.EffectBaseCellRenderer;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.Dialog.ModalityType;
 
 /**
  * Displays a list of prior/preset effects and provides an interface to add new
@@ -94,7 +98,6 @@ public class EffectWin extends JDialog {
 	 * Creates a default effect window.
 	 */
 	public EffectWin() {
-		setModal(true);
 		initComponents();
 	}
 
@@ -119,7 +122,7 @@ public class EffectWin extends JDialog {
 		setOrigRound(eff.getRoundTill());
 		loadCombos();
 		setDefaults();
-		// loadHistory();
+		loadHistory();
 		moveClassToFields(eff);
 	}
 
@@ -422,6 +425,7 @@ public class EffectWin extends JDialog {
 	 * Create the dialog.
 	 */
 	private void initComponents() {
+		setModal(true);
 		GridBagLayout gridBagLayout = new GridBagLayout();
 		gridBagLayout.columnWidths = new int[] { 0, 0 };
 		gridBagLayout.rowHeights = new int[] { 0, 0, 0, 0 };
@@ -452,6 +456,10 @@ public class EffectWin extends JDialog {
 		_panelEffect.add(_lblName, gbc__lblName);
 
 		_comboBoxName = new JComboBox();
+		_comboBoxName.setModel(new DefaultComboBoxModel(new Object[] { "", "Attack Penalty", "Blinded", "Dazed", "Deafened",
+				"Defense Penalty", "Dominated", "Full Defense (+2 all def)", "Granting Combat Advantage", "Immobilized", "Marked",
+				"Ongoing Damage", "Petrified", "Prone", "Regeneration", "Resist", "Restrained", "Second Wind (+2 all def)",
+				"Slowed", "Stunned", "Surprised", "Unconscious", "Vulnerability", "Weakened" }));
 		GridBagConstraints gbc_comboBoxName = new GridBagConstraints();
 		gbc_comboBoxName.insets = new Insets(0, 0, 5, 5);
 		gbc_comboBoxName.fill = GridBagConstraints.HORIZONTAL;
@@ -469,6 +477,10 @@ public class EffectWin extends JDialog {
 		_panelEffect.add(_lblDuration, gbc__lblDuration);
 
 		_comboBoxDuration = new JComboBox();
+		_comboBoxDuration.setModel(new DefaultComboBoxModel(new Object[] { Duration.None, Duration.SourceEnd, Duration.TargetEnd,
+				Duration.TurnEnd, Duration.Encounter, Duration.SaveEnds, Duration.Special, Duration.SourceStart,
+				Duration.TargetStart, Duration.Sustained }));
+		_comboBoxDuration.setRenderer(new DurationCellRenderer());
 		GridBagConstraints gbc_comboBoxDuration = new GridBagConstraints();
 		gbc_comboBoxDuration.insets = new Insets(0, 0, 5, 5);
 		gbc_comboBoxDuration.fill = GridBagConstraints.HORIZONTAL;
@@ -573,6 +585,8 @@ public class EffectWin extends JDialog {
 		_panelPresets.setLayout(new BorderLayout(0, 0));
 
 		_listPresets = new JList();
+		_listPresets.setModel(new DefaultListModel());
+		_listPresets.setCellRenderer(new EffectBaseCellRenderer());
 		_listPresets.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent e) {
 				jListPresetsMouseMouseClicked(e);
